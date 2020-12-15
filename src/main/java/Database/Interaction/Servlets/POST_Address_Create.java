@@ -1,10 +1,11 @@
 package Database.Interaction.Servlets;
 
-import Database.Interaction.Entities.Project;
 import Database.Support.DbConfig;
+import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Database.Tables.T_Project;
+import Database.Tables.T_Address;
 import Model.misc.Logs.ConsoleLogging;
+import org.json.JSONObject;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -18,9 +19,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-@WebServlet(name = "POST_Project_Create", urlPatterns = {"/project-create"})
-public class POST_Project_Create extends HttpServlet {
+@WebServlet(name = "POST_Address_Create", urlPatterns = {"/api/address-add"})
+public class POST_Address_Create extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -30,9 +33,20 @@ public class POST_Project_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            T_Project tp = T_Project.CreateFromScratch(req.getParameter("name"));
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/address-add");
 
-            Database.Interaction.Entities.Project.insert(conn, ps, tp);
+            Dictionary addressDict = new Hashtable();
+
+            addressDict.put(T_Address.DBNAME_COUNTRY, json.getString(T_Address.DBNAME_COUNTRY));
+            addressDict.put(T_Address.DBNAME_CITY, json.getString(T_Address.DBNAME_CITY));
+            addressDict.put(T_Address.DBNAME_STREET, json.getString(T_Address.DBNAME_STREET));
+            addressDict.put(T_Address.DBNAME_HOUSENO, json.getString(T_Address.DBNAME_HOUSENO));
+            addressDict.put(T_Address.DBNAME_ZIP, json.getString(T_Address.DBNAME_ZIP));
+
+
+            T_Address ta = T_Address.CreateFromScratch(addressDict);
+
+            Database.Interaction.Entities.Address.insert(conn, ps, ta);
         }
         catch (Exception e) {
             e.printStackTrace();

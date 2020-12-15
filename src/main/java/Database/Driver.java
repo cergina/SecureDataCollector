@@ -11,7 +11,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /****
- * This will be deprecated soon and is only temporary
+ * This will be deprecated soon and is only as a showcase here
+ * NOT USED
  */
 public abstract class Driver {
     private static String IP = "localhost";
