@@ -5,7 +5,7 @@ import Database.Support.DBTable;
 import Database.Support.DbConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.sql.Date;
+import java.util.Dictionary;
 
 public class T_User implements DBTable {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "user" : "user";
@@ -34,7 +34,36 @@ public class T_User implements DBTable {
     private T_User() {}
 
     // Creations
+    public static T_User CreateFromRetrieved(int pk, Dictionary dict) {
+        T_User temp = new T_User();
 
+        temp.a_pk = pk;
+        temp.a_BeforeTitle = (String)dict.get(DBNAME_BEFORETITLE);
+        temp.a_FirstName = (String)dict.get(DBNAME_FIRSTNAME);
+        temp.a_MiddleName = (String)dict.get(DBNAME_MIDDLENAME);
+        temp.a_LastName = (String)dict.get(DBNAME_LASTNAME);
+        temp.a_Phone = (String)dict.get(DBNAME_PHONE);
+        temp.a_Email = (String)dict.get(DBNAME_EMAIL);
+        temp.a_PermanentResidence = (String)dict.get(DBNAME_PERMANENTRESIDENCE);
+        temp.a_Blocked = ((int)dict.get(DBNAME_BLOCKED) == 1);
+
+        return temp;
+    }
+
+    public static T_User CreateFromScratch(Dictionary dict) {
+        T_User temp = new T_User();
+
+        temp.a_BeforeTitle = (String)dict.get(DBNAME_BEFORETITLE);
+        temp.a_FirstName = (String)dict.get(DBNAME_FIRSTNAME);
+        temp.a_MiddleName = (String)dict.get(DBNAME_MIDDLENAME);
+        temp.a_LastName = (String)dict.get(DBNAME_LASTNAME);
+        temp.a_Phone = (String)dict.get(DBNAME_PHONE);
+        temp.a_Email = (String)dict.get(DBNAME_EMAIL);
+        temp.a_PermanentResidence = (String)dict.get(DBNAME_PERMANENTRESIDENCE);
+        temp.a_Blocked = (boolean)dict.get(DBNAME_BLOCKED);
+
+        return temp;
+    }
 
     // Interface specific
     @Override
@@ -107,7 +136,9 @@ public class T_User implements DBTable {
         return a_PermanentResidence;
     }
 
-    public boolean isA_Blocked() {
-        return a_Blocked;
+    public boolean isA_Blocked() { return a_Blocked; }
+
+    public int isA_Blocked_Numerical() {
+        return (a_Blocked == true) ? 1 : 0;
     }
 }

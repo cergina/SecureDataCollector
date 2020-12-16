@@ -14,7 +14,7 @@ public class Flat {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        "flat (" +
+                        T_Flat.DBTABLE_NAME + "(" +
                         "ApartmentNO, AddressID" +
                         ") " +
                         "VALUES (" +
@@ -23,14 +23,14 @@ public class Flat {
         );
 
         int col = 0;
-        //ps.setString(++col, tf.);
-        //ps.setInt(++col, tf.);
+        ps.setString(++col, tf.getA_ApartmentNO());
+        ps.setInt(++col, tf.getA_AddressID());
 
         // SQL Execution
         int affectedRows = ps.executeUpdate();
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of flat into db failed.");
+            throw new SQLException("Something happened. Insertion of Flat into db failed.");
 
         return affectedRows;
     }

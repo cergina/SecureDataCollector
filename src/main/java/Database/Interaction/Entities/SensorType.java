@@ -16,7 +16,7 @@ public class SensorType {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        "sensortype (" +
+                        E_SensorType.DBTABLE_NAME + "(" +
                         "Name, MeasuredIn, CommTypeID" +
                         ") " +
                         "VALUES (" +
@@ -33,7 +33,7 @@ public class SensorType {
         int affectedRows = ps.executeUpdate();
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of E_SensorType into db failed.");
+            throw new SQLException("Something happened. Insertion of SensorType into db failed.");
 
         return affectedRows;
     }

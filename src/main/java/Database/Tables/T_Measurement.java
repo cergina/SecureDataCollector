@@ -6,8 +6,9 @@ import Database.Support.DbConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.util.Dictionary;
 
-public class T_Measurements implements DBTable {
+public class T_Measurement implements DBTable {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "measurement" : "measurement";
 
     // Atributes
@@ -23,9 +24,31 @@ public class T_Measurements implements DBTable {
     public static final String DBNAME_SENSOR_ID = "SensorID";
 
     // Constructors
-    private T_Measurements() {}
+    private T_Measurement() {}
 
     // Creations
+    public static T_Measurement CreateFromRetrieved(int pk, Dictionary dict) {
+        T_Measurement temp = new T_Measurement();
+
+        temp.a_pk = pk;
+        temp.a_Value = (String)dict.get(DBNAME_VALUE);
+        temp.a_MeasuredIncrement = (int)dict.get(DBNAME_MEASUREDINCREMENT);
+        temp.a_MeasuredAt = (Date)dict.get(DBNAME_MEASUREDAT);
+        temp.a_SensorID = (int)dict.get(DBNAME_SENSOR_ID);
+
+        return temp;
+    }
+
+    public static T_Measurement CreateFromScratch(Dictionary dict) {
+        T_Measurement temp = new T_Measurement();
+
+        temp.a_Value = Integer.toString((int)dict.get(DBNAME_VALUE));
+        temp.a_MeasuredIncrement = (int)dict.get(DBNAME_MEASUREDINCREMENT);
+        temp.a_MeasuredAt = (Date)dict.get(DBNAME_MEASUREDAT);
+        temp.a_SensorID = (int)dict.get(DBNAME_SENSOR_ID);
+
+        return temp;
+    }
 
     // Interface specific
     @Override

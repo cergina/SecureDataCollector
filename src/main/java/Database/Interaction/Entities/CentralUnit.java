@@ -1,12 +1,15 @@
 package Database.Interaction.Entities;
 
+import Database.Support.Assurance;
 import Database.Tables.T_CentralUnit;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import Database.Tables.T_ControllerUnit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class CentralUnit {
     /****
@@ -24,7 +27,7 @@ public class CentralUnit {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        "centralunit (" +
+                        T_CentralUnit.DBTABLE_NAME + "(" +
                         "Uid, FriendlyName, SimNO, Imei, Zwave, ProjectID, AddressID" +
                         ") " +
                         "VALUES (" +
@@ -33,7 +36,7 @@ public class CentralUnit {
         );
 
         int col = 0;
-        ps.setString(++col, tcu.getA_Uid());
+        ps.setInt(++col, tcu.getA_Uid());
         ps.setString(++col, tcu.getA_FriendlyName());
         ps.setString(++col, tcu.getA_SimNO());
         ps.setString(++col, tcu.getA_Imei());
@@ -60,6 +63,41 @@ public class CentralUnit {
      * @throws SQLException
      */
     public static T_CentralUnit retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        throw new NotImplementedException();
+        Assurance.IdCheck(id);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE ID=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, id);
+
+        // SQL Execution
+        rs = ps.executeQuery();
+        T_CentralUnit tc = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            Dictionary dict = new Hashtable();
+            dict.put(T_CentralUnit.DBNAME_UID, rs.getString(T_CentralUnit.DBNAME_UID));
+            dict.put(T_CentralUnit.DBNAME_FRIENDLYNAME, rs.getString(T_CentralUnit.DBNAME_FRIENDLYNAME));
+            dict.put(T_CentralUnit.DBNAME_SIMNO, rs.getString(T_CentralUnit.DBNAME_SIMNO));
+            dict.put(T_CentralUnit.DBNAME_IMEI, rs.getString(T_CentralUnit.DBNAME_IMEI));
+            dict.put(T_CentralUnit.DBNAME_ZWAVE, rs.getString(T_CentralUnit.DBNAME_ZWAVE));
+            dict.put(T_CentralUnit.DBNAME_PROJECT_ID, rs.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
+            dict.put(T_CentralUnit.DBNAME_ADDRESS_ID, rs.getString(T_CentralUnit.DBNAME_ADDRESS_ID));
+
+
+            tc = T_CentralUnit.CreateFromRetrieved(id, dict);
+        }
+
+        return tc;
     }
 }

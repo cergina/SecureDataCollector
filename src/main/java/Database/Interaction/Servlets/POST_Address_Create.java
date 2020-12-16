@@ -64,10 +64,10 @@ public class POST_Address_Create extends HttpServlet {
             conn = ds.getConnection();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: "+se.getMessage());
+            ConsoleLogging.Log("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: "+ne.getMessage());
+            ConsoleLogging.Log("NamingException: " + ne.getMessage());
         }
     }
 

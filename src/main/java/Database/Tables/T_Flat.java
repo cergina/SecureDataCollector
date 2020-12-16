@@ -5,6 +5,8 @@ import Database.Support.DBTable;
 import Database.Support.DbConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Dictionary;
+
 public class T_Flat  implements DBTable {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "flat" : "flat";
 
@@ -20,7 +22,24 @@ public class T_Flat  implements DBTable {
     private T_Flat() {}
 
     // Creations
+    public static T_Flat CreateFromRetrieved(int pk, Dictionary dict) {
+        T_Flat temp = new T_Flat();
 
+        temp.a_pk = pk;
+        temp.a_ApartmentNO = (String)dict.get(DBNAME_APARTMENTNO);
+        temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
+
+        return temp;
+    }
+
+    public static T_Flat CreateFromScratch(Dictionary dict) {
+        T_Flat temp = new T_Flat();
+
+        temp.a_ApartmentNO = (String)dict.get(DBNAME_APARTMENTNO);
+        temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
+
+        return temp;
+    }
 
     // Interface specific
     @Override

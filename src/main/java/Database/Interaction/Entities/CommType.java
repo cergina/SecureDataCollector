@@ -16,7 +16,7 @@ public class CommType {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        "commtype (" +
+                        E_CommType.DBTABLE_NAME + "(" +
                         "Name" +
                         ") " +
                         "VALUES (" +
@@ -31,7 +31,7 @@ public class CommType {
         int affectedRows = ps.executeUpdate();
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of E_CommType into db failed.");
+            throw new SQLException("Something happened. Insertion of CommType into db failed.");
 
         return affectedRows;
     }

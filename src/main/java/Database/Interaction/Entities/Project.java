@@ -8,6 +8,7 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_Project;
+import Database.Tables.T_User;
 
 import java.sql.*;
 import java.util.Dictionary;
@@ -27,7 +28,7 @@ public class Project {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        "project (" +
+                        T_Project.DBTABLE_NAME + "(" +
                         "Name, CreatedAt" +
                         ") " +
                         "VALUES (" +
@@ -42,7 +43,7 @@ public class Project {
         int affectedRows = ps.executeUpdate();
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of project into db failed.");
+            throw new SQLException("Something happened. Insertion of Project into db failed.");
 
         return affectedRows;
     }
@@ -61,7 +62,7 @@ public class Project {
         ps = conn.prepareStatement(
                 "SELECT " +
                         "ID, Name, CreatedAt, DeletedAt " +
-                        "FROM project " +
+                        "FROM " + T_Project.DBTABLE_NAME + " " +
                         "WHERE ID=?"
         );
 

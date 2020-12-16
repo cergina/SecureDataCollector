@@ -38,13 +38,13 @@ public class POST_CentralUnit_Create extends HttpServlet {
             // table
             Dictionary tmpDict = new Hashtable();
 
-            tmpDict.put(T_CentralUnit.DBNAME_UID, json.getString(T_CentralUnit.DBNAME_UID));
+            tmpDict.put(T_CentralUnit.DBNAME_UID, json.getInt(T_CentralUnit.DBNAME_UID));
             tmpDict.put(T_CentralUnit.DBNAME_FRIENDLYNAME, json.getString(T_CentralUnit.DBNAME_FRIENDLYNAME));
             tmpDict.put(T_CentralUnit.DBNAME_SIMNO, json.getString(T_CentralUnit.DBNAME_SIMNO));
             tmpDict.put(T_CentralUnit.DBNAME_IMEI, json.getString(T_CentralUnit.DBNAME_IMEI));
             tmpDict.put(T_CentralUnit.DBNAME_ZWAVE, json.getString(T_CentralUnit.DBNAME_ZWAVE));
-            tmpDict.put(T_CentralUnit.DBNAME_PROJECTID, json.get(T_CentralUnit.DBNAME_PROJECTID));
-            tmpDict.put(T_CentralUnit.DBNAME_ADDRESSID, json.getString(T_CentralUnit.DBNAME_ADDRESSID));
+            tmpDict.put(T_CentralUnit.DBNAME_PROJECT_ID, json.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
+            tmpDict.put(T_CentralUnit.DBNAME_ADDRESS_ID, json.getInt(T_CentralUnit.DBNAME_ADDRESS_ID));
 
             T_CentralUnit tcu = T_CentralUnit.CreateFromScratch(tmpDict);
 

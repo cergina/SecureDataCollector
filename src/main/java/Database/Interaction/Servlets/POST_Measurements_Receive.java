@@ -3,7 +3,8 @@ package Database.Interaction.Servlets;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Database.Tables.T_Project;
+import Model.Measuring.Measurements_Process;
+import Model.Measuring.Measurements_SupportedModes;
 import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
@@ -20,8 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "POST_Project_Create", urlPatterns = {"/api/project-add"})
-public class POST_Project_Create extends HttpServlet {
+@WebServlet(name = "POST_Measurements_Receive", urlPatterns = {"/api/measurements-add"})
+public class POST_Measurements_Receive extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -31,11 +32,19 @@ public class POST_Project_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/project-add");
+            JSONObject jsonMain = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/measurements-add");
 
-            T_Project t = T_Project.CreateFromScratch(json.getString(T_Project.DBNAME_NAME));
+            // message type, changes flow of code
+            String msgType = jsonMain.getString("messageType");
 
-            Database.Interaction.Entities.Project.insert(conn, ps, t);
+            // now only supported measurements
+            Measurements_SupportedModes mode = Measurements_SupportedModes.valueOfLabel(msgType);
+
+            if (mode == null)
+                throw new IOException("MessageType unsupported");
+
+            // process
+            Measurements_Process.HandleFromPost(conn, ps, mode, jsonMain);
         }
         catch (Exception e) {
             e.printStackTrace();

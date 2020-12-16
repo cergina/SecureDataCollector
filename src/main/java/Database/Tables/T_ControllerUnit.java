@@ -5,6 +5,8 @@ import Database.Support.DBTable;
 import Database.Support.DbConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Dictionary;
+
 public class T_ControllerUnit  implements DBTable {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "controllerUnit" : "controllerunit";
 
@@ -26,14 +28,36 @@ public class T_ControllerUnit  implements DBTable {
     private T_ControllerUnit() {}
 
     // Creations
+    public static T_ControllerUnit CreateFromRetrieved(int pk, Dictionary dict) {
+        T_ControllerUnit temp = new T_ControllerUnit();
 
+        temp.a_pk = pk;
+        temp.a_Uid = (int)dict.get(DBNAME_UID);
+        temp.a_DipAddress = (String)dict.get(DBNAME_DIPADDRESS);
+        temp.a_Zwave = (String)dict.get(DBNAME_ZWAVE);
+        temp.a_CentralUnitID = (int)dict.get(DBNAME_CENTRALUNIT_ID);
+        temp.a_FlatID = (int)dict.get(DBNAME_FLAT_ID);
+
+        return temp;
+    }
+
+    public static T_ControllerUnit CreateFromScratch(Dictionary dict) {
+        T_ControllerUnit temp = new T_ControllerUnit();
+
+        temp.a_Uid = (int)dict.get(DBNAME_UID);
+        temp.a_DipAddress = (String)dict.get(DBNAME_DIPADDRESS);
+        temp.a_Zwave = (String)dict.get(DBNAME_ZWAVE);
+        temp.a_CentralUnitID = (int)dict.get(DBNAME_CENTRALUNIT_ID);
+        temp.a_FlatID = (int)dict.get(DBNAME_FLAT_ID);
+
+        return temp;
+    }
 
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
         return Assurance.IsIntOk(a_Uid) &&
                 Assurance.IsVarcharOk(a_DipAddress) &&
-                Assurance.IsVarcharOk(a_Zwave) &&
                 Assurance.IsVarcharOk(a_Zwave) &&
                 Assurance.IsIntOk(a_CentralUnitID) &&
                 Assurance.IsIntOk(a_FlatID);
@@ -44,7 +68,6 @@ public class T_ControllerUnit  implements DBTable {
         return Assurance.IsIntOk(a_pk) &&
                 Assurance.IsIntOk(a_Uid) &&
                 Assurance.IsVarcharOk(a_DipAddress) &&
-                Assurance.IsVarcharOk(a_Zwave) &&
                 Assurance.IsVarcharOk(a_Zwave) &&
                 Assurance.IsIntOk(a_CentralUnitID) &&
                 Assurance.IsIntOk(a_FlatID);

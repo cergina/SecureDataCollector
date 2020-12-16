@@ -5,6 +5,8 @@ import Database.Support.DBTable;
 import Database.Support.DbConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Dictionary;
+
 public class T_Sensor implements DBTable {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "sensor" : "sensor";
 
@@ -25,7 +27,28 @@ public class T_Sensor implements DBTable {
     private T_Sensor() {}
 
     // Creations
+    public static T_Sensor CreateFromRetrieved(int pk, Dictionary dict) {
+        T_Sensor temp = new T_Sensor();
 
+        temp.a_pk = pk;
+        temp.a_Input = (String)dict.get(DBNAME_INPUT);
+        temp.a_Name = (String)dict.get(DBNAME_NAME);
+        temp.a_SensorTypeID = (int)dict.get(DBNAME_SENSORTYPE_ID);
+        temp.a_ControllerUnitID = (int)dict.get(DBNAME_CONTROLLERUNIT_ID);
+
+        return temp;
+    }
+
+    public static T_Sensor CreateFromScratch(Dictionary dict) {
+        T_Sensor temp = new T_Sensor();
+
+        temp.a_Input = (String)dict.get(DBNAME_INPUT);
+        temp.a_Name = (String)dict.get(DBNAME_NAME);
+        temp.a_SensorTypeID = (int)dict.get(DBNAME_SENSORTYPE_ID);
+        temp.a_ControllerUnitID = (int)dict.get(DBNAME_CONTROLLERUNIT_ID);
+
+        return temp;
+    }
 
     // Interface specific
     @Override
