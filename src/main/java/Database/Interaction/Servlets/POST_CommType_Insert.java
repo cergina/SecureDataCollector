@@ -1,11 +1,9 @@
 package Database.Interaction.Servlets;
 
-import Database.Interaction.Entities.Project;
+import Database.Enums.E_CommType;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Database.Tables.T_Address;
-import Database.Tables.T_Project;
 import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
@@ -21,29 +19,40 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-@WebServlet(name = "POST_Project_Create", urlPatterns = {"/api/project-add"})
-public class POST_Project_Create extends HttpServlet {
+@WebServlet(name = "POST_CommType_Insert", urlPatterns = {"/api/commType-add"})
+public class POST_CommType_Insert extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/project-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/commType-add");
 
-            T_Project t = T_Project.CreateFromScratch(json.getString(T_Project.DBNAME_NAME));
+            // table
+            Dictionary tmpDict = new Hashtable();
 
-            Database.Interaction.Entities.Project.insert(conn, ps, t);
+            tmpDict.put(E_CommType.DBNAME_NAME, json.getString(E_CommType.DBNAME_NAME));
+
+            E_CommType ec = E_CommType.CreateFromScratch(tmpDict);
+
+            // Insertion
+            Database.Interaction.Entities.CommType.insert(conn, ps, ec);
         }
         catch (Exception e) {
             e.printStackTrace();
             ServletHelper.Send404(resp);
         }
     }
+
+
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
 
@@ -79,5 +88,4 @@ public class POST_Project_Create extends HttpServlet {
             ConsoleLogging.Log("NamingException: " + ne.getMessage());
         }
     }
-
 }

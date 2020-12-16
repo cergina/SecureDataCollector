@@ -10,6 +10,8 @@ import Database.Support.Assurance;
 import Database.Tables.T_Project;
 
 import java.sql.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class Project {
     /***
@@ -75,11 +77,12 @@ public class Project {
         } else {
             rs.next();
 
-            tp = T_Project.CreateFromRetrieved(rs.getInt("ID"),
-                    rs.getString("Name"),
-                    rs.getDate("CreatedAt"),
-                    rs.getDate("DeletedAt")
-            );
+            Dictionary tmpDict = new Hashtable();
+            tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
+            tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
+            tmpDict.put(T_Project.DBNAME_DeletedAt, rs.getDate(T_Project.DBNAME_DeletedAt));
+
+            tp = T_Project.CreateFromRetrieved(rs.getInt("ID"), tmpDict);
         }
 
         return tp;

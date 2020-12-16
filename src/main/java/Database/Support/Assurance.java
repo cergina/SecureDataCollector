@@ -24,6 +24,13 @@ public class Assurance {
         return true;
     }
 
+    public static boolean IsFkOk(int value) {
+        if (value <= 0)
+            return false;
+
+        return true;
+    }
+
     public static boolean IsVarcharOk(String value) {
         if (null == value)
             return false;

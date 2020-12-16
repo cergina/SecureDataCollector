@@ -2,7 +2,6 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_Address;
-import Database.Tables.T_Project;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +14,7 @@ public class Address {
     /***
      * Attempt to insert the parsed argument T_Address into the real database
      * @param conn
+     * @param ps
      * @param ta
      * @throws SQLException
      */
@@ -49,9 +49,11 @@ public class Address {
         return affectedRows;
     }
 
-    /****
+    /*****
      *
      * @param conn
+     * @param ps
+     * @param rs
      * @param id
      * @return
      * @throws SQLException

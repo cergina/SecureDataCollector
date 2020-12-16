@@ -2,12 +2,13 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DbConfig;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Dictionary;
 
 public class T_Address implements DBTable {
+    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "address" : "address";
+
     // Atributes
     private int a_pk;
     private String a_Country;
@@ -26,27 +27,27 @@ public class T_Address implements DBTable {
     private T_Address() {}
 
     // Creations
-    public static T_Address CreateFromRetrieved(int pk, Dictionary addressDict) {
+    public static T_Address CreateFromRetrieved(int pk, Dictionary dict) {
         T_Address temp = new T_Address();
 
         temp.a_pk = pk;
-        temp.a_Country = (String)addressDict.get(DBNAME_COUNTRY);
-        temp.a_City = (String)addressDict.get(DBNAME_CITY);
-        temp.a_Street = (String)addressDict.get(DBNAME_STREET);
-        temp.a_HouseNO = (String)addressDict.get(DBNAME_HOUSENO);
-        temp.a_ZIP = (String)addressDict.get(DBNAME_ZIP);
+        temp.a_Country = (String)dict.get(DBNAME_COUNTRY);
+        temp.a_City = (String)dict.get(DBNAME_CITY);
+        temp.a_Street = (String)dict.get(DBNAME_STREET);
+        temp.a_HouseNO = (String)dict.get(DBNAME_HOUSENO);
+        temp.a_ZIP = (String)dict.get(DBNAME_ZIP);
 
         return temp;
     }
 
-    public static T_Address CreateFromScratch(Dictionary addressDict) {
+    public static T_Address CreateFromScratch(Dictionary dict) {
         T_Address temp = new T_Address();
 
-        temp.a_Country = (String)addressDict.get(DBNAME_COUNTRY);
-        temp.a_City = (String)addressDict.get(DBNAME_CITY);
-        temp.a_Street = (String)addressDict.get(DBNAME_STREET);
-        temp.a_HouseNO = (String)addressDict.get(DBNAME_HOUSENO);
-        temp.a_ZIP = (String)addressDict.get(DBNAME_ZIP);
+        temp.a_Country = (String)dict.get(DBNAME_COUNTRY);
+        temp.a_City = (String)dict.get(DBNAME_CITY);
+        temp.a_Street = (String)dict.get(DBNAME_STREET);
+        temp.a_HouseNO = (String)dict.get(DBNAME_HOUSENO);
+        temp.a_ZIP = (String)dict.get(DBNAME_ZIP);
 
         return temp;
     }

@@ -35,17 +35,18 @@ public class POST_Address_Create extends HttpServlet {
         try {
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/address-add");
 
-            Dictionary addressDict = new Hashtable();
+            // table
+            Dictionary tmpDict = new Hashtable();
 
-            addressDict.put(T_Address.DBNAME_COUNTRY, json.getString(T_Address.DBNAME_COUNTRY));
-            addressDict.put(T_Address.DBNAME_CITY, json.getString(T_Address.DBNAME_CITY));
-            addressDict.put(T_Address.DBNAME_STREET, json.getString(T_Address.DBNAME_STREET));
-            addressDict.put(T_Address.DBNAME_HOUSENO, json.getString(T_Address.DBNAME_HOUSENO));
-            addressDict.put(T_Address.DBNAME_ZIP, json.getString(T_Address.DBNAME_ZIP));
+            tmpDict.put(T_Address.DBNAME_COUNTRY, json.getString(T_Address.DBNAME_COUNTRY));
+            tmpDict.put(T_Address.DBNAME_CITY, json.getString(T_Address.DBNAME_CITY));
+            tmpDict.put(T_Address.DBNAME_STREET, json.getString(T_Address.DBNAME_STREET));
+            tmpDict.put(T_Address.DBNAME_HOUSENO, json.getString(T_Address.DBNAME_HOUSENO));
+            tmpDict.put(T_Address.DBNAME_ZIP, json.getString(T_Address.DBNAME_ZIP));
 
+            T_Address ta = T_Address.CreateFromScratch(tmpDict);
 
-            T_Address ta = T_Address.CreateFromScratch(addressDict);
-
+            // Insertion
             Database.Interaction.Entities.Address.insert(conn, ps, ta);
         }
         catch (Exception e) {
@@ -88,5 +89,4 @@ public class POST_Address_Create extends HttpServlet {
             ConsoleLogging.Log("NamingException: " + ne.getMessage());
         }
     }
-
 }

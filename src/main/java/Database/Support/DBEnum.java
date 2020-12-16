@@ -7,5 +7,9 @@ package Database.Support;
 
 public interface DBEnum {
 
+    boolean IsEnumTableOkForDatabaseEnter();
+
+    boolean WasEnumTableWithdrawedCorrectlyFromDatabase();
+
     String PrintInfoAboutEnum();
 }

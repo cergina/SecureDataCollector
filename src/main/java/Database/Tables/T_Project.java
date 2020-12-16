@@ -8,29 +8,37 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DbConfig;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Dictionary;
 
 public class T_Project implements DBTable {
+    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "project" : "project";
+
     // Atributes
     private int a_pk;
     private String a_name;
     private Date a_created;
     private Date a_deleted;
 
+    public static final String DBNAME_NAME = "Name";
+    public static final String DBNAME_CreatedAt = "CreatedAt";
+    public static final String DBNAME_DeletedAt = "DeletedAt";
+
     // Constructors
     private T_Project() {}
 
     // Creations
 
-    public static T_Project CreateFromRetrieved(int pk, String name, Date created, Date deleted) {
+    public static T_Project CreateFromRetrieved(int pk, Dictionary tmpDict) {
         T_Project temp = new T_Project();
 
         temp.a_pk = pk;
-        temp.a_name = name;
-        temp.a_created = created;
-        temp.a_deleted = deleted;
+        temp.a_name = (String)tmpDict.get(DBNAME_NAME);
+        temp.a_created = (Date)tmpDict.get(DBNAME_CreatedAt);
+        temp.a_deleted = (Date)tmpDict.get(DBNAME_DeletedAt);
 
         return temp;
     }
