@@ -18,3 +18,9 @@ hs_err_pid*
 *.iws
 *.iml
 *.ipr
+
+# Debug nie je potrebné commitovať
+/firmware/*/*/Debug
+
+# Atmel Studio Solution User Options nás nezaujímajú
+*.atsuo
