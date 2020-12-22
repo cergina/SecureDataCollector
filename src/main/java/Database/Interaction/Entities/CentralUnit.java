@@ -2,7 +2,6 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_CentralUnit;
-import Database.Tables.T_ControllerUnit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,13 +85,13 @@ public class CentralUnit {
             rs.next();
 
             Dictionary dict = new Hashtable();
-            dict.put(T_CentralUnit.DBNAME_UID, rs.getString(T_CentralUnit.DBNAME_UID));
+            dict.put(T_CentralUnit.DBNAME_UID, rs.getInt(T_CentralUnit.DBNAME_UID));
             dict.put(T_CentralUnit.DBNAME_FRIENDLYNAME, rs.getString(T_CentralUnit.DBNAME_FRIENDLYNAME));
             dict.put(T_CentralUnit.DBNAME_SIMNO, rs.getString(T_CentralUnit.DBNAME_SIMNO));
             dict.put(T_CentralUnit.DBNAME_IMEI, rs.getString(T_CentralUnit.DBNAME_IMEI));
             dict.put(T_CentralUnit.DBNAME_ZWAVE, rs.getString(T_CentralUnit.DBNAME_ZWAVE));
             dict.put(T_CentralUnit.DBNAME_PROJECT_ID, rs.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
-            dict.put(T_CentralUnit.DBNAME_ADDRESS_ID, rs.getString(T_CentralUnit.DBNAME_ADDRESS_ID));
+            dict.put(T_CentralUnit.DBNAME_ADDRESS_ID, rs.getInt(T_CentralUnit.DBNAME_ADDRESS_ID));
 
 
             tc = T_CentralUnit.CreateFromRetrieved(id, dict);

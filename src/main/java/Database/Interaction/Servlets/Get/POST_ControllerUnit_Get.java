@@ -1,5 +1,6 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Get;
 
+import Database.Interaction.Entities.ControllerUnit;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
@@ -15,15 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
-@WebServlet(name = "POST_ControllerUnit_Create", urlPatterns = {"/api/controllerUnit-add"})
-public class POST_ControllerUnit_Create extends HttpServlet {
+@WebServlet(name = "POST_ControllerUnit_Get", urlPatterns = {"/api/controllerUnit-byId"})
+public class POST_ControllerUnit_Get extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -33,21 +33,20 @@ public class POST_ControllerUnit_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/controllerUnit-add");
+            // parse
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/controllerUnit-byId");
 
-            // table
-            Dictionary tmpDict = new Hashtable();
+            T_ControllerUnit ret_tcu = ControllerUnit.retrieve(conn, ps, rs, json.getInt(T_ControllerUnit.DBNAME_ID));
 
-            tmpDict.put(T_ControllerUnit.DBNAME_UID, json.getInt(T_ControllerUnit.DBNAME_UID));
-            tmpDict.put(T_ControllerUnit.DBNAME_DIPADDRESS, json.getString(T_ControllerUnit.DBNAME_DIPADDRESS));
-            tmpDict.put(T_ControllerUnit.DBNAME_ZWAVE, json.getString(T_ControllerUnit.DBNAME_ZWAVE));
-            tmpDict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, json.getInt(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
-            tmpDict.put(T_ControllerUnit.DBNAME_FLAT_ID, json.getInt(T_ControllerUnit.DBNAME_FLAT_ID));
+            // return
+            JSONObject json_toRet = T_ControllerUnit.MakeJSONObjectFrom(ret_tcu);
 
-            T_ControllerUnit tcu = T_ControllerUnit.CreateFromScratch(tmpDict);
+            resp.setContentType("application/json; charset=utf-8");
+            resp.setCharacterEncoding("UTF-8");
 
-            // Insertion
-            Database.Interaction.Entities.ControllerUnit.insert(conn, ps, tcu);
+            PrintWriter out = resp.getWriter();
+            out.print(json_toRet);
+            out.flush();
         }
         catch (Exception e) {
             e.printStackTrace();

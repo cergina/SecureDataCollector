@@ -3,6 +3,7 @@ package Database.Tables;
 import Database.Support.Assurance;
 import Database.Support.DBTable;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 
 import java.util.Dictionary;
 
@@ -17,6 +18,7 @@ public class T_Address implements DBTable {
     private String a_HouseNO;
     private String a_ZIP;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_COUNTRY = "Country";
     public static final String DBNAME_CITY = "City";
     public static final String DBNAME_STREET = "Street";
@@ -50,6 +52,20 @@ public class T_Address implements DBTable {
         temp.a_ZIP = (String)dict.get(DBNAME_ZIP);
 
         return temp;
+    }
+
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(T_Address tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_COUNTRY, tmp.getA_Country());
+        jo.put(DBNAME_CITY, tmp.getA_City());
+        jo.put(DBNAME_STREET, tmp.getA_Street());
+        jo.put(DBNAME_HOUSENO, tmp.getA_HouseNO());
+        jo.put(DBNAME_ZIP, tmp.getA_ZIP());
+
+        return jo;
     }
 
     // Interface specific

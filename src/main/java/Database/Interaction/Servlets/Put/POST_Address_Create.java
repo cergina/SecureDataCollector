@@ -1,4 +1,4 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Put;
 
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;

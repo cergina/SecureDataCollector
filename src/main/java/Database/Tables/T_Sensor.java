@@ -3,6 +3,7 @@ package Database.Tables;
 import Database.Support.Assurance;
 import Database.Support.DBTable;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Dictionary;
@@ -17,6 +18,7 @@ public class T_Sensor implements DBTable {
     private int a_SensorTypeID;
     private int a_ControllerUnitID;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_INPUT = "Input";
     public static final String DBNAME_NAME = "Name";
     public static final String DBNAME_SENSORTYPE_ID = "SensorTypeID";
@@ -48,6 +50,19 @@ public class T_Sensor implements DBTable {
         temp.a_ControllerUnitID = (int)dict.get(DBNAME_CONTROLLERUNIT_ID);
 
         return temp;
+    }
+
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(T_Sensor tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_INPUT, tmp.getA_Input());
+        jo.put(DBNAME_NAME, tmp.getA_Name());
+        jo.put(DBNAME_SENSORTYPE_ID, tmp.getA_SensorTypeID());
+        jo.put(DBNAME_CONTROLLERUNIT_ID, tmp.getA_ControllerUnitID());
+
+        return jo;
     }
 
     // Interface specific

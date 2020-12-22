@@ -1,9 +1,9 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Put;
 
-import Database.Enums.E_CommType;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
+import Database.Tables.T_ControllerUnit;
 import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
@@ -22,37 +22,38 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_CommType_Insert", urlPatterns = {"/api/commType-add"})
-public class POST_CommType_Insert extends HttpServlet {
+@WebServlet(name = "POST_ControllerUnit_Create", urlPatterns = {"/api/controllerUnit-add"})
+public class POST_ControllerUnit_Create extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/commType-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/controllerUnit-add");
 
             // table
             Dictionary tmpDict = new Hashtable();
 
-            tmpDict.put(E_CommType.DBNAME_NAME, json.getString(E_CommType.DBNAME_NAME));
+            tmpDict.put(T_ControllerUnit.DBNAME_UID, json.getInt(T_ControllerUnit.DBNAME_UID));
+            tmpDict.put(T_ControllerUnit.DBNAME_DIPADDRESS, json.getString(T_ControllerUnit.DBNAME_DIPADDRESS));
+            tmpDict.put(T_ControllerUnit.DBNAME_ZWAVE, json.getString(T_ControllerUnit.DBNAME_ZWAVE));
+            tmpDict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, json.getInt(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
+            tmpDict.put(T_ControllerUnit.DBNAME_FLAT_ID, json.getInt(T_ControllerUnit.DBNAME_FLAT_ID));
 
-            E_CommType ec = E_CommType.CreateFromScratch(tmpDict);
+            T_ControllerUnit tcu = T_ControllerUnit.CreateFromScratch(tmpDict);
 
             // Insertion
-            Database.Interaction.Entities.CommType.insert(conn, ps, ec);
+            Database.Interaction.Entities.ControllerUnit.insert(conn, ps, tcu);
         }
         catch (Exception e) {
             e.printStackTrace();
             ServletHelper.Send404(resp);
         }
     }
-
-
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
 

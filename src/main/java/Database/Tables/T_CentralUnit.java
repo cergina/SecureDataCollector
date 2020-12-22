@@ -3,6 +3,7 @@ package Database.Tables;
 import Database.Support.Assurance;
 import Database.Support.DBTable;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Dictionary;
@@ -20,6 +21,7 @@ public class T_CentralUnit implements DBTable {
     private int a_ProjectID;
     private int a_AddressID;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_UID = "Uid";
     public static final String DBNAME_FRIENDLYNAME = "FriendlyName";
     public static final String DBNAME_SIMNO = "SimNO";
@@ -59,6 +61,22 @@ public class T_CentralUnit implements DBTable {
         temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
 
         return temp;
+    }
+
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(T_CentralUnit tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_UID, tmp.getA_Uid());
+        jo.put(DBNAME_FRIENDLYNAME, tmp.getA_FriendlyName());
+        jo.put(DBNAME_SIMNO, tmp.getA_SimNO());
+        jo.put(DBNAME_IMEI, tmp.getA_Imei());
+        jo.put(DBNAME_ZWAVE, tmp.getA_Zwave());
+        jo.put(DBNAME_PROJECT_ID, tmp.getA_ProjectID());
+        jo.put(DBNAME_ADDRESS_ID, tmp.getA_AddressID());
+
+        return jo;
     }
 
     // Interface specific

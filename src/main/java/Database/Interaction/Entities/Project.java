@@ -8,7 +8,6 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_Project;
-import Database.Tables.T_User;
 
 import java.sql.*;
 import java.util.Dictionary;
@@ -81,9 +80,8 @@ public class Project {
             Dictionary tmpDict = new Hashtable();
             tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
             tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
-            tmpDict.put(T_Project.DBNAME_DeletedAt, rs.getDate(T_Project.DBNAME_DeletedAt));
 
-            tp = T_Project.CreateFromRetrieved(rs.getInt("ID"), tmpDict);
+            tp = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
         }
 
         return tp;

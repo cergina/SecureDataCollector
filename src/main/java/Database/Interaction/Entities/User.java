@@ -1,9 +1,7 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
-import Database.Tables.T_Sensor;
 import Database.Tables.T_User;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

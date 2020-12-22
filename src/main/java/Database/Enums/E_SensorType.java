@@ -3,6 +3,7 @@ package Database.Enums;
 import Database.Support.Assurance;
 import Database.Support.DBEnum;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Dictionary;
@@ -16,6 +17,7 @@ public class E_SensorType implements DBEnum {
     private String a_MeasuredIn;
     private int a_CommTypeID;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_NAME = "Name";
     public static final String DBNAME_MEASUREDIN = "MeasuredIn";
     public static final String DBNAME_COMMTYPE_ID = "CommTypeID";
@@ -45,6 +47,17 @@ public class E_SensorType implements DBEnum {
         return temp;
     }
 
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(E_SensorType tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_NAME, tmp.getA_Name());
+        jo.put(DBNAME_MEASUREDIN, tmp.getA_MeasuredIn());
+        jo.put(DBNAME_COMMTYPE_ID, tmp.getA_CommTypeID());
+
+        return jo;
+    }
 
     // Interface specific
     @Override

@@ -9,6 +9,7 @@ package Database.Tables;
 import Database.Support.Assurance;
 import Database.Support.DBTable;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public class T_Project implements DBTable {
     private Date a_created;
     private Date a_deleted;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_NAME = "Name";
     public static final String DBNAME_CreatedAt = "CreatedAt";
     public static final String DBNAME_DeletedAt = "DeletedAt";
@@ -32,13 +34,13 @@ public class T_Project implements DBTable {
 
     // Creations
 
-    public static T_Project CreateFromRetrieved(int pk, Dictionary tmpDict) {
+    public static T_Project CreateFromRetrieved(int pk, Dictionary tmpDict, Date deleted) {
         T_Project temp = new T_Project();
 
         temp.a_pk = pk;
         temp.a_name = (String)tmpDict.get(DBNAME_NAME);
         temp.a_created = (Date)tmpDict.get(DBNAME_CreatedAt);
-        temp.a_deleted = (Date)tmpDict.get(DBNAME_DeletedAt);
+        temp.a_deleted = deleted;
 
         return temp;
     }
@@ -52,7 +54,18 @@ public class T_Project implements DBTable {
         return temp;
     }
 
-    //
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(T_Project tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_NAME, tmp.getA_name());
+        jo.put(DBNAME_CreatedAt, tmp.getA_created());
+        if (tmp.getA_deleted() != null)
+            jo.put(DBNAME_DeletedAt, tmp.getA_deleted());
+
+        return jo;
+    }
 
 
     // Interface specific

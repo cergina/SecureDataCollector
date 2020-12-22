@@ -1,9 +1,10 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Get;
 
+import Database.Enums.E_SensorType;
+import Database.Interaction.Entities.SensorType;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Database.Tables.T_User;
 import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
@@ -15,15 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
-@WebServlet(name = "POST_User_Create", urlPatterns = {"/api/user-add"})
-public class POST_User_Create extends HttpServlet {
+@WebServlet(name = "POST_SensorType_Get", urlPatterns = {"/api/sensorType-byId"})
+public class POST_SensorType_Get extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -33,25 +33,20 @@ public class POST_User_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/user-add");
+            // parse
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/sensorType-byId");
 
-            // table
-            Dictionary tmpDict = new Hashtable();
+            E_SensorType ret_ect = SensorType.retrieve(conn, ps, rs, json.getInt(E_SensorType.DBNAME_ID));
 
-            tmpDict.put(T_User.DBNAME_BEFORETITLE, json.getString(T_User.DBNAME_BEFORETITLE));
-            tmpDict.put(T_User.DBNAME_FIRSTNAME, json.getString(T_User.DBNAME_FIRSTNAME));
-            tmpDict.put(T_User.DBNAME_MIDDLENAME, json.getString(T_User.DBNAME_MIDDLENAME));
-            tmpDict.put(T_User.DBNAME_LASTNAME, json.getString(T_User.DBNAME_LASTNAME));
-            tmpDict.put(T_User.DBNAME_PHONE, json.getString(T_User.DBNAME_PHONE));
-            tmpDict.put(T_User.DBNAME_EMAIL, json.getString(T_User.DBNAME_EMAIL));
-            tmpDict.put(T_User.DBNAME_PERMANENTRESIDENCE, json.getString(T_User.DBNAME_PERMANENTRESIDENCE));
-            tmpDict.put(T_User.DBNAME_BLOCKED, false);
+            // return
+            JSONObject json_toRet = E_SensorType.MakeJSONObjectFrom(ret_ect);
 
+            resp.setContentType("application/json; charset=utf-8");
+            resp.setCharacterEncoding("UTF-8");
 
-            T_User tu = T_User.CreateFromScratch(tmpDict);
-
-            // Insertion
-            Database.Interaction.Entities.User.insert(conn, ps, tu);
+            PrintWriter out = resp.getWriter();
+            out.print(json_toRet);
+            out.flush();
         }
         catch (Exception e) {
             e.printStackTrace();

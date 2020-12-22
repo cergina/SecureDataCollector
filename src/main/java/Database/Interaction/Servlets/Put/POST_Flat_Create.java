@@ -1,9 +1,10 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Put;
 
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Database.Tables.T_Sensor;
+import Database.Tables.T_Flat;
+import Database.Tables.T_Project;
 import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
@@ -22,8 +23,8 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_Sensor_create", urlPatterns = {"/api/sensor-add"})
-public class POST_Sensor_create extends HttpServlet {
+@WebServlet(name = "POST_Flat_Create", urlPatterns = {"/api/flat-add"})
+public class POST_Flat_Create extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -33,20 +34,18 @@ public class POST_Sensor_create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/sensor-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/flat-add");
 
             // table
             Dictionary tmpDict = new Hashtable();
 
-            tmpDict.put(T_Sensor.DBNAME_INPUT, json.getString(T_Sensor.DBNAME_INPUT));
-            tmpDict.put(T_Sensor.DBNAME_NAME, json.getString(T_Sensor.DBNAME_NAME));
-            tmpDict.put(T_Sensor.DBNAME_SENSORTYPE_ID, json.getInt(T_Sensor.DBNAME_SENSORTYPE_ID));
-            tmpDict.put(T_Sensor.DBNAME_CONTROLLERUNIT_ID, json.getInt(T_Sensor.DBNAME_CONTROLLERUNIT_ID));
+            tmpDict.put(T_Flat.DBNAME_APARTMENTNO, json.getString(T_Flat.DBNAME_APARTMENTNO));
+            tmpDict.put(T_Flat.DBNAME_ADDRESS_ID, json.getInt(T_Flat.DBNAME_ADDRESS_ID));
 
-            T_Sensor ts = T_Sensor.CreateFromScratch(tmpDict);
+            T_Flat tf = T_Flat.CreateFromScratch(tmpDict);
 
             // Insertion
-            Database.Interaction.Entities.Sensor.insert(conn, ps, ts);
+            Database.Interaction.Entities.Flat.insert(conn, ps, tf);
         }
         catch (Exception e) {
             e.printStackTrace();

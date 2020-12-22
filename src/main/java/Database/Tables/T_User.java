@@ -3,6 +3,7 @@ package Database.Tables;
 import Database.Support.Assurance;
 import Database.Support.DBTable;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Dictionary;
@@ -21,6 +22,7 @@ public class T_User implements DBTable {
     private String a_PermanentResidence;
     private boolean a_Blocked;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_BEFORETITLE = "BeforeTitle";
     public static final String DBNAME_FIRSTNAME = "FirstName";
     public static final String DBNAME_MIDDLENAME = "MiddleName";
@@ -63,6 +65,23 @@ public class T_User implements DBTable {
         temp.a_Blocked = (boolean)dict.get(DBNAME_BLOCKED);
 
         return temp;
+    }
+
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(T_User tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_BEFORETITLE, tmp.getA_BeforeTitle());
+        jo.put(DBNAME_FIRSTNAME, tmp.getA_FirstName());
+        jo.put(DBNAME_MIDDLENAME, tmp.getA_MiddleName());
+        jo.put(DBNAME_LASTNAME, tmp.getA_LastName());
+        jo.put(DBNAME_PHONE, tmp.getA_Phone());
+        jo.put(DBNAME_EMAIL, tmp.getA_Email());
+        jo.put(DBNAME_PERMANENTRESIDENCE, tmp.getA_PermanentResidence());
+        jo.put(DBNAME_BLOCKED, tmp.isA_Blocked_Numerical());
+
+        return jo;
     }
 
     // Interface specific

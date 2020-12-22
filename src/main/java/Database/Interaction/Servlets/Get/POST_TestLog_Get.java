@@ -1,9 +1,10 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Get;
 
-import Database.Enums.E_SensorType;
+import Database.Interaction.Entities.TestLogs;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
+import Database.Tables.T_TestLog;
 import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
@@ -15,47 +16,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
-@WebServlet(name = "POST_SensorType_Insert", urlPatterns = {"/api/sensorType-add"})
-public class POST_SensorType_Insert extends HttpServlet {
+@WebServlet(name = "POST_TestLog_Get", urlPatterns = {"/api/testLog-byId"})
+public class POST_TestLog_Get extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
-
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/sensorType-add");
+            // parse
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/testLog-byId");
 
-            // table
-            Dictionary tmpDict = new Hashtable();
+            T_TestLog ret_ect = TestLogs.retrieve(conn, ps, rs, json.getInt(T_TestLog.DBNAME_ID));
 
-            tmpDict.put(E_SensorType.DBNAME_NAME, json.getString(E_SensorType.DBNAME_NAME));
-            tmpDict.put(E_SensorType.DBNAME_MEASUREDIN, json.getString(E_SensorType.DBNAME_MEASUREDIN));
-            tmpDict.put(E_SensorType.DBNAME_COMMTYPE_ID, json.getInt(E_SensorType.DBNAME_COMMTYPE_ID));
+            // return
+            JSONObject json_toRet = T_TestLog.MakeJSONObjectFrom(ret_ect);
 
-            E_SensorType es = E_SensorType.CreateFromScratch(tmpDict);
+            resp.setContentType("application/json; charset=utf-8");
+            resp.setCharacterEncoding("UTF-8");
 
-            // Insertion
-            Database.Interaction.Entities.SensorType.insert(conn, ps, es);
+            PrintWriter out = resp.getWriter();
+            out.print(json_toRet);
+            out.flush();
         }
         catch (Exception e) {
             e.printStackTrace();
             ServletHelper.Send404(resp);
         }
     }
-
-
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
 

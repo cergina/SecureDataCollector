@@ -2,7 +2,6 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_ControllerUnit;
-import Database.Tables.T_Measurement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,13 +69,11 @@ public class ControllerUnit {
             rs.next();
 
             Dictionary dict = new Hashtable();
-            dict.put(T_ControllerUnit.DBNAME_UID, rs.getString(T_ControllerUnit.DBNAME_UID));
+            dict.put(T_ControllerUnit.DBNAME_UID, rs.getInt(T_ControllerUnit.DBNAME_UID));
             dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, rs.getString(T_ControllerUnit.DBNAME_DIPADDRESS));
             dict.put(T_ControllerUnit.DBNAME_ZWAVE, rs.getString(T_ControllerUnit.DBNAME_ZWAVE));
-            dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, rs.getString(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
-            dict.put(T_ControllerUnit.DBNAME_FLAT_ID, rs.getString(T_ControllerUnit.DBNAME_FLAT_ID));
-
-
+            dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, rs.getInt(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
+            dict.put(T_ControllerUnit.DBNAME_FLAT_ID, rs.getInt(T_ControllerUnit.DBNAME_FLAT_ID));
 
             tc = T_ControllerUnit.CreateFromRetrieved(id, dict);
         }

@@ -1,4 +1,4 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Get;
 
 import Database.Interaction.Entities.Project;
 import Database.Support.DbConfig;

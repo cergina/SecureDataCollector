@@ -2,7 +2,6 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_Sensor;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,8 +69,8 @@ public class Sensor {
             Dictionary dict = new Hashtable();
             dict.put(T_Sensor.DBNAME_INPUT, rs.getString(T_Sensor.DBNAME_INPUT));
             dict.put(T_Sensor.DBNAME_NAME, rs.getString(T_Sensor.DBNAME_NAME));
-            dict.put(T_Sensor.DBNAME_SENSORTYPE_ID, rs.getString(T_Sensor.DBNAME_SENSORTYPE_ID));
-            dict.put(T_Sensor.DBNAME_CONTROLLERUNIT_ID, rs.getString(T_Sensor.DBNAME_CONTROLLERUNIT_ID));
+            dict.put(T_Sensor.DBNAME_SENSORTYPE_ID, rs.getInt(T_Sensor.DBNAME_SENSORTYPE_ID));
+            dict.put(T_Sensor.DBNAME_CONTROLLERUNIT_ID, rs.getInt(T_Sensor.DBNAME_CONTROLLERUNIT_ID));
 
             ts = T_Sensor.CreateFromRetrieved(id, dict);
         }
@@ -106,7 +105,7 @@ public class Sensor {
         } else {
             rs.next();
 
-            return rs.getInt("ID");
+            return rs.getInt(T_Sensor.DBNAME_ID);
         }
 
         throw new SQLException("No such sensor SensorIO" + sensorIO + " in database");

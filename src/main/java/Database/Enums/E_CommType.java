@@ -3,6 +3,7 @@ package Database.Enums;
 import Database.Support.Assurance;
 import Database.Support.DBEnum;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Dictionary;
@@ -14,6 +15,7 @@ public class E_CommType implements DBEnum {
     private int a_pk;
     private String a_Name;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_NAME = "Name";
 
     // Constructors
@@ -37,6 +39,15 @@ public class E_CommType implements DBEnum {
         return temp;
     }
 
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(E_CommType tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_NAME, tmp.getA_Name());
+
+        return jo;
+    }
 
     // Interface specific
     @Override

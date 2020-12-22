@@ -3,6 +3,7 @@ package Database.Tables;
 import Database.Support.Assurance;
 import Database.Support.DBTable;
 import Database.Support.DbConfig;
+import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Dictionary;
@@ -15,6 +16,7 @@ public class T_Flat  implements DBTable {
     private String a_ApartmentNO;
     private int a_AddressID;
 
+    public static final String DBNAME_ID = "ID";
     public static final String DBNAME_APARTMENTNO = "ApartmentNO";
     public static final String DBNAME_ADDRESS_ID = "AddressID";
 
@@ -39,6 +41,17 @@ public class T_Flat  implements DBTable {
         temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
 
         return temp;
+    }
+
+    // As JSON
+    public static JSONObject MakeJSONObjectFrom(T_Flat tmp) {
+        JSONObject jo = new JSONObject();
+
+        jo.put(DBNAME_ID, tmp.getA_pk());
+        jo.put(DBNAME_APARTMENTNO, tmp.getA_ApartmentNO());
+        jo.put(DBNAME_ADDRESS_ID, tmp.getA_AddressID());
+
+        return jo;
     }
 
     // Interface specific
