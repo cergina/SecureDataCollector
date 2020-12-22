@@ -10,6 +10,8 @@ import Database.Support.Assurance;
 import Database.Tables.T_Project;
 
 import java.sql.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class Project {
     /***
@@ -25,7 +27,7 @@ public class Project {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        "project (" +
+                        T_Project.DBTABLE_NAME + "(" +
                         "Name, CreatedAt" +
                         ") " +
                         "VALUES (" +
@@ -40,7 +42,7 @@ public class Project {
         int affectedRows = ps.executeUpdate();
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of project into db failed.");
+            throw new SQLException("Something happened. Insertion of Project into db failed.");
 
         return affectedRows;
     }
@@ -59,7 +61,7 @@ public class Project {
         ps = conn.prepareStatement(
                 "SELECT " +
                         "ID, Name, CreatedAt, DeletedAt " +
-                        "FROM project " +
+                        "FROM " + T_Project.DBTABLE_NAME + " " +
                         "WHERE ID=?"
         );
 
@@ -75,11 +77,11 @@ public class Project {
         } else {
             rs.next();
 
-            tp = T_Project.CreateFromRetrieved(rs.getInt("ID"),
-                    rs.getString("Name"),
-                    rs.getDate("CreatedAt"),
-                    rs.getDate("DeletedAt")
-            );
+            Dictionary tmpDict = new Hashtable();
+            tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
+            tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
+
+            tp = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
         }
 
         return tp;

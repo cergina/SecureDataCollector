@@ -1,10 +1,12 @@
-package Database.Interaction.Servlets;
+package Database.Interaction.Servlets.Get;
 
-import Database.Interaction.Entities.Project;
+import Database.Interaction.Entities.Flat;
 import Database.Support.DbConfig;
+import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Database.Tables.T_Project;
+import Database.Tables.T_Flat;
 import Model.misc.Logs.ConsoleLogging;
+import org.json.JSONObject;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -14,13 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "POST_Project_Create", urlPatterns = {"/project-create"})
-public class POST_Project_Create extends HttpServlet {
+@WebServlet(name = "POST_Flat_Get", urlPatterns = {"/api/flat-byId"})
+public class POST_Flat_Get extends HttpServlet {
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -30,9 +33,20 @@ public class POST_Project_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            T_Project tp = T_Project.CreateFromScratch(req.getParameter("name"));
+            // parse
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/flat-byId");
 
-            Project.insert(conn, ps, tp);
+            T_Flat ret_ect = Flat.retrieve(conn, ps, rs, json.getInt(T_Flat.DBNAME_ID));
+
+            // return
+            JSONObject json_toRet = T_Flat.MakeJSONObjectFrom(ret_ect);
+
+            resp.setContentType("application/json; charset=utf-8");
+            resp.setCharacterEncoding("UTF-8");
+
+            PrintWriter out = resp.getWriter();
+            out.print(json_toRet);
+            out.flush();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -74,5 +88,4 @@ public class POST_Project_Create extends HttpServlet {
             ConsoleLogging.Log("NamingException: " + ne.getMessage());
         }
     }
-
 }
