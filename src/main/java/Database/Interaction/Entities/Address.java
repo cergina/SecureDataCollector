@@ -2,11 +2,13 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Tables.T_Address;
+import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -81,16 +83,61 @@ public class Address {
         } else {
             rs.next();
 
-            Dictionary dict = new Hashtable();
-            dict.put(T_Address.DBNAME_COUNTRY, rs.getString(T_Address.DBNAME_COUNTRY));
-            dict.put(T_Address.DBNAME_CITY, rs.getString(T_Address.DBNAME_CITY));
-            dict.put(T_Address.DBNAME_STREET, rs.getString(T_Address.DBNAME_STREET));
-            dict.put(T_Address.DBNAME_HOUSENO, rs.getString(T_Address.DBNAME_HOUSENO));
-            dict.put(T_Address.DBNAME_ZIP, rs.getString(T_Address.DBNAME_ZIP));
-
-            ta = T_Address.CreateFromRetrieved(id, dict);
+            ta = Address.FillEntity(rs);
         }
 
         return ta;
     }
+
+    /*****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_Address> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Address.DBTABLE_NAME + " " +
+                        "ORDER BY ID asc"
+        );
+
+        // SQL Execution
+        rs = ps.executeQuery();
+
+        ArrayList<T_Address> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(Address.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    // Privates
+    private static T_Address FillEntity(ResultSet rs) throws SQLException {
+        T_Address t = null;
+
+        Dictionary dict = new Hashtable();
+
+        dict.put(T_Address.DBNAME_COUNTRY, rs.getString(T_Address.DBNAME_COUNTRY));
+        dict.put(T_Address.DBNAME_CITY, rs.getString(T_Address.DBNAME_CITY));
+        dict.put(T_Address.DBNAME_STREET, rs.getString(T_Address.DBNAME_STREET));
+        dict.put(T_Address.DBNAME_HOUSENO, rs.getString(T_Address.DBNAME_HOUSENO));
+        dict.put(T_Address.DBNAME_ZIP, rs.getString(T_Address.DBNAME_ZIP));
+
+        t = T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
+
+        return t;
+    }
+
+
 }

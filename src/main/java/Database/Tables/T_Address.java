@@ -2,12 +2,14 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_Address implements DBTable {
+public class T_Address extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "address" : "address";
 
     // Atributes
@@ -24,6 +26,11 @@ public class T_Address implements DBTable {
     public static final String DBNAME_STREET = "Street";
     public static final String DBNAME_HOUSENO = "HouseNO";
     public static final String DBNAME_ZIP = "Zip";
+
+    public static T_Address REFERENCE = new T_Address();
+    public static String[] TABLE_CODENAMES = {
+            "Country", "City", "Street", "House number", "ZIP Code"
+    };
 
     // Constructors
     private T_Address() {}
@@ -97,6 +104,41 @@ public class T_Address implements DBTable {
                 "Street: varchar | " +
                 "HouseNO: varchar | " +
                 "ZIP: varchar";
+    }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_Country);
+        str.add(this.a_City);
+        str.add(this.a_Street);
+        str.add(this.a_HouseNO);
+        str.add(this.a_ZIP);
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
     }
 
     // Generic

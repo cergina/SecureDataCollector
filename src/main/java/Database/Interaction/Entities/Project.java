@@ -7,9 +7,12 @@ SONET SLOVAKIA - Secure Data Collector
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Tables.T_Address;
 import Database.Tables.T_Project;
+import Database.Tables.T_User;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -77,13 +80,57 @@ public class Project {
         } else {
             rs.next();
 
-            Dictionary tmpDict = new Hashtable();
-            tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
-            tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
-
-            tp = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
+            tp = Project.FillEntity(rs);
         }
 
         return tp;
+    }
+
+    /*****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_Project> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "ID, Name, CreatedAt, DeletedAt " +
+                        "FROM " + T_Project.DBTABLE_NAME + " " +
+                        "ORDER BY ID asc"
+        );
+
+        int col = 0;
+
+        // SQL Execution
+        rs = ps.executeQuery();
+
+        ArrayList<T_Project> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(Project.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    // Privates
+    private static T_Project FillEntity(ResultSet rs) throws SQLException {
+        T_Project t = null;
+
+        Dictionary tmpDict = new Hashtable();
+        tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
+        tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
+
+        t = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
+
+        return t;
     }
 }

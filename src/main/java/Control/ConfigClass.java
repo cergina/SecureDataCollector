@@ -5,7 +5,8 @@ public class ConfigClass {
 
     public static String JNDI_DATASOURCE_NAME = "jdbc/MySQLDataSource";
 
-    // changes db table names from lowercase to camelcase if true
+    // changes db table names from lowercase to camelcase if true and some other things
     public static boolean RUNNING_ON_SERVER = true;
+
 
 }

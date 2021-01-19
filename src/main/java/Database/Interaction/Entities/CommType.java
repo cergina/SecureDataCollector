@@ -2,11 +2,14 @@ package Database.Interaction.Entities;
 
 import Database.Enums.E_CommType;
 import Database.Support.Assurance;
+import Database.Tables.T_Address;
+import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -61,13 +64,54 @@ public class CommType {
         } else {
             rs.next();
 
-            Dictionary dict = new Hashtable();
-            dict.put(E_CommType.DBNAME_NAME, rs.getString(E_CommType.DBNAME_NAME));
-
-
-            ct = E_CommType.CreateFromRetrieved(id, dict);
+            ct = CommType.FillEntity(rs);
         }
 
         return ct;
+    }
+
+    /*****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<E_CommType> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + E_CommType.DBTABLE_NAME + " " +
+                        "ORDER BY ID asc"
+        );
+
+        // SQL Execution
+        rs = ps.executeQuery();
+
+        ArrayList<E_CommType> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(CommType.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    // Privates
+    private static E_CommType FillEntity(ResultSet rs) throws SQLException {
+        E_CommType e = null;
+
+        Dictionary dict = new Hashtable();
+        dict.put(E_CommType.DBNAME_NAME, rs.getString(E_CommType.DBNAME_NAME));
+
+        e = E_CommType.CreateFromRetrieved(rs.getInt(E_CommType.DBNAME_ID), dict);
+
+        return e;
     }
 }

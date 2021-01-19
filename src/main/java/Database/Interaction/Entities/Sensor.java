@@ -1,12 +1,15 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Tables.T_Address;
 import Database.Tables.T_Sensor;
+import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -66,13 +69,7 @@ public class Sensor {
         } else {
             rs.next();
 
-            Dictionary dict = new Hashtable();
-            dict.put(T_Sensor.DBNAME_INPUT, rs.getString(T_Sensor.DBNAME_INPUT));
-            dict.put(T_Sensor.DBNAME_NAME, rs.getString(T_Sensor.DBNAME_NAME));
-            dict.put(T_Sensor.DBNAME_SENSORTYPE_ID, rs.getInt(T_Sensor.DBNAME_SENSORTYPE_ID));
-            dict.put(T_Sensor.DBNAME_CONTROLLERUNIT_ID, rs.getInt(T_Sensor.DBNAME_CONTROLLERUNIT_ID));
-
-            ts = T_Sensor.CreateFromRetrieved(id, dict);
+            ts = Sensor.FillEntity(rs);
         }
 
         return ts;
@@ -109,5 +106,55 @@ public class Sensor {
         }
 
         throw new SQLException("No such sensor SensorIO" + sensorIO + " in database");
+    }
+
+    /*****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_Sensor> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Sensor.DBTABLE_NAME + " " +
+                        "ORDER BY ID asc"
+        );
+
+        int col = 0;
+
+        // SQL Execution
+        rs = ps.executeQuery();
+
+        ArrayList<T_Sensor> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(Sensor.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    // Privates
+    private static T_Sensor FillEntity(ResultSet rs) throws SQLException {
+        T_Sensor t = null;
+
+        Dictionary dict = new Hashtable();
+        dict.put(T_Sensor.DBNAME_INPUT, rs.getString(T_Sensor.DBNAME_INPUT));
+        dict.put(T_Sensor.DBNAME_NAME, rs.getString(T_Sensor.DBNAME_NAME));
+        dict.put(T_Sensor.DBNAME_SENSORTYPE_ID, rs.getInt(T_Sensor.DBNAME_SENSORTYPE_ID));
+        dict.put(T_Sensor.DBNAME_CONTROLLERUNIT_ID, rs.getInt(T_Sensor.DBNAME_CONTROLLERUNIT_ID));
+
+        t = T_Sensor.CreateFromRetrieved(rs.getInt(T_Sensor.DBNAME_ID), dict);
+
+        return t;
     }
 }

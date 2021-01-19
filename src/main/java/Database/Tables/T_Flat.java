@@ -2,13 +2,15 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_Flat  implements DBTable {
+public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "flat" : "flat";
 
     // Atributes
@@ -19,6 +21,11 @@ public class T_Flat  implements DBTable {
     public static final String DBNAME_ID = "ID";
     public static final String DBNAME_APARTMENTNO = "ApartmentNO";
     public static final String DBNAME_ADDRESS_ID = "AddressID";
+
+    public static T_Flat REFERENCE = new T_Flat();
+    public static String[] TABLE_CODENAMES = {
+            "Aparment Number", "Address ID"
+    };
 
     // Constructors
     private T_Flat() {}
@@ -72,6 +79,39 @@ public class T_Flat  implements DBTable {
     public String InfoPrintAllColumns() {
         throw new NotImplementedException();
     }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+             ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_ApartmentNO);
+        str.add(Integer.toString(a_AddressID));
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
+    }
+
 
     // Generic
     @Override

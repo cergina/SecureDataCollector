@@ -8,14 +8,16 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_Project implements DBTable {
+public class T_Project extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "project" : "project";
 
     // Atributes
@@ -28,6 +30,11 @@ public class T_Project implements DBTable {
     public static final String DBNAME_NAME = "Name";
     public static final String DBNAME_CreatedAt = "CreatedAt";
     public static final String DBNAME_DeletedAt = "DeletedAt";
+
+    public static T_Project REFERENCE = new T_Project();
+    public static String[] TABLE_CODENAMES = {
+            "Name", "Created At", "Deleted at"
+    };
 
     // Constructors
     private T_Project() {}
@@ -91,6 +98,39 @@ public class T_Project implements DBTable {
                 "created: Date | " +
                 "deleted: Date";
     }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_created.toString());
+        str.add(this.a_name);
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
+    }
+
 
     // Generic
     @Override

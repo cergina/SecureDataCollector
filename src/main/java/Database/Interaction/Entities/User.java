@@ -1,12 +1,14 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Tables.T_Address;
 import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -62,26 +64,73 @@ public class User {
 
         // SQL Execution
         rs = ps.executeQuery();
-        T_User tu = null;
+        T_User t = null;
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
         } else {
             rs.next();
 
-            Dictionary dict = new Hashtable();
-            dict.put(T_User.DBNAME_BEFORETITLE, rs.getString(T_User.DBNAME_BEFORETITLE));
-            dict.put(T_User.DBNAME_FIRSTNAME, rs.getString(T_User.DBNAME_FIRSTNAME));
-            dict.put(T_User.DBNAME_MIDDLENAME, rs.getString(T_User.DBNAME_MIDDLENAME));
-            dict.put(T_User.DBNAME_LASTNAME, rs.getString(T_User.DBNAME_LASTNAME));
-            dict.put(T_User.DBNAME_PHONE, rs.getString(T_User.DBNAME_PHONE));
-            dict.put(T_User.DBNAME_EMAIL, rs.getString(T_User.DBNAME_EMAIL));
-            dict.put(T_User.DBNAME_PERMANENTRESIDENCE, rs.getString(T_User.DBNAME_PERMANENTRESIDENCE));
-            dict.put(T_User.DBNAME_BLOCKED, rs.getInt(T_User.DBNAME_BLOCKED));
-
-            tu = T_User.CreateFromRetrieved(id, dict);
+            t = User.FillEntity(rs);
         }
 
-        return tu;
+        return t;
     }
+
+    /*****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_User> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_User.DBTABLE_NAME + " " +
+                        "ORDER BY ID asc"
+        );
+
+        int col = 0;
+
+        // SQL Execution
+        rs = ps.executeQuery();
+
+        ArrayList<T_User> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(User.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    // Privates
+    private static T_User FillEntity(ResultSet rs) throws SQLException {
+        T_User t = null;
+
+        Dictionary dict = new Hashtable();
+
+        dict.put(T_User.DBNAME_BEFORETITLE, rs.getString(T_User.DBNAME_BEFORETITLE));
+        dict.put(T_User.DBNAME_FIRSTNAME, rs.getString(T_User.DBNAME_FIRSTNAME));
+        dict.put(T_User.DBNAME_MIDDLENAME, rs.getString(T_User.DBNAME_MIDDLENAME));
+        dict.put(T_User.DBNAME_LASTNAME, rs.getString(T_User.DBNAME_LASTNAME));
+        dict.put(T_User.DBNAME_PHONE, rs.getString(T_User.DBNAME_PHONE));
+        dict.put(T_User.DBNAME_EMAIL, rs.getString(T_User.DBNAME_EMAIL));
+        dict.put(T_User.DBNAME_PERMANENTRESIDENCE, rs.getString(T_User.DBNAME_PERMANENTRESIDENCE));
+        dict.put(T_User.DBNAME_BLOCKED, rs.getInt(T_User.DBNAME_BLOCKED));
+
+        t = T_User.CreateFromRetrieved(rs.getInt(T_User.DBNAME_ID), dict);
+
+        return t;
+    }
+
+
 }

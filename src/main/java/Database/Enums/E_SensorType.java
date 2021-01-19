@@ -2,13 +2,16 @@ package Database.Enums;
 
 import Database.Support.Assurance;
 import Database.Support.DBEnum;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
+import Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class E_SensorType implements DBEnum {
+public class E_SensorType extends DbEntity implements DBEnum, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "sensorType" : "sensortype";
 
     // Atributes
@@ -21,6 +24,11 @@ public class E_SensorType implements DBEnum {
     public static final String DBNAME_NAME = "Name";
     public static final String DBNAME_MEASUREDIN = "MeasuredIn";
     public static final String DBNAME_COMMTYPE_ID = "CommTypeID";
+
+    public static E_SensorType REFERENCE = new E_SensorType();
+    public static String[] TABLE_CODENAMES = {
+            "Name", "Measured In (Units)", "Communication Type ID"
+    };
 
     // Constructors
     private E_SensorType() {}
@@ -78,6 +86,39 @@ public class E_SensorType implements DBEnum {
     @Override
     public String PrintInfoAboutEnum() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_Name);
+        str.add(this.a_MeasuredIn);
+        str.add(Integer.toString(a_CommTypeID));
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
     }
 
     // Generic

@@ -2,13 +2,15 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_User implements DBTable {
+public class T_User extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "user" : "user";
 
     // Atributes
@@ -31,6 +33,11 @@ public class T_User implements DBTable {
     public static final String DBNAME_EMAIL = "Email";
     public static final String DBNAME_PERMANENTRESIDENCE = "PermanentResidence";
     public static final String DBNAME_BLOCKED = "Blocked";
+
+    public static T_User REFERENCE = new T_User();
+    public static String[] TABLE_CODENAMES = {
+            "Title before Name", "Name", "Middle name", "Surname", "Phone", "E-Mail", "Permanent residence address"
+    };
 
     // Constructors
     private T_User() {}
@@ -111,6 +118,43 @@ public class T_User implements DBTable {
     @Override
     public String InfoPrintAllColumns() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_BeforeTitle);
+        str.add(this.a_FirstName);
+        str.add(this.a_MiddleName);
+        str.add(this.a_LastName);
+        str.add(this.a_Phone);
+        str.add(this.a_Email);
+        str.add(this.a_PermanentResidence);
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
     }
 
     // Generic

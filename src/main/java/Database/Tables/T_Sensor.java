@@ -2,13 +2,15 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_Sensor implements DBTable {
+public class T_Sensor extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "sensor" : "sensor";
 
     // Atributes
@@ -24,6 +26,10 @@ public class T_Sensor implements DBTable {
     public static final String DBNAME_SENSORTYPE_ID = "SensorTypeID";
     public static final String DBNAME_CONTROLLERUNIT_ID = "ControllerUnitID";
 
+    public static T_Sensor REFERENCE = new T_Sensor();
+    public static String[] TABLE_CODENAMES = {
+            "Input", "Name", "Sensor Type ID", "Controller Unit ID"
+    };
 
     // Constructors
     private T_Sensor() {}
@@ -86,6 +92,40 @@ public class T_Sensor implements DBTable {
     @Override
     public String InfoPrintAllColumns() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_Input);
+        str.add(this.a_Name);
+        str.add(Integer.toString(a_SensorTypeID));
+        str.add(Integer.toString(a_ControllerUnitID));
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
     }
 
     // Generic
