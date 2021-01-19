@@ -1,6 +1,7 @@
 package Database.Interaction.Servlets.Get;
 
 import Database.Interaction.Entities.Project;
+import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Project;
@@ -64,10 +65,10 @@ public class GET_Project_Info extends HttpServlet {
             conn = ds.getConnection();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: "+se.getMessage());
+            CustomLogs.DatabaseLog(true,"SQLException: "+se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: "+ne.getMessage());
+            CustomLogs.DatabaseLog(true,"NamingException: "+ne.getMessage());
         }
     }
 
@@ -83,10 +84,10 @@ public class GET_Project_Info extends HttpServlet {
                 ctx.close();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: " + se.getMessage());
+            CustomLogs.DatabaseLog(true,"SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: " + ne.getMessage());
+            CustomLogs.DatabaseLog(true,"NamingException: " + ne.getMessage());
         }
     }
 }

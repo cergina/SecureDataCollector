@@ -1,5 +1,6 @@
 package Database.Interaction.Presentation.Html;
 
+import Database.Interaction.Presentation.Servlets.GENERIC_INFO;
 import Database.Tables.*;
 
 import java.util.ArrayList;
@@ -10,11 +11,16 @@ public class CoreBuilder{
         StringBuilder document = new StringBuilder();
         document.append("<!DOCTYPE html>");
         document.append("<html>");
+
         document.append("<head>");
-        document.append(title);
         document.append("<meta charset=\"utf-8\">");
+        document.append(title);
         document.append("</head>");
+
         document.append("<body>");
+
+        document = AddLinkWithName(document, GENERIC_INFO.SITE_URL + GENERIC_INFO.SERVLET_URL, GENERIC_INFO.SITE_NAME);
+        document.append("<br>");
 
         return document;
     }

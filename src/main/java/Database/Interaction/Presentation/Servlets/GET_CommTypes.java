@@ -3,9 +3,12 @@ package Database.Interaction.Presentation.Servlets;
 import Database.Enums.E_CommType;
 import Database.Interaction.Entities.CommType;
 import Database.Interaction.Presentation.Html.CoreBuilder;
+import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
 import Database.Support.ServletHelper;
 import Model.misc.Logs.ConsoleLogging;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -21,23 +25,37 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
-@WebServlet(name = "GET_CommTypes", urlPatterns = {"/comm-types"})
+@WebServlet(name = "GET_CommTypes", urlPatterns = GET_CommTypes.SERVLET_URL)
 public class GET_CommTypes extends HttpServlet {
+    public static final String SERVLET_URL =  "/comm-types";
+    public static final String SITE_NAME = "Types of communication";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
+    //Logging
+    private static final String LOG_FILE = "log4j.properties";
+    private static Logger logger = Logger.getLogger(GET_CommTypes.class);
+    private static Properties properties = new Properties();
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
+            properties.load(new FileInputStream(LOG_FILE));
+            PropertyConfigurator.configure(properties);
+
+            logger.info("Entered " + SERVLET_URL + " via doGET()");
+            // Base
             resp.setContentType("text/html");
             PrintWriter writer = resp.getWriter();
 
-            // Base
-            StringBuilder document = CoreBuilder.GenerateBaseOfSite("Types of communication");
+            StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
             ArrayList<E_CommType> arr = CommType.retrieveAll(conn, ps, rs);
@@ -50,9 +68,11 @@ public class GET_CommTypes extends HttpServlet {
             writer.println(document);
             writer.close();
 
+            logger.info("Exited " + SERVLET_URL + " via doGET()");
         } catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            logger.error(e.getMessage());
         }
     }
 
@@ -64,10 +84,10 @@ public class GET_CommTypes extends HttpServlet {
             conn = ds.getConnection();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: " + se.getMessage());
+            CustomLogs.DatabaseLog(true,"SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: " + ne.getMessage());
+            CustomLogs.DatabaseLog(true,"NamingException: " + ne.getMessage());
         }
     }
 
@@ -83,10 +103,10 @@ public class GET_CommTypes extends HttpServlet {
                 ctx.close();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: " + se.getMessage());
+            CustomLogs.DatabaseLog(true,"SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: " + ne.getMessage());
+            CustomLogs.DatabaseLog(true,"NamingException: " + ne.getMessage());
         }
     }
 }
