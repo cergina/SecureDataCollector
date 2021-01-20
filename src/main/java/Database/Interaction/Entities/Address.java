@@ -1,6 +1,7 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Support.CustomLogs;
 import Database.Tables.T_Address;
 import Database.Tables.T_User;
 
@@ -98,6 +99,8 @@ public class Address {
      * @throws SQLException
      */
     public static ArrayList<T_Address> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        CustomLogs.Debug("Entering retrieveAll");
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -113,12 +116,15 @@ public class Address {
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
+            CustomLogs.Debug("Nothing was returned");
         } else {
             while (rs.next()) {
+                CustomLogs.Debug("Filling entity");
                 arr.add(Address.FillEntity(rs));
             }
         }
 
+        CustomLogs.Debug("Exiting retrieveAll");
         return arr;
     }
 

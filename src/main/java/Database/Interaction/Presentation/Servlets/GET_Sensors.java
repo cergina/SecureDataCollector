@@ -6,9 +6,6 @@ import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Sensor;
-import Model.misc.Logs.ConsoleLogging;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -17,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -25,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 @WebServlet(name = "GET_Sensors", urlPatterns = GET_Sensors.SERVLET_URL)
 public class GET_Sensors extends HttpServlet {
@@ -38,19 +33,11 @@ public class GET_Sensors extends HttpServlet {
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
-    //Logging
-    private static final String LOG_FILE = "log4j.properties";
-    private static Logger logger = Logger.getLogger(GET_Sensors.class);
-    private static Properties properties = new Properties();
-
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            properties.load(new FileInputStream(LOG_FILE));
-            PropertyConfigurator.configure(properties);
+            CustomLogs.InfoLog("Entered " + SERVLET_URL + ".", true);
 
-            logger.info("Entered " + SERVLET_URL + " via doGET()");
             // Base
             resp.setContentType("text/html");
             PrintWriter writer = resp.getWriter();
@@ -68,31 +55,33 @@ public class GET_Sensors extends HttpServlet {
             writer.println(document);
             writer.close();
 
-            logger.info("Exited " + SERVLET_URL + " via doGET()");
+            CustomLogs.InfoLog("Exited " + SERVLET_URL + ".", true);
 
         } catch (Exception e) {
             ServletHelper.Send404(resp);
 
-            logger.error(e.getMessage());
+            CustomLogs.Error(e.getMessage());
         }
     }
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
     public void init (){
+
         try {
             ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(DbConfig.DS_CONTEXT_NAME);
             conn = ds.getConnection();
         }
         catch (SQLException se) {
-            CustomLogs.DatabaseLog(true,"SQLException: " + se.getMessage());
+            CustomLogs.Error("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            CustomLogs.DatabaseLog(true,"NamingException: " + ne.getMessage());
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 
     public void destroy() {
+
         try {
             if (rs != null)
                 rs.close();
@@ -104,10 +93,11 @@ public class GET_Sensors extends HttpServlet {
                 ctx.close();
         }
         catch (SQLException se) {
-            CustomLogs.DatabaseLog(true,"SQLException: " + se.getMessage());
+
+            CustomLogs.Error("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            CustomLogs.DatabaseLog(true,"NamingException: " + ne.getMessage());
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 }

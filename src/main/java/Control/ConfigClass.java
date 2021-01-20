@@ -1,7 +1,8 @@
 package Control;
 
 public class ConfigClass {
-    public static boolean DEBUG_CONSOLE_OUTPUT = true;
+    // whether debug output is turned on
+    public static boolean DEBUG = true;
 
     public static String JNDI_DATASOURCE_NAME = "jdbc/MySQLDataSource";
 

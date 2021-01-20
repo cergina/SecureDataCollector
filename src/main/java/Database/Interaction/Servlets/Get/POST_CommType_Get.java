@@ -56,22 +56,23 @@ public class POST_CommType_Get extends HttpServlet {
     }
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
-
     public void init (){
+
         try {
             ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(DbConfig.DS_CONTEXT_NAME);
             conn = ds.getConnection();
         }
         catch (SQLException se) {
-            CustomLogs.DatabaseLog(true,"SQLException: "+se.getMessage());
+            CustomLogs.Error("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            CustomLogs.DatabaseLog(true,"NamingException: "+ne.getMessage());
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 
     public void destroy() {
+
         try {
             if (rs != null)
                 rs.close();
@@ -83,10 +84,12 @@ public class POST_CommType_Get extends HttpServlet {
                 ctx.close();
         }
         catch (SQLException se) {
-            CustomLogs.DatabaseLog(true,"SQLException: " + se.getMessage());
+
+            CustomLogs.Error("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            CustomLogs.DatabaseLog(true,"NamingException: " + ne.getMessage());
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 }
+

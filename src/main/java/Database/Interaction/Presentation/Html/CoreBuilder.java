@@ -1,6 +1,7 @@
 package Database.Interaction.Presentation.Html;
 
 import Database.Interaction.Presentation.Servlets.GENERIC_INFO;
+import Database.Support.CustomLogs;
 import Database.Tables.*;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 public class CoreBuilder{
     // Html start
     public static StringBuilder GenerateBaseOfSite(String  title) {
+        CustomLogs.Debug("Entering GenerateBaseOfSite");
+
         StringBuilder document = new StringBuilder();
         document.append("<!DOCTYPE html>");
         document.append("<html>");
@@ -22,12 +25,17 @@ public class CoreBuilder{
         document = AddLinkWithName(document, GENERIC_INFO.SITE_URL + GENERIC_INFO.SERVLET_URL, GENERIC_INFO.SITE_NAME);
         document.append("<br>");
 
+        CustomLogs.Debug("Exiting GenerateBaseOfSite");
         return document;
     }
 
     public static StringBuilder FinalizeSite(StringBuilder document) {
+        CustomLogs.Debug("Entering FinalizeSite");
+
         document.append("</body>");
         document.append("</html>");
+
+        CustomLogs.Debug("Exiting FinalizeSite");
 
         return document;
     }
@@ -38,6 +46,8 @@ public class CoreBuilder{
 
     //CentralUnit - User
     public static <T extends DbEntity> StringBuilder GenerateDataForPresentation(StringBuilder document, ArrayList<T> arr, T objectX) {
+        CustomLogs.Debug("Entering GenerateDataForPresentation");
+
         document = GenerateSiteWithDataPresentation(document);
 
         // for cycle to generate names
@@ -52,6 +62,7 @@ public class CoreBuilder{
         // finish
         document = FinishGeneratingSiteWithDataPresentation(document);
 
+        CustomLogs.Debug("Exiting GenerateDataForPresentation");
         return document;
     }
 
