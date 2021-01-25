@@ -2,13 +2,15 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_TestLog implements DBTable {
+public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "logs" : "logs";
 
     // Atributes
@@ -19,6 +21,11 @@ public class T_TestLog implements DBTable {
     public static final String DBNAME_ID = "ID";
     public static final String DBNAME_EVENT = "Event";
     public static final String DBNAME_BODY = "Body";
+
+    public static T_TestLog REFERENCE = new T_TestLog();
+    public static String[] TABLE_CODENAMES = {
+            "Event", "Body"
+    };
 
     // Constructors
     private T_TestLog() {}
@@ -71,6 +78,38 @@ public class T_TestLog implements DBTable {
     @Override
     public String InfoPrintAllColumns() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(this.a_Event);
+        str.add(this.a_Body);
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
     }
 
     // Generic

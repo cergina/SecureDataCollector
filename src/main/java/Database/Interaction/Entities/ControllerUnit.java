@@ -1,12 +1,15 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Tables.T_Address;
 import Database.Tables.T_ControllerUnit;
+import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -68,16 +71,60 @@ public class ControllerUnit {
         } else {
             rs.next();
 
-            Dictionary dict = new Hashtable();
-            dict.put(T_ControllerUnit.DBNAME_UID, rs.getInt(T_ControllerUnit.DBNAME_UID));
-            dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, rs.getString(T_ControllerUnit.DBNAME_DIPADDRESS));
-            dict.put(T_ControllerUnit.DBNAME_ZWAVE, rs.getString(T_ControllerUnit.DBNAME_ZWAVE));
-            dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, rs.getInt(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
-            dict.put(T_ControllerUnit.DBNAME_FLAT_ID, rs.getInt(T_ControllerUnit.DBNAME_FLAT_ID));
-
-            tc = T_ControllerUnit.CreateFromRetrieved(id, dict);
+            tc = ControllerUnit.FillEntity(rs);
         }
 
         return tc;
+    }
+
+    /*****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_ControllerUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                        "ORDER BY ID asc"
+        );
+
+        int col = 0;
+
+        // SQL Execution
+        rs = ps.executeQuery();
+
+        ArrayList<T_ControllerUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(ControllerUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    // Privates
+    private static T_ControllerUnit FillEntity(ResultSet rs) throws SQLException {
+        T_ControllerUnit t = null;
+
+        Dictionary dict = new Hashtable();
+        dict.put(T_ControllerUnit.DBNAME_UID, rs.getInt(T_ControllerUnit.DBNAME_UID));
+        dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, rs.getString(T_ControllerUnit.DBNAME_DIPADDRESS));
+        dict.put(T_ControllerUnit.DBNAME_ZWAVE, rs.getString(T_ControllerUnit.DBNAME_ZWAVE));
+        dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, rs.getInt(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
+        dict.put(T_ControllerUnit.DBNAME_FLAT_ID, rs.getInt(T_ControllerUnit.DBNAME_FLAT_ID));
+
+        t = T_ControllerUnit.CreateFromRetrieved(rs.getInt(T_ControllerUnit.DBNAME_ID), dict);
+
+        return t;
     }
 }

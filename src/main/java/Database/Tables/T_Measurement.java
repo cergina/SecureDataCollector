@@ -2,14 +2,15 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_Measurement implements DBTable {
+public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "measurement" : "measurement";
 
     // Atributes
@@ -24,6 +25,11 @@ public class T_Measurement implements DBTable {
     public static final String DBNAME_MEASUREDINCREMENT = "MeasuredIncrement";
     public static final String DBNAME_MEASUREDAT = "MeasuredAt";
     public static final String DBNAME_SENSOR_ID = "SensorID";
+
+    public static T_Measurement REFERENCE = new T_Measurement();
+    public static String[] TABLE_CODENAMES = {
+            "Value", "Measured Increment", "Measured At", "Sensor ID"
+    };
 
     // Constructors
     private T_Measurement() {}
@@ -91,6 +97,41 @@ public class T_Measurement implements DBTable {
                 "MeasuredAt: Date | " +
                 "SensorID: int";
     }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(Integer.toString(a_Value));
+        str.add(Integer.toString(a_MeasuredIncrement));
+        str.add(a_MeasuredAt.toString());
+        str.add(Integer.toString(a_SensorID));
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
+    }
+
 
     // Generic
     @Override

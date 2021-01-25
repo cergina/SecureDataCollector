@@ -1,5 +1,6 @@
 package Database.Interaction.Servlets.Put;
 
+import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
@@ -54,22 +55,23 @@ public class POST_Flat_Create extends HttpServlet {
     }
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
-
     public void init (){
+
         try {
             ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(DbConfig.DS_CONTEXT_NAME);
             conn = ds.getConnection();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: "+se.getMessage());
+            CustomLogs.Error("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: "+ne.getMessage());
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 
     public void destroy() {
+
         try {
             if (rs != null)
                 rs.close();
@@ -81,10 +83,11 @@ public class POST_Flat_Create extends HttpServlet {
                 ctx.close();
         }
         catch (SQLException se) {
-            ConsoleLogging.Log("SQLException: " + se.getMessage());
+
+            CustomLogs.Error("SQLException: " + se.getMessage());
         }
         catch (NamingException ne) {
-            ConsoleLogging.Log("NamingException: " + ne.getMessage());
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 }

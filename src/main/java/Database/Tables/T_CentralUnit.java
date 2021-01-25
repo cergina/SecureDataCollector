@@ -2,13 +2,15 @@ package Database.Tables;
 
 import Database.Support.Assurance;
 import Database.Support.DBTable;
+import Database.Support.DBToHtml;
 import Database.Support.DbConfig;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 
-public class T_CentralUnit implements DBTable {
+public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "centralUnit" : "centralunit";
 
     // Atributes
@@ -29,6 +31,11 @@ public class T_CentralUnit implements DBTable {
     public static final String DBNAME_ZWAVE = "Zwave";
     public static final String DBNAME_PROJECT_ID = "ProjectID";
     public static final String DBNAME_ADDRESS_ID = "AddressID";
+
+    public static T_CentralUnit REFERENCE = new T_CentralUnit();
+    public static String[] TABLE_CODENAMES = {
+            "UID", "Friendly Name", "SIM Number", "IMEI code", "Zwave number", "Project ID", "Address ID"
+    };
 
     // Constructors
     private T_CentralUnit() {}
@@ -106,6 +113,43 @@ public class T_CentralUnit implements DBTable {
     @Override
     public String InfoPrintAllColumns() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public String ReturnDBNamesInHtmlRow() {
+        String documentPart = "";
+        documentPart += "<tr>";
+
+        for (String str:TABLE_CODENAMES
+        ) {
+            documentPart += "<th>" + str + "</th>";
+        }
+
+        documentPart += "<th></th>";
+        documentPart += "</tr>";
+
+        return documentPart;
+    }
+
+    // For HTML purposes
+    @Override
+    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
+        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+
+        str.add(Integer.toString(a_Uid));
+        str.add(this.a_FriendlyName);
+        str.add(this.a_SimNO);
+        str.add(this.a_Imei);
+        str.add(this.a_Zwave);
+        str.add(Integer.toString(a_ProjectID));
+        str.add(Integer.toString(a_AddressID));
+
+        return str;
+    }
+
+    @Override
+    public String[] GetTableCodeNames() {
+        return TABLE_CODENAMES;
     }
 
     // Generic
