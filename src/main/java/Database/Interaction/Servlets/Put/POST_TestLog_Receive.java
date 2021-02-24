@@ -2,16 +2,11 @@ package Database.Interaction.Servlets.Put;
 
 import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
-import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_TestLog;
-import Database.Tables.T_User;
-import Model.misc.Logs.ConsoleLogging;
-import org.json.JSONObject;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.Servlet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +20,10 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_TestLog_Receive", urlPatterns = {"/putLog"})
+@WebServlet(name = "POST_TestLog_Receive", urlPatterns = POST_TestLog_Receive.SERVLET_URL)
 public class POST_TestLog_Receive extends HttpServlet {
+    public static final String SERVLET_URL = "/putLog";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -36,7 +33,7 @@ public class POST_TestLog_Receive extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            String pureBody = ServletHelper.ReturnBodyIfValid(req, "POST", "/putLog");
+            String pureBody = ServletHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             // table
             Dictionary tmpDict = new Hashtable();
@@ -50,8 +47,9 @@ public class POST_TestLog_Receive extends HttpServlet {
             Database.Interaction.Entities.TestLogs.insert(conn, ps, tt);
         }
         catch (Exception e) {
-            e.printStackTrace();
-            ServletHelper.Send417(resp);
+            ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

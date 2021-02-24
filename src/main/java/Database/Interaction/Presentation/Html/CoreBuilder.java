@@ -2,7 +2,7 @@ package Database.Interaction.Presentation.Html;
 
 import Database.Interaction.Presentation.Servlets.GENERIC_INFO;
 import Database.Support.CustomLogs;
-import Database.Tables.*;
+import Database.Tables.DbEntity;
 
 import java.util.ArrayList;
 

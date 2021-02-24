@@ -5,7 +5,6 @@ import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Project;
-import Model.misc.Logs.ConsoleLogging;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -21,8 +20,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "GET_Project_Info", urlPatterns = {"/project-info"})
+@WebServlet(name = "GET_Project_Info", urlPatterns = GET_Project_Info.SERVLET_URL)
 public class GET_Project_Info extends HttpServlet {
+    public static final String SERVLET_URL = "/project-info";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;

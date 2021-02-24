@@ -5,7 +5,6 @@ import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -23,8 +22,10 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_CommType_Insert", urlPatterns = {"/api/commType-add"})
+@WebServlet(name = "POST_CommType_Insert", urlPatterns = POST_CommType_Insert.SERVLET_URL)
 public class POST_CommType_Insert extends HttpServlet {
+    public static final String SERVLET_URL = "/api/commType-add";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -35,7 +36,7 @@ public class POST_CommType_Insert extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/commType-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             // table
             Dictionary tmpDict = new Hashtable();
@@ -48,8 +49,9 @@ public class POST_CommType_Insert extends HttpServlet {
             Database.Interaction.Entities.CommType.insert(conn, ps, ec);
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

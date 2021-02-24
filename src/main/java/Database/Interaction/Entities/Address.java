@@ -3,7 +3,6 @@ package Database.Interaction.Entities;
 import Database.Support.Assurance;
 import Database.Support.CustomLogs;
 import Database.Tables.T_Address;
-import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

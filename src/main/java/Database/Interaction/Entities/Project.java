@@ -7,11 +7,12 @@ SONET SLOVAKIA - Secure Data Collector
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
-import Database.Tables.T_Address;
 import Database.Tables.T_Project;
-import Database.Tables.T_User;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;

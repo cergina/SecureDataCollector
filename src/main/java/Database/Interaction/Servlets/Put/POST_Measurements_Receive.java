@@ -6,7 +6,6 @@ import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Model.Measuring.Measurements_Process;
 import Model.Measuring.Measurements_SupportedModes;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -22,8 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "POST_Measurements_Receive", urlPatterns = {"/api/measurements-add"})
+@WebServlet(name = "POST_Measurements_Receive", urlPatterns = POST_Measurements_Receive.SERVLET_URL)
 public class POST_Measurements_Receive extends HttpServlet {
+    public static final String SERVLET_URL = "/api/measurements-add";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -33,7 +34,7 @@ public class POST_Measurements_Receive extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject jsonMain = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/measurements-add");
+            JSONObject jsonMain = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             // message type, changes flow of code
             String msgType = jsonMain.getString("messageType");
@@ -48,8 +49,9 @@ public class POST_Measurements_Receive extends HttpServlet {
             Measurements_Process.HandleFromPost(conn, ps, mode, jsonMain);
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

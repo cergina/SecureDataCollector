@@ -20,17 +20,20 @@ public class CustomLogs {
     private static Properties properties = new Properties();
 
     public static void InfoLog(String msg, boolean printStackTrace) {
-        DoLog(INFORM, msg, printStackTrace);
-    }
-
-    public static void Error(String msg) {
-        DoLog(ERR, msg, true);
+        if (ConfigClass.DEBUG)
+            DoLog(INFORM, msg, printStackTrace);
     }
 
     public static void Debug(String msg) {
         if (ConfigClass.DEBUG)
             DoLog(DEBUG, msg, true);
     }
+
+    public static void Error(String msg) {
+        DoLog(ERR, msg, true);
+    }
+
+    // PRIVATES
 
     private static void DoLog(int level, String msg, boolean printStack) {
 
