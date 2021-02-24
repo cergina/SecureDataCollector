@@ -6,7 +6,6 @@ import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_CentralUnit;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -23,8 +22,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "POST_CentralUnit_Get", urlPatterns = {"/api/centralUnit-byId"})
+@WebServlet(name = "POST_CentralUnit_Get", urlPatterns = POST_CentralUnit_Get.SERVLET_URL)
 public class POST_CentralUnit_Get extends HttpServlet {
+    public static final String SERVLET_URL = "/api/centralUnit-byId";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -35,7 +36,7 @@ public class POST_CentralUnit_Get extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             // parse
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/centralUnit-byId");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             T_CentralUnit ret_tcu = CentralUnit.retrieve(conn, ps, rs, json.getInt(T_CentralUnit.DBNAME_ID));
 
@@ -50,8 +51,9 @@ public class POST_CentralUnit_Get extends HttpServlet {
             out.flush();
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

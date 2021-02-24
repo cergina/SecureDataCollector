@@ -2,7 +2,6 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Support.SqlConnectionOneTimeReestablisher;
-import Database.Tables.T_Address;
 import Database.Tables.T_User;
 
 import java.sql.Connection;

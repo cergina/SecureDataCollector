@@ -6,7 +6,6 @@ import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_User;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -23,8 +22,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "POST_User_Get", urlPatterns = {"/api/user-byId"})
+@WebServlet(name = "POST_User_Get", urlPatterns = POST_User_Get.SERVLET_URL)
 public class POST_User_Get extends HttpServlet {
+    public static final String SERVLET_URL = "/api/user-byId";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -35,7 +36,7 @@ public class POST_User_Get extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             // parse
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/user-byId");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             T_User ret_ect = User.retrieve(conn, ps, rs, json.getInt(T_User.DBNAME_ID));
 
@@ -50,8 +51,9 @@ public class POST_User_Get extends HttpServlet {
             out.flush();
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

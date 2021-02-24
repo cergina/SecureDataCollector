@@ -5,7 +5,6 @@ import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Sensor;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -23,8 +22,10 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_Sensor_create", urlPatterns = {"/api/sensor-add"})
+@WebServlet(name = "POST_Sensor_create", urlPatterns = POST_Sensor_create.SERVLET_URL)
 public class POST_Sensor_create extends HttpServlet {
+    public static final String SERVLET_URL = "/api/sensor-add";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -34,7 +35,7 @@ public class POST_Sensor_create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/sensor-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             // table
             Dictionary tmpDict = new Hashtable();
@@ -50,8 +51,9 @@ public class POST_Sensor_create extends HttpServlet {
             Database.Interaction.Entities.Sensor.insert(conn, ps, ts);
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

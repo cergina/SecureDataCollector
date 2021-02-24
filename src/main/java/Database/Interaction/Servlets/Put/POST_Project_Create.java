@@ -5,7 +5,6 @@ import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Project;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -21,8 +20,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(name = "POST_Project_Create", urlPatterns = {"/api/project-add"})
+@WebServlet(name = "POST_Project_Create", urlPatterns = POST_Project_Create.SERVLET_URL)
 public class POST_Project_Create extends HttpServlet {
+    public static final String SERVLET_URL = "/api/project-add";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -32,15 +33,16 @@ public class POST_Project_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/project-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             T_Project t = T_Project.CreateFromScratch(json.getString(T_Project.DBNAME_NAME));
 
             Database.Interaction.Entities.Project.insert(conn, ps, t);
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

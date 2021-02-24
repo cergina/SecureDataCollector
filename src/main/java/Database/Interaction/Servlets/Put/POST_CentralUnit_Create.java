@@ -5,7 +5,6 @@ import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_CentralUnit;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -23,8 +22,10 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_CentralUnit_Create", urlPatterns = {"/api/centralUnit-add"})
+@WebServlet(name = "POST_CentralUnit_Create", urlPatterns = POST_CentralUnit_Create.SERVLET_URL)
 public class POST_CentralUnit_Create extends HttpServlet {
+    public static final String SERVLET_URL = "/api/centralUnit-add";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -34,7 +35,7 @@ public class POST_CentralUnit_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/centralUnit-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             // table
             Dictionary tmpDict = new Hashtable();
@@ -53,8 +54,9 @@ public class POST_CentralUnit_Create extends HttpServlet {
             Database.Interaction.Entities.CentralUnit.insert(conn, ps, tcu);
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

@@ -2,13 +2,11 @@ package Model.Measuring;
 
 import Database.Interaction.Entities.Sensor;
 import Database.Tables.T_Measurement;
-import Database.Tables.T_Sensor;
 import Model.Shared.CONSTANTS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.Dictionary;

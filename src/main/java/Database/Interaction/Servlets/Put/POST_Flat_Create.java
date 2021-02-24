@@ -5,8 +5,6 @@ import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Flat;
-import Database.Tables.T_Project;
-import Model.misc.Logs.ConsoleLogging;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
@@ -24,8 +22,10 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-@WebServlet(name = "POST_Flat_Create", urlPatterns = {"/api/flat-add"})
+@WebServlet(name = "POST_Flat_Create", urlPatterns = POST_Flat_Create.SERVLET_URL)
 public class POST_Flat_Create extends HttpServlet {
+    public static final String SERVLET_URL = "/api/flat-add";
+
     private InitialContext ctx = null;
     private DataSource ds = null;
     private Connection conn = null;
@@ -35,7 +35,7 @@ public class POST_Flat_Create extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", "/api/flat-add");
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             // table
             Dictionary tmpDict = new Hashtable();
@@ -49,8 +49,9 @@ public class POST_Flat_Create extends HttpServlet {
             Database.Interaction.Entities.Flat.insert(conn, ps, tf);
         }
         catch (Exception e) {
-            e.printStackTrace();
             ServletHelper.Send404(resp);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 
