@@ -2,9 +2,7 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Support.SqlConnectionOneTimeReestablisher;
-import Database.Tables.T_Address;
 import Database.Tables.T_Sensor;
-import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -134,7 +132,8 @@ public class Sensor {
         int col = 0;
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<T_Sensor> arr = new ArrayList<>();
 
