@@ -7,6 +7,7 @@ SONET SLOVAKIA - Secure Data Collector
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 import Database.Tables.T_Project;
 
 import java.sql.Connection;
@@ -43,7 +44,8 @@ public class Project {
         ps.setString(++col, tp.getA_name());
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of Project into db failed.");
@@ -73,7 +75,9 @@ public class Project {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         T_Project tp = null;
 
         if (!rs.isBeforeFirst()) {
@@ -107,7 +111,8 @@ public class Project {
         int col = 0;
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<T_Project> arr = new ArrayList<>();
 

@@ -2,6 +2,7 @@ package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
 import Database.Support.CustomLogs;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 import Database.Tables.T_Address;
 
 import java.sql.Connection;
@@ -43,7 +44,8 @@ public class Address {
         ps.setString(++col, ta.getA_ZIP());
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of address into db failed.");
@@ -75,7 +77,9 @@ public class Address {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         T_Address ta = null;
 
         if (!rs.isBeforeFirst()) {
@@ -109,7 +113,8 @@ public class Address {
         );
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<T_Address> arr = new ArrayList<>();
 

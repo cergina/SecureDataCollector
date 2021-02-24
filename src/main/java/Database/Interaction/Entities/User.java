@@ -1,6 +1,7 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 import Database.Tables.T_User;
 
 import java.sql.Connection;
@@ -39,7 +40,8 @@ public class User {
         ps.setInt(++col, tu.isA_Blocked_Numerical());
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of User into db failed.");
@@ -62,7 +64,9 @@ public class User {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         T_User t = null;
 
         if (!rs.isBeforeFirst()) {
@@ -96,7 +100,8 @@ public class User {
         int col = 0;
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<T_User> arr = new ArrayList<>();
 

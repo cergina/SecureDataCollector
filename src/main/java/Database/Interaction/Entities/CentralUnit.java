@@ -1,6 +1,7 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 import Database.Tables.T_CentralUnit;
 
 import java.sql.Connection;
@@ -45,7 +46,8 @@ public class CentralUnit {
         ps.setInt(++col, tcu.getA_AddressID());
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of CentralUnit into db failed.");
@@ -77,7 +79,9 @@ public class CentralUnit {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         T_CentralUnit tc = null;
 
         if (!rs.isBeforeFirst()) {
@@ -111,7 +115,8 @@ public class CentralUnit {
         int col = 0;
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<T_CentralUnit> arr = new ArrayList<>();
 
