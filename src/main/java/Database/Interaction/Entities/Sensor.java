@@ -1,9 +1,8 @@
 package Database.Interaction.Entities;
 
 import Database.Support.Assurance;
-import Database.Tables.T_Address;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 import Database.Tables.T_Sensor;
-import Database.Tables.T_User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +37,8 @@ public class Sensor {
 
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of Sensor into db failed.");
@@ -61,7 +61,9 @@ public class Sensor {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         T_Sensor ts = null;
 
         if (!rs.isBeforeFirst()) {
@@ -94,7 +96,9 @@ public class Sensor {
         ps.setString(++col, sensorIO);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         T_Sensor ts = null;
 
         if (!rs.isBeforeFirst()) {
@@ -128,7 +132,8 @@ public class Sensor {
         int col = 0;
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<T_Sensor> arr = new ArrayList<>();
 
