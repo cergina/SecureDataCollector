@@ -2,6 +2,7 @@ package Database.Interaction.Entities;
 
 import Database.Enums.E_CommType;
 import Database.Support.Assurance;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 import Database.Tables.T_Address;
 import Database.Tables.T_User;
 
@@ -33,7 +34,8 @@ public class CommType {
         ps.setString(++col, ec.getA_Name());
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of CommType into db failed.");
@@ -56,7 +58,9 @@ public class CommType {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         E_CommType ct = null;
 
         if (!rs.isBeforeFirst()) {
@@ -88,7 +92,8 @@ public class CommType {
         );
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<E_CommType> arr = new ArrayList<>();
 

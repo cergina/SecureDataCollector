@@ -2,6 +2,7 @@ package Database.Interaction.Entities;
 
 import Database.Enums.E_SensorType;
 import Database.Support.Assurance;
+import Database.Support.SqlConnectionOneTimeReestablisher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,7 +34,8 @@ public class SensorType {
         ps.setInt(++col, es.getA_CommTypeID());
 
         // SQL Execution
-        int affectedRows = ps.executeUpdate();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of SensorType into db failed.");
@@ -56,7 +58,9 @@ public class SensorType {
         ps.setInt(++col, id);
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
         E_SensorType est = null;
 
         if (!rs.isBeforeFirst()) {
@@ -88,7 +92,8 @@ public class SensorType {
         );
 
         // SQL Execution
-        rs = ps.executeQuery();
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         ArrayList<E_SensorType> arr = new ArrayList<>();
 
