@@ -22,7 +22,7 @@ import com.collector.config.TemplateEngineUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-@WebServlet("/")
+@WebServlet(name = "IndexServlet", urlPatterns = {"/"})
 public class IndexServlet extends HttpServlet {
 
     private InitialContext ctx = null;
@@ -39,11 +39,11 @@ public class IndexServlet extends HttpServlet {
         try {
             ArrayList<T_Address> arr = Address.retrieveAll(conn, ps, rs);
 
-            context.setVariable("country", "" + arr.get(0).getA_Country());
-            context.setVariable("city", "" + arr.get(0).getA_City());
-            context.setVariable("street", "" + arr.get(0).getA_Street());
-            context.setVariable("housenumber", "" + arr.get(0).getA_HouseNO());
-            context.setVariable("zip", "" + arr.get(0).getA_ZIP());
+            context.setVariable(T_Address.DBNAME_COUNTRY, "" + arr.get(0).getA_Country());
+            context.setVariable(T_Address.DBNAME_CITY, "" + arr.get(0).getA_City());
+            context.setVariable(T_Address.DBNAME_STREET, "" + arr.get(0).getA_Street());
+            context.setVariable(T_Address.DBNAME_HOUSENO, "" + arr.get(0).getA_HouseNO());
+            context.setVariable(T_Address.DBNAME_ZIP, "" + arr.get(0).getA_ZIP());
 
             engine.process("index.html", context, response.getWriter());
         } catch (SQLException e) {

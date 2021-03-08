@@ -29,23 +29,10 @@ public class ThymeleafConfig implements ServletContextListener {
         return engine;
     }
 
-//    private TemplateEngine javascriptTemplateEngine(ServletContext servletContext) {
-//        TemplateEngine engine = new TemplateEngine();
-//        engine.setTemplateResolver(javascriptTemplateResolver(servletContext));
-//        return engine;
-//    }
-
     private ITemplateResolver templateResolver(ServletContext servletContext) {
         ServletContextTemplateResolver resolver = new ServletContextTemplateResolver(servletContext);
-        resolver.setPrefix("/WEB-INF/");
+        resolver.setPrefix("/WEB-INF/templates/");
         resolver.setTemplateMode(TemplateMode.HTML);
         return resolver;
     }
-
-//    private ITemplateResolver javascriptTemplateResolver(ServletContext servletContext) {
-//        ServletContextTemplateResolver resolver = new ServletContextTemplateResolver(servletContext);
-//        resolver.setPrefix("/WEB-INF/js/");
-//        resolver.setTemplateMode(TemplateMode.JAVASCRIPT);
-//        return resolver;
-//    }
 }

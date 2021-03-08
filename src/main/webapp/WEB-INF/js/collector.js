@@ -1,6 +1,4 @@
 
-
-
-$(function() { // $(document).ready(function() {
+$(function() {
     console.log("Hello World");
 });

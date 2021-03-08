@@ -13,6 +13,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <!--    <link href="style.css" rel="stylesheet" type="text/css">-->
     <!--    <link th:href="@{/style.css}" rel="stylesheet" type="text/css">-->
+    <style>
+h1 {
+    color: red;
+}
+    </style>
 
     <title>SONET SLOVAKIA</title>
 </head>
@@ -21,11 +26,11 @@
 
         <header id="header"></header>
         <div id="content">
-            <p>Country: <span th:text="${country}"></span></p>
-            <p>City: <span th:text="${city}"></span></p>
-            <p>Street: <span th:text="${street}"></span></p>
-            <p>House Nr: <span th:text="${housenumber}"></span></p>
-            <p>ZIP: <span th:text="${zip}"></span></p>
+            <p>Country: <span th:text="${Country}"></span></p>
+            <p>City: <span th:text="${City}"></span></p>
+            <p>Street: <span th:text="${Street}"></span></p>
+            <p>House Nr: <span th:text="${HouseNO}"></span></p>
+            <p>ZIP: <span th:text="${Zip}"></span></p>
         </div>
         <footer id="footer"></footer>
 
