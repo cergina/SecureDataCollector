@@ -25,8 +25,8 @@ import java.util.ArrayList;
 
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
 public class IndexServlet extends HttpServlet {
-    public static final String SERVLET_URL =  "/";
-    public static final String SITE_NAME = "index.html";
+    public static final String SERVLET_URL =  "/index";
+    public static final String TEMPLATE_NAME = "index.html";
 
     private InitialContext ctx = null;
     private DataSource ds = null;
@@ -48,7 +48,7 @@ public class IndexServlet extends HttpServlet {
             context.setVariable(T_Address.DBNAME_HOUSENO, "" + arr.get(0).getA_HouseNO());
             context.setVariable(T_Address.DBNAME_ZIP, "" + arr.get(0).getA_ZIP());
 
-            engine.process(SITE_NAME, context, response.getWriter());
+            engine.process(TEMPLATE_NAME, context, response.getWriter());
 
         } catch (SQLException e) {
             ServletHelper.Send404(response);
