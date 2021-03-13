@@ -9,6 +9,7 @@ import org.thymeleaf.context.WebContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,17 +23,24 @@ public class IndexServlet extends ConnectionServlet {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
         WebContext context = new WebContext(request, response, request.getServletContext());
 
-        ArrayList<T_Address> arr = retrieveAllAddress();
-        if (arr == null) {
-            ServletHelper.Send404(response);
-        } else {
-            context.setVariable(T_Address.DBNAME_COUNTRY, "" + arr.get(0).getA_Country());
-            context.setVariable(T_Address.DBNAME_CITY, "" + arr.get(0).getA_City());
-            context.setVariable(T_Address.DBNAME_STREET, "" + arr.get(0).getA_Street());
-            context.setVariable(T_Address.DBNAME_HOUSENO, "" + arr.get(0).getA_HouseNO());
-            context.setVariable(T_Address.DBNAME_ZIP, "" + arr.get(0).getA_ZIP());
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            context.setVariable("Email", session.getAttribute("email"));
 
-            engine.process(TEMPLATE_NAME, context, response.getWriter());
+            ArrayList<T_Address> arr = retrieveAllAddress();
+            if (arr == null) {
+                ServletHelper.Send404(response);
+            } else {
+                context.setVariable(T_Address.DBNAME_COUNTRY, "" + arr.get(0).getA_Country());
+                context.setVariable(T_Address.DBNAME_CITY, "" + arr.get(0).getA_City());
+                context.setVariable(T_Address.DBNAME_STREET, "" + arr.get(0).getA_Street());
+                context.setVariable(T_Address.DBNAME_HOUSENO, "" + arr.get(0).getA_HouseNO());
+                context.setVariable(T_Address.DBNAME_ZIP, "" + arr.get(0).getA_ZIP());
+
+                engine.process(TEMPLATE_NAME, context, response.getWriter());
+            }
+        } else {
+            engine.process("401.html", context, response.getWriter());
         }
     }
 }

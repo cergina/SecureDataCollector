@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="sk" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
 
-    <h1>Address</h1>
+    <h1>Welcome <span th:text="${Email}"></span></h1>
 
     <header id="header"></header>
     <div id="content">

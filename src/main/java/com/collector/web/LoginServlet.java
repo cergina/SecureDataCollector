@@ -13,13 +13,14 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "RegisterServlet", urlPatterns = RegisterServlet.SERVLET_URL)
-public class RegisterServlet extends ConnectionServlet {
-    public static final String SERVLET_URL =  "/register";
-    public static final String TEMPLATE_NAME = "register.html";
+@WebServlet(name = "LoginServlet", urlPatterns = LoginServlet.SERVLET_URL)
+public class LoginServlet extends ConnectionServlet {
+    public static final String SERVLET_URL =  "/login";
+    public static final String TEMPLATE_NAME = "login.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,19 +35,25 @@ public class RegisterServlet extends ConnectionServlet {
         PrintWriter writer = response.getWriter();
 
         String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-        boolean emailExists = true; // TODO check email in database
-        if (emailExists) {
-            String password = request.getParameter("password");
-            // TODO hash password
-            String firstname = request.getParameter("firstname");
-            // TODO save user data to database
+        boolean userExists = true; // TODO check user in database - should return complete user object
+        boolean passwordMatches = true; // TODO compare password
+        if (userExists && passwordMatches) {
+            HttpSession session = request.getSession();
+            session.setAttribute("email", email);
+            // TODO add other attributes from user object to session
 
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            writer.println("User registered.");
+            response.setStatus(HttpServletResponse.SC_OK);
+            writer.println("Login successful.");
+
+//             // in case custom token is used
+//            JSONObject json = new JSONObject();
+//            json.put("token", session.getId());
+//            writer.println(json.toString());
         } else {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            writer.println("This email cannot be registered.");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            writer.println("Login failed.");
         }
         writer.close();
     }
