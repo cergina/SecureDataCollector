@@ -33,8 +33,12 @@ public class GET_Project_Info extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
+            // Base
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
             resp.setContentType("text/html");
             PrintWriter writer = resp.getWriter();
+
             writer.println("<html><body>");
 
             T_Project ret_tp = Project.retrieve(conn, ps, rs, Integer.parseInt(req.getParameter("id")));

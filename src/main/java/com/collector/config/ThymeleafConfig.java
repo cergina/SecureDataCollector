@@ -1,13 +1,14 @@
 package com.collector.config;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 /**
  * Thymeleaf configuration.
@@ -21,6 +22,7 @@ public class ThymeleafConfig implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
+
     }
 
     private TemplateEngine templateEngine(ServletContext servletContext) {

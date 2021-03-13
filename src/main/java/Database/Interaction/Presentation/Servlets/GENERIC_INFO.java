@@ -28,7 +28,7 @@ public class GENERIC_INFO extends HttpServlet {
     public static final String SITE_URL =
             ConfigClass.RUNNING_ON_SERVER ?
                     "/dcs" :
-                    "/SecureDataCollector-1.0-SNAPSHOT";
+                    "";
 
     private InitialContext ctx = null;
     private DataSource ds = null;
@@ -42,6 +42,8 @@ public class GENERIC_INFO extends HttpServlet {
             CustomLogs.InfoLog("Entered " + SERVLET_URL + ".", true);
 
             // Base
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
             resp.setContentType("text/html");
             PrintWriter writer = resp.getWriter();
 

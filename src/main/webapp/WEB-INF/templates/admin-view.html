@@ -22,20 +22,18 @@
     </th:block>
     <!-- KEDZE TU SA VYUZIVA THYMELEAF MUSI BYT TH: -->
 
-    <title>SONET SLOVAKIA</title>
+    <title>SONET SLOVAKIA - Admin panel</title>
+
 </head>
 <body>
-    <h1>Address</h1>
+    <h1>Admin panel configuration</h1>
 
     <header id="header"></header>
     <div id="content">
-        <p>Country: <span th:text="${Country}"></span></p>
-        <p>City: <span th:text="${City}"></span></p>
-        <p>Street: <span th:text="${Street}"></span></p>
-        <p>House Nr: <span th:text="${HouseNO}"></span></p>
-        <p>ZIP: <span th:text="${Zip}"></span></p>
+        <p>Welcome to the configuration panel.</p>
+        <p>username: <span th:text="${loggedUser}"></span>  | privileges: <span th:text="${privileges}"></span></p>
     </div>
-    <footer id="footer"></footer>
+    <footer id="footer">TP SONET DCS</footer>
 
 </body>
 </html>

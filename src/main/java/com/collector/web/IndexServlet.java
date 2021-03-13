@@ -22,6 +22,10 @@ public class IndexServlet extends ConnectionServlet {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
         WebContext context = new WebContext(request, response, request.getServletContext());
 
+        context.setVariable("zeroIfRunningLocal", zeroIfRunningLocal);
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         ArrayList<T_Address> arr = retrieveAllAddress();
         if (arr == null) {
             ServletHelper.Send404(response);

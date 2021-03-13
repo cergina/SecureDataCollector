@@ -1,5 +1,6 @@
 package com.collector.web;
 
+import Control.ConfigClass;
 import Database.Interaction.Entities.Address;
 import Database.Support.CustomLogs;
 import Database.Support.DbConfig;
@@ -22,6 +23,8 @@ public class ConnectionServlet extends HttpServlet {
     private Connection conn = null;
     private PreparedStatement ps = null;
     private ResultSet rs = null;
+
+    protected static final int zeroIfRunningLocal = ConfigClass.RUNNING_ON_SERVER ? 1 : 0;
 
     ArrayList<T_Address> retrieveAllAddress() {
         try {

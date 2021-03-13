@@ -16,19 +16,21 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     // Atributes
     private int a_pk;
     private int a_Value;
-    private int a_MeasuredIncrement;
+    private int a_RequestNo;
     private Date a_MeasuredAt;
+    private int a_AccumulatedValue;
     private int a_SensorID;
 
     public static final String DBNAME_ID = "ID";
     public static final String DBNAME_VALUE = "Value";
-    public static final String DBNAME_MEASUREDINCREMENT = "MeasuredIncrement";
+    public static final String DBNAME_REQUESTNO = "RequestNo";
     public static final String DBNAME_MEASUREDAT = "MeasuredAt";
+    public static final String DBNAME_ACCUMULATEDVALUE = "AccumulatedValue";
     public static final String DBNAME_SENSOR_ID = "SensorID";
 
     public static T_Measurement REFERENCE = new T_Measurement();
     public static String[] TABLE_CODENAMES = {
-            "Value", "Measured Increment", "Measured At", "Sensor ID"
+            "Value", "Request Number", "Accumulated Value", "Measured At", "Sensor ID"
     };
 
     // Constructors
@@ -40,7 +42,8 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
 
         temp.a_pk = pk;
         temp.a_Value = (int)dict.get(DBNAME_VALUE);
-        temp.a_MeasuredIncrement = (int)dict.get(DBNAME_MEASUREDINCREMENT);
+        temp.a_RequestNo = (int)dict.get(DBNAME_REQUESTNO);
+        temp.a_AccumulatedValue = (int)dict.get(DBNAME_ACCUMULATEDVALUE);
         temp.a_MeasuredAt = (Date)dict.get(DBNAME_MEASUREDAT);
         temp.a_SensorID = (int)dict.get(DBNAME_SENSOR_ID);
 
@@ -51,7 +54,9 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
         T_Measurement temp = new T_Measurement();
 
         temp.a_Value = (int)dict.get(DBNAME_VALUE);
-        temp.a_MeasuredIncrement = (int)dict.get(DBNAME_MEASUREDINCREMENT);
+        temp.a_RequestNo = (int)dict.get(DBNAME_REQUESTNO);
+        // This cant be known at this time
+        //temp.a_AccumulatedValue = (int)dict.get(DBNAME_ACCUMULATEDVALUE);
         temp.a_MeasuredAt = (Date)dict.get(DBNAME_MEASUREDAT);
         temp.a_SensorID = (int)dict.get(DBNAME_SENSOR_ID);
 
@@ -64,7 +69,8 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
 
         jo.put(DBNAME_ID, tmp.getA_pk());
         jo.put(DBNAME_VALUE, tmp.getA_Value());
-        jo.put(DBNAME_MEASUREDINCREMENT, tmp.getA_MeasuredIncrement());
+        jo.put(DBNAME_REQUESTNO, tmp.getA_RequestNo());
+        jo.put(DBNAME_ACCUMULATEDVALUE, tmp.getA_AccumulatedValue());
         jo.put(DBNAME_MEASUREDAT, tmp.getA_MeasuredAt());
         jo.put(DBNAME_SENSOR_ID, tmp.getA_SensorID());
 
@@ -75,7 +81,9 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     @Override
     public boolean IsTableOkForDatabaseEnter() {
         return Assurance.IsIntOk(a_Value) &&
-                Assurance.IsIntOk(a_MeasuredIncrement) &&
+                Assurance.IsIntOk(a_RequestNo) &&
+                // This cant be known at this time
+                //Assurance.IsIntOk(a_AccumulatedValue) &&
                 Assurance.IsDateOk(a_MeasuredAt) &&
                 Assurance.IsIntOk(a_SensorID);
     }
@@ -84,7 +92,8 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
         return Assurance.IsIntOk(a_pk) &&
                 Assurance.IsIntOk(a_Value) &&
-                Assurance.IsIntOk(a_MeasuredIncrement) &&
+                Assurance.IsIntOk(a_RequestNo) &&
+                Assurance.IsIntOk(a_AccumulatedValue) &&
                 Assurance.IsDateOk(a_MeasuredAt) &&
                 Assurance.IsIntOk(a_SensorID);
     }
@@ -93,7 +102,8 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     public String InfoPrintAllColumns(){
         return  "id:PK | " +
                 "Value: varchar | " +
-                "MeasuredIncrement: int | " +
+                "RequestNo: int | " +
+                "AccumulatedValue: int | " +
                 "MeasuredAt: Date | " +
                 "SensorID: int";
     }
@@ -120,7 +130,8 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
         ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(Integer.toString(a_Value));
-        str.add(Integer.toString(a_MeasuredIncrement));
+        str.add(Integer.toString(a_RequestNo));
+        str.add(Integer.toString(a_AccumulatedValue));
         str.add(a_MeasuredAt.toString());
         str.add(Integer.toString(a_SensorID));
 
@@ -139,19 +150,22 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
         StringBuilder str = new StringBuilder("[");
 
         if (Assurance.IsIntOk(a_pk))
-            str.append("ID: " + a_pk + "; ");
+            str.append(DBNAME_ID + ": " + a_pk + "; ");
 
         if (Assurance.IsIntOk(a_Value))
-            str.append("Value " + a_Value + "; ");
+            str.append(DBNAME_VALUE + ": " + a_Value + "; ");
 
-        if (Assurance.IsIntOk(a_MeasuredIncrement))
-            str.append("MeasuredIncrement: " + a_MeasuredIncrement + "; ");
+        if (Assurance.IsIntOk(a_RequestNo))
+            str.append(DBNAME_REQUESTNO + ": " + a_RequestNo + "; ");
+
+        if (Assurance.IsIntOk(a_AccumulatedValue))
+            str.append(DBNAME_ACCUMULATEDVALUE + ": " + a_AccumulatedValue + "; ");
 
         if (Assurance.IsDateOk(a_MeasuredAt))
-            str.append("MeasuredAt: " + a_MeasuredAt + "; ");
+            str.append(DBNAME_MEASUREDAT + ": " + a_MeasuredAt + "; ");
 
         if (Assurance.IsIntOk(a_SensorID))
-            str.append("SensorID: " + a_SensorID + "; ");
+            str.append(DBNAME_SENSOR_ID + ": " + a_SensorID + "; ");
 
         str.append("]");
 
@@ -169,8 +183,12 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
         return a_Value;
     }
 
-    public int getA_MeasuredIncrement() {
-        return a_MeasuredIncrement;
+    public int getA_RequestNo() {
+        return a_RequestNo;
+    }
+
+    public int getA_AccumulatedValue() {
+        return a_AccumulatedValue;
     }
 
     public Date getA_MeasuredAt() {

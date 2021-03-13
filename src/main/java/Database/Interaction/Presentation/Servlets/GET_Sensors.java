@@ -39,6 +39,8 @@ public class GET_Sensors extends HttpServlet {
             CustomLogs.InfoLog("Entered " + SERVLET_URL + ".", true);
 
             // Base
+            req.setCharacterEncoding("UTF-8");
+            resp.setCharacterEncoding("UTF-8");
             resp.setContentType("text/html");
             PrintWriter writer = resp.getWriter();
 

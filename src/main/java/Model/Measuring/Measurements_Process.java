@@ -73,7 +73,7 @@ public class Measurements_Process {
                 Dictionary msgDict = new Hashtable();
 
                 msgDict.put(T_Measurement.DBNAME_VALUE, tmpMsgJson.getInt(JSON_MEASUREMENTS_COUNT));
-                msgDict.put(T_Measurement.DBNAME_MEASUREDINCREMENT, (int)dictMain.get(JSON_REQUEST_NUM));
+                msgDict.put(T_Measurement.DBNAME_REQUESTNO, (int)dictMain.get(JSON_REQUEST_NUM));
                 msgDict.put(T_Measurement.DBNAME_MEASUREDAT, (Date)dictMain.get(CONSTANTS.TODAYS_DATE));
                 msgDict.put(T_Measurement.DBNAME_SENSOR_ID, sensorId);
 
