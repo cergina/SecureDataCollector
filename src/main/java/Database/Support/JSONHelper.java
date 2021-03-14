@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 public class JSONHelper {
     public static JSONObject ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, Exception {
+        // Base
+        req = ServletHelper.ProcessRequest_forDoGet_First(req);
+
         // get body of request
         String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 

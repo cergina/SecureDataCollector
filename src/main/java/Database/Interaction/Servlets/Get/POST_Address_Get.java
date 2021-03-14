@@ -43,10 +43,9 @@ public class POST_Address_Get extends HttpServlet {
             // return
             JSONObject json_toRet = T_Address.MakeJSONObjectFrom(ret_ta);
 
-            resp.setContentType("application/json; charset=utf-8");
-            resp.setCharacterEncoding("UTF-8");
-
+            ServletHelper.PrepareResponse_forDoPost_First(resp);
             PrintWriter out = resp.getWriter();
+
             out.print(json_toRet);
             out.flush();
         }

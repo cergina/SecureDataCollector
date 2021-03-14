@@ -3,17 +3,18 @@
 <head th:replace="fragments/head.html :: head"></head>
 <body>
 
-<div>
     <div>
-        <label for="email">Email: </label>
-        <div><input type="email" id="email"/></div>
+        <div>
+            <label for="email">Email: </label>
+            <div><input type="email" id="email"/></div>
+        </div>
+
+        <div>
+            <label for="password">Password: </label>
+            <div><input type="password" id="password"/></div>
+        </div>
+        <button onclick="loginUser()">Login</button>
     </div>
-    <div>
-        <label for="password">Password: </label>
-        <div><input type="password" id="password"/></div>
-    </div>
-    <button onclick="loginUser()">Login</button>
-</div>
 
 </body>
 </html>

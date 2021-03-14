@@ -27,8 +27,8 @@ public class GENERIC_INFO extends HttpServlet {
 
     public static final String SITE_URL =
             ConfigClass.RUNNING_ON_SERVER ?
-                    "/dcs" :
-                    "/SecureDataCollector-1.0-SNAPSHOT";
+                    ConfigClass.URL_BASE_SERVER :
+                    ConfigClass.URL_BASE_LOCAL;
 
     private InitialContext ctx = null;
     private DataSource ds = null;
@@ -42,7 +42,8 @@ public class GENERIC_INFO extends HttpServlet {
             CustomLogs.InfoLog("Entered " + SERVLET_URL + ".", true);
 
             // Base
-            resp.setContentType("text/html");
+            req = ServletHelper.ProcessRequest_forDoGet_First(req);
+            resp = ServletHelper.PrepareResponse_forDoGet_First(resp);
             PrintWriter writer = resp.getWriter();
 
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);

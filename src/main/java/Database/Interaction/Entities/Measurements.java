@@ -22,17 +22,24 @@ public class Measurements {
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Measurement.DBTABLE_NAME + "(" +
-                        "Value, MeasuredIncrement, MeasuredAt, SensorID" +
+                        "Value, RequestNo, MeasuredAt, AccumulatedValue,SensorID" +
                         ") " +
-                        "VALUES (" +
-                        "?, ?, ?, ?" +
+                        "VALUES ( " +
+                        "?, " +
+                        "?, " +
+                        "?, " +
+                        "? + (SELECT IF (COUNT(tmb.ID) > 0, tmb.AccumulatedValue, 0) FROM " + T_Measurement.DBTABLE_NAME  + " as tmb " +
+                        "WHERE tmb.SensorID = ? ORDER BY tmb.AccumulatedValue DESC LIMIT 1), " +
+                        "?" +
                         ") "
         );
 
         int col = 0;
         ps.setInt(++col, tm.getA_Value());
-        ps.setInt(++col, tm.getA_MeasuredIncrement());
+        ps.setInt(++col, tm.getA_RequestNo());
         ps.setDate(++col, tm.getA_MeasuredAt());
+        ps.setInt(++col, tm.getA_Value()); // for ? + select accumulated
+        ps.setInt(++col, tm.getA_SensorID()); // for ? + select accumulated
         ps.setInt(++col, tm.getA_SensorID());
 
         // SQL Execution
@@ -118,8 +125,9 @@ public class Measurements {
 
         Dictionary dict = new Hashtable();
         dict.put(T_Measurement.DBNAME_VALUE, rs.getInt(T_Measurement.DBNAME_VALUE));
-        dict.put(T_Measurement.DBNAME_MEASUREDINCREMENT, rs.getInt(T_Measurement.DBNAME_MEASUREDINCREMENT));
+        dict.put(T_Measurement.DBNAME_REQUESTNO, rs.getInt(T_Measurement.DBNAME_REQUESTNO));
         dict.put(T_Measurement.DBNAME_MEASUREDAT, rs.getDate(T_Measurement.DBNAME_MEASUREDAT));
+        dict.put(T_Measurement.DBNAME_ACCUMULATEDVALUE, rs.getInt(T_Measurement.DBNAME_ACCUMULATEDVALUE));
         dict.put(T_Measurement.DBNAME_SENSOR_ID, rs.getInt(T_Measurement.DBNAME_SENSOR_ID));
 
         t = T_Measurement.CreateFromRetrieved(rs.getInt(T_Measurement.DBNAME_ID), dict);

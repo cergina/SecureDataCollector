@@ -1,8 +1,10 @@
 package com.collector.web;
 
+import Control.ConfigClass;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Address;
 import com.collector.config.TemplateEngineUtil;
+import com.collector.support.DcsWebContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -21,7 +23,8 @@ public class IndexServlet extends ConnectionServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
-        WebContext context = new WebContext(request, response, request.getServletContext());
+        WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
+                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
         HttpSession session = request.getSession(false);
         if (session != null) {

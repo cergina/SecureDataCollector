@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+
+    <h1>Admin panel configuration</h1>
+
+    <header id="header"></header>
+    <div id="content">
+        <p>Welcome to the configuration panel.</p>
+        <p>username: <span th:text="${loggedUser}"></span>  | privileges: <span th:text="${privileges}"></span></p>
+    </div>
+    <footer id="footer">TP SONET DCS</footer>
+
+</body>
+</html>

@@ -43,10 +43,9 @@ public class POST_CentralUnit_Get extends HttpServlet {
             // return
             JSONObject json_toRet = T_CentralUnit.MakeJSONObjectFrom(ret_tcu);
 
-            resp.setContentType("application/json; charset=utf-8");
-            resp.setCharacterEncoding("UTF-8");
-
+            ServletHelper.PrepareResponse_forDoPost_First(resp);
             PrintWriter out = resp.getWriter();
+
             out.print(json_toRet);
             out.flush();
         }

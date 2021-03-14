@@ -43,10 +43,9 @@ public class POST_CommType_Get extends HttpServlet {
             // return
             JSONObject json_toRet = E_CommType.MakeJSONObjectFrom(ret_ect);
 
-            resp.setContentType("application/json; charset=utf-8");
-            resp.setCharacterEncoding("UTF-8");
-
+            ServletHelper.PrepareResponse_forDoPost_First(resp);
             PrintWriter out = resp.getWriter();
+
             out.print(json_toRet);
             out.flush();
         }
