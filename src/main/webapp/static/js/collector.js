@@ -3,6 +3,7 @@ function registerUser() {
     var email = $("#email").val();
     var firstname = $("#first-name").val();
     var password = $("#password").val();
+
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/register",
