@@ -1,16 +1,14 @@
 package Database.Interaction.Servlets.Put;
 
 import Database.Support.CustomLogs;
-import Database.Support.DbConfig;
 import Database.Support.JSONHelper;
+import Database.Support.POST_Database_Interaction;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Project;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -18,10 +16,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @WebServlet(name = "POST_Project_Create", urlPatterns = POST_Project_Create.SERVLET_URL)
-public class POST_Project_Create extends HttpServlet {
+public class POST_Project_Create extends POST_Database_Interaction {
     public static final String SERVLET_URL = "/api/project-add";
 
     private InitialContext ctx = null;
@@ -46,40 +43,4 @@ public class POST_Project_Create extends HttpServlet {
         }
     }
 
-    // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
-    public void init (){
-
-        try {
-            ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup(DbConfig.DS_CONTEXT_NAME);
-            conn = ds.getConnection();
-        }
-        catch (SQLException se) {
-            CustomLogs.Error("SQLException: " + se.getMessage());
-        }
-        catch (NamingException ne) {
-            CustomLogs.Error("NamingException: " + ne.getMessage());
-        }
-    }
-
-    public void destroy() {
-
-        try {
-            if (rs != null)
-                rs.close();
-            if (ps != null)
-                ps.close();
-            if (conn != null)
-                conn.close();
-            if (ctx != null)
-                ctx.close();
-        }
-        catch (SQLException se) {
-
-            CustomLogs.Error("SQLException: " + se.getMessage());
-        }
-        catch (NamingException ne) {
-            CustomLogs.Error("NamingException: " + ne.getMessage());
-        }
-    }
 }
