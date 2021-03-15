@@ -1,5 +1,6 @@
 package com.collector.support;
 
+import Control.ConfigClass;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletContext;
@@ -12,6 +13,10 @@ public class DcsWebContext {
         WebContext context = new WebContext(request, response, servletContext);
 
         context.setVariable(runningRemotelyVariableName, runningRemotely);
+        context.setVariable("base_url",
+                ConfigClass.RUNNING_ON_SERVER ? "/dcs" : "");
+        context.setVariable("deployment_url",
+                ConfigClass.RUNNING_ON_SERVER ? "https://team14-20.studenti.fiit.stuba.sk/dcs" : "http://localhost:8080/dcs");
 
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
