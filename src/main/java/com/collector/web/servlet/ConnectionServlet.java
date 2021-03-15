@@ -1,4 +1,4 @@
-package com.collector.web;
+package com.collector.web.servlet;
 
 import Control.ConfigClass;
 import Database.Interaction.Entities.Address;
@@ -17,11 +17,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ConnectionServlet extends HttpServlet {
-
-    static final String SITE_URL =
-            ConfigClass.RUNNING_ON_SERVER ?
-                    ConfigClass.URL_BASE_SERVER :
-                    ConfigClass.URL_BASE_LOCAL;
 
     private InitialContext ctx = null;
     private DataSource ds = null;

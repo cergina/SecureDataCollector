@@ -1,4 +1,4 @@
-package com.collector.config;
+package com.collector.web.config;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
