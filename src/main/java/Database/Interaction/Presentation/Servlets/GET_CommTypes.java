@@ -42,7 +42,8 @@ public class GET_CommTypes extends HttpServlet {
             CustomLogs.InfoLog("Entered " + SERVLET_URL + ".", true);
 
             // Base
-            resp.setContentType("text/html");
+            req = ServletHelper.ProcessRequest_forDoGet_First(req);
+            resp = ServletHelper.PrepareResponse_forDoGet_First(resp);
             PrintWriter writer = resp.getWriter();
 
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);

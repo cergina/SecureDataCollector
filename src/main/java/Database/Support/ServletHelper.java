@@ -26,4 +26,24 @@ public class ServletHelper {
 
         return body;
     }
+
+    public static HttpServletRequest ProcessRequest_forDoGet_First(HttpServletRequest req) throws IOException{
+        req.setCharacterEncoding("UTF-8");
+
+        return req;
+    }
+
+    public static HttpServletResponse PrepareResponse_forDoGet_First(HttpServletResponse resp) throws IOException{
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html");
+
+        return resp;
+    }
+
+    public static HttpServletResponse PrepareResponse_forDoPost_First(HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json; charset=utf-8");
+        resp.setCharacterEncoding("UTF-8");
+
+        return resp;
+    }
 }

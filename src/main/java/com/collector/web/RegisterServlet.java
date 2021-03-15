@@ -1,11 +1,8 @@
 package com.collector.web;
 
-import Database.Interaction.Entities.Address;
-import Database.Support.CustomLogs;
-import Database.Support.JSONHelper;
-import Database.Tables.T_Address;
+import Control.ConfigClass;
 import com.collector.config.TemplateEngineUtil;
-import org.json.JSONObject;
+import com.collector.support.DcsWebContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -24,7 +21,8 @@ public class RegisterServlet extends ConnectionServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
-        WebContext context = new WebContext(request, response, request.getServletContext());
+        WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
+                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
