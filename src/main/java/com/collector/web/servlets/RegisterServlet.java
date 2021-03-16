@@ -1,8 +1,8 @@
-package com.collector.web;
+package com.collector.web.servlets;
 
 import Control.ConfigClass;
-import com.collector.config.TemplateEngineUtil;
-import com.collector.support.DcsWebContext;
+import com.collector.web.config.TemplateEngineUtil;
+import com.collector.web.support.DcsWebContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 

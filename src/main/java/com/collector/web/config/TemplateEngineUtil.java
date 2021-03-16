@@ -1,4 +1,4 @@
-package com.collector.config;
+package com.collector.web.config;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebListener;

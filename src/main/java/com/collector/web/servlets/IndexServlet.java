@@ -1,10 +1,11 @@
-package com.collector.web;
+package com.collector.web.servlets;
 
 import Control.ConfigClass;
 import Database.Support.ServletHelper;
 import Database.Tables.T_Address;
-import com.collector.config.TemplateEngineUtil;
-import com.collector.support.DcsWebContext;
+import com.collector.db.UseCase;
+import com.collector.web.config.TemplateEngineUtil;
+import com.collector.web.support.DcsWebContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -30,7 +31,7 @@ public class IndexServlet extends ConnectionServlet {
         if (session != null) {
             context.setVariable("Email", session.getAttribute("email"));
 
-            ArrayList<T_Address> arr = retrieveAllAddress();
+            ArrayList<T_Address> arr = (new UseCase(dbProvider)).retrieveAllAddress();
             if (arr == null) {
                 ServletHelper.Send404(response);
             } else {

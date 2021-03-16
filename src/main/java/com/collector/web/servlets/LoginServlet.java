@@ -1,8 +1,8 @@
-package com.collector.web;
+package com.collector.web.servlets;
 
 import Control.ConfigClass;
-import com.collector.config.TemplateEngineUtil;
-import com.collector.support.DcsWebContext;
+import com.collector.web.config.TemplateEngineUtil;
+import com.collector.web.support.DcsWebContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -35,7 +35,7 @@ public class LoginServlet extends ConnectionServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        boolean userExists = true; // TODO check user in database - should return complete user object
+        boolean userExists = true; // TODO check user in database // (new UseCase(dbProvider)).retrieveUserByEmail(email);
         boolean passwordMatches = true; // TODO compare password
         if (userExists && passwordMatches) {
             HttpSession session = request.getSession();

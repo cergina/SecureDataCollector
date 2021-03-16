@@ -1,4 +1,4 @@
-package com.collector.support;
+package com.collector.web.support;
 
 import Control.ConfigClass;
 import org.thymeleaf.context.WebContext;
