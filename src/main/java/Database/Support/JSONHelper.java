@@ -5,10 +5,11 @@ import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class JSONHelper {
-    public static JSONObject ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, Exception {
+    public static JSONObject ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, IOException {
         // Base
         req = ServletHelper.ProcessRequest_forDoGet_First(req);
 

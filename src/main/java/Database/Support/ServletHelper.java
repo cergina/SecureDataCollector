@@ -15,7 +15,7 @@ public class ServletHelper {
         resp.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
     }
 
-    public static String ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, Exception {
+    public static String ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, IOException {
         // get body of request
         String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
