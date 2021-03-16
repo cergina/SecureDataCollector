@@ -30,6 +30,7 @@ public class CustomLogs {
     }
 
     public static void Error(String msg) {
+
         DoLog(ERR, msg, true);
     }
 

@@ -18,6 +18,11 @@ public class Measurements {
         if (tm.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Measurements is not ok for database enter");
 
+        // Find out accumulated value from DB
+        ResultSet rs = null;
+        T_Measurement tm_recentInDb = retrieveNewest(conn, ps, rs, tm.getA_SensorID());
+        int newAccumulated = (tm_recentInDb == null) ? tm.getA_Value() : tm.getA_Value() + tm_recentInDb.getA_AccumulatedValue();
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
@@ -25,12 +30,11 @@ public class Measurements {
                         "Value, RequestNo, MeasuredAt, AccumulatedValue,SensorID" +
                         ") " +
                         "VALUES ( " +
-                        "?, " +
-                        "?, " +
-                        "?, " +
-                        "? + (SELECT IF (COUNT(tmb.ID) > 0, tmb.AccumulatedValue, 0) FROM " + T_Measurement.DBTABLE_NAME  + " as tmb " +
-                        "WHERE tmb.SensorID = ? ORDER BY tmb.AccumulatedValue DESC LIMIT 1), " +
-                        "?" +
+                        "?, " + // value
+                        "?, " + // reqNo
+                        "?, " + // MeasuredAt
+                        "?, " + // AccumValue
+                        "?" + // SensorId
                         ") "
         );
 
@@ -38,8 +42,7 @@ public class Measurements {
         ps.setInt(++col, tm.getA_Value());
         ps.setInt(++col, tm.getA_RequestNo());
         ps.setDate(++col, tm.getA_MeasuredAt());
-        ps.setInt(++col, tm.getA_Value()); // for ? + select accumulated
-        ps.setInt(++col, tm.getA_SensorID()); // for ? + select accumulated
+        ps.setInt(++col, newAccumulated);
         ps.setInt(++col, tm.getA_SensorID());
 
         // SQL Execution
@@ -118,6 +121,38 @@ public class Measurements {
 
         return arr;
     }
+
+    public static T_Measurement retrieveNewest(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+        Assurance.IdCheck(sensorId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                        "WHERE SensorID=? ORDER BY AccumulatedValue DESC LIMIT 1"
+        );
+
+        int col = 0;
+        ps.setInt(++col, sensorId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_Measurement tm = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tm = Measurements.FillEntity(rs);
+        }
+
+        return tm;
+    }
+
 
     // Privates
     private static T_Measurement FillEntity(ResultSet rs) throws SQLException {
