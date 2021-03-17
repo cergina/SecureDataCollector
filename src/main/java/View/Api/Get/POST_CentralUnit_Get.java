@@ -4,8 +4,8 @@ import Model.Database.Interaction.CentralUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_CentralUnit;
-import View.Support.POST_Database_Interaction;
 import View.Support.ServletHelper;
+import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 
 import javax.servlet.annotation.WebServlet;

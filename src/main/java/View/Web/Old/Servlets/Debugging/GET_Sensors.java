@@ -1,11 +1,11 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
 import Model.Database.Interaction.Sensor;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Sensor;
-import View.Support.GET_Database_Interaction;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

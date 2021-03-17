@@ -1,10 +1,10 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
 import Control.ConfigClass;
 import Model.Database.Support.CustomLogs;
-import View.Support.GET_Database_Interaction;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

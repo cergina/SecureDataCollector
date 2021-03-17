@@ -1,11 +1,11 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.User;
+import Model.Database.Interaction.CentralUnit;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_User;
-import View.Support.GET_Database_Interaction;
+import Model.Database.Tables.Table.T_CentralUnit;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "GET_Users", urlPatterns = GET_Users.SERVLET_URL)
-public class GET_Users extends GET_Database_Interaction {
-    public static final String SERVLET_URL =  "/users";
-    public static final String SITE_NAME = "Users";
+@WebServlet(name = "GET_CentralUnits", urlPatterns = GET_CentralUnits.SERVLET_URL)
+public class GET_CentralUnits extends GET_Database_Interaction {
+    public static final String SERVLET_URL =  "/central-units";
+    public static final String SITE_NAME = "Central Units";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -32,8 +32,8 @@ public class GET_Users extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_User> arr = User.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
-            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_User.REFERENCE);
+            ArrayList<T_CentralUnit> arr = CentralUnit.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_CentralUnit.REFERENCE);
 
             // Finalize
             document = CoreBuilder.FinalizeSite(document);
@@ -43,7 +43,6 @@ public class GET_Users extends GET_Database_Interaction {
             writer.close();
 
             CustomLogs.InfoLog("Exited " + SERVLET_URL + ".", true);
-
         } catch (Exception e) {
             ServletHelper.Send404(resp);
 

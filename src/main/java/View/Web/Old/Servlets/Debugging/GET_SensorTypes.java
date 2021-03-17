@@ -1,11 +1,11 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.TestLogs;
+import Model.Database.Interaction.SensorType;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_TestLog;
-import View.Support.GET_Database_Interaction;
+import Model.Database.Tables.Enum.E_SensorType;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "GET_TestLogs", urlPatterns = GET_TestLogs.SERVLET_URL)
-public class GET_TestLogs extends GET_Database_Interaction {
-    public static final String SERVLET_URL =  "/test-logs";
-    public static final String SITE_NAME = "Test logs";
+@WebServlet(name = "GET_SensorTypes", urlPatterns = GET_SensorTypes.SERVLET_URL)
+public class GET_SensorTypes extends GET_Database_Interaction {
+    public static final String SERVLET_URL =  "/sensor-types";
+    public static final String SITE_NAME = "Sensor types";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -32,8 +32,8 @@ public class GET_TestLogs extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_TestLog> arr = TestLogs.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
-            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_TestLog.REFERENCE);
+            ArrayList<E_SensorType> arr = SensorType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            document = CoreBuilder.GenerateDataForPresentation(document, arr, E_SensorType.REFERENCE);
 
             // Finalize
             document = CoreBuilder.FinalizeSite(document);

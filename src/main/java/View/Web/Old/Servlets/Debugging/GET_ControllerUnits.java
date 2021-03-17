@@ -1,11 +1,11 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.Project;
+import Model.Database.Interaction.ControllerUnit;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_Project;
-import View.Support.GET_Database_Interaction;
+import Model.Database.Tables.Table.T_ControllerUnit;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "GET_Projects", urlPatterns = GET_Projects.SERVLET_URL)
-public class GET_Projects extends GET_Database_Interaction {
-    public static final String SERVLET_URL =  "/projects";
-    public static final String SITE_NAME = "Projects";
+@WebServlet(name = "GET_ControllerUnits", urlPatterns = GET_ControllerUnits.SERVLET_URL)
+public class GET_ControllerUnits extends GET_Database_Interaction {
+    public static final String SERVLET_URL =  "/controller-units";
+    public static final String SITE_NAME = "Controller Units";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -32,8 +32,8 @@ public class GET_Projects extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_Project> arr = Project.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
-            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Project.REFERENCE);
+            ArrayList<T_ControllerUnit> arr = ControllerUnit.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_ControllerUnit.REFERENCE);
 
             // Finalize
             document = CoreBuilder.FinalizeSite(document);

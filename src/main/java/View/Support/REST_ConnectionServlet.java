@@ -4,7 +4,7 @@ import Control.Connect.DbProvider;
 
 import javax.servlet.http.HttpServlet;
 
-public abstract class GET_Database_Interaction extends HttpServlet {
+public abstract class REST_ConnectionServlet extends HttpServlet {
     protected DbProvider dbProvider;
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried

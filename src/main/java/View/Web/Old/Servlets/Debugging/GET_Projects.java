@@ -1,11 +1,11 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.SensorType;
+import Model.Database.Interaction.Project;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Enum.E_SensorType;
-import View.Support.GET_Database_Interaction;
+import Model.Database.Tables.Table.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "GET_SensorTypes", urlPatterns = GET_SensorTypes.SERVLET_URL)
-public class GET_SensorTypes extends GET_Database_Interaction {
-    public static final String SERVLET_URL =  "/sensor-types";
-    public static final String SITE_NAME = "Sensor types";
+@WebServlet(name = "GET_Projects", urlPatterns = GET_Projects.SERVLET_URL)
+public class GET_Projects extends GET_Database_Interaction {
+    public static final String SERVLET_URL =  "/projects";
+    public static final String SITE_NAME = "Projects";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -32,8 +32,8 @@ public class GET_SensorTypes extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<E_SensorType> arr = SensorType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
-            document = CoreBuilder.GenerateDataForPresentation(document, arr, E_SensorType.REFERENCE);
+            ArrayList<T_Project> arr = Project.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Project.REFERENCE);
 
             // Finalize
             document = CoreBuilder.FinalizeSite(document);

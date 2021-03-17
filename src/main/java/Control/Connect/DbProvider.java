@@ -51,15 +51,6 @@ public class DbProvider {
         }
     }
 
-
-    public InitialContext getCtx() {
-        return ctx;
-    }
-
-    public DataSource getDs() {
-        return ds;
-    }
-
     public Connection getConn() {
         return conn;
     }

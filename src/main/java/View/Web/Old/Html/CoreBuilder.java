@@ -2,7 +2,7 @@ package View.Web.Old.Html;
 
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.DbEntity;
-import View.Web.Old.Servlets.GENERIC_INFO;
+import View.Web.Old.Servlets.Debugging.GENERIC_INFO;
 
 import java.util.ArrayList;
 

@@ -3,8 +3,8 @@ package View.Api.Put;
 import Model.Database.Interaction.TestLogs;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_TestLog;
-import View.Support.POST_Database_Interaction;
 import View.Support.ServletHelper;
+import View.Web.Old.Servlets.POST_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

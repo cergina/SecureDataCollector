@@ -2,8 +2,8 @@ package View.Api.Get;
 
 import Model.Database.Interaction.Project;
 import Model.Database.Tables.Table.T_Project;
-import View.Support.GET_Database_Interaction;
 import View.Support.ServletHelper;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

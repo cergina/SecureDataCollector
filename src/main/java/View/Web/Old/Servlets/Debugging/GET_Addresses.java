@@ -1,11 +1,11 @@
-package View.Web.Old.Servlets;
+package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.Flat;
+import Model.Database.Interaction.Address;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_Flat;
-import View.Support.GET_Database_Interaction;
+import Model.Database.Tables.Table.T_Address;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
+import View.Web.Old.Servlets.GET_Database_Interaction;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-@WebServlet(name = "GET_Flats", urlPatterns = GET_Flats.SERVLET_URL)
-public class GET_Flats extends GET_Database_Interaction {
-    public static final String SERVLET_URL =  "/flats";
-    public static final String SITE_NAME = "Flats";
+@WebServlet(name = "GET_Addresses", urlPatterns = GET_Addresses.SERVLET_URL)
+public class GET_Addresses extends GET_Database_Interaction {
+    public static final String SERVLET_URL =  "/addresses";
+    public static final String SITE_NAME = "Addresses";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -32,8 +32,8 @@ public class GET_Flats extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_Flat> arr = Flat.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
-            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Flat.REFERENCE);
+            ArrayList<T_Address> arr = Address.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Address.REFERENCE);
 
             // Finalize
             document = CoreBuilder.FinalizeSite(document);
