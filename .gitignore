@@ -28,3 +28,6 @@ hs_err_pid*
 
 # Atmel Studio Solution User Options nás nezaujímajú
 *.atsuo
+
+# Dočasné súbory schém netreba ukladať
+/schematics/*/*.s#*
