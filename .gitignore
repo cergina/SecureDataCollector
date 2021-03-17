@@ -21,6 +21,10 @@ hs_err_pid*
 
 # Debug nie je potrebné commitovať
 /firmware/*/*/Debug
+# Release
+/firmware/*/*/Release
+# src
+/firmware/*/*/src
 
 # Atmel Studio Solution User Options nás nezaujímajú
 *.atsuo
