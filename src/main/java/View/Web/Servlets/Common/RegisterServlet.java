@@ -1,8 +1,11 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
+import Control.Scenario.ExampleUseCase;
+import Model.Web.Auth;
 import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
+import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -32,21 +35,29 @@ public class RegisterServlet extends ConnectionServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
 
-        String email = request.getParameter("email");
+        Auth authReq = Auth.parse(ServletHelper.RequestBody(request));
+        String passwordHash = authReq.getPassword(); // TODO hash
 
-        boolean emailExists = true; // TODO check email in database
-        if (emailExists) {
-            String password = request.getParameter("password");
-            // TODO hash password
-            String firstname = request.getParameter("firstname");
-            // TODO save user data to database
+        Auth auth = (new ExampleUseCase(dbProvider)).retrieveAuthByEmail(authReq.getUser().getEmail());
 
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            writer.println("User registered.");
+        if (auth == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            writer.println("No such email.");
+        } else if (!auth.getPassword().equals(authReq.getVerificationcode())) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            writer.println("Verification code does not match.");
         } else {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            writer.println("This email cannot be registered.");
+            auth.setPassword(passwordHash);
+
+            if ((new ExampleUseCase(dbProvider)).updateAuth(auth)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                writer.println("Registration complete.");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                writer.println("Registration error");
+            }
         }
+
         writer.close();
     }
 }

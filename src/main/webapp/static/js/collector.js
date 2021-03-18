@@ -1,51 +1,70 @@
+function buildUser() {
+    return {
+        email: $("#email").val(),
+        firstname: $("#firstname").val(),
+        middlename: $("#middlename").val(),
+        lastname: $("#lastname").val(),
+        phone: $("#phone").val(),
+        residence: $("#residence").val()
+    };
+}
+
+function buildAuth() {
+    return {
+        user: buildUser(),
+        isadmin: $("#isadmin").prop("checked"),
+        password: $("#password").val(),
+        verificationcode: $("#verificationcode").val()
+    };
+}
+
+function createUser() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/user",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(buildAuth()),
+        statusCode: {
+            201: function(responseObject, textStatus, jqXHR) {
+                $(':input').val('');
+            }
+        },
+        complete: function(jqXHR, textStatus) {
+            alert(jqXHR.responseText);
+        }
+    });
+}
 
 function registerUser() {
-    var email = $("#email").val();
-    var firstname = $("#first-name").val();
-    var password = $("#password").val();
-
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/register",
-        data: {
-            email: email,
-            firstname: firstname,
-            password: password
-        },
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(buildAuth()),
         statusCode: {
-            201: function(responseObject, textStatus, jqXHR) {
+            200: function(responseObject, textStatus, jqXHR) {
                 $(location).attr('href', $SCRIPT_ROOT + "/login");
             }
         },
-        error: function(jqXHR, textStatus, errorThrown){
-            console.log(textStatus + ": " + jqXHR.status + " " + errorThrown);
-        },
         complete: function(jqXHR, textStatus) {
-            console.log(textStatus);
+            alert(jqXHR.responseText);
         }
     });
 }
 
 function loginUser() {
-    var email = $("#email").val();
-    var password = $("#password").val();
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/login",
-        data: {
-            email: email,
-            password: password
-        },
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(buildAuth()),
         statusCode: {
             200: function(responseObject, textStatus, jqXHR) {
                 $(location).attr('href', $SCRIPT_ROOT + "/index");
             }
         },
-        error: function(jqXHR, textStatus, errorThrown){
-            console.log(textStatus + ": " + jqXHR.status + " " + errorThrown);
-        },
         complete: function(jqXHR, textStatus) {
-            console.log(textStatus);
+            alert(jqXHR.responseText);
         }
     });
 }

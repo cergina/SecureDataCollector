@@ -20,12 +20,12 @@ public class CustomLogs {
     private static Properties properties = new Properties();
 
     public static void InfoLog(String msg, boolean printStackTrace) {
-        if (ConfigClass.DEBUG)
+        if (ConfigClass.DEBUG) // ??? ako moze byt infolog podmieneny debugom. bud je to jeden alebo druhy
             DoLog(INFORM, msg, printStackTrace);
     }
 
     public static void Debug(String msg) {
-        if (ConfigClass.DEBUG)
+        if (ConfigClass.DEBUG) // ??? a debug podla toho ci je debug
             DoLog(DEBUG, msg, true);
     }
 

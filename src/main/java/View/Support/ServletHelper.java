@@ -1,5 +1,9 @@
 package View.Support;
 
+import Model.Database.Support.CustomLogs;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,5 +49,20 @@ public class ServletHelper {
         resp.setCharacterEncoding("UTF-8");
 
         return resp;
+    }
+
+    public static String RequestBody(HttpServletRequest request) {
+        try {
+            int intValueOfChar;
+            String bodyString = "";
+            while ((intValueOfChar = request.getReader().read()) != -1) {
+                bodyString += (char) intValueOfChar;
+            }
+            CustomLogs.Error(bodyString); // TODO tu potrebujem zakazdym debug log tohto stringu pre vyvoj aby som vedel co prislo
+            return bodyString;
+        } catch (IOException e) {
+            CustomLogs.Error(e.getMessage());
+        }
+        return null;
     }
 }
