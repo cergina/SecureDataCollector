@@ -75,7 +75,7 @@ public class Hash {
         Assurance.IdCheck(userID);
 
         ps = conn.prepareStatement(
-                "SELECT * FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? ORDER BY UserID ASC LIMIT 1"
+                "SELECT * FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? GROUP BY UserID ORDER BY UserID ASC LIMIT 1"
         );
 
         int col = 0;
@@ -102,7 +102,7 @@ public class Hash {
         Assurance.IdCheck(userID);
 
         ps = conn.prepareStatement(
-                "SELECT COUNT(*) AS numHashes FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=?"
+                "SELECT COUNT(*) AS numHashes FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? GROUP BY UserID"
         );
 
         int col = 0;

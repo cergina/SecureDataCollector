@@ -29,6 +29,6 @@ public class UserAccessHelper {
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 }
