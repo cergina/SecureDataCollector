@@ -1,7 +1,7 @@
 
 function registerUser() {
     var email = $("#email").val();
-    var firstname = $("#first-name").val();
+    var verification = $("#verification").val();
     var password = $("#password").val();
 
     $.ajax({
@@ -9,12 +9,24 @@ function registerUser() {
         url: $SCRIPT_ROOT + "/register",
         data: {
             email: email,
-            firstname: firstname,
+            verification: verification,
             password: password
         },
         statusCode: {
             201: function(responseObject, textStatus, jqXHR) {
-                $(location).attr('href', $SCRIPT_ROOT + "/login");
+                $(location).attr('href', $SCRIPT_ROOT + "/register-confirm");
+            },
+            403: function(responseObject, textStatus, jqXHR) {
+                window.alert("This email cannot be registered.");
+            },
+            411: function(responseObject, textStatus, jqXHR) {
+                window.alert("Enter a password that is between 6 and 15 characters.");
+            },
+            417: function(responseObject, textStatus, jqXHR) {
+                window.alert("The verification code you entered is incorrect.");
+            },
+            500: function(responseObject, textStatus, jqXHR) {
+                window.alert("Something went wrong with the registration. Contact support.");
             }
         },
         error: function(jqXHR, textStatus, errorThrown){
