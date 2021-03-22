@@ -27,6 +27,11 @@ function createUser() {
         statusCode: {
             201: function(responseObject, textStatus, jqXHR) {
                 $(':input').val('');
+                console.log(responseObject);
+                console.log(jqXHR.responseText);
+                console.log(jqXHR);
+                var resp = $.parseJSON(jqXHR.responseText);
+                console.log(resp.verificationcode);
             }
         },
         complete: function(jqXHR, textStatus) {

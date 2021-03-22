@@ -108,7 +108,9 @@ public class E_CommType extends DbEntity implements DBEnum, DBToHtml {
     // Generic
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        StringBuilder str = new StringBuilder("[");
+
+        return str.toString();
     }
 
     // Getters

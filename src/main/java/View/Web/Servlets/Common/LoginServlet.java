@@ -3,12 +3,14 @@ package View.Web.Servlets.Common;
 import Control.ConfigClass;
 import Control.Scenario.ExampleUseCase;
 import Model.Database.Support.CustomLogs;
+import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.User;
 import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
+import javafx.util.Pair;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -39,19 +41,22 @@ public class LoginServlet extends ConnectionServlet {
         PrintWriter writer = response.getWriter();
 
         Auth authReq = Auth.parse(ServletHelper.RequestBody(request));
-        String passwordHash = authReq.getPassword(); // TODO hash
+        String passwordHash = UserAccessHelper.hashPassword(authReq.getPassword());
 
-        Auth auth = (new ExampleUseCase(dbProvider)).retrieveAuthByEmail(authReq.getUser().getEmail());
+        Pair<Auth,Integer> authWithId = (new ExampleUseCase(dbProvider))
+                .retrieveAuthByEmail(authReq.getUser().getEmail());
 
-        if (auth == null) {
+        if (authWithId == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             writer.println("No such email.");
-        } else if (!auth.getPassword().equals(passwordHash)) {
+        } else if (!authWithId.getKey().getPassword().equals(passwordHash)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             writer.println("Password does not match.");
         } else {
             HttpSession session = request.getSession();
             session.setAttribute("email", authReq.getUser().getEmail()); // TODO session attrs to be decided after layouts
+            session.setAttribute("user", authReq.getUser());
+            session.setAttribute("userID", authWithId.getValue());
 
             response.setStatus(HttpServletResponse.SC_OK);
             writer.println("Login successful.");

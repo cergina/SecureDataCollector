@@ -32,6 +32,39 @@ public class DbProvider {
         }
     }
 
+    public void beforeSqlExecution() {
+        try {
+            conn.setAutoCommit(false);
+        } catch (Exception e) {
+            CustomLogs.Error(e.getMessage());
+        }
+    }
+
+    public void afterSuccessfulSqlExecution() {
+        try {
+            conn.commit();
+        } catch (Exception e) {
+            CustomLogs.Error(e.getMessage());
+        }
+    }
+
+    public void transactionRollback() {
+        try {
+            conn.rollback();
+            conn.setAutoCommit(true);
+        } catch (Exception e) {
+            CustomLogs.Error(e.getMessage());
+        }
+    }
+
+    public void restartAutoCommit() {
+        try {
+            getConn().setAutoCommit(true);
+        } catch (Exception exception) {
+            CustomLogs.Error(exception.getMessage());
+        }
+    }
+
     public void disconnect() {
         try {
             if (rs != null)

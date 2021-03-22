@@ -2,11 +2,13 @@ package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
 import Control.Scenario.ExampleUseCase;
+import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
+import javafx.util.Pair;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -36,20 +38,20 @@ public class RegisterServlet extends ConnectionServlet {
         PrintWriter writer = response.getWriter();
 
         Auth authReq = Auth.parse(ServletHelper.RequestBody(request));
-        String passwordHash = authReq.getPassword(); // TODO hash
+        String passwordHash = UserAccessHelper.hashPassword(authReq.getPassword());
 
-        Auth auth = (new ExampleUseCase(dbProvider)).retrieveAuthByEmail(authReq.getUser().getEmail());
+        Pair<Auth,Integer> authWithId = (new ExampleUseCase(dbProvider))
+                .retrieveAuthByEmail(authReq.getUser().getEmail());
 
-        if (auth == null) {
+        // TODO Veronika's exceptions
+        if (authWithId == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             writer.println("No such email.");
-        } else if (!auth.getPassword().equals(authReq.getVerificationcode())) {
+        } else if (!authWithId.getKey().getPassword().equals(authReq.getVerificationcode())) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             writer.println("Verification code does not match.");
         } else {
-            auth.setPassword(passwordHash);
-
-            if ((new ExampleUseCase(dbProvider)).updateAuth(auth)) {
+            if ((new ExampleUseCase(dbProvider)).updateAuthPassword(passwordHash, authWithId.getValue())) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 writer.println("Registration complete.");
             } else {

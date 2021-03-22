@@ -31,7 +31,7 @@ public class Assurance {
         return true;
     }
 
-    public static boolean IsVarcharOk(String value) {
+    public static boolean IsVarcharOk(String value) { // TODO BUG Now this accepts empty string. Expression "Ok" in method name is also ambiguous.
         if (null == value)
             return false;
 
