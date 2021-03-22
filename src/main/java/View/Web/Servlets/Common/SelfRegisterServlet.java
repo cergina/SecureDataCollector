@@ -65,6 +65,7 @@ public class SelfRegisterServlet extends ConnectionServlet {
             String hashedPassword = UserAccessHelper.hashPassword(password); //Hashing the password
 
             String verification = request.getParameter("verification");
+            String hashedVerification = UserAccessHelper.hashPassword(verification);
             //Getting the verification code that admin generated from the database
             T_Hash verificationDB = Hash.retrieveCode(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), userToRegister.getA_pk());
             if(verificationDB == null) { //In case the admin hasn't generated a verification code yet
@@ -73,7 +74,7 @@ public class SelfRegisterServlet extends ConnectionServlet {
                 throw new InvalidOperationException("The verification code has not been assigned yet.");
             }
 
-            if(!(verification.equals(verificationDB.getA_Value()))) { //Verification code entered by user is incorrect
+            if(!(hashedVerification.equals(verificationDB.getA_Value()))) { //Verification code entered by user is incorrect
                 //writer.println("The verification code is incorrect.");
                 response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
                 throw new BadVerificationCodeException("The verification code entered by the user is incorrect.");

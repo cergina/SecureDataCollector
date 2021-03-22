@@ -2,6 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
+import Model.Database.Tables.Table.T_Hash;
 import Model.Database.Tables.Table.T_User;
 
 import java.sql.Connection;
@@ -111,6 +112,30 @@ public class User {
         return t;
     }
 
+    /*
+    * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
+    */
+    public static int retrieveLatestID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        int latest  = -1;
+
+        ps = conn.prepareStatement(
+                "SELECT LAST_INSERT_ID();"
+        );
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            latest = rs.getInt(1);
+        }
+
+        return latest;
+    }
 
 
     /*****

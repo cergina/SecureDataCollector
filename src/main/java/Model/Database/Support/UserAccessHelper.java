@@ -31,4 +31,26 @@ public class UserAccessHelper {
         }
         return null;
     }
+
+    public static String generateVerification(int len) {
+        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        SecureRandom rnd = new SecureRandom();
+        StringBuilder sb = new StringBuilder(len);
+        for(int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
+    }
+
+    public static Integer getAccessPrivilegeType(String privilege){
+        int privilegeType = 0;
+        switch(privilege) {
+            case "admin":
+                privilegeType = 1;
+                break;
+            case "user":
+                privilegeType = 2;
+                break;
+        }
+        return privilegeType;
+    }
 }
