@@ -1,10 +1,11 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
-import Control.Scenario.ExampleUseCase;
-import Model.Database.Support.CustomLogs;
+import Control.Scenario.AuthController;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
+import Model.Web.JsonResponse;
+import Model.Web.PrettyObject;
 import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
@@ -37,20 +38,15 @@ public class UserServlet extends ConnectionServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
 
-        Auth authReq = Auth.parse(ServletHelper.RequestBody(request));
-        String verificationCode = UserAccessHelper.generateVerification(14);
-        authReq.setVerificationcode(verificationCode); // TODO response verification code
+        Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
-        if ((new ExampleUseCase(dbProvider)).createAuth(authReq)) {
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            Auth authResp = new Auth();
-            authResp.setVerificationcode(verificationCode);
-            writer.println(authResp.toString());
-        } else {
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-            writer.println("Email already exists.");
-        }
+        String verificationCode = UserAccessHelper.generateVerification(14); // generate verification code
+        auth.setVerificationcode(verificationCode);
 
+        final JsonResponse jsonResponse = (new AuthController(dbProvider)).createUser(auth); // create new user
+        response.setStatus(jsonResponse.getStatus());
+
+        writer.println(jsonResponse.toString());
         writer.close();
     }
 }

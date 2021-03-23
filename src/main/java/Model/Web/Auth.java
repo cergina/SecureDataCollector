@@ -1,16 +1,21 @@
 package Model.Web;
 
 
-import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
+/**
+ * Api model - authentication
+ */
 public class Auth extends PrettyObject {
 
+    @Expose
     private User user;
+    @Expose(serialize = false)
     private boolean isadmin;
+    @Expose(serialize = false)
     private String password;
+    @Expose
     private String verificationcode;
-
-    // ak potrebujes dopln si iny konstruktor
 
     public Auth() {} // empty constructor for Gson
 
@@ -44,9 +49,5 @@ public class Auth extends PrettyObject {
 
     public void setVerificationcode(String verificationcode) {
         this.verificationcode = verificationcode;
-    }
-
-    public static Auth parse(String str){
-        return new Gson().fromJson(str, Auth.class);
     }
 }

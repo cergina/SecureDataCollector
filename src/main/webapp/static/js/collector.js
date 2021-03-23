@@ -1,6 +1,13 @@
+var CONTENT_TYPE = "application/json; charset=utf-8";
+var DATA_TYPE = "json";
+
+
+
+// build JSON object by Api spec: User
 function buildUser() {
     return {
         email: $("#email").val(),
+        beforetitle: $("#beforetitle").val(),
         firstname: $("#firstname").val(),
         middlename: $("#middlename").val(),
         lastname: $("#lastname").val(),
@@ -9,6 +16,7 @@ function buildUser() {
     };
 }
 
+// build JSON object by Api spec: Auth
 function buildAuth() {
     return {
         user: buildUser(),
@@ -18,62 +26,96 @@ function buildAuth() {
     };
 }
 
+// Create new user
 function createUser() {
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/user",
-        contentType: "application/json; charset=utf-8",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
         data: JSON.stringify(buildAuth()),
         statusCode: {
-            201: function(responseObject, textStatus, jqXHR) {
+            201: function(response) {
                 $(':input').val('');
-                console.log(responseObject);
-                console.log(jqXHR.responseText);
-                console.log(jqXHR);
-                var resp = $.parseJSON(jqXHR.responseText);
-                console.log(resp.verificationcode);
+                var auth = JSON.parse(response.data);
+                alert(auth.verificationcode); // TODO display verification code
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         },
-        complete: function(jqXHR, textStatus) {
-            alert(jqXHR.responseText);
+        complete: function(jqXHR) { // keep for DEBUG only
+            console.log("---DEBUG---");
+            console.log(jqXHR);
         }
     });
 }
 
+// Finish registration
 function registerUser() {
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/register",
-        contentType: "application/json; charset=utf-8",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
         data: JSON.stringify(buildAuth()),
         statusCode: {
-            200: function(responseObject, textStatus, jqXHR) {
-                $(location).attr('href', $SCRIPT_ROOT + "/login");
+            200: function(response) {
+                // TODO thank user for registration
+            },
+            401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         },
-        complete: function(jqXHR, textStatus) {
-            alert(jqXHR.responseText);
+        complete: function(jqXHR) { // keep for DEBUG only
+            console.log("---DEBUG---");
+            console.log(jqXHR);
         }
     });
 }
 
+// Login user
 function loginUser() {
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/login",
-        contentType: "application/json; charset=utf-8",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
         data: JSON.stringify(buildAuth()),
         statusCode: {
-            200: function(responseObject, textStatus, jqXHR) {
-                $(location).attr('href', $SCRIPT_ROOT + "/index");
+            200: function(response) {
+                // $(location).attr('href', $SCRIPT_ROOT + "/index");
+            },
+            401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         },
-        complete: function(jqXHR, textStatus) {
-            alert(jqXHR.responseText);
+        complete: function(jqXHR) { // keep for DEBUG only
+            console.log("---DEBUG---");
+            console.log(jqXHR);
         }
     });
 }
 
 $(function() {
-    console.log("Hello World from static");
+
 });

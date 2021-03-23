@@ -29,6 +29,9 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     public static final String DBNAME_ACCESS_PRIVILEGE_ID = "AccessPrivilegeID";
     public static final String DBNAME_CREATED_BY_USER_ID = "CreatedByUserID";
 
+    public static final int ACCESS_PRIVILEGE_ID_ADMIN = 1;
+    public static final int ACCESS_PRIVILEGE_ID_USER = 2;
+
     public static T_AccessPrivilegeJournal REFERENCE = new T_AccessPrivilegeJournal();
     public static String[] TABLE_CODENAMES = {
             "Created At", "Deleted At", "User ID", "Access Privilege ID", "CreatedBy User ID"

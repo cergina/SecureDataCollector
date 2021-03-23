@@ -1,14 +1,15 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
-import Control.Scenario.ExampleUseCase;
+import Control.Scenario.AuthController;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
+import Model.Web.JsonResponse;
+import Model.Web.PrettyObject;
 import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
-import javafx.util.Pair;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -37,29 +38,15 @@ public class RegisterServlet extends ConnectionServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
 
-        Auth authReq = Auth.parse(ServletHelper.RequestBody(request));
-        String passwordHash = UserAccessHelper.hashPassword(authReq.getPassword());
+        Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
-        Pair<Auth,Integer> authWithId = (new ExampleUseCase(dbProvider))
-                .retrieveAuthByEmail(authReq.getUser().getEmail());
+        String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
+        auth.setPassword(passwordHash);
 
-        // TODO Veronika's exceptions
-        if (authWithId == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            writer.println("No such email.");
-        } else if (!authWithId.getKey().getPassword().equals(authReq.getVerificationcode())) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            writer.println("Verification code does not match.");
-        } else {
-            if ((new ExampleUseCase(dbProvider)).updateAuthPassword(passwordHash, authWithId.getValue())) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                writer.println("Registration complete.");
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                writer.println("Registration error");
-            }
-        }
+        final JsonResponse jsonResponse = (new AuthController(dbProvider)).finishRegistration(auth); // finish registration
+        response.setStatus(jsonResponse.getStatus());
 
+        writer.println(jsonResponse.toString());
         writer.close();
     }
 }

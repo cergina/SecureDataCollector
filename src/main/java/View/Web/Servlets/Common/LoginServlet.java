@@ -1,11 +1,11 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
-import Control.Scenario.ExampleUseCase;
-import Model.Database.Support.CustomLogs;
+import Control.Scenario.AuthController;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
-import Model.Web.User;
+import Model.Web.JsonResponse;
+import Model.Web.PrettyObject;
 import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
@@ -40,28 +40,15 @@ public class LoginServlet extends ConnectionServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
 
-        Auth authReq = Auth.parse(ServletHelper.RequestBody(request));
-        String passwordHash = UserAccessHelper.hashPassword(authReq.getPassword());
+        Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
-        Pair<Auth,Integer> authWithId = (new ExampleUseCase(dbProvider))
-                .retrieveAuthByEmail(authReq.getUser().getEmail());
+        String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
+        auth.setPassword(passwordHash);
 
-        if (authWithId == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            writer.println("No such email.");
-        } else if (!authWithId.getKey().getPassword().equals(passwordHash)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            writer.println("Password does not match.");
-        } else {
-            HttpSession session = request.getSession();
-            session.setAttribute("email", authReq.getUser().getEmail()); // TODO session attrs to be decided after layouts
-            session.setAttribute("user", authReq.getUser());
-            session.setAttribute("userID", authWithId.getValue());
+        final JsonResponse jsonResponse = (new AuthController(dbProvider)).authenticateUser(auth, request.getSession()); // initiate session
+        response.setStatus(jsonResponse.getStatus());
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            writer.println("Login successful.");
-        }
-
+        writer.println(jsonResponse.toString());
         writer.close();
     }
 }

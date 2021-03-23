@@ -1,14 +1,28 @@
 package Model.Web;
 
 
+import com.google.gson.annotations.Expose;
+
+/**
+ * Api model - user
+ */
 public class User extends PrettyObject {
 
+    @Expose
     private String email;
+    @Expose
+    private String beforetitle;
+    @Expose
     private String firstname;
+    @Expose
     private String middlename;
+    @Expose
     private String lastname;
+    @Expose
     private String phone;
+    @Expose
     private String residence;
+    private int userID;
 
     public User() {} // empty constructor for Gson
 
@@ -18,6 +32,14 @@ public class User extends PrettyObject {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getBeforetitle() {
+        return beforetitle;
+    }
+
+    public void setBeforetitle(String beforetitle) {
+        this.beforetitle = beforetitle;
     }
 
     public String getFirstname() {
@@ -58,5 +80,13 @@ public class User extends PrettyObject {
 
     public void setResidence(String residence) {
         this.residence = residence;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }
