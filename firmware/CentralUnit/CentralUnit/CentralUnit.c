@@ -3,7 +3,7 @@
  *
  * Created: 26. 2. 2021 18:55:53
  * Author: Tomas
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,6 +39,16 @@
 
 #define CHUNK_LEN 50
 
+//Parse Datov� ?as? paketu a vytiahne z nej d�ta pre spracovanie
+void ParsePacket(char *message)
+{
+	int len = message[1] << 8 | message[0];
+	for (int i = 2; i < len + 2; i++)
+	{
+		uart_putc(message[i]);
+	}
+}
+
 int main(void)
 {
 	unsigned int c;
@@ -57,14 +67,12 @@ int main(void)
 	char checksum;
 	while (1)
 	{
-    {		
-	{
-		c = uart_getc();
+		c = uart1_getc();
 		if (c & UART_NO_DATA)
 		{
 			continue;
 		}
-
+		uart_putc(c);
 		if (c == STX)
 		{
 			current_flag = F_DATA;
@@ -93,16 +101,23 @@ int main(void)
 		if (current_flag == F_CRC)
 		{
 			int len = message[1] << 8 | message[0];
-			
+
+			checksum = crc8((uint8_t *)message, len + 2);
+			/*
+			int y = len;
 			index = 0;
-			checksum = crc8((uint8_t*)message, len);
-			/* 
-			int y = len + 2;
 			while (y-- > 0)
 			{
-				checksum ^= message[index++];
+				uart_putc(message[index++]);
 			}
 			*/
+
+			int l = message[1] << 8 | message[0];
+			for (int i = 0; i < l + 2; i++)
+			{
+				uart_putc(message[i]);
+			}
+
 			if (c != checksum)
 			{
 				uart_puts("Wrong Checksum \r\n");
@@ -114,13 +129,9 @@ int main(void)
 			{
 				uart_puts("ACK");
 				checksum = 0; // vynulujeme
-					//continue, spracovat packet (poslat na quectel)
-				}
-				
+							  //ParsePacket(message);
 			}
 
-			current_flag = NULL;
-				current_flag = NULL;	
 			current_flag = NULL;
 		}
 	}
