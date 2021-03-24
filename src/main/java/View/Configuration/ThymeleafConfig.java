@@ -1,5 +1,6 @@
 package View.Configuration;
 
+import Control.Connect.DbProvider;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
@@ -10,19 +11,19 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-/**
- * Thymeleaf configuration.
- */
 @WebListener
 public class ThymeleafConfig implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent sce) {
         TemplateEngine engine = templateEngine(sce.getServletContext());
-        TemplateEngineUtil.storeTemplateEngine(sce.getServletContext(), engine);
+        ContextUtil.storeTemplateEngine(sce.getServletContext(), engine);
+
+        ContextUtil.storeDbProvider(sce.getServletContext(), new DbProvider());
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-
+        DbProvider dbProvider = ContextUtil.getDbProvider(sce.getServletContext());
+        dbProvider.disconnect();
     }
 
     private TemplateEngine templateEngine(ServletContext servletContext) {

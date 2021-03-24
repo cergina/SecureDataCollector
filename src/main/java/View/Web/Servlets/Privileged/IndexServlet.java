@@ -4,7 +4,7 @@ import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
 import Model.Database.Tables.Table.T_Address;
 import Model.Web.User;
-import View.Configuration.TemplateEngineUtil;
+import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.Common.LoginServlet;
@@ -26,7 +26,7 @@ public class IndexServlet extends ConnectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
@@ -42,7 +42,7 @@ public class IndexServlet extends ConnectionServlet {
         User user = (User) session.getAttribute(LoginServlet.SESSION_ATTR_USER);
         context.setVariable("Email", user.getEmail());
 
-        ArrayList<T_Address> arr = (new UC_Auth(dbProvider)).retrieveAllAddress();
+        ArrayList<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
 
         // i believe that if there is nothing it's not bad request but just empty array
         // bad request would be if it would crash

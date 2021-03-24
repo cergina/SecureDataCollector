@@ -6,7 +6,7 @@ import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import View.Configuration.TemplateEngineUtil;
+import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
@@ -27,7 +27,7 @@ public class RegisterServlet extends ConnectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
@@ -43,7 +43,7 @@ public class RegisterServlet extends ConnectionServlet {
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
         auth.setPassword(passwordHash);
 
-        final JsonResponse jsonResponse = (new UC_Auth(dbProvider)).finishRegistration(auth); // finish registration
+        final JsonResponse jsonResponse = (new UC_Auth(getDb())).finishRegistration(auth); // finish registration
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

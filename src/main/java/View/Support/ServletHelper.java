@@ -59,7 +59,7 @@ public class ServletHelper {
         String bodyString = null;
         try {
             bodyString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-            CustomLogs.Error(bodyString); // TODO tu potrebujem zakazdym debug log tohto stringu pre vyvoj aby som vedel co prislo
+            CustomLogs.Error(bodyString); // TODO tu potrebujem zakazdym debug log tohto stringu pre vyvoj aby som vedel co prislo, neviem ako je rieseny logger
         } catch (IOException e) {
             CustomLogs.Error(e.getMessage());
         }

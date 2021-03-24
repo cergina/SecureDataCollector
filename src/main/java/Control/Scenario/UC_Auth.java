@@ -173,7 +173,7 @@ public class UC_Auth {
             int hashCount = Hash.countHashesForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             if (hashCount > 1) {
                 jsonResponse.setMessage("User already registered.");
-                throw new AuthenticationException("Verification code does not match.");
+                throw new AuthenticationException("User already registered.");
             }
             if (!authDb.getPassword().equals(auth.getVerificationcode())) {
                 jsonResponse.setMessage("Verification code does not match.");
@@ -224,7 +224,7 @@ public class UC_Auth {
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
-            jsonResponse.setData(auth);
+            jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

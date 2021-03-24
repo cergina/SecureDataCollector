@@ -6,7 +6,7 @@ import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import View.Configuration.TemplateEngineUtil;
+import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -30,7 +29,7 @@ public class LoginServlet extends ConnectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
@@ -46,7 +45,7 @@ public class LoginServlet extends ConnectionServlet {
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
         auth.setPassword(passwordHash);
 
-        final JsonResponse jsonResponse = (new UC_Auth(dbProvider)).authenticateUser(auth); // login user
+        final JsonResponse jsonResponse = (new UC_Auth(getDb())).authenticateUser(auth); // login user
         response.setStatus(jsonResponse.getStatus());
 
         if (jsonResponse.getStatus() == HttpServletResponse.SC_OK) {

@@ -8,8 +8,14 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+/**
+ * Contains all supporting methods related to the user accessing the system
+ */
 public class UserAccessHelper {
 
+    /**
+     * Hashing a password, uses PBKDF2 algorithm
+     */
     public static String hashPassword(String password){
         SecureRandom random = new SecureRandom();
         random.setSeed(2021);
@@ -32,12 +38,15 @@ public class UserAccessHelper {
         return null;
     }
 
+    /**
+     * Used by admin for generating verification codes for user to be able to register
+     */
     public static String generateVerification(int len) {
-        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; // Array of possible characters in the verification code
         SecureRandom rnd = new SecureRandom();
         StringBuilder sb = new StringBuilder(len);
         for(int i = 0; i < len; i++)
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+            sb.append(AB.charAt(rnd.nextInt(AB.length()))); // Randomly append one of the possible characters to the result string
         return sb.toString();
     }
 }

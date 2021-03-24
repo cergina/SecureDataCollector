@@ -1,7 +1,7 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import View.Configuration.TemplateEngineUtil;
+import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Web.Servlets.ConnectionServlet;
 import org.thymeleaf.TemplateEngine;
@@ -19,7 +19,7 @@ public class AdminPageServlet extends ConnectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
