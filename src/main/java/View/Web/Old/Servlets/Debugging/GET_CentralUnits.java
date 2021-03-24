@@ -1,6 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.CentralUnit;
+import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_CentralUnit;
 import View.Support.ServletHelper;
@@ -32,7 +32,7 @@ public class GET_CentralUnits extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_CentralUnit> arr = CentralUnit.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            ArrayList<T_CentralUnit> arr = I_CentralUnit.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_CentralUnit.REFERENCE);
 
             // Finalize

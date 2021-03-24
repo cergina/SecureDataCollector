@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.Project;
+import Model.Database.Interaction.I_Project;
 import Model.Database.Tables.Table.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.GET_Database_Interaction;
@@ -26,12 +26,12 @@ public class GET_Project_Info extends GET_Database_Interaction {
 
             writer.println("<html><body>");
 
-            T_Project ret_tp = Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), Integer.parseInt(req.getParameter("id")));
+            T_Project ret_tp = I_Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), Integer.parseInt(req.getParameter("id")));
 
             if (null == ret_tp) {
                 writer.println("<p>No project returned!</p>");
             } else {
-                writer.println("<p> RETURNED THESE ITEM</p>");
+                writer.println("<p> RETURNED THESE ITEMS</p>");
 
                 writer.println("<p>ID: " + ret_tp.getA_pk() + "</p>");
                 writer.println("<p>Project Name: " + ret_tp.getA_name() + "</p>");

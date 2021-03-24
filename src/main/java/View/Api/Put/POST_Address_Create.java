@@ -1,6 +1,6 @@
 package View.Api.Put;
 
-import Model.Database.Interaction.Address;
+import Model.Database.Interaction.I_Address;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Address;
@@ -36,7 +36,7 @@ public class POST_Address_Create extends POST_Database_Interaction {
             T_Address ta = T_Address.CreateFromScratch(tmpDict);
 
             // Insertion
-            Address.insert(dbProvider.getConn(), dbProvider.getPs(), ta);
+            I_Address.insert(dbProvider.getConn(), dbProvider.getPs(), ta);
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

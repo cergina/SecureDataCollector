@@ -1,6 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.Sensor;
+import Model.Database.Interaction.I_Sensor;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Sensor;
 import View.Support.ServletHelper;
@@ -32,7 +32,7 @@ public class GET_Sensors extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_Sensor> arr = Sensor.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            ArrayList<T_Sensor> arr = I_Sensor.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Sensor.REFERENCE);
 
             // Finalize

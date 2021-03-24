@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.Sensor;
+import Model.Database.Interaction.I_Sensor;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Sensor;
@@ -24,7 +24,7 @@ public class POST_Sensor_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_Sensor ret_ect = Sensor.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Sensor.DBNAME_ID));
+            T_Sensor ret_ect = I_Sensor.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Sensor.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_Sensor.MakeJSONObjectFrom(ret_ect);

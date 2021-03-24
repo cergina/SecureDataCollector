@@ -1,6 +1,6 @@
 package View.Api.Put;
 
-import Model.Database.Interaction.SensorType;
+import Model.Database.Interaction.I_SensorType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Enum.E_SensorType;
@@ -34,7 +34,7 @@ public class POST_SensorType_Insert extends POST_Database_Interaction {
             E_SensorType es = E_SensorType.CreateFromScratch(tmpDict);
 
             // Insertion
-            SensorType.insert(dbProvider.getConn(), dbProvider.getPs(), es);
+            I_SensorType.insert(dbProvider.getConn(), dbProvider.getPs(), es);
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

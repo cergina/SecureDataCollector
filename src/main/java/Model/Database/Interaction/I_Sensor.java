@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class Sensor {
+public class I_Sensor {
 
     public static int insert(Connection conn, PreparedStatement ps, T_Sensor ts) throws SQLException {
         if (ts.IsTableOkForDatabaseEnter() == false)
@@ -71,7 +71,7 @@ public class Sensor {
         } else {
             rs.next();
 
-            ts = Sensor.FillEntity(rs);
+            ts = I_Sensor.FillEntity(rs);
         }
 
         return ts;
@@ -141,7 +141,7 @@ public class Sensor {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(Sensor.FillEntity(rs));
+                arr.add(I_Sensor.FillEntity(rs));
             }
         }
 

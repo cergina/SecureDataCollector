@@ -1,6 +1,6 @@
 package View.Api.Put;
 
-import Model.Database.Interaction.TestLogs;
+import Model.Database.Interaction.I_TestLogs;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_TestLog;
 import View.Support.ServletHelper;
@@ -32,7 +32,7 @@ public class POST_TestLog_Receive extends POST_Database_Interaction {
             T_TestLog tt = T_TestLog.CreateFromScratch(tmpDict);
 
             // Insertion
-            TestLogs.insert(dbProvider.getConn(), dbProvider.getPs(), tt);
+            I_TestLogs.insert(dbProvider.getConn(), dbProvider.getPs(), tt);
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

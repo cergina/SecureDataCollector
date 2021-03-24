@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_TestLog;
+import Model.Database.Tables.Table.T_Flat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class TestLogs {
-    public static int insert(Connection conn, PreparedStatement ps, T_TestLog tt) throws SQLException {
-        if (tt.IsTableOkForDatabaseEnter() == false)
-            throw new SQLException("Given attribute T_TestLog is not ok for database enter");
+public class I_Flat {
+    public static int insert(Connection conn, PreparedStatement ps, T_Flat tf) throws SQLException {
+        if (tf.IsTableOkForDatabaseEnter() == false)
+            throw new SQLException("Given attribute T_Flat is not ok for database enter");
 
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        T_TestLog.DBTABLE_NAME + "(" +
-                        "Event, Body" +
+                        T_Flat.DBTABLE_NAME + "(" +
+                        "ApartmentNO, AddressID" +
                         ") " +
                         "VALUES (" +
                         "?, ?" +
@@ -29,28 +29,27 @@ public class TestLogs {
         );
 
         int col = 0;
-        ps.setString(++col, tt.getA_Event());
-        ps.setString(++col, tt.getA_Body());
-
+        ps.setString(++col, tf.getA_ApartmentNO());
+        ps.setInt(++col, tf.getA_AddressID());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of TestLog into db failed.");
+            throw new SQLException("Something happened. Insertion of Flat into db failed.");
 
         return affectedRows;
     }
 
-    public static T_TestLog retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
+    public static T_Flat retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
         Assurance.IdCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
                         "* " +
-                        "FROM " + T_TestLog.DBTABLE_NAME + " " +
+                        "FROM " + T_Flat.DBTABLE_NAME + " " +
                         "WHERE ID=?"
         );
 
@@ -61,17 +60,17 @@ public class TestLogs {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        T_TestLog tt = null;
+        T_Flat tf = null;
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
         } else {
             rs.next();
 
-            tt = TestLogs.FillEntity(rs);
+            tf = I_Flat.FillEntity(rs);
         }
 
-        return tt;
+        return tf;
     }
 
     /*****
@@ -82,12 +81,12 @@ public class TestLogs {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_TestLog> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static ArrayList<T_Flat> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
                         "* " +
-                        "FROM " + T_TestLog.DBTABLE_NAME + " " +
+                        "FROM " + T_Flat.DBTABLE_NAME + " " +
                         "ORDER BY ID asc"
         );
 
@@ -97,13 +96,13 @@ public class TestLogs {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_TestLog> arr = new ArrayList<>();
+        ArrayList<T_Flat> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(TestLogs.FillEntity(rs));
+                arr.add(I_Flat.FillEntity(rs));
             }
         }
 
@@ -111,14 +110,14 @@ public class TestLogs {
     }
 
     // Privates
-    private static T_TestLog FillEntity(ResultSet rs) throws SQLException {
-        T_TestLog t = null;
+    private static T_Flat FillEntity(ResultSet rs) throws SQLException {
+        T_Flat t = null;
 
         Dictionary dict = new Hashtable();
-        dict.put(T_TestLog.DBNAME_EVENT, rs.getString(T_TestLog.DBNAME_EVENT));
-        dict.put(T_TestLog.DBNAME_BODY, rs.getString(T_TestLog.DBNAME_BODY));
+        dict.put(T_Flat.DBNAME_APARTMENTNO, rs.getString(T_Flat.DBNAME_APARTMENTNO));
+        dict.put(T_Flat.DBNAME_ADDRESS_ID, rs.getInt(T_Flat.DBNAME_ADDRESS_ID));
 
-        t = T_TestLog.CreateFromRetrieved(rs.getInt(T_TestLog.DBNAME_ID), dict);
+        t = T_Flat.CreateFromRetrieved(rs.getInt(T_Flat.DBNAME_ID), dict);
 
         return t;
     }

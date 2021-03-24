@@ -1,11 +1,13 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.ExampleUseCase;
+import Control.Scenario.UC_Auth;
 import Model.Database.Tables.Table.T_Address;
-import View.Configuration.TemplateEngineUtil;
+import Model.Web.User;
+import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
+import View.Web.Servlets.Common.LoginServlet;
 import View.Web.Servlets.ConnectionServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -24,7 +26,7 @@ public class IndexServlet extends ConnectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
@@ -32,14 +34,15 @@ public class IndexServlet extends ConnectionServlet {
         // I know its just an example, but Code like this please, DO NOT USE if's in if's!
         HttpSession session = request.getSession(false);
         if (session == null) {
-            engine.process("401.html", context, response.getWriter());
+            engine.process("faults/403.html", context, response.getWriter());
             return;
         }
 
         // part 2
-        context.setVariable("Email", session.getAttribute("email"));
+        User user = (User) session.getAttribute(LoginServlet.SESSION_ATTR_USER);
+        context.setVariable("Email", user.getEmail());
 
-        ArrayList<T_Address> arr = (new ExampleUseCase(dbProvider)).retrieveAllAddress();
+        ArrayList<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
 
         // i believe that if there is nothing it's not bad request but just empty array
         // bad request would be if it would crash

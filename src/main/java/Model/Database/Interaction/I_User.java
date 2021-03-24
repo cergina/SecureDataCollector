@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class User {
+public class I_User {
 
     public static int insert(Connection conn, PreparedStatement ps, T_User tu) throws SQLException {
         if (tu.IsTableOkForDatabaseEnter() == false)
@@ -22,10 +22,10 @@ public class User {
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_User.DBTABLE_NAME + "(" +
-                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, PermanentResidence, Blocked" +
+                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, PermanentResidence" +
                         ") " +
                         "VALUES (" +
-                        "?, ?, ?, ?, ?, ?, ?, ?" +
+                        "?, ?, ?, ?, ?, ?, ?" +
                         ") "
         );
 
@@ -37,7 +37,6 @@ public class User {
         ps.setString(++col, tu.getA_Phone());
         ps.setString(++col, tu.getA_Email());
         ps.setString(++col, tu.getA_PermanentResidence());
-        ps.setInt(++col, tu.isA_Blocked_Numerical());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -74,11 +73,68 @@ public class User {
         } else {
             rs.next();
 
-            t = User.FillEntity(rs);
+            t = I_User.FillEntity(rs);
         }
 
         return t;
     }
+
+    public static T_User retrieveByEmail(Connection conn, PreparedStatement ps, ResultSet rs, String email) throws SQLException {
+        Assurance.IsVarcharOk(email);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_User.DBTABLE_NAME + " " +
+                        "WHERE Email=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, email);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_User t = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            t = I_User.FillEntity(rs);
+        }
+
+        return t;
+    }
+
+    /*
+    * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
+    */
+    public static int retrieveLatestPerConnectionInsertedID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        int latest  = -1;
+
+        ps = conn.prepareStatement(
+                "SELECT LAST_INSERT_ID();"
+        );
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            latest = rs.getInt(1);
+        }
+
+        return latest;
+    }
+
 
     /*****
      *
@@ -109,7 +165,7 @@ public class User {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(User.FillEntity(rs));
+                arr.add(I_User.FillEntity(rs));
             }
         }
 

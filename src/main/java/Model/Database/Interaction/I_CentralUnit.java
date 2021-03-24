@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class CentralUnit {
+public class I_CentralUnit {
     /****
      * Attempt to insert the parsed argument T_CentralUnit into the real database
      * @param conn
@@ -89,7 +89,7 @@ public class CentralUnit {
         } else {
             rs.next();
 
-            tc = CentralUnit.FillEntity(rs);
+            tc = I_CentralUnit.FillEntity(rs);
         }
 
         return tc;
@@ -124,7 +124,7 @@ public class CentralUnit {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(CentralUnit.FillEntity(rs));
+                arr.add(I_CentralUnit.FillEntity(rs));
             }
         }
 

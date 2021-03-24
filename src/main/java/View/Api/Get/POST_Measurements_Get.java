@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.Measurements;
+import Model.Database.Interaction.I_Measurements;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Measurement;
@@ -24,7 +24,7 @@ public class POST_Measurements_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_Measurement ret_ect = Measurements.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Measurement.DBNAME_ID));
+            T_Measurement ret_ect = I_Measurements.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Measurement.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_Measurement.MakeJSONObjectFrom(ret_ect);

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class Address {
+public class I_Address {
 
     /***
      * Attempt to insert the parsed argument T_Address into the real database
@@ -88,7 +88,7 @@ public class Address {
         } else {
             rs.next();
 
-            ta = Address.FillEntity(rs);
+            ta = I_Address.FillEntity(rs);
         }
 
         return ta;
@@ -125,7 +125,7 @@ public class Address {
         } else {
             while (rs.next()) {
                 CustomLogs.Debug("Filling entity");
-                arr.add(Address.FillEntity(rs));
+                arr.add(I_Address.FillEntity(rs));
             }
         }
 

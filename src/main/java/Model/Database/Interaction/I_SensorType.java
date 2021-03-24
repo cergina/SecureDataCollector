@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class SensorType {
+public class I_SensorType {
     public static int insert(Connection conn, PreparedStatement ps, E_SensorType es) throws SQLException {
         if (es.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_SensorType is not ok for database enter");
@@ -68,7 +68,7 @@ public class SensorType {
         } else {
             rs.next();
 
-            est = SensorType.FillEntity(rs);
+            est = I_SensorType.FillEntity(rs);
         }
 
         return est;
@@ -101,7 +101,7 @@ public class SensorType {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(SensorType.FillEntity(rs));
+                arr.add(I_SensorType.FillEntity(rs));
             }
         }
 

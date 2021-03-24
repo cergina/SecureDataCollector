@@ -117,7 +117,9 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
     // Generic
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        StringBuilder str = new StringBuilder("[");
+
+        return str.toString();
     }
 
 

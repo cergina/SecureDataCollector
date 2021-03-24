@@ -1,5 +1,7 @@
 package View.Support;
 
+import Model.Database.Support.CustomLogs;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,5 +47,19 @@ public class ServletHelper {
         resp.setCharacterEncoding("UTF-8");
 
         return resp;
+    }
+
+    /**
+     * Extract body string from HTTP request
+     */
+    public static String RequestBody(HttpServletRequest request) {
+        String bodyString = null;
+        try {
+            bodyString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            CustomLogs.Error(bodyString);
+        } catch (IOException e) {
+            CustomLogs.Error(e.getMessage());
+        }
+        return bodyString;
     }
 }

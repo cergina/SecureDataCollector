@@ -1,6 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.CommType;
+import Model.Database.Interaction.I_CommType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Enum.E_CommType;
 import View.Support.ServletHelper;
@@ -32,7 +32,7 @@ public class GET_CommTypes extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<E_CommType> arr = CommType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            ArrayList<E_CommType> arr = I_CommType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, E_CommType.REFERENCE);
 
             // Finalize

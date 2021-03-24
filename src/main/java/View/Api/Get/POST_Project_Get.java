@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.Project;
+import Model.Database.Interaction.I_Project;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Project;
@@ -24,7 +24,7 @@ public class POST_Project_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_Project ret_ect = Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Project.DBNAME_ID));
+            T_Project ret_ect = I_Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Project.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_Project.MakeJSONObjectFrom(ret_ect);

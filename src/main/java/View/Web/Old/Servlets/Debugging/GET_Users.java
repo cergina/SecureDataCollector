@@ -1,6 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.User;
+import Model.Database.Interaction.I_User;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_User;
 import View.Support.ServletHelper;
@@ -32,7 +32,7 @@ public class GET_Users extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_User> arr = User.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            ArrayList<T_User> arr = I_User.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_User.REFERENCE);
 
             // Finalize

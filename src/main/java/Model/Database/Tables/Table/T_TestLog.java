@@ -116,7 +116,9 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
     // Generic
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        StringBuilder str = new StringBuilder("[");
+
+        return str.toString();
     }
 
 

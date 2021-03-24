@@ -1,6 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
-import Model.Database.Interaction.Project;
+import Model.Database.Interaction.I_Project;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Project;
 import View.Support.ServletHelper;
@@ -32,7 +32,7 @@ public class GET_Projects extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_Project> arr = Project.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            ArrayList<T_Project> arr = I_Project.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Project.REFERENCE);
 
             // Finalize
