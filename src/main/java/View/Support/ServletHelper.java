@@ -3,6 +3,7 @@ package View.Support;
 import Model.Database.Support.CustomLogs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import sun.misc.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -51,18 +52,17 @@ public class ServletHelper {
         return resp;
     }
 
+    /**
+     * Extract body string from HTTP request
+     */
     public static String RequestBody(HttpServletRequest request) {
+        String bodyString = null;
         try {
-            int intValueOfChar;
-            String bodyString = "";
-            while ((intValueOfChar = request.getReader().read()) != -1) {
-                bodyString += (char) intValueOfChar;
-            }
+            bodyString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             CustomLogs.Error(bodyString); // TODO tu potrebujem zakazdym debug log tohto stringu pre vyvoj aby som vedel co prislo
-            return bodyString;
         } catch (IOException e) {
             CustomLogs.Error(e.getMessage());
         }
-        return null;
+        return bodyString;
     }
 }

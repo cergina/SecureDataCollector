@@ -37,18 +37,13 @@ function createUser() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                var auth = JSON.parse(response.data);
-                alert(auth.verificationcode); // TODO display verification code
+                alert(response.data.verificationcode); // TODO display verification code
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             },
             401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             }
@@ -71,12 +66,9 @@ function registerUser() {
         statusCode: {
             200: function(response) {
                 // TODO thank user for registration
+                alert(response.message)
             },
             401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             }
@@ -98,13 +90,10 @@ function loginUser() {
         data: JSON.stringify(buildAuth()),
         statusCode: {
             200: function(response) {
-                // $(location).attr('href', $SCRIPT_ROOT + "/index");
+                alert(response.message)
+                $(location).attr('href', $SCRIPT_ROOT + "/index");
             },
             401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             }

@@ -22,7 +22,7 @@ public class User extends PrettyObject {
     private String phone;
     @Expose
     private String residence;
-    private int userID;
+    private Integer userID;
 
     public User() {} // empty constructor for Gson
 
@@ -82,11 +82,11 @@ public class User extends PrettyObject {
         this.residence = residence;
     }
 
-    public int getUserID() {
+    public Integer getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(Integer userID) {
         this.userID = userID;
     }
 }

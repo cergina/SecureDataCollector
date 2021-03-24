@@ -1,7 +1,7 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
-import Control.Scenario.AuthController;
+import Control.Scenario.UC_Auth;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
@@ -43,7 +43,7 @@ public class RegisterServlet extends ConnectionServlet {
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
         auth.setPassword(passwordHash);
 
-        final JsonResponse jsonResponse = (new AuthController(dbProvider)).finishRegistration(auth); // finish registration
+        final JsonResponse jsonResponse = (new UC_Auth(dbProvider)).finishRegistration(auth); // finish registration
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

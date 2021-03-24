@@ -15,16 +15,18 @@ import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.InvalidOperationException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class AuthController {
+/**
+ * Use Case class for authentication
+ */
+public class UC_Auth {
     private DbProvider db;
 
-    public AuthController(DbProvider dbProvider) {
+    public UC_Auth(DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
@@ -38,7 +40,9 @@ public class AuthController {
     }
 
     /**
-     * Retrieve user and password hash from database
+     * Retrieve user and password hash
+     * @param email User to search for
+     * @return {@link Auth} instance, null if email not in database
      */
     private Auth retrieveAuthByEmail(final String email) throws SQLException {
 
@@ -47,7 +51,7 @@ public class AuthController {
             return null;
         }
 
-        Model.Web.User user = new Model.Web.User();
+        Model.Web.User user = new Model.Web.User(); // TODO differentiate between 2 User classes
         user.setBeforetitle(t_user.getA_BeforeTitle());
         user.setFirstname(t_user.getA_FirstName());
         user.setMiddlename(t_user.getA_MiddleName());
@@ -68,6 +72,8 @@ public class AuthController {
 
     /**
      * Create new user
+     * @param auth User data
+     * @return final Api response body
      */
     public final JsonResponse createUser(final Auth auth) {
         JsonResponse jsonResponse = new JsonResponse();
@@ -75,7 +81,7 @@ public class AuthController {
         try {
             db.beforeSqlExecution();
 
-            if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) { // is email already in db?
+            if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
                 throw new AuthenticationException("User with this email already exists.");
             }
@@ -89,22 +95,22 @@ public class AuthController {
             dict_user.put(T_User.DBNAME_PHONE, auth.getUser().getPhone());
             dict_user.put(T_User.DBNAME_EMAIL, auth.getUser().getEmail());
             dict_user.put(T_User.DBNAME_PERMANENTRESIDENCE, auth.getUser().getResidence());
-            dict_user.put(T_User.DBNAME_BLOCKED, false);
+            dict_user.put(T_User.DBNAME_BLOCKED, false); // TODO autogenerate by database
 
             T_User t_user = T_User.CreateFromScratch(dict_user);
             if (!t_user.IsTableOkForDatabaseEnter()) {
-                jsonResponse.setMessage("Data does not match database schema.");
-                throw new InvalidOperationException("Data does not match database schema.");
+                jsonResponse.setMessage("Data does not match database scheme.");
+                throw new InvalidOperationException("Data does not match database scheme.");
             }
 
-            Model.Database.Interaction.User.insert(db.getConn(), db.getPs(), t_user); // TODO differentiate between 2 User classes
+            Model.Database.Interaction.User.insert(db.getConn(), db.getPs(), t_user);
             // modify User table END
 
             int userID = Model.Database.Interaction.User.retrieveLatestID(db.getConn(), db.getPs(), db.getRs());
 
             // modify Hash table START
             Dictionary dict_hash = new Hashtable();
-            dict_hash.put(T_Hash.DBNAME_VALUE, auth.getVerificationcode());
+            dict_hash.put(T_Hash.DBNAME_VALUE, auth.getVerificationcode()); // save verification instead of password hash
             dict_hash.put(T_Hash.DBNAME_USER_ID, userID);
 
             T_Hash hashToInsert = T_Hash.CreateFromScratch(dict_hash);
@@ -132,7 +138,7 @@ public class AuthController {
 
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("User created.");
-            jsonResponse.setData(auth.toString());
+            jsonResponse.setData(auth);
         } catch (InvalidOperationException e) {
             db.afterSqlExecution(false);
 
@@ -152,7 +158,8 @@ public class AuthController {
 
     /**
      * Finish user registration
-     * Replace verification code with password hash
+     * @param auth User data that contains email, password hash, verification code
+     * @return final Api response body
      */
     public final JsonResponse finishRegistration(final Auth auth) {
         JsonResponse jsonResponse = new JsonResponse();
@@ -163,6 +170,11 @@ public class AuthController {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
             }
+            int hashCount = Hash.countHashesForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
+            if (hashCount > 1) {
+                jsonResponse.setMessage("User already registered.");
+                throw new AuthenticationException("Verification code does not match.");
+            }
             if (!authDb.getPassword().equals(auth.getVerificationcode())) {
                 jsonResponse.setMessage("Verification code does not match.");
                 throw new AuthenticationException("Verification code does not match.");
@@ -170,8 +182,8 @@ public class AuthController {
 
             // modify Hash table END
             Dictionary dict_hash = new Hashtable();
-            dict_hash.put(T_Hash.DBNAME_VALUE, auth.getPassword());
-            dict_hash.put(T_Hash.DBNAME_USER_ID, auth.getUser().getUserID());
+            dict_hash.put(T_Hash.DBNAME_VALUE, auth.getPassword()); // replace verification code with password hash
+            dict_hash.put(T_Hash.DBNAME_USER_ID, authDb.getUser().getUserID());
 
             T_Hash t_hash = T_Hash.CreateFromScratch(dict_hash);
             Hash.insert(db.getConn(), db.getPs(), t_hash);
@@ -179,7 +191,7 @@ public class AuthController {
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Registration complete.");
-            jsonResponse.setData(auth.toString());
+            jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -191,7 +203,12 @@ public class AuthController {
         return jsonResponse;
     }
 
-    public final JsonResponse authenticateUser(final Auth auth, HttpSession session) {
+    /**
+     * Login user
+     * @param auth User data that contains email, password hash
+     * @return final Api response body
+     */
+    public final JsonResponse authenticateUser(final Auth auth) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
@@ -205,12 +222,9 @@ public class AuthController {
                 throw new AuthenticationException("Password does not match.");
             }
 
-            session.setAttribute("email", authDb.getUser().getEmail()); // TODO session attrs to be decided after layouts
-            session.setAttribute("user", authDb.getUser());
-
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
-            jsonResponse.setData(auth.toString());
+            jsonResponse.setData(auth);
         } catch (AuthenticationException e) {
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

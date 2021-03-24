@@ -32,6 +32,9 @@ public class DbProvider {
         }
     }
 
+    /**
+     * Start transaction
+     */
     public void beforeSqlExecution() {
         try {
             conn.setAutoCommit(false);
@@ -40,6 +43,10 @@ public class DbProvider {
         }
     }
 
+    /**
+     * Finish transaction
+     * @param isSuccess commit?
+     */
     public void afterSqlExecution(boolean isSuccess) {
         try {
             if (isSuccess) {

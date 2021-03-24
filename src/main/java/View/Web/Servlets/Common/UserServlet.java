@@ -1,7 +1,7 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
-import Control.Scenario.AuthController;
+import Control.Scenario.UC_Auth;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
@@ -43,7 +43,7 @@ public class UserServlet extends ConnectionServlet {
         String verificationCode = UserAccessHelper.generateVerification(14); // generate verification code
         auth.setVerificationcode(verificationCode);
 
-        final JsonResponse jsonResponse = (new AuthController(dbProvider)).createUser(auth); // create new user
+        final JsonResponse jsonResponse = (new UC_Auth(dbProvider)).createUser(auth); // create new user
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

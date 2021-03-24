@@ -11,9 +11,9 @@ public class Auth extends PrettyObject {
     @Expose
     private User user;
     @Expose(serialize = false)
-    private boolean isadmin;
+    private Boolean isadmin;
     @Expose(serialize = false)
-    private String password;
+    private String password; // password OR password hash
     @Expose
     private String verificationcode;
 
@@ -27,11 +27,11 @@ public class Auth extends PrettyObject {
         this.user = user;
     }
 
-    public boolean isIsadmin() {
+    public Boolean isIsadmin() {
         return isadmin;
     }
 
-    public void setIsadmin(boolean isadmin) {
+    public void setIsadmin(Boolean isadmin) {
         this.isadmin = isadmin;
     }
 

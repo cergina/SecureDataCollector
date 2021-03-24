@@ -1,7 +1,7 @@
 package View.Web.Servlets.Common;
 
 import Control.ConfigClass;
-import Control.Scenario.AuthController;
+import Control.Scenario.UC_Auth;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
@@ -10,7 +10,6 @@ import View.Configuration.TemplateEngineUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletHelper;
 import View.Web.Servlets.ConnectionServlet;
-import javafx.util.Pair;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -26,6 +25,8 @@ import java.io.PrintWriter;
 public class LoginServlet extends ConnectionServlet {
     public static final String SERVLET_URL =  "/login";
     public static final String TEMPLATE_NAME = "login.html";
+
+    public static final String SESSION_ATTR_USER = "user";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -45,8 +46,12 @@ public class LoginServlet extends ConnectionServlet {
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
         auth.setPassword(passwordHash);
 
-        final JsonResponse jsonResponse = (new AuthController(dbProvider)).authenticateUser(auth, request.getSession()); // initiate session
+        final JsonResponse jsonResponse = (new UC_Auth(dbProvider)).authenticateUser(auth); // login user
         response.setStatus(jsonResponse.getStatus());
+
+        if (jsonResponse.getStatus() == HttpServletResponse.SC_OK) {
+            request.getSession().setAttribute(SESSION_ATTR_USER, ((Auth) jsonResponse.getData()).getUser()); // initiate session
+        }
 
         writer.println(jsonResponse.toString());
         writer.close();

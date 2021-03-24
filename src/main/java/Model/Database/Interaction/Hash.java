@@ -102,7 +102,7 @@ public class Hash {
         Assurance.IdCheck(userID);
 
         ps = conn.prepareStatement(
-                "SELECT * FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? GROUP BY UserID ORDER BY ID DESC LIMIT 1"
+                "SELECT * FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? ORDER BY ID DESC LIMIT 1"
         );
 
         int col = 0;
