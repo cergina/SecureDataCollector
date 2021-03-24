@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.ControllerUnit;
+import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_ControllerUnit;
@@ -24,7 +24,7 @@ public class POST_ControllerUnit_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_ControllerUnit ret_tcu = ControllerUnit.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_ControllerUnit.DBNAME_ID));
+            T_ControllerUnit ret_tcu = I_ControllerUnit.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_ControllerUnit.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_ControllerUnit.MakeJSONObjectFrom(ret_tcu);

@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.User;
+import Model.Database.Interaction.I_User;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_User;
@@ -24,7 +24,7 @@ public class POST_User_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_User ret_ect = User.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_User.DBNAME_ID));
+            T_User ret_ect = I_User.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_User.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_User.MakeJSONObjectFrom(ret_ect);

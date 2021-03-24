@@ -45,11 +45,11 @@ public class DbProvider {
 
     /**
      * Finish transaction
-     * @param isSuccess commit?
+     * @param successful commit?
      */
-    public void afterSqlExecution(boolean isSuccess) {
+    public void afterSqlExecution(boolean successful) {
         try {
-            if (isSuccess) {
+            if (successful) {
                 conn.commit();
             } else {
                 conn.rollback();

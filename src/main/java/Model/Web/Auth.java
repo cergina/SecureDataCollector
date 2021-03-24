@@ -8,6 +8,7 @@ import com.google.gson.annotations.Expose;
  */
 public class Auth extends PrettyObject {
 
+    // PARAMETERS
     @Expose
     private User user;
     @Expose(serialize = false)
@@ -17,34 +18,37 @@ public class Auth extends PrettyObject {
     @Expose
     private String verificationcode;
 
-    public Auth() {} // empty constructor for Gson
+    // empty constructor for Gson
+    public Auth() {}
 
+    // GETTERS
     public User getUser() {
         return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Boolean isIsadmin() {
         return isadmin;
     }
 
-    public void setIsadmin(Boolean isadmin) {
-        this.isadmin = isadmin;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getVerificationcode() {
         return verificationcode;
+    }
+
+    // SETTERS
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setIsadmin(Boolean isadmin) {
+        this.isadmin = isadmin;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setVerificationcode(String verificationcode) {

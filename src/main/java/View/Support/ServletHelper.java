@@ -1,9 +1,6 @@
 package View.Support;
 
 import Model.Database.Support.CustomLogs;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import sun.misc.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +56,7 @@ public class ServletHelper {
         String bodyString = null;
         try {
             bodyString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-            CustomLogs.Error(bodyString); // TODO tu potrebujem zakazdym debug log tohto stringu pre vyvoj aby som vedel co prislo, neviem ako je rieseny logger
+            CustomLogs.Error(bodyString);
         } catch (IOException e) {
             CustomLogs.Error(e.getMessage());
         }

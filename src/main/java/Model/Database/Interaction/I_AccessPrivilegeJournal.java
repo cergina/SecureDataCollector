@@ -3,12 +3,16 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_AccessPrivilegeJournal;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class AccessPrivilegeJournal {
+public class I_AccessPrivilegeJournal {
     public static int insert(Connection conn, PreparedStatement ps, T_AccessPrivilegeJournal tapj) throws SQLException {
         if (tapj.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_AccessPrivilegeJournal is not ok for database enter");
@@ -40,6 +44,49 @@ public class AccessPrivilegeJournal {
         return affectedRows;
     }
 
+    /***
+     * We only care about the most recent (VALID ACTIVE) by the user's ID
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param userId which user's valid accessprivilegejournal is of interest to us
+     * @return
+     * @throws SQLException
+     */
+    public static T_AccessPrivilegeJournal retrieveValidForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userId) throws SQLException {
+        Assurance.IdCheck(userId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_AccessPrivilegeJournal.DBTABLE_NAME + " " +
+                        "WHERE UserID=? GROUP BY UserID ORDER BY ID DESC LIMIT 1"
+        );
+
+        int col = 0;
+        ps.setInt(++col, userId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_AccessPrivilegeJournal t = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            t = I_AccessPrivilegeJournal.FillEntity(rs);
+        }
+
+        return t;
+    }
+
+    /*
+        by specific Id, probably will not be used
+    */
     public static T_AccessPrivilegeJournal retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
         Assurance.IdCheck(id);
 
@@ -65,7 +112,7 @@ public class AccessPrivilegeJournal {
         } else {
             rs.next();
 
-            t = AccessPrivilegeJournal.FillEntity(rs);
+            t = I_AccessPrivilegeJournal.FillEntity(rs);
         }
 
         return t;
@@ -100,7 +147,7 @@ public class AccessPrivilegeJournal {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(AccessPrivilegeJournal.FillEntity(rs));
+                arr.add(I_AccessPrivilegeJournal.FillEntity(rs));
             }
         }
 

@@ -4,13 +4,15 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Hash;
 
-import java.io.PrintWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class Hash {
+public class I_Hash {
     public static int insert(Connection conn, PreparedStatement ps, T_Hash th) throws SQLException {
         if (th.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Hash is not ok for database enter");
@@ -65,7 +67,7 @@ public class Hash {
         } else {
             rs.next();
 
-            t = Hash.FillEntity(rs);
+            t = I_Hash.FillEntity(rs);
         }
 
         return t;
@@ -92,7 +94,7 @@ public class Hash {
         } else {
             rs.next();
 
-            t = Hash.FillEntity(rs);
+            t = I_Hash.FillEntity(rs);
         }
 
         return t;
@@ -118,7 +120,7 @@ public class Hash {
             /* nothing was returned */
         } else {
             rs.next();
-            t = Hash.FillEntity(rs);
+            t = I_Hash.FillEntity(rs);
         }
 
         return t;
@@ -174,7 +176,7 @@ public class Hash {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(Hash.FillEntity(rs));
+                arr.add(I_Hash.FillEntity(rs));
             }
         }
 

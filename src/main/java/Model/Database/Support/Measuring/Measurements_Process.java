@@ -1,7 +1,7 @@
 package Model.Database.Support.Measuring;
 
-import Model.Database.Interaction.Measurements;
-import Model.Database.Interaction.Sensor;
+import Model.Database.Interaction.I_Measurements;
+import Model.Database.Interaction.I_Sensor;
 import Model.Database.Tables.Table.T_Measurement;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,7 +67,7 @@ public class Measurements_Process {
 
                 // find out sensor ID from sensor IO
                 ResultSet tmpRs = null;
-                int sensorId = Sensor.retrieve_ID_by_SensorIO(conn, ps, tmpRs, (String)tmpMsgJson.getString(JSON_MEASUREMENTS_SENSORIO));
+                int sensorId = I_Sensor.retrieve_ID_by_SensorIO(conn, ps, tmpRs, (String)tmpMsgJson.getString(JSON_MEASUREMENTS_SENSORIO));
 
 
                 Dictionary msgDict = new Hashtable();
@@ -81,7 +81,7 @@ public class Measurements_Process {
                 T_Measurement tmpMeas = T_Measurement.CreateFromScratch(msgDict);
 
                 // Make an insert
-                Measurements.insert(conn, ps, tmpMeas);
+                I_Measurements.insert(conn, ps, tmpMeas);
             }
         }
     }

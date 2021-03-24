@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 @WebServlet(name = "RegisterServlet", urlPatterns = RegisterServlet.SERVLET_URL)
 public class RegisterServlet extends ConnectionServlet {
     public static final String SERVLET_URL =  "/register";
-    public static final String TEMPLATE_NAME = "register.html";
+    public static final String TEMPLATE_NAME = "authentication/register.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,8 +40,10 @@ public class RegisterServlet extends ConnectionServlet {
 
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
+
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
         auth.setPassword(passwordHash);
+
 
         final JsonResponse jsonResponse = (new UC_Auth(getDb())).finishRegistration(auth); // finish registration
         response.setStatus(jsonResponse.getStatus());

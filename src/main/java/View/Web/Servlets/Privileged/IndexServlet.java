@@ -34,7 +34,7 @@ public class IndexServlet extends ConnectionServlet {
         // I know its just an example, but Code like this please, DO NOT USE if's in if's!
         HttpSession session = request.getSession(false);
         if (session == null) {
-            engine.process("403.html", context, response.getWriter());
+            engine.process("faults/403.html", context, response.getWriter());
             return;
         }
 

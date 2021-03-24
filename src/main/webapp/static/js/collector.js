@@ -30,14 +30,14 @@ function buildAuth() {
 function createUser() {
     $.ajax({
         method: "POST",
-        url: $SCRIPT_ROOT + "/user",
+        url: $SCRIPT_ROOT + "/admin/user/create",
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
         data: JSON.stringify(buildAuth()),
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert(response.data.verificationcode); // TODO display verification code
+                alert('Verfikacny kod je: ' + response.data.verificationcode); // TODO display verification code
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -103,6 +103,12 @@ function loginUser() {
             console.log(jqXHR);
         }
     });
+}
+
+// NAVIGATION
+// Login user
+function goHome() {
+    $(location).attr('href', $SCRIPT_ROOT);
 }
 
 $(function() {

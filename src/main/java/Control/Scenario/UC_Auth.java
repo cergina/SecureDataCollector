@@ -1,9 +1,10 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.AccessPrivilegeJournal;
-import Model.Database.Interaction.Address;
-import Model.Database.Interaction.Hash;
+import Model.Database.Interaction.I_AccessPrivilegeJournal;
+import Model.Database.Interaction.I_Address;
+import Model.Database.Interaction.I_Hash;
+import Model.Database.Interaction.I_User;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_AccessPrivilegeJournal;
 import Model.Database.Tables.Table.T_Address;
@@ -32,7 +33,7 @@ public class UC_Auth {
 
     public ArrayList<T_Address> retrieveAllAddress() { // TODO remove this method later
         try {
-            return Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            return I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
         } catch (SQLException e) {
             CustomLogs.Error(e.getMessage());
         }
@@ -46,7 +47,7 @@ public class UC_Auth {
      */
     private Auth retrieveAuthByEmail(final String email) throws SQLException {
 
-        T_User t_user = Model.Database.Interaction.User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
+        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
         if (t_user == null) { // isnt email in db?
             return null;
         }
@@ -61,7 +62,7 @@ public class UC_Auth {
         user.setResidence(t_user.getA_PermanentResidence());
         user.setUserID(t_user.getA_pk());
 
-        T_Hash t_hash = Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
+        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
 
         Auth auth = new Auth();
         auth.setUser(user);
@@ -95,7 +96,6 @@ public class UC_Auth {
             dict_user.put(T_User.DBNAME_PHONE, auth.getUser().getPhone());
             dict_user.put(T_User.DBNAME_EMAIL, auth.getUser().getEmail());
             dict_user.put(T_User.DBNAME_PERMANENTRESIDENCE, auth.getUser().getResidence());
-            dict_user.put(T_User.DBNAME_BLOCKED, false); // TODO autogenerate by database
 
             T_User t_user = T_User.CreateFromScratch(dict_user);
             if (!t_user.IsTableOkForDatabaseEnter()) {
@@ -103,10 +103,11 @@ public class UC_Auth {
                 throw new InvalidOperationException("Data does not match database scheme.");
             }
 
-            Model.Database.Interaction.User.insert(db.getConn(), db.getPs(), t_user);
+            I_User.insert(db.getConn(), db.getPs(), t_user);
             // modify User table END
 
-            int userID = Model.Database.Interaction.User.retrieveLatestID(db.getConn(), db.getPs(), db.getRs());
+
+            int userID = I_User.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
             // modify Hash table START
             Dictionary dict_hash = new Hashtable();
@@ -114,7 +115,7 @@ public class UC_Auth {
             dict_hash.put(T_Hash.DBNAME_USER_ID, userID);
 
             T_Hash hashToInsert = T_Hash.CreateFromScratch(dict_hash);
-            Hash.insert(db.getConn(), db.getPs(), hashToInsert);
+            I_Hash.insert(db.getConn(), db.getPs(), hashToInsert);
             // modify Hash table END
 
             // modify AccessPrivilegeJournal table START
@@ -131,7 +132,7 @@ public class UC_Auth {
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID, adminID);
 
             T_AccessPrivilegeJournal journalEntryToSave = T_AccessPrivilegeJournal.CreateFromScratch(dict_journal);
-            AccessPrivilegeJournal.insert(db.getConn(), db.getPs(), journalEntryToSave);
+            I_AccessPrivilegeJournal.insert(db.getConn(), db.getPs(), journalEntryToSave);
             // modify AccessPrivilegeJournal table END
 
             db.afterSqlExecution(true);
@@ -170,7 +171,7 @@ public class UC_Auth {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
             }
-            int hashCount = Hash.countHashesForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
+            int hashCount = I_Hash.countHashesForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             if (hashCount > 1) {
                 jsonResponse.setMessage("User already registered.");
                 throw new AuthenticationException("User already registered.");
@@ -186,7 +187,7 @@ public class UC_Auth {
             dict_hash.put(T_Hash.DBNAME_USER_ID, authDb.getUser().getUserID());
 
             T_Hash t_hash = T_Hash.CreateFromScratch(dict_hash);
-            Hash.insert(db.getConn(), db.getPs(), t_hash);
+            I_Hash.insert(db.getConn(), db.getPs(), t_hash);
             // modify Hash table END
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
@@ -217,6 +218,7 @@ public class UC_Auth {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
             }
+
             if (!authDb.getPassword().equals(auth.getPassword())) {
                 jsonResponse.setMessage("Password does not match.");
                 throw new AuthenticationException("Password does not match.");

@@ -1,6 +1,6 @@
 package View.Api.Put;
 
-import Model.Database.Interaction.Project;
+import Model.Database.Interaction.I_Project;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Project;
@@ -35,7 +35,7 @@ public class POST_Project_Create extends POST_Database_Interaction {
 
             T_Project t = T_Project.CreateFromScratch(json.getString(T_Project.DBNAME_NAME));
 
-            Project.insert(dbProvider.getConn(), dbProvider.getPs(), t);
+            I_Project.insert(dbProvider.getConn(), dbProvider.getPs(), t);
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

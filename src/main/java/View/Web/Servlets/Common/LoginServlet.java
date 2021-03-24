@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 @WebServlet(name = "LoginServlet", urlPatterns = LoginServlet.SERVLET_URL)
 public class LoginServlet extends ConnectionServlet {
     public static final String SERVLET_URL =  "/login";
-    public static final String TEMPLATE_NAME = "login.html";
+    public static final String TEMPLATE_NAME = "authentication/login.html";
 
     public static final String SESSION_ATTR_USER = "user";
 

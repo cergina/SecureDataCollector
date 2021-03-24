@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class CommType {
+public class I_CommType {
     public static int insert(Connection conn, PreparedStatement ps, E_CommType ec) throws SQLException {
         if (ec.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_CommType is not ok for database enter");
@@ -66,7 +66,7 @@ public class CommType {
         } else {
             rs.next();
 
-            ct = CommType.FillEntity(rs);
+            ct = I_CommType.FillEntity(rs);
         }
 
         return ct;
@@ -99,7 +99,7 @@ public class CommType {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(CommType.FillEntity(rs));
+                arr.add(I_CommType.FillEntity(rs));
             }
         }
 

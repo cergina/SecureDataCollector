@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class Measurements {
+public class I_Measurements {
 
     public static int insert(Connection conn, PreparedStatement ps, T_Measurement tm) throws SQLException {
         if (tm.IsTableOkForDatabaseEnter() == false)
@@ -80,7 +80,7 @@ public class Measurements {
         } else {
             rs.next();
 
-            tm = Measurements.FillEntity(rs);
+            tm = I_Measurements.FillEntity(rs);
         }
 
         return tm;
@@ -115,7 +115,7 @@ public class Measurements {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(Measurements.FillEntity(rs));
+                arr.add(I_Measurements.FillEntity(rs));
             }
         }
 
@@ -147,7 +147,7 @@ public class Measurements {
         } else {
             rs.next();
 
-            tm = Measurements.FillEntity(rs);
+            tm = I_Measurements.FillEntity(rs);
         }
 
         return tm;

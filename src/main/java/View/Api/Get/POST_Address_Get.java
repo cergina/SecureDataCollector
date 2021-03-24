@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.Address;
+import Model.Database.Interaction.I_Address;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Address;
@@ -24,7 +24,7 @@ public class POST_Address_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_Address ret_ta = Address.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Address.DBNAME_ID));
+            T_Address ret_ta = I_Address.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Address.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_Address.MakeJSONObjectFrom(ret_ta);

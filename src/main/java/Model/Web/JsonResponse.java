@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
  */
 public class JsonResponse extends PrettyObject {
 
+    // PARAMETERS
     @Expose
     private Integer status;
     @Expose
@@ -14,26 +15,28 @@ public class JsonResponse extends PrettyObject {
     @Expose
     private Object data; // custom response data will go here
 
-    public JsonResponse() {} // empty constructor for Gson
+    // empty constructor for Gson
+    public JsonResponse() {}
 
+    // GETTERS
     public Integer getStatus() {
         return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public Object getData() {
         return data;
+    }
+    // SETTERS
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setData(Object data) {

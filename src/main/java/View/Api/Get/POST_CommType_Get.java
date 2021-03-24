@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.CommType;
+import Model.Database.Interaction.I_CommType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Enum.E_CommType;
@@ -24,7 +24,7 @@ public class POST_CommType_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            E_CommType ret_ect = CommType.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(E_CommType.DBNAME_ID));
+            E_CommType ret_ect = I_CommType.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(E_CommType.DBNAME_ID));
 
             // return
             JSONObject json_toRet = E_CommType.MakeJSONObjectFrom(ret_ect);

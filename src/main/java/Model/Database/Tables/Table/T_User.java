@@ -72,7 +72,6 @@ public class T_User extends DbEntity implements DBTable, DBToHtml {
         temp.a_Phone = (String)dict.get(DBNAME_PHONE);
         temp.a_Email = (String)dict.get(DBNAME_EMAIL);
         temp.a_PermanentResidence = (String)dict.get(DBNAME_PERMANENTRESIDENCE);
-        temp.a_Blocked = (boolean)dict.get(DBNAME_BLOCKED);
 
         return temp;
     }

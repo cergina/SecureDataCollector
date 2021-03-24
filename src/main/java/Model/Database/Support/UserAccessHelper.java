@@ -17,10 +17,9 @@ public class UserAccessHelper {
      * Hashing a password, uses PBKDF2 algorithm
      */
     public static String hashPassword(String password){
-        SecureRandom random = new SecureRandom();
-        random.setSeed(2021);
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
+
+        byte[] salt = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
         SecretKeyFactory factory = null;
         try {

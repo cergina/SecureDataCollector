@@ -2,7 +2,6 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_Hash;
 import Model.Database.Tables.Table.T_User;
 
 import java.sql.Connection;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class User {
+public class I_User {
 
     public static int insert(Connection conn, PreparedStatement ps, T_User tu) throws SQLException {
         if (tu.IsTableOkForDatabaseEnter() == false)
@@ -23,10 +22,10 @@ public class User {
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_User.DBTABLE_NAME + "(" +
-                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, PermanentResidence, Blocked" +
+                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, PermanentResidence" +
                         ") " +
                         "VALUES (" +
-                        "?, ?, ?, ?, ?, ?, ?, ?" +
+                        "?, ?, ?, ?, ?, ?, ?" +
                         ") "
         );
 
@@ -38,7 +37,6 @@ public class User {
         ps.setString(++col, tu.getA_Phone());
         ps.setString(++col, tu.getA_Email());
         ps.setString(++col, tu.getA_PermanentResidence());
-        ps.setInt(++col, tu.isA_Blocked_Numerical());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -75,7 +73,7 @@ public class User {
         } else {
             rs.next();
 
-            t = User.FillEntity(rs);
+            t = I_User.FillEntity(rs);
         }
 
         return t;
@@ -106,7 +104,7 @@ public class User {
         } else {
             rs.next();
 
-            t = User.FillEntity(rs);
+            t = I_User.FillEntity(rs);
         }
 
         return t;
@@ -115,7 +113,7 @@ public class User {
     /*
     * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
     */
-    public static int retrieveLatestID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static int retrieveLatestPerConnectionInsertedID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         int latest  = -1;
 
         ps = conn.prepareStatement(
@@ -167,7 +165,7 @@ public class User {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(User.FillEntity(rs));
+                arr.add(I_User.FillEntity(rs));
             }
         }
 

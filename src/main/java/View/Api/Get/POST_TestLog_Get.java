@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.TestLogs;
+import Model.Database.Interaction.I_TestLogs;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_TestLog;
@@ -24,7 +24,7 @@ public class POST_TestLog_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_TestLog ret_ect = TestLogs.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_TestLog.DBNAME_ID));
+            T_TestLog ret_ect = I_TestLogs.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_TestLog.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_TestLog.MakeJSONObjectFrom(ret_ect);

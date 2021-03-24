@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 
 public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToHtml {
-    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "useraccessprivilege_journal" : "useraccessprivilege_journal";
+    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "userAccessPrivilege_journal" : "useraccessprivilege_journal";
 
     // Atributes
     private int a_pk;

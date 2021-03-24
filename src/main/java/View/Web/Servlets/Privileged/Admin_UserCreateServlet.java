@@ -1,4 +1,4 @@
-package View.Web.Servlets.Common;
+package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "UserServlet", urlPatterns = UserServlet.SERVLET_URL)
-public class UserServlet extends ConnectionServlet {
-    public static final String SERVLET_URL =  "/user";
-    public static final String TEMPLATE_NAME = "create-user.html";
+@WebServlet(name = "Admin_UserCreateServlet", urlPatterns = Admin_UserCreateServlet.SERVLET_URL)
+public class Admin_UserCreateServlet extends ConnectionServlet {
+    public static final String SERVLET_URL =  "/admin/user/create";
+    public static final String TEMPLATE_NAME = "authentication/admin_create-user.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet(name = "AdminPageServlet", urlPatterns = AdminPageServlet.SERVLET_URL)
 public class AdminPageServlet extends ConnectionServlet {
     public static final String SERVLET_URL =  "/admin/view";
-    public static final String TEMPLATE_NAME = "admin-view.html";
+    public static final String TEMPLATE_NAME = "views/admin-view.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

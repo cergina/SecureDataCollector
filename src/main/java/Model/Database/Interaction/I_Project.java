@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class Project {
+public class I_Project {
     /***
      * Attempt to insert the parsed argument T_Project into the real database
      * @param conn
@@ -85,7 +85,7 @@ public class Project {
         } else {
             rs.next();
 
-            tp = Project.FillEntity(rs);
+            tp = I_Project.FillEntity(rs);
         }
 
         return tp;
@@ -120,7 +120,7 @@ public class Project {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                arr.add(Project.FillEntity(rs));
+                arr.add(I_Project.FillEntity(rs));
             }
         }
 

@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.Flat;
+import Model.Database.Interaction.I_Flat;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Flat;
@@ -24,7 +24,7 @@ public class POST_Flat_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            T_Flat ret_ect = Flat.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Flat.DBNAME_ID));
+            T_Flat ret_ect = I_Flat.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_Flat.DBNAME_ID));
 
             // return
             JSONObject json_toRet = T_Flat.MakeJSONObjectFrom(ret_ect);

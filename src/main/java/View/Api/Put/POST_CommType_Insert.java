@@ -1,6 +1,6 @@
 package View.Api.Put;
 
-import Model.Database.Interaction.CommType;
+import Model.Database.Interaction.I_CommType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Enum.E_CommType;
@@ -32,7 +32,7 @@ public class POST_CommType_Insert extends POST_Database_Interaction {
             E_CommType ec = E_CommType.CreateFromScratch(tmpDict);
 
             // Insertion
-            CommType.insert(dbProvider.getConn(), dbProvider.getPs(), ec);
+            I_CommType.insert(dbProvider.getConn(), dbProvider.getPs(), ec);
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

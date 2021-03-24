@@ -1,6 +1,6 @@
 package View.Api.Get;
 
-import Model.Database.Interaction.SensorType;
+import Model.Database.Interaction.I_SensorType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Enum.E_SensorType;
@@ -24,7 +24,7 @@ public class POST_SensorType_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
-            E_SensorType ret_ect = SensorType.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(E_SensorType.DBNAME_ID));
+            E_SensorType ret_ect = I_SensorType.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(E_SensorType.DBNAME_ID));
 
             // return
             JSONObject json_toRet = E_SensorType.MakeJSONObjectFrom(ret_ect);
