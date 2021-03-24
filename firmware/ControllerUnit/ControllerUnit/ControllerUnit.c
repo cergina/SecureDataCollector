@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
+#include <avr/sleep.h>
+
+#include <util/delay.h>
 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -18,6 +21,7 @@
 #include "lib/crc8.h"
 
 #define F_CPU 16000000UL
+//define F_CPU 7372800UL
 
 #ifndef F_CPU
 #error "F_CPU undefined, please define CPU frequency in Hz in Makefile"
@@ -72,9 +76,9 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	char * message = (char* )calloc(CHUNK_LEN, sizeof(char));
 	int mlen = 0; // 1B of stx + 2B of length
 	
-	message[0] = STX;
+	//message[0] = 0; //STX
 	//LENGTH (init)
-	message[++mlen] = 0;
+	message[mlen] = 0;
 	message[++mlen] = 0;
 	
 	//DATA PART (in ascii)	
@@ -94,7 +98,6 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	///data
 	char *cDataArr = calloc(20, sizeof(char));
 	sprintf(cDataArr,"%d",value);
-	int cDatalength= strlen(cDataArr);
 	
 	for(int i = 0; i < strlen(cDataArr); i++){
 		//Message length check
@@ -106,21 +109,19 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	free(cDataArr);
 	
 	//Add length
-	int packetLength = mlen - 2;
-	message[1] = packetLength & 0xFF;
-	message[2] = packetLength >> 8;	
-	
-	//End of message
-	message[++mlen] = ETX;
+	int packetLength = mlen - 1;
+	message[0] = packetLength & 0xFF;
+	message[1] = packetLength >> 8;	
 	
 	//Checksum
-	int crc = crc8((uint8_t*)message, mlen);
-	message[++mlen] = crc;
-	message[++mlen] = '\0';
+	int crc = crc8((uint8_t*)message, mlen+1);
 	
-	//debug
-	for (int i = 0; i < mlen; i++)
+	//Send message
+	uart_putc(STX);
+	for (int i = 0; i <= mlen; i++)
 		uart_putc(message[i]);
+	uart_putc(ETX);
+	uart_putc(crc);
 	
 	free(message);
 } 
@@ -130,6 +131,24 @@ void SendMessageToCEU_zwave(int mData, char controller_ID, short input_NO){
 	
 }*/
 
+#define TRIGPOINT 164
+
+unsigned int ReadAnalog(unsigned char chnl){
+	chnl = chnl & 0b00000111; // select adc channel between 0 to 7
+	ADMUX = 0x40;        //channel A0 selected
+	ADCSRA|=(1<<ADSC);   // start conversion
+	while(!(ADCSRA & (1<<ADIF)));   // wait for ADIF conversion complete return
+	ADCSRA|=(1<<ADIF);   // clear ADIF when conversion complete by writing 1
+	return (ADC); //return calculated ADC value
+}
+
+/*
+ISR (INT0_vect)          //External interrupt_zero ISR
+{
+	cnt_zero++;
+}
+*/
+
 int main(void)
 {	
 	unsigned int c;
@@ -137,13 +156,20 @@ int main(void)
 	unsigned short current_flag = NULL;
 	unsigned int index = 0;
 	
-	unsigned char UID = 0xFF; // for test purposes
+	unsigned char UID = 0xAA; // for test purposes
+	
+	//ADMUX=(1<<REFS0);      // Selecting internal reference voltage
+	//ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);     // Enable ADC also set Prescaler as 128
 	
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
-
 	sei();
+	uart_puts("ControllerUnit  Build v0.2 \r\n");
 	
-	uart_puts("ControllerUnit  Build v0.1 \r\n");
+	//Debug
+	_delay_ms(5000); 
+	SendMessageToCEU_uart(UID,1,10); // for test purpose
+	
+	int analogValue; 
 	
 	char checksum;
 	while(1){
@@ -177,13 +203,7 @@ int main(void)
 		if (current_flag == F_CRC) {
 			int len = message[1] << 8 |  message[0];
 		
-			int y = len + 2;
-			checksum = 0;
-			index = 0;
-			while(y-- > 0){
-				checksum ^= message[index++];
-			}
-		
+			checksum = crc8((uint8_t*)message, len);
 			if(c != checksum){
 				uart_puts("Wrong Checksum \r\n");
 				uart_putc(c);
@@ -192,11 +212,12 @@ int main(void)
 			else{
 				uart_puts("ACK");
 				//do stuff
-				SendMessageToCEU_uart(UID,1,0); // for test purpose
+				//
+				//SendMessageToCEU_uart(UID,1,10); // for test purpose
 			}
 			current_flag = NULL;
 			free(message);
 		}
-    }	
+    }
 }
 
