@@ -59,17 +59,38 @@ uint8_t QUEC_STATE = 0;
  * 12 - deactivating
  */
 
- void ProcessQMessage(char *msg){
-	if (QUEC_STATE == 0 && 0 == strcmp("RDY\n",msg)){
-		QUEC_STATE = 1;	
-		uart_puts("quec set to RDY");
+uint8_t ProcessQMessage(char *msg)
+{
+	if (QUEC_STATE == 0 && 0 == strcmp("RDY", msg))
+	{
+		QUEC_STATE = 1;
+		uart_puts("Q -> RDY\n");
+		return 1;
+	}
+
+	if (QUEC_STATE == 1 && 0 == strcmp("+CFUN: 1", msg))
+	{
+		QUEC_STATE = 2;
+		uart_puts("Q -> FULL FUNC\n");
+		return 1;
 	}
 	
-	if (QUEC_STATE == 1 && 0 == strcmp("+CFUN: 1\n",msg)){
-		QUEC_STATE = 2;
-		uart_puts("quec set to FULL FUNC");	
+	if (QUEC_STATE == 2 && 0 == strcmp("+CPIN: READY", msg))
+	{
+		QUEC_STATE = 3;
+		uart_puts("Q -> PIN OK\n");
+		return 1;
 	}
- }
+	
+	if (QUEC_STATE == 3 && 0 == strcmp("Call Ready", msg))
+	{
+		QUEC_STATE = 4;
+		uart_puts("Q -> IDLE\n");
+		return 1;
+	}
+	
+	return 0;
+}
 
 //Parse Datov� ?as? paketu a vytiahne z nej d�ta pre spracovanie
 void ParsePacket(char *message)
@@ -96,7 +117,7 @@ int main(void)
 	sei();
 
 	uart_puts("CentralUnit  Build v0.2 \r\n");
-
+	uart_putc(current_proto);
 	char checksum;
 	while (1)
 	{
@@ -104,9 +125,13 @@ int main(void)
 		if (c & UART_NO_DATA)
 		{
 			continue;
-		}		
+		}
 		
-		if(current_proto == PROTO_CCE){
+		// remove flags
+		c = c & 0xFF;
+
+		if (current_proto == PROTO_CCE)
+		{
 			//uart_putc(c);
 			if (c == STX)
 			{
@@ -138,15 +163,14 @@ int main(void)
 				int len = message[1] << 8 | message[0];
 
 				checksum = crc8((uint8_t *)message, len + 2);
-				/*
-				int y = len;
-				index = 0;
-				while (y-- > 0)
-				{
-					uart_putc(message[index++]);
-				}
-				*/
-
+				
+				//int y = len;
+				//index = 0;
+				//while (y-- > 0)
+				//{
+				//	uart_putc(message[index++]);
+				//}
+				
 				int l = message[1] << 8 | message[0];
 				for (int i = 0; i < l + 2; i++)
 				{
@@ -170,33 +194,43 @@ int main(void)
 				current_flag = NULL;
 			}
 		}
-		
-		if (current_proto == PROTO_CEQ){
-			
-			if (c == 0x00 || c == 0x0D){
-				c = UART_NO_DATA;
+
+		if (current_proto == PROTO_CEQ)
+		{
+			// irelevantne
+			if (c == 0x00 || c == 0x0D)
+			{
 				continue;
 			}
+
+			//uart_putc(c);
+			//continue;
+
+			// message end
+			if (c == 0x0A)
+			{	
+				uint8_t ret = ProcessQMessage(message);
+				if (ret == 0){
+					uart_puts(message);
+					uart_putc('\n');
+				}
 				
-			uart_putc(c);
-				
-			if(c == 0x0A){
-				//ProcessQMessage(message);
-				index = 0;
+				// clear buffer
 				free(message);
+				index = 0;
+				message = (char *)calloc(CHUNK_LEN, sizeof(char));
+				continue;
 			}
-			else {
-				message[index] = (char)c;
-				index++;
-				
-				if (index == 0){
-					message = (char *)calloc(CHUNK_LEN, sizeof(char));
-				}
-				else if (index == CHUNK_LEN)
-				{
-					message = realloc(message, index + CHUNK_LEN * sizeof(message));
-				}
-			}
+			
+			// store to buffer		
+			message[index] = (char)c;
+			index++;
+
+			// extend message buffer if needed
+			if (index % CHUNK_LEN == 0)
+			{
+				message = realloc(message, index + CHUNK_LEN * sizeof(message));
+			}			
 		}
 	}
 }
