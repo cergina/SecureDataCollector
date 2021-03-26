@@ -12,10 +12,12 @@ import Model.Database.Tables.Table.T_Hash;
 import Model.Database.Tables.Table.T_User;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
+import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.InvalidOperationException;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -27,7 +29,7 @@ import java.util.Hashtable;
 public class UC_Auth {
     private DbProvider db;
 
-    public UC_Auth(DbProvider dbProvider) {
+    public UC_Auth(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
@@ -45,14 +47,14 @@ public class UC_Auth {
      * @param email User to search for
      * @return {@link Auth} instance, null if email not in database
      */
-    private Auth retrieveAuthByEmail(final String email) throws SQLException {
+    private @NotNull Auth retrieveAuthByEmail(@NotNull final String email) throws SQLException {
 
         T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
         if (t_user == null) { // isnt email in db?
             return null;
         }
 
-        Model.Web.User user = new Model.Web.User(); // TODO differentiate between 2 User classes
+        User user = new User();
         user.setBeforetitle(t_user.getA_BeforeTitle());
         user.setFirstname(t_user.getA_FirstName());
         user.setMiddlename(t_user.getA_MiddleName());
@@ -76,7 +78,7 @@ public class UC_Auth {
      * @param auth User data
      * @return final Api response body
      */
-    public final JsonResponse createUser(final Auth auth) {
+    public final @NotNull JsonResponse createUser(@NotNull final Auth auth, @NotNull final Integer adminID) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
@@ -121,9 +123,8 @@ public class UC_Auth {
             // modify AccessPrivilegeJournal table START
             java.util.Date date = new java.util.Date();
             java.sql.Date dateCreated = new java.sql.Date(date.getTime());
-            int privilege = auth.isIsadmin() ?
+            int privilege = auth.getIsadmin() ?
                     T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN : T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_USER;
-            int adminID = 1; // TODO ziskat realne ID admina ktory pridava pouzivatela zo sessionu
 
             Dictionary dict_journal = new Hashtable();
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_AT, dateCreated); // TODO generate date within SQL
@@ -162,7 +163,7 @@ public class UC_Auth {
      * @param auth User data that contains email, password hash, verification code
      * @return final Api response body
      */
-    public final JsonResponse finishRegistration(final Auth auth) {
+    public final @NotNull JsonResponse finishRegistration(@NotNull final Auth auth) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
@@ -209,7 +210,7 @@ public class UC_Auth {
      * @param auth User data that contains email, password hash
      * @return final Api response body
      */
-    public final JsonResponse authenticateUser(final Auth auth) {
+    public final @NotNull JsonResponse authenticateUser(@NotNull final Auth auth) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
@@ -223,6 +224,10 @@ public class UC_Auth {
                 jsonResponse.setMessage("Password does not match.");
                 throw new AuthenticationException("Password does not match.");
             }
+
+            // retrieve user privilege
+            T_AccessPrivilegeJournal t_accessPrivilegeJournal = I_AccessPrivilegeJournal.retrieveValidForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
+            authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");

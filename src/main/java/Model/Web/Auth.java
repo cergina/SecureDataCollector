@@ -26,7 +26,7 @@ public class Auth extends PrettyObject {
         return user;
     }
 
-    public Boolean isIsadmin() {
+    public Boolean getIsadmin() {
         return isadmin;
     }
 
