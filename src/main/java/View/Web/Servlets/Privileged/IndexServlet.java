@@ -6,48 +6,54 @@ import Model.Database.Tables.Table.T_Address;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
-import View.Support.ServletHelper;
-import View.Web.Servlets.Common.LoginServlet;
-import View.Web.Servlets.ConnectionServlet;
+import View.Support.ServletAbstracts.SessionServlet;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// TODO to be replaced with info about registrated user
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
-public class IndexServlet extends ConnectionServlet {
+public class IndexServlet extends SessionServlet {
     public static final String SERVLET_URL =  "/index";
     public static final String TEMPLATE_NAME = "index.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
-        WebContext context = DcsWebContext.WebContextInitForDCS(request, response, request.getServletContext(),
-                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
-
-        // Session
-        // I know its just an example, but Code like this please, DO NOT USE if's in if's!
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            engine.process("faults/403.html", context, response.getWriter());
+        super.doGet(request, response); // call always parent method first
+        if (checkPrivilege(request, response) == false) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // part 2
-        User user = (User) session.getAttribute(LoginServlet.SESSION_ATTR_USER);
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
+        WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
+                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
+
+
+        // example accessing session attributes
+        User user = SessionUtil.getUser(request.getSession(false));
+
         context.setVariable("Email", user.getEmail());
+
+        context.setVariable("BeforeTitle", user.getBeforetitle());
+        context.setVariable("Phone", user.getPhone());
+        context.setVariable("loggedId", user.getUserID());
+        context.setVariable("logged_address", user.getResidence());
+        context.setVariable("FirstName", user.getFirstname());
+        context.setVariable("MiddleName", user.getMiddlename());
+        context.setVariable("LastName", user.getLastname());
 
         ArrayList<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
 
-        // i believe that if there is nothing it's not bad request but just empty array
-        // bad request would be if it would crash
         if (arr == null) {
-            ServletHelper.Send404(response);
+            // example sending error for GET request
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 

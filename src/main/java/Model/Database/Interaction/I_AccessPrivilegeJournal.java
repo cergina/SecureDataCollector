@@ -4,10 +4,7 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_AccessPrivilegeJournal;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -44,15 +41,6 @@ public class I_AccessPrivilegeJournal {
         return affectedRows;
     }
 
-    /***
-     * We only care about the most recent (VALID ACTIVE) by the user's ID
-     * @param conn
-     * @param ps
-     * @param rs
-     * @param userId which user's valid accessprivilegejournal is of interest to us
-     * @return
-     * @throws SQLException
-     */
     public static T_AccessPrivilegeJournal retrieveValidForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userId) throws SQLException {
         Assurance.IdCheck(userId);
 
@@ -61,7 +49,7 @@ public class I_AccessPrivilegeJournal {
                 "SELECT " +
                         "* " +
                         "FROM " + T_AccessPrivilegeJournal.DBTABLE_NAME + " " +
-                        "WHERE UserID=? GROUP BY UserID ORDER BY ID DESC LIMIT 1"
+                        "WHERE UserID=? ORDER BY ID DESC LIMIT 1"
         );
 
         int col = 0;
@@ -160,8 +148,13 @@ public class I_AccessPrivilegeJournal {
 
         Dictionary dict = new Hashtable();
 
+        dict.put(T_AccessPrivilegeJournal.DBNAME_ID, rs.getInt(T_AccessPrivilegeJournal.DBNAME_ID));
         dict.put(T_AccessPrivilegeJournal.DBNAME_CREATED_AT, rs.getDate(T_AccessPrivilegeJournal.DBNAME_CREATED_AT));
-        dict.put(T_AccessPrivilegeJournal.DBNAME_DELETED_AT, rs.getDate(T_AccessPrivilegeJournal.DBNAME_DELETED_AT));
+
+        Date deletedAt = rs.getDate(T_AccessPrivilegeJournal.DBNAME_DELETED_AT);
+        if (null != deletedAt)
+            dict.put(T_AccessPrivilegeJournal.DBNAME_DELETED_AT, deletedAt);
+
         dict.put(T_AccessPrivilegeJournal.DBNAME_USER_ID, rs.getInt(T_AccessPrivilegeJournal.DBNAME_USER_ID));
         dict.put(T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID, rs.getInt(T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID));
         dict.put(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID, rs.getInt(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID));
@@ -170,6 +163,4 @@ public class I_AccessPrivilegeJournal {
 
         return t;
     }
-
-
 }
