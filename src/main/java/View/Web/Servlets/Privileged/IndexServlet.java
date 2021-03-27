@@ -6,8 +6,8 @@ import Model.Database.Tables.Table.T_Address;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
+import View.Support.ServletAbstracts.SessionServlet;
 import View.Support.SessionUtil;
-import View.Web.Servlets.Template.SessionServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-// TODO to be removed
+// TODO to be replaced with info about registrated user
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
 public class IndexServlet extends SessionServlet {
     public static final String SERVLET_URL =  "/index";
@@ -26,14 +26,28 @@ public class IndexServlet extends SessionServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response); // call always parent method first
-        if (!checkPrivilege(request, response)) return;  // check always privilege
+        if (checkPrivilege(request, response) == false) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
+
         // example accessing session attributes
         User user = SessionUtil.getUser(request.getSession(false));
+
         context.setVariable("Email", user.getEmail());
+
+        context.setVariable("BeforeTitle", user.getBeforetitle());
+        context.setVariable("Phone", user.getPhone());
+        context.setVariable("loggedId", user.getUserID());
+        context.setVariable("logged_address", user.getResidence());
+        context.setVariable("FirstName", user.getFirstname());
+        context.setVariable("MiddleName", user.getMiddlename());
+        context.setVariable("LastName", user.getLastname());
 
         ArrayList<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
 

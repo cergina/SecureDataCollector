@@ -8,9 +8,9 @@ import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
+import View.Support.ServletAbstracts.PublicServlet;
 import View.Support.ServletHelper;
 import View.Support.SessionUtil;
-import View.Web.Servlets.Template.PublicServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -30,6 +30,10 @@ public class LoginServlet extends PublicServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
+        if (checkPrivilege(request, response) == false) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
@@ -40,9 +44,10 @@ public class LoginServlet extends PublicServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doPost(request, response);
-        if (!checkPrivilege(request, response)) return;
+
         PrintWriter writer = response.getWriter();
 
+        // parse JSON from Body object as Auth java representation
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password

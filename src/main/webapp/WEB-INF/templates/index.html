@@ -3,10 +3,23 @@
 <head th:replace="fragments/head.html :: head"></head>
 <body>
 
-    <h1>Welcome <span th:text="${Email}"></span></h1>
+    <h1>Welcome <span th:text="${FirstName}"></span></h1>
 
     <header id="header"></header>
     <div id="content">
+
+        <p>Your name: <span th:text="${BeforeTitle}"></span> <span th:text="${FirstName}"></span> <span th:text="${MiddleName}"></span> <span th:text="${LastName}"></span></p>
+        <p>You're logged in under email: <span th:text="${Email}"></span></p>
+        <p>We can contact you at: <span th:text="${Phone}"></span></p>
+        <p>Your id: [will not be shown]<span th:text="${loggedId}"></span>/p>
+        <p>Where you live: <span th:text="${logged_address}"></span></p>
+
+        <p>City: <span th:text="${City}"></span></p>
+        <p>Street: <span th:text="${Street}"></span></p>
+        <p>House Nr: <span th:text="${HouseNO}"></span></p>
+        <p>ZIP: <span th:text="${Zip}"></span></p>
+
+
         <p>Country: <span th:text="${Country}"></span></p>
         <p>City: <span th:text="${City}"></span></p>
         <p>Street: <span th:text="${Street}"></span></p>

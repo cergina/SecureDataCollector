@@ -3,7 +3,7 @@ package View.Web.Servlets.Privileged;
 import Control.ConfigClass;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
-import View.Web.Servlets.Template.AdminServlet;
+import View.Support.ServletAbstracts.AdminServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -20,7 +20,10 @@ public class AdminPageServlet extends AdminServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
-        if (!checkPrivilege(request, response)) return;
+        if (checkPrivilege(request, response) == false) {
+            return;
+        }
+
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);

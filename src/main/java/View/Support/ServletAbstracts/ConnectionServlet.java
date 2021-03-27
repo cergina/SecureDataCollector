@@ -1,4 +1,4 @@
-package View.Web.Servlets.Template;
+package View.Support.ServletAbstracts;
 
 import Control.ConfigClass;
 import Control.Connect.DbProvider;

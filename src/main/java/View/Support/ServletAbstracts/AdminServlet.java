@@ -1,5 +1,6 @@
-package View.Web.Servlets.Template;
+package View.Support.ServletAbstracts;
 
+import Model.Database.Support.CustomLogs;
 import View.Support.SessionUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,13 +11,19 @@ public abstract class AdminServlet extends SessionServlet {
 
     @Override
     public boolean checkPrivilege(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (!super.checkPrivilege(req, resp)) {
+
+        // Request has no session
+        if (super.checkPrivilege(req, resp) == false) {
             return false;
         }
-        if (!SessionUtil.getIsadmin(req.getSession(false))) { // is not admin?
+
+        // Session does not map to Admin user
+        if (SessionUtil.getIsadmin(req.getSession(false)) == false) {
+            CustomLogs.Error("User trying to access admin site. [Not admin] FAILED., ip: " + req.getRemoteAddr());
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
+
         return true;
     }
 }

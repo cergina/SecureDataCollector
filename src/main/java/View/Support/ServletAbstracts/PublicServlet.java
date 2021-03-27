@@ -1,4 +1,4 @@
-package View.Web.Servlets.Template;
+package View.Support.ServletAbstracts;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

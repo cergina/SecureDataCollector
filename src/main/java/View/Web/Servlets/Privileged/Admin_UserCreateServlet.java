@@ -8,8 +8,8 @@ import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
+import View.Support.ServletAbstracts.AdminServlet;
 import View.Support.ServletHelper;
-import View.Web.Servlets.Template.AdminServlet;
 import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -29,7 +29,10 @@ public class Admin_UserCreateServlet extends AdminServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
-        if (!checkPrivilege(request, response)) return;
+        if (checkPrivilege(request, response) == false) {
+            return;
+        }
+
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
@@ -42,9 +45,10 @@ public class Admin_UserCreateServlet extends AdminServlet {
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
+        // parse JSON from Body object as Auth java representation
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
-        String verificationCode = UserAccessHelper.generateVerification(14); // generate verification code // TODO teraz som tu zbadal len tak konstantu toto sa patri niekam upratat
+        String verificationCode = UserAccessHelper.generateVerification(ConfigClass.VERIFICATION_CODE_LENGTH);
         auth.setVerificationcode(verificationCode);
 
         Integer adminID = SessionUtil.getUser(request.getSession(false)).getUserID();

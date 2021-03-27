@@ -37,7 +37,7 @@ function createUser() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Verfikacny kod je: ' + response.data.verificationcode); // TODO display verification code
+                alert('Verfikacny kod je: ' + response.data.verificationcode);
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -66,7 +66,7 @@ function registerUser() {
         statusCode: {
             200: function(response) {
                 // TODO thank user for registration
-                alert(response.message)
+                alert('Thank you for your reigstration' + response.message)
             },
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);

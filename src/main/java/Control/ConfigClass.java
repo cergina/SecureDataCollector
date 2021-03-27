@@ -2,17 +2,20 @@ package Control;
 
 public class ConfigClass {
     // whether debug output is turned on
-    public static boolean DEBUG = false;
+    public final static boolean DEBUG = false;
 
-    public static String JNDI_DATASOURCE_NAME = "jdbc/MySQLDataSource";
+    public final static String JNDI_DATASOURCE_NAME = "jdbc/MySQLDataSource";
 
     // changes db table names from lowercase to camelcase if true and some other things
-    public static boolean RUNNING_ON_SERVER = false;
+    public final static boolean RUNNING_ON_SERVER = false;
 
     // HTML variable name that tells if we are running remotely
-    public static String HTML_VARIABLENAME_RUNNINGREMOTELY = "trueIfRunningRemotely";
+    public final static String HTML_VARIABLENAME_RUNNINGREMOTELY = "trueIfRunningRemotely";
 
     // URLS
-    public static String URL_BASE_LOCAL = "/dcs";
-    public static String URL_BASE_SERVER = "/dcs";
+    public final static String URL_BASE_LOCAL = "/dcs";
+    public final static String URL_BASE_SERVER = "/dcs";
+
+    // DCS SPECIFIC
+    public final static int VERIFICATION_CODE_LENGTH = 14;
 }

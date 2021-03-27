@@ -42,36 +42,7 @@ public class UC_Auth {
         return null;
     }
 
-    /**
-     * Retrieve user and password hash
-     * @param email User to search for
-     * @return {@link Auth} instance, null if email not in database
-     */
-    private @NotNull Auth retrieveAuthByEmail(@NotNull final String email) throws SQLException {
-
-        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
-        if (t_user == null) { // isnt email in db?
-            return null;
-        }
-
-        User user = new User();
-        user.setBeforetitle(t_user.getA_BeforeTitle());
-        user.setFirstname(t_user.getA_FirstName());
-        user.setMiddlename(t_user.getA_MiddleName());
-        user.setLastname(t_user.getA_LastName());
-        user.setPhone(t_user.getA_Phone());
-        user.setEmail(t_user.getA_Email());
-        user.setResidence(t_user.getA_PermanentResidence());
-        user.setUserID(t_user.getA_pk());
-
-        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
-
-        Auth auth = new Auth();
-        auth.setUser(user);
-        auth.setPassword(t_hash.getA_Value());
-
-        return auth;
-    }
+    // PUBLIC METHODS
 
     /**
      * Create new user
@@ -109,12 +80,13 @@ public class UC_Auth {
             // modify User table END
 
 
-            int userID = I_User.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
+
+            int createdUserID = I_User.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
             // modify Hash table START
             Dictionary dict_hash = new Hashtable();
             dict_hash.put(T_Hash.DBNAME_VALUE, auth.getVerificationcode()); // save verification instead of password hash
-            dict_hash.put(T_Hash.DBNAME_USER_ID, userID);
+            dict_hash.put(T_Hash.DBNAME_USER_ID, createdUserID);
 
             T_Hash hashToInsert = T_Hash.CreateFromScratch(dict_hash);
             I_Hash.insert(db.getConn(), db.getPs(), hashToInsert);
@@ -128,7 +100,7 @@ public class UC_Auth {
 
             Dictionary dict_journal = new Hashtable();
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_AT, dateCreated); // TODO generate date within SQL
-            dict_journal.put(T_AccessPrivilegeJournal.DBNAME_USER_ID, userID);
+            dict_journal.put(T_AccessPrivilegeJournal.DBNAME_USER_ID, createdUserID);
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID, privilege);
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID, adminID);
 
@@ -167,6 +139,8 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
+            db.beforeSqlExecution();
+
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
@@ -191,13 +165,17 @@ public class UC_Auth {
             I_Hash.insert(db.getConn(), db.getPs(), t_hash);
             // modify Hash table END
 
+            db.afterSqlExecution(true);
+
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Registration complete.");
             jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
+            db.afterSqlExecution(false);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
+            db.afterSqlExecution(false);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -214,6 +192,8 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
+            db.beforeSqlExecution();
+
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
@@ -229,17 +209,55 @@ public class UC_Auth {
             T_AccessPrivilegeJournal t_accessPrivilegeJournal = I_AccessPrivilegeJournal.retrieveValidForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
+            db.afterSqlExecution(true);
+
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
             jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
+            db.afterSqlExecution(false);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
+            db.afterSqlExecution(false);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
         }
         return jsonResponse;
+    }
+
+
+    // PRIVATE METHODS
+
+    /**
+     * Retrieve user and password hash
+     * @param email User to search for
+     * @return {@link Auth} instance, null if email not in database
+     */
+    private @NotNull Auth retrieveAuthByEmail(@NotNull final String email) throws SQLException {
+
+        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
+        if (t_user == null) { // isnt email in db?
+            return null;
+        }
+
+        User user = new User();
+        user.setBeforetitle(t_user.getA_BeforeTitle());
+        user.setFirstname(t_user.getA_FirstName());
+        user.setMiddlename(t_user.getA_MiddleName());
+        user.setLastname(t_user.getA_LastName());
+        user.setPhone(t_user.getA_Phone());
+        user.setEmail(t_user.getA_Email());
+        user.setResidence(t_user.getA_PermanentResidence());
+        user.setUserID(t_user.getA_pk());
+
+        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
+
+        Auth auth = new Auth();
+        auth.setUser(user);
+        auth.setPassword(t_hash.getA_Value());
+
+        return auth;
     }
 }

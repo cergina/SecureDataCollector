@@ -1,4 +1,6 @@
-package View.Web.Servlets.Template;
+package View.Support.ServletAbstracts;
+
+import Model.Database.Support.CustomLogs;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,10 +10,14 @@ public abstract class SessionServlet extends ConnectionServlet {
 
     @Override
     public boolean checkPrivilege(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (req.getSession(false) == null) { // is not logged in?
+
+        // Request has no session
+        if (req.getSession(false) == null) {
+            CustomLogs.Error("User trying to access site. [No session] FAILED.");
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
+
         return true;
     }
 }
