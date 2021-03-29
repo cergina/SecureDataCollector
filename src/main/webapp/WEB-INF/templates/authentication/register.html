@@ -2,29 +2,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row" id="two-column-container">
+            <div class="col-sm-7 columnleft">
+                <div class="row">
+                    <div id="imgdiv">
+                        <!--<img src="signup4.png" alt="Sign Up" style="width:100%;"> -->
+                        <img th:src="@{${base_url} + '/static/images/reglogimg.png'}" class="columnleft" alt="Sign Up" style="width:100%">
+                        <h1 id="img-text-top">Welcome</h1>
+                        <h4 id="img-text-bottom">Data Collection System</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 align-self-center" id="columnright">
+                <div class="grid">
 
-    <div>
-        <div>
-            <label for="email">Email</label>
-            <div><input type="email" id="email"/></div>
+                    <div class="row justify-content-center">
+                        <h1 class="reglogheader">Sign Up</h1>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="regfields">
+                            <label for="email" class="sr-only">Email</label>
+                            <input class="reginput" type="email" id="email" name="email" placeholder="email">
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="regfields">
+                            <label for="password" class="sr-only">Password</label>
+                            <input class="reginput" type="password" id="password" name="password" placeholder="password">
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="regfields">
+                            <label for="verificationcode" class="sr-only">Verification Code</label>
+                            <input class="reginput" type="text" id="verificationcode" name="verificationcode" placeholder="verification code">
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="buttondiv">
+                            <button class="roundedbutton" onclick="registerUser()">Register</button>
+                        </div>
+                        <div class="buttondiv">
+                            <button class="roundedbutton" onclick="goHome()">Go home</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-
-        <div>
-            <label for="password">Password</label>
-            <div><input type="password" id="password"/></div>
-        </div>
-
-        <div>
-            <label for="verificationcode">Verification code</label>
-            <div><input type="text" id="verificationcode"/></div>
-        </div>
-
-        <button onclick="registerUser()">Register</button>
     </div>
-
-    <div>
-        <button onclick="goHome()">Homesite</button>
-    </div>
-
+</div>
 </body>
 </html>
