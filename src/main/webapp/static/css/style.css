@@ -1,18 +1,125 @@
-h1 {
-    color: green;
-    font-family: "Arial Black";
+body, html{
+    background-color:#dbecf4;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 18px;
+
 }
 
-p {
-    font-family: "Times New Roman";
-    color: grey;
+.columnleft{
+    border-top-left-radius: 9px;
+    border-bottom-left-radius: 9px;
 }
 
-body,h1 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-    background-image: url('./../images/forestbridge.jpg');
-    min-height: 100%;
-    background-position: center;
-    background-size: cover;
+#columnright{
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
+}
+
+#two-column-container{
+    border-radius: 10px;
+    background-color: #fafdff;
+    font-size: 16px;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    -webkit-transform: translate3d(-50%, -50%, 0);
+    -moz-transform: translate3d(-50%, -50%, 0);
+    transform: translate3d(-50%, -50%, 0);
+}
+
+.row{
+    padding: 0px;
+}
+
+#imgdiv {
+    position: relative;
+    width: 100%;
+}
+
+#img-text-top {
+    position: absolute;
+    color:#3496cb;
+    font-weight: bold;
+    top: 50px;
+    left: 40px;
+    width: 100%;
+}
+
+#img-text-bottom {
+    position: absolute;
+    color:white;
+    bottom: 30px;
+    left: 50px;
+    width: 100%;
+}
+
+.rowinrightcol{
+    display: flex;
+}
+
+.reglogheader{
+    color: #3496cb;
+    font-weight: bold;
+    padding-bottom: 0px;
+}
+
+.roundedbutton {
+    background-color: #3496cb;
+    border: none;
+    color: white;
+    padding: 5px 60px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.regfields {
+    margin-bottom: 0;
+    /*border-bottom: 3px solid #3496cb;*/
+    padding-right: 20px;
+    position: relative;
+    padding-top: 20px;
+}
+
+.reginput{
+    border-left-style: hidden;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    background-color: #fafdff;
+    padding-bottom:5px;
+    border-bottom: 3px solid #3496cb;
+}
+
+.reginput::placeholder{
+    color: #3496cb;
+    font-weight: bold;
+}
+
+.buttondiv{
+    padding-top: 25px;
+}
+
+.createuser{
+    background: #a3cfe7;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+}
+
+.regpadding {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.regpaddingtopbottom {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.regpaddingbottom {
+    padding-bottom: 10px;
 }
