@@ -23,9 +23,9 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
 
     // Atributes
     private int a_pk;
-    private String a_name;
-    private Date a_created;
-    private Date a_deleted;
+    private String a_Name;
+    private Date a_CreatedAt;
+    private Date a_DeletedAt;
 
     public static final String DBNAME_ID = "ID";
     public static final String DBNAME_NAME = "Name";
@@ -46,9 +46,9 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
         T_Project temp = new T_Project();
 
         temp.a_pk = pk;
-        temp.a_name = (String)tmpDict.get(DBNAME_NAME);
-        temp.a_created = (Date)tmpDict.get(DBNAME_CreatedAt);
-        temp.a_deleted = deleted;
+        temp.a_Name = (String)tmpDict.get(DBNAME_NAME);
+        temp.a_CreatedAt = (Date)tmpDict.get(DBNAME_CreatedAt);
+        temp.a_DeletedAt = deleted;
 
         return temp;
     }
@@ -56,8 +56,8 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
     public static T_Project CreateFromScratch(String name) {
         T_Project temp = new T_Project();
 
-        temp.a_name = name;
-        temp.a_created = Date.valueOf(LocalDate.now());
+        temp.a_Name = name;
+        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
 
         return temp;
     }
@@ -67,10 +67,10 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
         JSONObject jo = new JSONObject();
 
         jo.put(DBNAME_ID, tmp.getA_pk());
-        jo.put(DBNAME_NAME, tmp.getA_name());
-        jo.put(DBNAME_CreatedAt, tmp.getA_created());
-        if (tmp.getA_deleted() != null)
-            jo.put(DBNAME_DeletedAt, tmp.getA_deleted());
+        jo.put(DBNAME_NAME, tmp.getA_Name());
+        jo.put(DBNAME_CreatedAt, tmp.getA_CreatedAt());
+        if (tmp.getA_DeletedAt() != null)
+            jo.put(DBNAME_DeletedAt, tmp.getA_DeletedAt());
 
         return jo;
     }
@@ -80,15 +80,15 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsDateOk(a_created) &&
-                Assurance.IsVarcharOk(a_name);
+        return Assurance.IsDateOk(a_CreatedAt) &&
+                Assurance.IsVarcharOk(a_Name);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
         return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsDateOk(a_created) &&
-                Assurance.IsVarcharOk(a_name);
+                Assurance.IsDateOk(a_CreatedAt) &&
+                Assurance.IsVarcharOk(a_Name);
     }
 
 
@@ -121,8 +121,9 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
     public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
         ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
-        str.add(this.a_created.toString());
-        str.add(this.a_name);
+        str.add(this.a_Name);
+        str.add(this.a_CreatedAt.toString());
+        str.add(this.a_DeletedAt.toString());
 
         return str;
     }
@@ -141,14 +142,14 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
         if (Assurance.IsIntOk(a_pk))
             str.append("ID: " + a_pk + "; ");
 
-        if (Assurance.IsVarcharOk(a_name))
-            str.append("name " + a_name + "; ");
+        if (Assurance.IsVarcharOk(a_Name))
+            str.append("name " + a_Name + "; ");
 
-        if (Assurance.IsDateOk(a_created))
-            str.append("created: " + a_created + "; ");
+        if (Assurance.IsDateOk(a_CreatedAt))
+            str.append("created: " + a_CreatedAt + "; ");
 
-        if (Assurance.IsDateOk(a_deleted))
-            str.append("deleted: " + a_deleted + "; ");
+        if (Assurance.IsDateOk(a_DeletedAt))
+            str.append("deleted: " + a_DeletedAt + "; ");
 
         str.append("]");
 
@@ -160,15 +161,15 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
         return a_pk;
     }
 
-    public String getA_name() {
-        return a_name;
+    public String getA_Name() {
+        return a_Name;
     }
 
-    public Date getA_created() {
-        return a_created;
+    public Date getA_CreatedAt() {
+        return a_CreatedAt;
     }
 
-    public Date getA_deleted() {
-        return a_deleted;
+    public Date getA_DeletedAt() {
+        return a_DeletedAt;
     }
 }

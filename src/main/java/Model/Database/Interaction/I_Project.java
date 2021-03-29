@@ -41,7 +41,7 @@ public class I_Project {
         );
 
         int col = 0;
-        ps.setString(++col, tp.getA_name());
+        ps.setString(++col, tp.getA_Name());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

@@ -24,6 +24,13 @@ public class CustomLogs {
             DoLog(INFORM, msg, printStackTrace);
     }
 
+    /* only for use during development */
+    public static void Development(String msg) {
+        if (ConfigClass.RUNNING_ON_SERVER == false) {
+            DoLog(DEBUG, msg, true);
+        }
+    }
+
     public static void Debug(String msg) {
         if (ConfigClass.DEBUG)
             DoLog(DEBUG, msg, true);
