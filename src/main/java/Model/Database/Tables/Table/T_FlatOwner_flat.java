@@ -64,8 +64,10 @@ public class T_FlatOwner_flat extends DbEntity implements DBTable, DBToHtml {
 
         jo.put(DBNAME_ID, tmp.getA_pk());
         jo.put(DBNAME_CREATEDAT, tmp.getA_CreatedAt());
+
         if (tmp.getA_ValidUntil() != null)
             jo.put(DBNAME_VALIDUNTIL, tmp.getA_ValidUntil());
+
         jo.put(DBNAME_FLATOWNERID, tmp.getA_FlatOwnerID());
         jo.put(DBNAME_FLATID, tmp.getA_FlatID());
 

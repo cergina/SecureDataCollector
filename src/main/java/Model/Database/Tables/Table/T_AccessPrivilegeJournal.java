@@ -71,7 +71,10 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
 
         jo.put(DBNAME_ID, tmp.getA_pk());
         jo.put(DBNAME_CREATED_AT, tmp.getA_CreatedAt());
-        jo.put(DBNAME_DELETED_AT, tmp.getA_DeletedAt());
+
+        if (tmp.getA_DeletedAt() != null)
+            jo.put(DBNAME_DELETED_AT, tmp.getA_DeletedAt());
+
         jo.put(DBNAME_USER_ID, tmp.getA_UserID());
         jo.put(DBNAME_ACCESS_PRIVILEGE_ID, tmp.getA_AccessPrivilegeID());
         jo.put(DBNAME_CREATED_BY_USER_ID, tmp.getA_CreatedByUserID());

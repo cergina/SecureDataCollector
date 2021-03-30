@@ -9,6 +9,14 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class ServletHelper {
+    public static void SendReturnCode(HttpServletResponse resp, int code) throws  IOException {
+        resp.sendError(code);
+    }
+
+    public static void SendUnauthorized(HttpServletResponse resp) throws IOException {
+        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
     public static void Send404(HttpServletResponse resp) throws IOException {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }

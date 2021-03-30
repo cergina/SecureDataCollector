@@ -79,6 +79,58 @@ public class I_ControllerUnit {
         return tc;
     }
 
+    public static ArrayList<T_ControllerUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int flatId, int centralUnitId) throws SQLException {
+
+        // No Filter is being used
+        if (flatId <= 0 && centralUnitId <= 0) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean flatRule = flatId > 0;
+        boolean centralUnitRule = centralUnitId > 0;
+
+        usedSql = (flatRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
+        usedSql = (centralUnitRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".CentralUnitID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (flatRule)
+            ps.setInt(++col, flatId);
+
+        if (centralUnitRule)
+            ps.setInt(++col, centralUnitId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        ArrayList<T_ControllerUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_ControllerUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
     /*****
      *
      * @param conn

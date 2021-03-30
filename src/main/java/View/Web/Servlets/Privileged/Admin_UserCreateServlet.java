@@ -30,6 +30,7 @@ public class Admin_UserCreateServlet extends AdminServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
         if (checkPrivilege(request, response) == false) {
+            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

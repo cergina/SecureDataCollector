@@ -112,6 +112,58 @@ public class I_Sensor {
         throw new SQLException("No such sensor SensorIO" + sensorIO + " in database");
     }
 
+    public static ArrayList<T_Sensor> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorTypeId, int controllerUnitId) throws SQLException {
+
+        // No Filter is being used
+        if (sensorTypeId <= 0 && controllerUnitId <= 0) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_Sensor.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean sensorTypeRule = sensorTypeId > 0;
+        boolean controllerUnitRule = controllerUnitId > 0;
+
+        usedSql = (sensorTypeRule ? usedSql + T_Sensor.DBTABLE_NAME + ".SensorTypeID=? " : usedSql);
+        usedSql = (controllerUnitRule ? usedSql + T_Sensor.DBTABLE_NAME + ".ControllerUnitID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (sensorTypeRule)
+            ps.setInt(++col, sensorTypeId);
+
+        if (controllerUnitRule)
+            ps.setInt(++col, controllerUnitId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        ArrayList<T_Sensor> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Sensor.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
     /*****
      *
      * @param conn

@@ -61,6 +61,9 @@ public class LoginServlet extends PublicServlet {
             HttpSession session = request.getSession();
             SessionUtil.setUser(session, ((Auth) jsonResponse.getData()).getUser());
             SessionUtil.setIsadmin(session, ((Auth) jsonResponse.getData()).getIsadmin());
+
+            // add log to database
+            (new UC_Auth(getDb())).LogLoginIntoDatabase(SessionUtil.getUser(session).getUserID(), request);
         }
 
         writer.println(jsonResponse.toString());

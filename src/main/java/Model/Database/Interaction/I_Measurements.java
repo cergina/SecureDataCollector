@@ -86,6 +86,53 @@ public class I_Measurements {
         return tm;
     }
 
+    public static ArrayList<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+
+        // No Filter is being used
+        if (sensorId <= 0) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean sensorRule = sensorId > 0;
+
+        usedSql = (sensorRule ? usedSql + T_Measurement.DBTABLE_NAME + ".SensorID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (sensorRule)
+            ps.setInt(++col, sensorId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        ArrayList<T_Measurement> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Measurements.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
     /*****
      *
      * @param conn

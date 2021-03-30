@@ -20,7 +20,6 @@ public abstract class AdminServlet extends SessionServlet {
         // Session does not map to Admin user
         if (SessionUtil.getIsadmin(req.getSession(false)) == false) {
             CustomLogs.Error("User trying to access admin site. [Not admin] FAILED., ip: " + req.getRemoteAddr());
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
 

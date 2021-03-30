@@ -10,10 +10,7 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Project;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -134,6 +131,10 @@ public class I_Project {
         Dictionary tmpDict = new Hashtable();
         tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
         tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
+
+        Date deletedAt = rs.getDate(T_Project.DBNAME_DeletedAt);
+        if (deletedAt != null)
+            tmpDict.put(T_Project.DBNAME_DeletedAt, deletedAt);
 
         t = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
 

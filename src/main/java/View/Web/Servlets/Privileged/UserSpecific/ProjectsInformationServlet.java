@@ -3,6 +3,7 @@ package View.Web.Servlets.Privileged.UserSpecific;
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
 import Model.Database.Support.CustomLogs;
+import Model.Web.Projects;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -17,10 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "FlatInformationServlet", urlPatterns = FlatInformationServlet.SERVLET_URL)
-public class FlatInformationServlet extends SessionServlet {
-    public static final String SERVLET_URL =  "/action/projects/flats";
-    public static final String TEMPLATE_NAME = "views/privileged/my_flat.html";
+@WebServlet(name = "ProjectsInformationServlet", urlPatterns = ProjectsInformationServlet.SERVLET_URL)
+public class ProjectsInformationServlet extends SessionServlet {
+    public static final String SERVLET_URL =  "/action/projects";
+    public static final String TEMPLATE_NAME = "views/privileged/my_projects.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,29 +34,19 @@ public class FlatInformationServlet extends SessionServlet {
 
         CustomLogs.Development("Sme vo doGet");
 
-        // has to have some request for flat id
-        int requestedFlatId;
-        try {
-            requestedFlatId = Integer.parseInt(request.getParameter("fid"));
-            CustomLogs.Development("V requeste prisiel flat id: " + requestedFlatId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         // Get user from session
         User user = SessionUtil.getUser(request.getSession(false));
-        boolean hasHe = (new UC_FlatSummary(getDb())).temporaryCheckToSeeIfHasRightToSee(user.getUserID(), requestedFlatId);
+        Projects projects = (new UC_FlatSummary(getDb())).allProjectsForUser(user.getUserID());
 
         // TEMPLATE PREPARATION
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-
         // part 3
-        context.setVariable("RightToSeeFlat", hasHe);
+        // TODO
+        context.setVariable("Email", user.getEmail());
+        context.setVariable("ProjectsCount", projects.getProjects().size());
 
         // part 4
         engine.process(TEMPLATE_NAME, context, response.getWriter());

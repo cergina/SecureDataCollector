@@ -18,6 +18,9 @@ public class DbProvider {
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
+
+    // PUBLIC
+
     public DbProvider() {
         try {
             ctx = new InitialContext();
@@ -43,21 +46,17 @@ public class DbProvider {
         }
     }
 
+    public void afterOkSqlExecution() {
+        afterSqlExecution(true);
+    }
+
     /**
      * Finish transaction
-     * @param successful commit?
+     * @param exceptionToLog
      */
-    public void afterSqlExecution(boolean successful) {
-        try {
-            if (successful) {
-                conn.commit();
-            } else {
-                conn.rollback();
-            }
-            conn.setAutoCommit(true);
-        } catch (Exception e) {
-            CustomLogs.Error(e.getMessage());
-        }
+    public void afterExceptionInSqlExecution(Exception exceptionToLog) {
+        CustomLogs.Error(exceptionToLog.getMessage());
+        afterSqlExecution(false);
     }
 
     public void disconnect() {
@@ -89,5 +88,24 @@ public class DbProvider {
 
     public ResultSet getRs() {
         return rs;
+    }
+
+    // PRIVATE
+
+    /**
+     * Finish transaction
+     * @param successful commit?
+     */
+    private void afterSqlExecution(boolean successful) {
+        try {
+            if (successful) {
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+            conn.setAutoCommit(true);
+        } catch (Exception e) {
+            CustomLogs.Error(e.getMessage());
+        }
     }
 }
