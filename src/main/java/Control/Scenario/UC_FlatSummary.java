@@ -4,12 +4,13 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.ComplexInteractions.GeneralAccessibility;
 import Model.Database.Interaction.*;
 import Model.Database.Tables.Table.*;
-import Model.Web.Project;
-import Model.Web.Projects;
+import Model.Web.*;
+import Model.Web.thymeleaf.*;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
@@ -23,7 +24,7 @@ public class UC_FlatSummary {
         this.db = dbProvider;
     }
 
-    public final Projects allProjectsForUser(int userID) {
+    public final Projects allProjectsForUser(int userID) { // TODO move to different UC
         Projects projects = new Projects();
 
         try {
@@ -58,77 +59,97 @@ public class UC_FlatSummary {
     }
 
     /***
-     * Returns null if person has no right to see measurements for that flat or it does not exist
-     * @param userId from sesssion
      * @param flatId from request
-     * @return
+     * @return {@link Flat}, null if it does not exist
      */
-    public ArrayList<T_Measurement> getAllMeasurementsForFlat(int userId, int flatId) {
-        if (doesUserHaveRightToSeeProjectBelongingToFlat(userId, flatId) == false) {
-            return null;
+    public Flat getFlatSummary(@NotNull Integer flatId) {
+
+        T_Flat t_flat = getFlatById(flatId);
+        if (t_flat == null) return null;
+
+        List<T_ControllerUnit> t_controllerUnits = getAllControllersForFlat(flatId);
+        List<ControllerUnit> controllerUnits = new ArrayList<>();
+        for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
+            List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
+            List<Sensor> sensors = new ArrayList<>();
+            for (T_Sensor t_sensor : t_sensors) {
+                int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk());
+                int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk());
+
+                Sensor sensor = new Sensor(
+                        t_sensor.getA_Input(),
+                        t_sensor.getA_Name(),
+                        measuredLast30Days,
+                        mesuredTotal
+                );
+                sensors.add(sensor);
+            }
+            ControllerUnit controllerUnit = new ControllerUnit(
+                    t_controllerUnit.getA_Uid(),
+                    t_controllerUnit.getA_DipAddress(),
+                    t_controllerUnit.getA_Zwave(),
+                    sensors
+            );
+            controllerUnits.add(controllerUnit);
         }
 
-        //
-        // has right to see flat, return empty at the very least
-        //
-        ArrayList<T_Measurement> measurementsArr = new ArrayList<T_Measurement>();
-
-        // Retrieve all sensor that belong to the controllers that belong to the flat
-        ArrayList<T_ControllerUnit> controllerArr = getAllControllersForFlat(flatId);
-        ArrayList<T_Sensor> sensorsArr = new ArrayList<T_Sensor>();
-
-        for (T_ControllerUnit tcu: controllerArr
-             ) {
-            sensorsArr.addAll(getAllSensorsForController(tcu.getA_pk()));
+        CentralUnit centralUnit = null;
+        if (!controllerUnits.isEmpty()) {
+            T_CentralUnit t_centralUnit = getCentralUnitById(t_controllerUnits.get(0).getA_CentralUnitID());
+            centralUnit = new CentralUnit(
+                    t_centralUnit.getA_Uid(),
+                    t_centralUnit.getA_FriendlyName(),
+                    t_centralUnit.getA_SimNO(),
+                    t_centralUnit.getA_Imei(),
+                    t_centralUnit.getA_Zwave()
+            );
         }
 
-        // add all measurements to resulting array
-        for(T_Sensor ts: sensorsArr) {
-            measurementsArr.addAll(getAllMeasurementsForSensor(ts.getA_pk()));
-        }
+        T_Address t_address = getAddressById(t_flat.getA_AddressID());
+        Address address = new Address(
+                t_address.getA_Country(),
+                t_address.getA_City(),
+                t_address.getA_Street(),
+                t_address.getA_HouseNO(),
+                t_address.getA_ZIP()
+        );
 
-        return measurementsArr;
+        Flat flat = new Flat(
+                t_flat.getA_ApartmentNO(),
+                address,
+                centralUnit,
+                controllerUnits
+        );
+
+        return flat;
     }
 
     /***
-     * Temporary //TODO remove
-     * @param userId
-     * @param flatId
-     * @return
-     */
-    public boolean temporaryCheckToSeeIfHasRightToSee(int userId, int flatId) {
-        return doesUserHaveRightToSeeProjectBelongingToFlat(userId, flatId);
-    }
-
-    /// PRIVATES
-
-    /***
-     * Important function, do not change
      * Verifies rights for user's right to view flat (that belongs to certain project)
       * @param userId from session
      * @param flatId flat that is attempting to see
      * @return
      */
-    private boolean doesUserHaveRightToSeeProjectBelongingToFlat(int userId, int flatId) {
-        boolean toReturn = false;
+    public boolean doesUserHaveRightToSeeProjectBelongingToFlat(@NotNull Integer userId, @NotNull Integer flatId) {
+        boolean hasRight = false;
 
         try {
             db.beforeSqlExecution();
 
-            if (null != GeneralAccessibility.doesUserHaveRightToAccessFlat(db.getConn(), db.getPs(), db.getRs(), userId, flatId)) {
-                toReturn = true;
-            }
+            hasRight = (null != GeneralAccessibility.doesUserHaveRightToAccessFlat(db.getConn(), db.getPs(), db.getRs(), userId, flatId));
 
             db.afterOkSqlExecution();
         } catch (SQLException sqle) {
             db.afterExceptionInSqlExecution(sqle);
         }
 
-        return toReturn;
+        return hasRight;
     }
 
-    private ArrayList<T_ControllerUnit> getAllControllersForFlat(int flatId) {
-        ArrayList<T_ControllerUnit> arr = new ArrayList<T_ControllerUnit>();
+    /// PRIVATES
+
+    private @NotNull List<T_ControllerUnit> getAllControllersForFlat(@NotNull Integer flatId) {
+        List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
             db.beforeSqlExecution();
@@ -143,8 +164,8 @@ public class UC_FlatSummary {
         return arr;
     }
 
-    private ArrayList<T_Sensor> getAllSensorsForController(int controllerId) {
-        ArrayList<T_Sensor> arr = new ArrayList<T_Sensor>();
+    private @NotNull List<T_Sensor> getAllSensorsForController(@NotNull Integer controllerId) {
+        List<T_Sensor> arr = new ArrayList<>();
 
         try {
             db.beforeSqlExecution();
@@ -159,19 +180,84 @@ public class UC_FlatSummary {
         return arr;
     }
 
-    private ArrayList<T_Measurement> getAllMeasurementsForSensor(int sensorId) {
-        ArrayList<T_Measurement> arr = new ArrayList<T_Measurement>();
+    private int getMeasuredLast30Days(@NotNull Integer sensorId) {
+        int value = 0;
 
         try {
             db.beforeSqlExecution();
 
-            arr = I_Measurements.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER);
+            value = I_Measurements.measuredLast30DaysForSensor(db.getConn(), db.getPs(), db.getRs(), sensorId);
 
             db.afterOkSqlExecution();
         } catch (SQLException sqle) {
             db.afterExceptionInSqlExecution(sqle);
         }
 
-        return arr;
+        return value;
+    }
+
+    private int getMeasuredTotal(@NotNull Integer sensorId) {
+        int value = 0;
+
+        try {
+            db.beforeSqlExecution();
+
+            T_Measurement t_measurement = I_Measurements.retrieveNewest(db.getConn(), db.getPs(), db.getRs(), sensorId);
+            value = t_measurement.getA_AccumulatedValue();
+
+            db.afterOkSqlExecution();
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+
+        return value;
+    }
+
+    private T_Address getAddressById(@NotNull Integer id) {
+        T_Address t = null;
+
+        try {
+            db.beforeSqlExecution();
+
+            t = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+
+            db.afterOkSqlExecution();
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+
+        return t;
+    }
+
+    private T_CentralUnit getCentralUnitById(@NotNull Integer id) {
+        T_CentralUnit t = null;
+
+        try {
+            db.beforeSqlExecution();
+
+            t = I_CentralUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+
+            db.afterOkSqlExecution();
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+
+        return t;
+    }
+
+    private T_Flat getFlatById(@NotNull Integer id) {
+        T_Flat t = null;
+
+        try {
+            db.beforeSqlExecution();
+
+            t = I_Flat.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+
+            db.afterOkSqlExecution();
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+
+        return t;
     }
 }

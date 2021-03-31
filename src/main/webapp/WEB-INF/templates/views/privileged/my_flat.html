@@ -2,11 +2,51 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
-<div class="container-fluid">
-    <div class="container">
-        <span th:if="${RightToSeeFlat}">Person has right to see the flat.</span>
-        <span th:unless="${RightToSeeFlat}">Person does not have right to see the flat or it does not exist.</span>
+    <div class="container-fluid">
+        <div class="container">
+            <p th:text="${flat.apartmentNO}"></p>
+
+            <p th:text="${flat.address.country}"></p>
+            <p th:text="${flat.address.city}"></p>
+            <p th:text="${flat.address.street}"></p>
+            <p th:text="${flat.address.houseNO}"></p>
+            <p th:text="${flat.address.zip}"></p>
+
+<!-- TODO testoval som tuto situaciu ale nikdy nenestala lebo zrejme hadzes v takom pripade uz vo doesUserHaveRightToSeeProjectBelongingToFlat 404. Musis ju prestat hadzat aby som to vedel zobrazit ako si chcel --><p th:if="${flat.controllerUnits.isEmpty()}">Tento byt este nema jednotky nainstalovane.</p>
+            <div th:unless="${flat.controllerUnits.isEmpty()}">
+
+                <p th:text="${flat.centralUnit.UID}"></p>
+                <p th:text="${flat.centralUnit.friendlyName}"></p>
+                <p th:text="${flat.centralUnit.simNO}"></p>
+                <p th:text="${flat.centralUnit.imei}"></p>
+                <p th:text="${flat.centralUnit.zwave}"></p>
+
+                <div th:each="controllerUnit: ${flat.controllerUnits}">
+                    <p th:text="${controllerUnit.UID}"></p>
+                    <p th:text="${controllerUnit.dipAddress}"></p>
+                    <p th:text="${controllerUnit.zwave}"></p>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">mena stlpcov tab doplnit</th>
+                            <th scope="col">mena stlpcov tab doplnit</th>
+                            <th scope="col">mena stlpcov tab doplnit</th>
+                            <th scope="col">mena stlpcov tab doplnit</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="sensor: ${controllerUnit.sensors}">
+                            <td th:text="${sensor.input}"></td>
+                            <td th:text="${sensor.name}"></td>
+                            <td th:text="${sensor.measuredLast30Days}"></td>
+                            <td th:text="${sensor.measuredTotal}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>

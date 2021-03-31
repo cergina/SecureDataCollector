@@ -4,10 +4,8 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Measurement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -209,6 +207,38 @@ public class I_Measurements {
         }
 
         return tm;
+    }
+
+    public static int measuredLast30DaysForSensor(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "SUM(Value) " +
+                        "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                        "WHERE MeasuredAt > ? AND SensorID = ? GROUP BY SensorID ORDER BY ID asc"
+        );
+
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setDate(++col, date);
+        ps.setInt(++col, sensorId);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        int sum = -1;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                sum = rs.getInt(1);
+            }
+        }
+
+        return sum;
     }
 
 
