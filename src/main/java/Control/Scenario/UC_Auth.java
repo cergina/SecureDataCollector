@@ -10,7 +10,6 @@ import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.InvalidOperationException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -222,12 +221,12 @@ public class UC_Auth {
         return jsonResponse;
     }
 
-    public void LogLoginIntoDatabase(int userId, HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-
+    /***
+     * Method that is responsible for putting log of ip address into database and map it onto userid from session
+     * @param userId
+     * @param ipAddress
+     */
+    public void LogLoginIntoTheDatabase(int userId, String ipAddress) {
         try {
             db.beforeSqlExecution();
 

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
+
 public class I_ControllerUnit {
 
     public static int insert(Connection conn, PreparedStatement ps, T_ControllerUnit tc) throws SQLException {
@@ -79,10 +81,20 @@ public class I_ControllerUnit {
         return tc;
     }
 
+    /****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param flatId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @param centralUnitId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @return
+     * @throws SQLException
+     */
     public static ArrayList<T_ControllerUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int flatId, int centralUnitId) throws SQLException {
 
         // No Filter is being used
-        if (flatId <= 0 && centralUnitId <= 0) {
+        if (flatId <= DB_DO_NOT_USE_THIS_FILTER && centralUnitId <= DB_DO_NOT_USE_THIS_FILTER) {
             return retrieveAll(conn, ps, rs);
         }
 

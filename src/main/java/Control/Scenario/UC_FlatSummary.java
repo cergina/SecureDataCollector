@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
+
 /**
  * Use Case class for FlatSummaryView
  */
@@ -56,7 +58,7 @@ public class UC_FlatSummary {
     }
 
     /***
-     * Returns null if he has no right to see measurements for that flat or it does not exist
+     * Returns null if person has no right to see measurements for that flat or it does not exist
      * @param userId from sesssion
      * @param flatId from request
      * @return
@@ -131,7 +133,7 @@ public class UC_FlatSummary {
         try {
             db.beforeSqlExecution();
 
-            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), flatId, -1);
+            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), flatId, DB_DO_NOT_USE_THIS_FILTER);
 
             db.afterOkSqlExecution();
         } catch (SQLException sqle) {
@@ -147,7 +149,7 @@ public class UC_FlatSummary {
         try {
             db.beforeSqlExecution();
 
-            arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), -1, controllerId);
+            arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, controllerId);
 
             db.afterOkSqlExecution();
         } catch (SQLException sqle) {
@@ -163,7 +165,7 @@ public class UC_FlatSummary {
         try {
             db.beforeSqlExecution();
 
-            arr = I_Measurements.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), -1);
+            arr = I_Measurements.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER);
 
             db.afterOkSqlExecution();
         } catch (SQLException sqle) {

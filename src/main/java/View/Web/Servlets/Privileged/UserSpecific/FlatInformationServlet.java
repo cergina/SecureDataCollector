@@ -54,10 +54,10 @@ public class FlatInformationServlet extends SessionServlet {
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
 
-        // part 3
+        // Set variables on html
         context.setVariable("RightToSeeFlat", hasHe);
 
-        // part 4
+        // Generate html and return it
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 }

@@ -63,7 +63,12 @@ public class LoginServlet extends PublicServlet {
             SessionUtil.setIsadmin(session, ((Auth) jsonResponse.getData()).getIsadmin());
 
             // add log to database
-            (new UC_Auth(getDb())).LogLoginIntoDatabase(SessionUtil.getUser(session).getUserID(), request);
+            String ipAddress = request.getHeader("X-Forwarded-For");
+            if (ipAddress == null) {
+                ipAddress = request.getRemoteAddr();
+            }
+
+            (new UC_Auth(getDb())).LogLoginIntoTheDatabase(SessionUtil.getUser(session).getUserID(), ipAddress);
         }
 
         writer.println(jsonResponse.toString());
