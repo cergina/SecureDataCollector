@@ -2,7 +2,14 @@ body, html{
     background-color:#dbecf4;
     font-family: 'Open Sans Condensed', sans-serif;
     font-size: 18px;
+    height: 100%;
+}
 
+.bgimg {
+    background-image: url('./../images/forestbridge.jpg');
+    min-height: 100%;
+    background-position: center;
+    background-size: cover;
 }
 
 .columnleft{
