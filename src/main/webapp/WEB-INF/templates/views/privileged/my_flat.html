@@ -4,9 +4,8 @@
 <body>
 <div class="container-fluid">
     <div class="container">
-        <h1>Welcome <span th:text="${Email}"></span></h1>
-
-        <p>Mate tolkoto projektov: <span th:text="${ProjectsCount}"></span></p>
+        <span th:if="${RightToSeeFlat}">Person has right to see the flat.</span>
+        <span th:unless="${RightToSeeFlat}">Person does not have right to see the flat or it does not exist.</span>
     </div>
 </div>
 </body>

@@ -34,8 +34,8 @@ public class GET_Project_Info extends GET_Database_Interaction {
                 writer.println("<p> RETURNED THESE ITEMS</p>");
 
                 writer.println("<p>ID: " + ret_tp.getA_pk() + "</p>");
-                writer.println("<p>Project Name: " + ret_tp.getA_name() + "</p>");
-                writer.println("<p>Created at: " + ret_tp.getA_created() + "</p>");
+                writer.println("<p>Project Name: " + ret_tp.getA_Name() + "</p>");
+                writer.println("<p>Created at: " + ret_tp.getA_CreatedAt() + "</p>");
             }
             writer.println("</body></html>");
             writer.close();

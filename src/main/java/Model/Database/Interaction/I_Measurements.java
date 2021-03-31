@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
+
 public class I_Measurements {
 
     public static int insert(Connection conn, PreparedStatement ps, T_Measurement tm) throws SQLException {
@@ -84,6 +86,62 @@ public class I_Measurements {
         }
 
         return tm;
+    }
+
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param sensorId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+
+        // No Filter is being used
+        if (sensorId <= DB_DO_NOT_USE_THIS_FILTER) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean sensorRule = sensorId > 0;
+
+        usedSql = (sensorRule ? usedSql + T_Measurement.DBTABLE_NAME + ".SensorID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (sensorRule)
+            ps.setInt(++col, sensorId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        ArrayList<T_Measurement> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Measurements.FillEntity(rs));
+            }
+        }
+
+        return arr;
     }
 
     /*****

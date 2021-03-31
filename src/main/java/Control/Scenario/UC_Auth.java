@@ -1,15 +1,9 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_AccessPrivilegeJournal;
-import Model.Database.Interaction.I_Address;
-import Model.Database.Interaction.I_Hash;
-import Model.Database.Interaction.I_User;
+import Model.Database.Interaction.*;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_AccessPrivilegeJournal;
-import Model.Database.Tables.Table.T_Address;
-import Model.Database.Tables.Table.T_Hash;
-import Model.Database.Tables.Table.T_User;
+import Model.Database.Tables.Table.*;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.User;
@@ -108,21 +102,21 @@ public class UC_Auth {
             I_AccessPrivilegeJournal.insert(db.getConn(), db.getPs(), journalEntryToSave);
             // modify AccessPrivilegeJournal table END
 
-            db.afterSqlExecution(true);
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("User created.");
             jsonResponse.setData(auth);
         } catch (InvalidOperationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (AuthenticationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -165,17 +159,17 @@ public class UC_Auth {
             I_Hash.insert(db.getConn(), db.getPs(), t_hash);
             // modify Hash table END
 
-            db.afterSqlExecution(true);
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Registration complete.");
             jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -209,22 +203,46 @@ public class UC_Auth {
             T_AccessPrivilegeJournal t_accessPrivilegeJournal = I_AccessPrivilegeJournal.retrieveValidForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
-            db.afterSqlExecution(true);
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
             jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
         }
         return jsonResponse;
+    }
+
+    /***
+     * Method that is responsible for putting log of ip address into database and map it onto userid from session
+     * @param userId
+     * @param ipAddress
+     */
+    public void LogLoginIntoTheDatabase(int userId, String ipAddress) {
+        try {
+            db.beforeSqlExecution();
+
+            Dictionary tmpDict = new Hashtable();
+
+            java.util.Date date = new java.util.Date();
+            tmpDict.put(T_LoginLog.DBNAME_LOGGEDAT, new java.sql.Date(date.getTime()));
+            tmpDict.put(T_LoginLog.DBNAME_SRCIP, ipAddress);
+            tmpDict.put(T_LoginLog.DBNAME_USERID, userId);
+
+            I_LoginLog.insert(db.getConn(), db.getPs(), T_LoginLog.CreateFromScratch(tmpDict));
+
+            db.afterOkSqlExecution();
+        } catch (SQLException e) {
+            db.afterExceptionInSqlExecution(e);
+        }
     }
 
 

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
+
 public class I_ControllerUnit {
 
     public static int insert(Connection conn, PreparedStatement ps, T_ControllerUnit tc) throws SQLException {
@@ -77,6 +79,68 @@ public class I_ControllerUnit {
         }
 
         return tc;
+    }
+
+    /****
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param flatId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @param centralUnitId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<T_ControllerUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int flatId, int centralUnitId) throws SQLException {
+
+        // No Filter is being used
+        if (flatId <= DB_DO_NOT_USE_THIS_FILTER && centralUnitId <= DB_DO_NOT_USE_THIS_FILTER) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean flatRule = flatId > 0;
+        boolean centralUnitRule = centralUnitId > 0;
+
+        usedSql = (flatRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
+        usedSql = (centralUnitRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".CentralUnitID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (flatRule)
+            ps.setInt(++col, flatId);
+
+        if (centralUnitRule)
+            ps.setInt(++col, centralUnitId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        ArrayList<T_ControllerUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_ControllerUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
     }
 
     /*****
