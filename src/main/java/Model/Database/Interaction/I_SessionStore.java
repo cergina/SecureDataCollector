@@ -108,9 +108,9 @@ public class I_SessionStore {
 
     // Privates
     private static T_SessionStore FillEntity(ResultSet rs) throws SQLException {
-        T_SessionStore e = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_SessionStore.DBNAME_SESSION, rs.getString(T_SessionStore.DBNAME_SESSION));
         dict.put(T_SessionStore.DBNAME_DATA, rs.getString(T_SessionStore.DBNAME_DATA));
         dict.put(T_SessionStore.DBNAME_CREATEDAT, rs.getDate(T_SessionStore.DBNAME_CREATEDAT));
@@ -119,8 +119,6 @@ public class I_SessionStore {
         if (null != deletedAt)
             dict.put(T_SessionStore.DBNAME_DELETEDAT, deletedAt);
 
-        e = T_SessionStore.CreateFromRetrieved(rs.getInt(T_SessionStore.DBNAME_ID), dict);
-
-        return e;
+        return T_SessionStore.CreateFromRetrieved(rs.getInt(T_SessionStore.DBNAME_ID), dict);
     }
 }

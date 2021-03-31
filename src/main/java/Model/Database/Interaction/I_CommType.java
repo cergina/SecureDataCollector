@@ -108,13 +108,11 @@ public class I_CommType {
 
     // Privates
     private static E_CommType FillEntity(ResultSet rs) throws SQLException {
-        E_CommType e = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(E_CommType.DBNAME_NAME, rs.getString(E_CommType.DBNAME_NAME));
 
-        e = E_CommType.CreateFromRetrieved(rs.getInt(E_CommType.DBNAME_ID), dict);
-
-        return e;
+        return E_CommType.CreateFromRetrieved(rs.getInt(E_CommType.DBNAME_ID), dict);
     }
 }

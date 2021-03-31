@@ -110,16 +110,14 @@ public class I_SensorType {
 
     // Privates
     private static E_SensorType FillEntity(ResultSet rs) throws SQLException {
-        E_SensorType e = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(E_SensorType.DBNAME_NAME, rs.getString(E_SensorType.DBNAME_NAME));
         dict.put(E_SensorType.DBNAME_MEASUREDIN, rs.getString(E_SensorType.DBNAME_MEASUREDIN));
         dict.put(E_SensorType.DBNAME_COMMTYPE_ID, rs.getInt(E_SensorType.DBNAME_COMMTYPE_ID));
 
 
-        e = E_SensorType.CreateFromRetrieved(rs.getInt(E_SensorType.DBNAME_ID), dict);
-
-        return e;
+        return E_SensorType.CreateFromRetrieved(rs.getInt(E_SensorType.DBNAME_ID), dict);
     }
 }

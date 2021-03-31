@@ -174,7 +174,6 @@ public class I_User {
 
     // Privates
     private static T_User FillEntity(ResultSet rs) throws SQLException {
-        T_User t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -187,9 +186,7 @@ public class I_User {
         dict.put(T_User.DBNAME_PERMANENTRESIDENCE, rs.getString(T_User.DBNAME_PERMANENTRESIDENCE));
         dict.put(T_User.DBNAME_BLOCKED, rs.getInt(T_User.DBNAME_BLOCKED));
 
-        t = T_User.CreateFromRetrieved(rs.getInt(T_User.DBNAME_ID), dict);
-
-        return t;
+        return T_User.CreateFromRetrieved(rs.getInt(T_User.DBNAME_ID), dict);
     }
 
 

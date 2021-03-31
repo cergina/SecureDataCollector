@@ -214,17 +214,15 @@ public class I_Measurements {
 
     // Privates
     private static T_Measurement FillEntity(ResultSet rs) throws SQLException {
-        T_Measurement t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_Measurement.DBNAME_VALUE, rs.getInt(T_Measurement.DBNAME_VALUE));
         dict.put(T_Measurement.DBNAME_REQUESTNO, rs.getInt(T_Measurement.DBNAME_REQUESTNO));
         dict.put(T_Measurement.DBNAME_MEASUREDAT, rs.getDate(T_Measurement.DBNAME_MEASUREDAT));
         dict.put(T_Measurement.DBNAME_ACCUMULATEDVALUE, rs.getInt(T_Measurement.DBNAME_ACCUMULATEDVALUE));
         dict.put(T_Measurement.DBNAME_SENSOR_ID, rs.getInt(T_Measurement.DBNAME_SENSOR_ID));
 
-        t = T_Measurement.CreateFromRetrieved(rs.getInt(T_Measurement.DBNAME_ID), dict);
-
-        return t;
+        return T_Measurement.CreateFromRetrieved(rs.getInt(T_Measurement.DBNAME_ID), dict);
     }
 }

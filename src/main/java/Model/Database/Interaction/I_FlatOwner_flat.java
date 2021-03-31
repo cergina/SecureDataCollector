@@ -11,7 +11,6 @@ import java.util.Hashtable;
 public class I_FlatOwner_flat {
     // Privates
     private static T_FlatOwner_flat FillEntity(ResultSet rs) throws SQLException {
-        T_FlatOwner_flat t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -25,8 +24,6 @@ public class I_FlatOwner_flat {
         dict.put(T_FlatOwner_flat.DBNAME_FLATOWNERID, rs.getInt(T_FlatOwner_flat.DBNAME_FLATOWNERID));
         dict.put(T_FlatOwner_flat.DBNAME_FLATID, rs.getInt(T_FlatOwner_flat.DBNAME_FLATID));
 
-        t = T_FlatOwner_flat.CreateFromRetrieved(rs.getInt(T_FlatOwner_flat.DBNAME_ID), dict);
-
-        return t;
+        return T_FlatOwner_flat.CreateFromRetrieved(rs.getInt(T_FlatOwner_flat.DBNAME_ID), dict);
     }
 }

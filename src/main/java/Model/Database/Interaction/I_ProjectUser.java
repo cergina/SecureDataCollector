@@ -115,7 +115,6 @@ public class I_ProjectUser {
 
     // Privates
     private static T_Project_user FillEntity(ResultSet rs) throws SQLException {
-        T_Project_user t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -123,8 +122,6 @@ public class I_ProjectUser {
         dict.put(T_Project_user.DBNAME_USERID, rs.getInt(T_Project_user.DBNAME_USERID));
 
 
-        t = T_Project_user.CreateFromRetrieved(rs.getInt(T_Project_user.DBNAME_ID), dict);
-
-        return t;
+        return T_Project_user.CreateFromRetrieved(rs.getInt(T_Project_user.DBNAME_ID), dict);
     }
 }

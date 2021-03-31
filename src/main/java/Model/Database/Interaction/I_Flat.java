@@ -111,14 +111,12 @@ public class I_Flat {
 
     // Privates
     private static T_Flat FillEntity(ResultSet rs) throws SQLException {
-        T_Flat t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_Flat.DBNAME_APARTMENTNO, rs.getString(T_Flat.DBNAME_APARTMENTNO));
         dict.put(T_Flat.DBNAME_ADDRESS_ID, rs.getInt(T_Flat.DBNAME_ADDRESS_ID));
 
-        t = T_Flat.CreateFromRetrieved(rs.getInt(T_Flat.DBNAME_ID), dict);
-
-        return t;
+        return T_Flat.CreateFromRetrieved(rs.getInt(T_Flat.DBNAME_ID), dict);
     }
 }

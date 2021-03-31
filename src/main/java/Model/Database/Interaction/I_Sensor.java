@@ -214,16 +214,14 @@ public class I_Sensor {
 
     // Privates
     private static T_Sensor FillEntity(ResultSet rs) throws SQLException {
-        T_Sensor t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_Sensor.DBNAME_INPUT, rs.getString(T_Sensor.DBNAME_INPUT));
         dict.put(T_Sensor.DBNAME_NAME, rs.getString(T_Sensor.DBNAME_NAME));
         dict.put(T_Sensor.DBNAME_SENSORTYPE_ID, rs.getInt(T_Sensor.DBNAME_SENSORTYPE_ID));
         dict.put(T_Sensor.DBNAME_CONTROLLERUNIT_ID, rs.getInt(T_Sensor.DBNAME_CONTROLLERUNIT_ID));
 
-        t = T_Sensor.CreateFromRetrieved(rs.getInt(T_Sensor.DBNAME_ID), dict);
-
-        return t;
+        return T_Sensor.CreateFromRetrieved(rs.getInt(T_Sensor.DBNAME_ID), dict);
     }
 }

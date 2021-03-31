@@ -108,13 +108,11 @@ public class I_AccessPrivillege {
 
     // Privates
     private static E_AccessPrivilege FillEntity(ResultSet rs) throws SQLException {
-        E_AccessPrivilege e = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(E_AccessPrivilege.DBNAME_NAME, rs.getString(E_AccessPrivilege.DBNAME_NAME));
 
-        e = E_AccessPrivilege.CreateFromRetrieved(rs.getInt(E_AccessPrivilege.DBNAME_ID), dict);
-
-        return e;
+        return  E_AccessPrivilege.CreateFromRetrieved(rs.getInt(E_AccessPrivilege.DBNAME_ID), dict);
     }
 }

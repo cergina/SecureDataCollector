@@ -119,7 +119,7 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
         str.add(this.a_Session);
         str.add(this.a_Data);
         str.add(this.a_CreatedAt.toString());
-        str.add(this.a_DeletedAt.toString());
+        str.add((this.a_DeletedAt == null) ? "" : this.a_DeletedAt.toString());
 
         return str;
     }

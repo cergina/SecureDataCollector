@@ -112,14 +112,12 @@ public class I_TestLogs {
 
     // Privates
     private static T_TestLog FillEntity(ResultSet rs) throws SQLException {
-        T_TestLog t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_TestLog.DBNAME_EVENT, rs.getString(T_TestLog.DBNAME_EVENT));
         dict.put(T_TestLog.DBNAME_BODY, rs.getString(T_TestLog.DBNAME_BODY));
 
-        t = T_TestLog.CreateFromRetrieved(rs.getInt(T_TestLog.DBNAME_ID), dict);
-
-        return t;
+        return T_TestLog.CreateFromRetrieved(rs.getInt(T_TestLog.DBNAME_ID), dict);
     }
 }

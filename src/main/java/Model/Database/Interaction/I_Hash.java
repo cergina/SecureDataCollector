@@ -185,16 +185,13 @@ public class I_Hash {
 
     // Privates
     private static T_Hash FillEntity(ResultSet rs) throws SQLException {
-        T_Hash t = null;
 
         Dictionary dict = new Hashtable();
 
         dict.put(T_Hash.DBNAME_VALUE, rs.getString(T_Hash.DBNAME_VALUE));
         dict.put(T_Hash.DBNAME_USER_ID, rs.getInt(T_Hash.DBNAME_USER_ID));
 
-        t = T_Hash.CreateFromRetrieved(rs.getInt(T_Hash.DBNAME_ID), dict);
-
-        return t;
+        return T_Hash.CreateFromRetrieved(rs.getInt(T_Hash.DBNAME_ID), dict);
     }
 
 

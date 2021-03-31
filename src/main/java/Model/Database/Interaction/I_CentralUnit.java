@@ -133,9 +133,9 @@ public class I_CentralUnit {
 
     // Privates
     private static T_CentralUnit FillEntity(ResultSet rs) throws SQLException {
-        T_CentralUnit t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_CentralUnit.DBNAME_UID, rs.getInt(T_CentralUnit.DBNAME_UID));
         dict.put(T_CentralUnit.DBNAME_FRIENDLYNAME, rs.getString(T_CentralUnit.DBNAME_FRIENDLYNAME));
         dict.put(T_CentralUnit.DBNAME_SIMNO, rs.getString(T_CentralUnit.DBNAME_SIMNO));
@@ -144,8 +144,6 @@ public class I_CentralUnit {
         dict.put(T_CentralUnit.DBNAME_PROJECT_ID, rs.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
         dict.put(T_CentralUnit.DBNAME_ADDRESS_ID, rs.getInt(T_CentralUnit.DBNAME_ADDRESS_ID));
 
-        t = T_CentralUnit.CreateFromRetrieved(rs.getInt(T_CentralUnit.DBNAME_ID), dict);
-
-        return t;
+        return T_CentralUnit.CreateFromRetrieved(rs.getInt(T_CentralUnit.DBNAME_ID), dict);
     }
 }

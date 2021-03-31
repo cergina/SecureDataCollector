@@ -110,15 +110,13 @@ public class I_LoginLog {
 
     // Privates
     private static T_LoginLog FillEntity(ResultSet rs) throws SQLException {
-        T_LoginLog e = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_LoginLog.DBNAME_LOGGEDAT, rs.getDate(T_LoginLog.DBNAME_LOGGEDAT));
         dict.put(T_LoginLog.DBNAME_SRCIP, rs.getString(T_LoginLog.DBNAME_SRCIP));
         dict.put(T_LoginLog.DBNAME_USERID, rs.getInt(T_LoginLog.DBNAME_USERID));
 
-        e = T_LoginLog.CreateFromRetrieved(rs.getInt(T_LoginLog.DBNAME_ID), dict);
-
-        return e;
+        return T_LoginLog.CreateFromRetrieved(rs.getInt(T_LoginLog.DBNAME_ID), dict);
     }
 }

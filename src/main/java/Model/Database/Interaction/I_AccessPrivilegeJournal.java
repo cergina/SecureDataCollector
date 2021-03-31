@@ -144,7 +144,6 @@ public class I_AccessPrivilegeJournal {
 
     // Privates
     private static T_AccessPrivilegeJournal FillEntity(ResultSet rs) throws SQLException {
-        T_AccessPrivilegeJournal t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -159,8 +158,6 @@ public class I_AccessPrivilegeJournal {
         dict.put(T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID, rs.getInt(T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID));
         dict.put(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID, rs.getInt(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID));
 
-        t = T_AccessPrivilegeJournal.CreateFromRetrieved(rs.getInt(T_AccessPrivilegeJournal.DBNAME_ID), dict);
-
-        return t;
+        return T_AccessPrivilegeJournal.CreateFromRetrieved(rs.getInt(T_AccessPrivilegeJournal.DBNAME_ID), dict);
     }
 }
