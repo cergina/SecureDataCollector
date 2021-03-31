@@ -126,9 +126,9 @@ public class I_Project {
 
     // Privates
     private static T_Project FillEntity(ResultSet rs) throws SQLException {
-        T_Project t = null;
 
         Dictionary tmpDict = new Hashtable();
+
         tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
         tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
 
@@ -136,8 +136,6 @@ public class I_Project {
         if (deletedAt != null)
             tmpDict.put(T_Project.DBNAME_DeletedAt, deletedAt);
 
-        t = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
-
-        return t;
+        return T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict);
     }
 }

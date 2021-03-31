@@ -129,7 +129,7 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
         ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(a_CreatedAt.toString());
-        str.add(a_DeletedAt.toString());
+        str.add((this.a_DeletedAt == null) ? "" : this.a_DeletedAt.toString());
         str.add(Integer.toString(a_UserID));
         str.add(Integer.toString(a_AccessPrivilegeID));
         str.add(Integer.toString(a_CreatedByUserID));

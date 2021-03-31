@@ -149,7 +149,6 @@ public class I_FlatOwner {
 
     // Privates
     private static T_FlatOwner FillEntity(ResultSet rs) throws SQLException {
-        T_FlatOwner t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -161,8 +160,6 @@ public class I_FlatOwner {
         dict.put(T_FlatOwner.DBNAME_EMAIL, rs.getString(T_FlatOwner.DBNAME_EMAIL));
         dict.put(T_FlatOwner.DBNAME_ADDRESS, rs.getString(T_FlatOwner.DBNAME_ADDRESS));
 
-        t = T_FlatOwner.CreateFromRetrieved(rs.getInt(T_FlatOwner.DBNAME_ID), dict);
-
-        return t;
+        return T_FlatOwner.CreateFromRetrieved(rs.getInt(T_FlatOwner.DBNAME_ID), dict);
     }
 }

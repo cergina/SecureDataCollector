@@ -42,13 +42,13 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
 
     // Creations
 
-    public static T_Project CreateFromRetrieved(int pk, Dictionary tmpDict, Date deleted) {
+    public static T_Project CreateFromRetrieved(int pk, Dictionary tmpDict) {
         T_Project temp = new T_Project();
 
         temp.a_pk = pk;
         temp.a_Name = (String)tmpDict.get(DBNAME_NAME);
         temp.a_CreatedAt = (Date)tmpDict.get(DBNAME_CreatedAt);
-        temp.a_DeletedAt = deleted;
+        temp.a_DeletedAt = (Date)tmpDict.get(DBNAME_DeletedAt);
 
         return temp;
     }
@@ -124,7 +124,7 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
 
         str.add(this.a_Name);
         str.add(this.a_CreatedAt.toString());
-        str.add(this.a_DeletedAt.toString());
+        str.add((this.a_DeletedAt == null) ? "" : this.a_DeletedAt.toString());
 
         return str;
     }

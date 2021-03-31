@@ -122,7 +122,7 @@ public class T_FlatOwner_flat extends DbEntity implements DBTable, DBToHtml {
         ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(this.a_CreatedAt.toString());
-        str.add(this.a_ValidUntil.toString());
+        str.add((this.a_ValidUntil == null) ? "" : this.a_ValidUntil.toString());
         str.add(Integer.toString(a_FlatOwnerID));
         str.add(Integer.toString(a_FlatID));
 

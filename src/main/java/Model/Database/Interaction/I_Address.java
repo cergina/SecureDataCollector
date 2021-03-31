@@ -135,7 +135,6 @@ public class I_Address {
 
     // Privates
     private static T_Address FillEntity(ResultSet rs) throws SQLException {
-        T_Address t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -145,9 +144,7 @@ public class I_Address {
         dict.put(T_Address.DBNAME_HOUSENO, rs.getString(T_Address.DBNAME_HOUSENO));
         dict.put(T_Address.DBNAME_ZIP, rs.getString(T_Address.DBNAME_ZIP));
 
-        t = T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
-
-        return t;
+        return T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
     }
 
 

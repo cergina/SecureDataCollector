@@ -181,17 +181,15 @@ public class I_ControllerUnit {
 
     // Privates
     private static T_ControllerUnit FillEntity(ResultSet rs) throws SQLException {
-        T_ControllerUnit t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_ControllerUnit.DBNAME_UID, rs.getInt(T_ControllerUnit.DBNAME_UID));
         dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, rs.getString(T_ControllerUnit.DBNAME_DIPADDRESS));
         dict.put(T_ControllerUnit.DBNAME_ZWAVE, rs.getString(T_ControllerUnit.DBNAME_ZWAVE));
         dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, rs.getInt(T_ControllerUnit.DBNAME_CENTRALUNIT_ID));
         dict.put(T_ControllerUnit.DBNAME_FLAT_ID, rs.getInt(T_ControllerUnit.DBNAME_FLAT_ID));
 
-        t = T_ControllerUnit.CreateFromRetrieved(rs.getInt(T_ControllerUnit.DBNAME_ID), dict);
-
-        return t;
+        return T_ControllerUnit.CreateFromRetrieved(rs.getInt(T_ControllerUnit.DBNAME_ID), dict);
     }
 }
