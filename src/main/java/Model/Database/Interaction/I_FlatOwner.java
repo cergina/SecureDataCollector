@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_FlatOwner {
 
@@ -118,7 +119,7 @@ public class I_FlatOwner {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_FlatOwner> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_FlatOwner> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -133,7 +134,7 @@ public class I_FlatOwner {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_FlatOwner> arr = new ArrayList<>();
+        List<T_FlatOwner> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */

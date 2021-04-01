@@ -27,7 +27,6 @@ public class GeneralAccessibility {
         Assurance.IdCheck(userId);
         Assurance.IdCheck(flatId);
 
-
         // SELECT * FROM dcs.project_user WHERE dcs.project_user.ProjectID=(SELECT dcs.centralunit.ProjectID FROM dcs.centralunit WHERE dcs.centralunit.AddressID=(SELECT dcs.flat.AddressID FROM dcs.flat WHERE dcs.flat.ID=1)) AND dcs.project_user.UserID=1;
         // SQL Definition
         ps = conn.prepareStatement(

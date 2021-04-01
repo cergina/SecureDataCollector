@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class ServletHelper {
+
     public static void SendReturnCode(HttpServletResponse resp, int code) throws  IOException {
         resp.sendError(code);
     }

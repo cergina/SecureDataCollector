@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_LoginLog {
     public static int insert(Connection conn, PreparedStatement ps, T_LoginLog ec) throws SQLException {
@@ -82,7 +83,7 @@ public class I_LoginLog {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_LoginLog> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_LoginLog> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -95,7 +96,7 @@ public class I_LoginLog {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_LoginLog> arr = new ArrayList<>();
+        List<T_LoginLog> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */

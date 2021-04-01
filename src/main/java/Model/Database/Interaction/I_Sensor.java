@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
@@ -124,7 +125,7 @@ public class I_Sensor {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Sensor> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorTypeId, int controllerUnitId) throws SQLException {
+    public static List<T_Sensor> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorTypeId, int controllerUnitId) throws SQLException {
 
         // No Filter is being used
         if (sensorTypeId <= DB_DO_NOT_USE_THIS_FILTER && controllerUnitId <= DB_DO_NOT_USE_THIS_FILTER) {
@@ -163,7 +164,7 @@ public class I_Sensor {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Sensor> arr = new ArrayList<>();
+        List<T_Sensor> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -184,7 +185,7 @@ public class I_Sensor {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Sensor> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_Sensor> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -199,7 +200,7 @@ public class I_Sensor {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Sensor> arr = new ArrayList<>();
+        List<T_Sensor> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */

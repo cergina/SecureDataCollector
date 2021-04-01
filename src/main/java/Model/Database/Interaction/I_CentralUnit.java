@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_CentralUnit {
     /****
@@ -103,7 +104,7 @@ public class I_CentralUnit {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_CentralUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_CentralUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -118,7 +119,7 @@ public class I_CentralUnit {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_CentralUnit> arr = new ArrayList<>();
+        List<T_CentralUnit> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */

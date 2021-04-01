@@ -8,8 +8,8 @@ import Model.Database.Support.DbConfig;
 import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 public class T_Project_user extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "project_user" : "project_user";
@@ -103,8 +103,8 @@ public class T_Project_user extends DbEntity implements DBTable, DBToHtml {
 
     // For HTML purposes
     @Override
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(Integer.toString(this.a_pk));
         str.add(Integer.toString(this.a_ProjectID));

@@ -3,8 +3,8 @@ package View.Web.Servlets.Privileged.UserSpecific;
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
 import Model.Database.Support.CustomLogs;
-import Model.Web.thymeleaf.Flat;
 import Model.Web.User;
+import Model.Web.thymeleaf.Flat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.SessionServlet;
@@ -31,10 +31,10 @@ public class FlatInformationServlet extends SessionServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // AUTHENTICATION
         super.doGet(request, response); // call always parent method first
-//        if (checkPrivilege(request, response) == false) { // TODO uncomment back once UC finished
-//            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
-//            return;
-//        }
+        if (checkPrivilege(request, response) == false) {
+            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
         CustomLogs.Development("Sme vo doGet");
 
@@ -54,15 +54,18 @@ public class FlatInformationServlet extends SessionServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-//        User user = SessionUtil.getUser(request.getSession(false));
+        /* find out if he has access to the project */
+        User user = SessionUtil.getUser(request.getSession(false));
         UC_FlatSummary uc = new UC_FlatSummary(getDb());
-        if (uc.doesUserHaveRightToSeeProjectBelongingToFlat(1, requestedFlatId) == false) {
-            // TODO send 403
+        if (uc.doesUserHaveRightToSeeProjectBelongingToFlat(user.getUserID(), requestedFlatId) == false) {
+            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_FORBIDDEN);
             return;
         }
+
+        /* this will not happen - then why is it here */
         Flat flat = uc.getFlatSummary(requestedFlatId);
-        if (flat == null) { // toto podla mna asi ani nenastane lebo je to zahrnute uz v predoslom
-            // TODO send 404
+        if (flat == null) {
+            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         context.setVariable(VARIABLE_FLAT, flat);

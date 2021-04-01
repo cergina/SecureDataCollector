@@ -3,8 +3,10 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.ComplexInteractions.GeneralAccessibility;
 import Model.Database.Interaction.*;
+import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.*;
-import Model.Web.*;
+import Model.Web.Project;
+import Model.Web.Projects;
 import Model.Web.thymeleaf.*;
 
 import javax.validation.constraints.NotNull;
@@ -28,10 +30,8 @@ public class UC_FlatSummary {
         Projects projects = new Projects();
 
         try {
-            db.beforeSqlExecution();
-
-            ArrayList<T_Project_user> arr = I_ProjectUser.retrieveAllForUser(db.getConn(), db.getPs(), db.getRs(), userID);
-            ArrayList<Project> temp = new ArrayList<Project>();
+            List<T_Project_user> arr = I_ProjectUser.retrieveAllForUser(db.getConn(), db.getPs(), db.getRs(), userID);
+            List<Project> temp = new ArrayList<Project>();
 
             for (T_Project_user  tpu: arr) {
                 Project project = new Project();
@@ -46,13 +46,11 @@ public class UC_FlatSummary {
                 temp.add(project);
             }
 
-            db.afterOkSqlExecution();
-
             // dont forget to set data that was inserted into json
             projects.setProjects(temp);
 
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return projects;
@@ -134,13 +132,9 @@ public class UC_FlatSummary {
         boolean hasRight = false;
 
         try {
-            db.beforeSqlExecution();
-
             hasRight = (null != GeneralAccessibility.doesUserHaveRightToAccessFlat(db.getConn(), db.getPs(), db.getRs(), userId, flatId));
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return hasRight;
@@ -152,13 +146,9 @@ public class UC_FlatSummary {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
-            db.beforeSqlExecution();
-
             arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), flatId, DB_DO_NOT_USE_THIS_FILTER);
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return arr;
@@ -168,13 +158,9 @@ public class UC_FlatSummary {
         List<T_Sensor> arr = new ArrayList<>();
 
         try {
-            db.beforeSqlExecution();
-
             arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, controllerId);
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return arr;
@@ -184,13 +170,9 @@ public class UC_FlatSummary {
         int value = 0;
 
         try {
-            db.beforeSqlExecution();
-
             value = I_Measurements.measuredLast30DaysForSensor(db.getConn(), db.getPs(), db.getRs(), sensorId);
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return value;
@@ -200,14 +182,10 @@ public class UC_FlatSummary {
         int value = 0;
 
         try {
-            db.beforeSqlExecution();
-
             T_Measurement t_measurement = I_Measurements.retrieveNewest(db.getConn(), db.getPs(), db.getRs(), sensorId);
             value = t_measurement.getA_AccumulatedValue();
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return value;
@@ -217,13 +195,9 @@ public class UC_FlatSummary {
         T_Address t = null;
 
         try {
-            db.beforeSqlExecution();
-
             t = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return t;
@@ -233,13 +207,9 @@ public class UC_FlatSummary {
         T_CentralUnit t = null;
 
         try {
-            db.beforeSqlExecution();
-
             t = I_CentralUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return t;
@@ -249,13 +219,9 @@ public class UC_FlatSummary {
         T_Flat t = null;
 
         try {
-            db.beforeSqlExecution();
-
             t = I_Flat.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
-
-            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
+            CustomLogs.Error(sqle.getMessage());
         }
 
         return t;

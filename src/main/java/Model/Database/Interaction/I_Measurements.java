@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
@@ -95,7 +96,7 @@ public class I_Measurements {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+    public static List<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
 
         // No Filter is being used
         if (sensorId <= DB_DO_NOT_USE_THIS_FILTER) {
@@ -129,7 +130,7 @@ public class I_Measurements {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Measurement> arr = new ArrayList<>();
+        List<T_Measurement> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -150,7 +151,7 @@ public class I_Measurements {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -165,7 +166,7 @@ public class I_Measurements {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Measurement> arr = new ArrayList<>();
+        List<T_Measurement> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -209,6 +210,15 @@ public class I_Measurements {
         return tm;
     }
 
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param sensorId
+     * @return -1 when no sum is measured || some actual value
+     * @throws SQLException
+     */
     public static int measuredLast30DaysForSensor(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(

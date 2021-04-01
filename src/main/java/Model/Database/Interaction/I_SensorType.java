@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_SensorType {
     public static int insert(Connection conn, PreparedStatement ps, E_SensorType es) throws SQLException {
@@ -82,7 +83,7 @@ public class I_SensorType {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<E_SensorType> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<E_SensorType> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -95,7 +96,7 @@ public class I_SensorType {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<E_SensorType> arr = new ArrayList<>();
+        List<E_SensorType> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
