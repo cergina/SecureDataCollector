@@ -29,6 +29,9 @@ public class UC_FlatSummary {
     public final Projects allProjectsForUser(int userID) { // TODO move to different UC
         Projects projects = new Projects();
 
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
         try {
             List<T_Project_user> arr = I_ProjectUser.retrieveAllForUser(db.getConn(), db.getPs(), db.getRs(), userID);
             List<Project> temp = new ArrayList<Project>();
@@ -49,8 +52,10 @@ public class UC_FlatSummary {
             // dont forget to set data that was inserted into json
             projects.setProjects(temp);
 
+            db.afterOkSqlExecution();
+
         } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
+            db.afterExceptionInSqlExecution(sqle);
         }
 
         return projects;
@@ -61,6 +66,8 @@ public class UC_FlatSummary {
      * @return {@link Flat}, null if it does not exist
      */
     public Flat getFlatSummary(@NotNull Integer flatId) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
 
         T_Flat t_flat = getFlatById(flatId);
         if (t_flat == null) return null;
@@ -119,6 +126,9 @@ public class UC_FlatSummary {
                 controllerUnits
         );
 
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.afterOkSqlExecution();
+
         return flat;
     }
 
@@ -131,10 +141,15 @@ public class UC_FlatSummary {
     public boolean doesUserHaveRightToSeeProjectBelongingToFlat(@NotNull Integer userId, @NotNull Integer flatId) {
         boolean hasRight = false;
 
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
         try {
             hasRight = (null != GeneralAccessibility.doesUserHaveRightToAccessFlat(db.getConn(), db.getPs(), db.getRs(), userId, flatId));
+
+            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
+            db.afterExceptionInSqlExecution(sqle);
         }
 
         return hasRight;

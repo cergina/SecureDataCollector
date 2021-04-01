@@ -111,6 +111,16 @@ function goHome() {
     $(location).attr('href', $SCRIPT_ROOT);
 }
 
+// Login user
+function goToFlatId1() {
+    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=1');
+}
+
+// Login user
+function goToSeeYourProjects() {
+    $(location).attr('href', $SCRIPT_ROOT + '/action/projects');
+}
+
 $(function() {
 
 });

@@ -18,31 +18,33 @@ public class DbProvider {
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
-
+    private boolean isItTransaction = false;
     // PUBLIC
 
     public DbProvider() {
-        try {
-            ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup(DbConfig.DS_CONTEXT_NAME);
-            conn = ds.getConnection();
-        }
-        catch (SQLException se) {
-            CustomLogs.Error("SQLException: " + se.getMessage());
-        }
-        catch (NamingException ne) {
-            CustomLogs.Error("NamingException: " + ne.getMessage());
-        }
+        initEverything();
     }
 
-    /**
-     * Start transaction
+
+    /***
+     * Needs to be run before SQL script execution
+     * The reason is that the connection gets closed sometimes on the web when using
+     * from thymeleaf (servlets classical work)
+     *
+     *
+     * @param willItBeTransaction if the sql is transaction (using inserts) put true here
      */
-    public void beforeSqlExecution() {
+    public void beforeSqlExecution(boolean willItBeTransaction) {
+        checkAndRestartConnectionIfRequired();
+
         try {
-            conn.setAutoCommit(false);
+            if (willItBeTransaction) {
+                conn.setAutoCommit(false);
+                isItTransaction = willItBeTransaction;
+            }
         } catch (Exception e) {
-            CustomLogs.Error(e.getMessage());
+            afterExceptionInSqlExecution(e);
+            return;
         }
     }
 
@@ -106,6 +108,34 @@ public class DbProvider {
             conn.setAutoCommit(true);
         } catch (Exception e) {
             CustomLogs.Error(e.getMessage());
+        } finally {
+            isItTransaction = false;
+        }
+    }
+
+    private void checkAndRestartConnectionIfRequired() {
+        try {
+            if (ctx == null || ds == null || conn == null || conn.isClosed()) {
+                CustomLogs.Error("It's required to restart connection.");
+                disconnect();
+                initEverything();
+            }
+        } catch (SQLException sqle) {
+                CustomLogs.Error("Restart process of connection failed");
+        }
+    }
+
+    private void initEverything() {
+        try {
+            ctx = new InitialContext();
+            ds = (DataSource) ctx.lookup(DbConfig.DS_CONTEXT_NAME);
+            conn = ds.getConnection();
+        }
+        catch (SQLException se) {
+            CustomLogs.Error("SQLException: " + se.getMessage());
+        }
+        catch (NamingException ne) {
+            CustomLogs.Error("NamingException: " + ne.getMessage());
         }
     }
 }

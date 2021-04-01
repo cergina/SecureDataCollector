@@ -2,7 +2,6 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.*;
-import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.*;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
@@ -13,6 +12,7 @@ import View.Support.CustomExceptions.InvalidOperationException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -28,12 +28,20 @@ public class UC_Auth {
     }
 
     public List<T_Address> retrieveAllAddress() { // TODO remove this method later
+        List<T_Address> arr = new ArrayList<T_Address>();
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
         try {
-            return I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            arr = I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+
+            db.afterOkSqlExecution();
         } catch (SQLException e) {
-            CustomLogs.Error(e.getMessage());
+            db.afterExceptionInSqlExecution(e);
         }
-        return null;
+
+        return arr;
     }
 
     // PUBLIC METHODS
@@ -48,7 +56,7 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution();
+            db.beforeSqlExecution(true);
 
             if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
@@ -135,7 +143,7 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution();
+            db.beforeSqlExecution(true);
 
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
             if (authDb == null) {
@@ -161,6 +169,7 @@ public class UC_Auth {
             I_Hash.insert(db.getConn(), db.getPs(), t_hash);
             // modify Hash table END
 
+            // After SQL SQL execution
             db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
@@ -189,6 +198,9 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
+            // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+            db.beforeSqlExecution(false);
+
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
 
             if (authDb == null) {
@@ -206,18 +218,19 @@ public class UC_Auth {
             authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
 
-            // After SQL execution
+            // After SQL execution - ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
             jsonResponse.setData(authDb);
 
         } catch (AuthenticationException e) {
-            CustomLogs.Error(e.getMessage());
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            CustomLogs.Error(e.getMessage());
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -233,7 +246,7 @@ public class UC_Auth {
      */
     public void LogLoginIntoTheDatabase(int userId, String ipAddress) {
         try {
-            db.beforeSqlExecution();
+            db.beforeSqlExecution(true);
 
             Dictionary tmpDict = new Hashtable();
 
