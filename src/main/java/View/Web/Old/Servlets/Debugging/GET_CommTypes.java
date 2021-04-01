@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "GET_CommTypes", urlPatterns = GET_CommTypes.SERVLET_URL)
 public class GET_CommTypes extends GET_Database_Interaction {
@@ -32,7 +32,7 @@ public class GET_CommTypes extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<E_CommType> arr = I_CommType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            List<E_CommType> arr = I_CommType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, E_CommType.REFERENCE);
 
             // Finalize

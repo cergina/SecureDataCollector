@@ -16,7 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 // TODO to be replaced with info about registrated user
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
@@ -50,7 +50,7 @@ public class IndexServlet extends SessionServlet {
         context.setVariable("MiddleName", user.getMiddlename());
         context.setVariable("LastName", user.getLastname());
 
-        ArrayList<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
+        List<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
 
         if (arr == null) {
             // example sending error for GET request

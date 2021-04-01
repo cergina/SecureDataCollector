@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_SessionStore {
     public static int insert(Connection conn, PreparedStatement ps, T_SessionStore ec) throws SQLException {
@@ -80,7 +81,7 @@ public class I_SessionStore {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_SessionStore> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_SessionStore> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -93,7 +94,7 @@ public class I_SessionStore {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_SessionStore> arr = new ArrayList<>();
+        List<T_SessionStore> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */

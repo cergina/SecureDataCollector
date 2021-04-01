@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "GET_Sensors", urlPatterns = GET_Sensors.SERVLET_URL)
 public class GET_Sensors extends GET_Database_Interaction {
@@ -32,7 +32,7 @@ public class GET_Sensors extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_Sensor> arr = I_Sensor.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            List<T_Sensor> arr = I_Sensor.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Sensor.REFERENCE);
 
             // Finalize

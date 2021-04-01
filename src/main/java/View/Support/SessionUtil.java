@@ -15,7 +15,10 @@ public class SessionUtil {
     }
 
     public static boolean getIsadmin(HttpSession session) {
-        return (boolean) session.getAttribute(SESSION_ATTR_IS_ADMIN);
+        if (session.getAttribute(SESSION_ATTR_IS_ADMIN) != null) {
+            return (boolean) session.getAttribute(SESSION_ATTR_IS_ADMIN);
+        }
+        return false;
     }
 
     public static void setUser(HttpSession session, User user) {
@@ -23,6 +26,9 @@ public class SessionUtil {
     }
 
     public static User getUser(HttpSession session) {
-        return (User) session.getAttribute(SESSION_ATTR_USER);
+        if (session.getAttribute(SESSION_ATTR_USER) != null) {
+            return (User) session.getAttribute(SESSION_ATTR_USER);
+        }
+        return null;
     }
 }

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_ProjectUser {
 
@@ -43,7 +44,7 @@ public class I_ProjectUser {
         return affectedRows;
     }
 
-    public static ArrayList<T_Project_user> retrieveAllForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userId) throws SQLException {
+    public static List<T_Project_user> retrieveAllForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userId) throws SQLException {
         Assurance.IdCheck(userId);
 
         // SQL Definition
@@ -61,7 +62,7 @@ public class I_ProjectUser {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Project_user> arr = new ArrayList<>();
+        List<T_Project_user> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */

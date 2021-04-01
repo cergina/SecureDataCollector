@@ -13,9 +13,9 @@ import View.Support.CustomExceptions.InvalidOperationException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Use Case class for authentication
@@ -27,7 +27,7 @@ public class UC_Auth {
         this.db = dbProvider;
     }
 
-    public ArrayList<T_Address> retrieveAllAddress() { // TODO remove this method later
+    public List<T_Address> retrieveAllAddress() { // TODO remove this method later
         try {
             return I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
         } catch (SQLException e) {
@@ -40,6 +40,7 @@ public class UC_Auth {
 
     /**
      * Create new user
+     * NEEDS TO BE A TRANSACTION - doing inserts
      * @param auth User data
      * @return final Api response body
      */
@@ -126,6 +127,7 @@ public class UC_Auth {
 
     /**
      * Finish user registration
+     * NEEDS TO BE A TRANSACTION - doing inserts
      * @param auth User data that contains email, password hash, verification code
      * @return final Api response body
      */
@@ -179,6 +181,7 @@ public class UC_Auth {
 
     /**
      * Login user
+     * DOES NOT NEED TO BE A TRANSACTION - only retrieving stuff
      * @param auth User data that contains email, password hash
      * @return final Api response body
      */
@@ -186,9 +189,8 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution();
-
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
@@ -203,17 +205,19 @@ public class UC_Auth {
             T_AccessPrivilegeJournal t_accessPrivilegeJournal = I_AccessPrivilegeJournal.retrieveValidForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
-            db.afterOkSqlExecution();
+
+            // After SQL execution
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
             jsonResponse.setData(authDb);
+
         } catch (AuthenticationException e) {
-            db.afterExceptionInSqlExecution(e);
+            CustomLogs.Error(e.getMessage());
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterExceptionInSqlExecution(e);
+            CustomLogs.Error(e.getMessage());
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -223,6 +227,7 @@ public class UC_Auth {
 
     /***
      * Method that is responsible for putting log of ip address into database and map it onto userid from session
+     * NEEDS TO BE A TRANSACTION - doing inserts
      * @param userId
      * @param ipAddress
      */

@@ -4,13 +4,12 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Measurement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
@@ -97,7 +96,7 @@ public class I_Measurements {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+    public static List<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
 
         // No Filter is being used
         if (sensorId <= DB_DO_NOT_USE_THIS_FILTER) {
@@ -131,7 +130,7 @@ public class I_Measurements {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Measurement> arr = new ArrayList<>();
+        List<T_Measurement> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -152,7 +151,7 @@ public class I_Measurements {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -167,7 +166,7 @@ public class I_Measurements {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Measurement> arr = new ArrayList<>();
+        List<T_Measurement> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -209,6 +208,47 @@ public class I_Measurements {
         }
 
         return tm;
+    }
+
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param sensorId
+     * @return -1 when no sum is measured || some actual value
+     * @throws SQLException
+     */
+    public static int measuredLast30DaysForSensor(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "SUM(Value) " +
+                        "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                        "WHERE MeasuredAt > ? AND SensorID = ? GROUP BY SensorID ORDER BY ID asc"
+        );
+
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setDate(++col, date);
+        ps.setInt(++col, sensorId);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        int sum = -1;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                sum = rs.getInt(1);
+            }
+        }
+
+        return sum;
     }
 
 

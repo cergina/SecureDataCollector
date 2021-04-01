@@ -9,8 +9,8 @@ import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "sessionStore" : "sessionstore";
@@ -113,8 +113,8 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
 
     // For HTML purposes
     @Override
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(this.a_Session);
         str.add(this.a_Data);
