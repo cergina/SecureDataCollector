@@ -68,6 +68,10 @@ function registerUser() {
                 // TODO thank user for registration
                 alert('Thank you for your registration\n' + response.message)
             },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout

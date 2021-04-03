@@ -2,6 +2,7 @@ package View.Web.Servlets.Public;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
+import Model.Database.Support.CustomLogs;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
@@ -47,6 +48,20 @@ public class RegisterServlet extends PublicServlet {
         // parse JSON from Body object as Auth java representation
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
+        // Check validity of user requested password to be used
+        // TODO remake somehow better, it should not be here - this is test if it will work on server
+        if (auth.isSuchPasswordOkay() == false) {
+            CustomLogs.Error("Attempted password does not match one of our conditions");
+
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setMessage("Attempted password does not match one of our conditions");
+            response.setStatus(400);
+
+            writer.println(jsonResponse.toString());
+            writer.close();
+
+            return;
+        }
 
         String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
         auth.setPassword(passwordHash);

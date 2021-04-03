@@ -24,7 +24,6 @@ public class FlatInformationServlet extends SessionServlet {
     public static final String TEMPLATE_NAME = "views/privileged/my_flat.html";
 
     private static final String VARIABLE_FLAT = "flat";
-
     private static final String REQUEST_PARAM_FLAT_ID = "fid";
 
     @Override

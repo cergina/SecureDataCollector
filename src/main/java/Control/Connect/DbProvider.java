@@ -1,11 +1,13 @@
 package Control.Connect;
 
+import Model.Database.Interaction.I_Version;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.DbConfig;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -110,6 +112,7 @@ public class DbProvider {
             CustomLogs.Error(e.getMessage());
         } finally {
             isItTransaction = false;
+            //disconnect();
         }
     }
 
@@ -122,6 +125,28 @@ public class DbProvider {
             }
         } catch (SQLException sqle) {
                 CustomLogs.Error("Restart process of connection failed");
+        }
+    }
+
+    /***
+     * 3 scenarios
+     * - it falls (try to reestablish)
+     * - version no match (no continuation in code execution
+     * - alles ok
+     * @return
+     * @throws IOException
+     */
+    public boolean testConnection() throws IOException {
+        try {
+            if (I_Version.isCodeSqlVersionMatchingDbSQLVersion(conn, ps, rs) == false) {
+                CustomLogs.Error("The version's of SQL does not match. WILL NOT ALLOW TO USE CODE.");
+                throw new IOException("The version's of SQL does not match. WILL NOT ALLOW TO USE CODE.");
+            }
+
+            return true;
+        } catch (SQLException sqle) {
+            CustomLogs.Error("Validation of connection by SQL execution failed attempting. Attempting reestablishment.");
+            return false;
         }
     }
 

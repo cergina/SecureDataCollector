@@ -2,7 +2,6 @@ package View.Support.ServletAbstracts;
 
 import Control.ConfigClass;
 import Control.Connect.DbProvider;
-import View.Configuration.ContextUtil;
 import View.Support.PrivilegeInterface;
 
 import javax.servlet.ServletException;
@@ -14,16 +13,26 @@ import java.io.IOException;
 public abstract class ConnectionServlet extends HttpServlet implements PrivilegeInterface {
 
     protected static final boolean trueIfRunningRemotely = ConfigClass.RUNNING_ON_SERVER;
+    protected DbProvider dbProvider;
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
     public void init (){
+        dbProvider = new DbProvider();
     }
 
     public void destroy() {
+        dbProvider.disconnect();
     }
 
-    protected DbProvider getDb() {
-        return ContextUtil.getDbProvider(getServletContext());
+    protected DbProvider getDb() throws IOException{
+        // this has to be thrown, because if it is not we will continue execution what we dont want
+        boolean isValid = dbProvider.testConnection();
+
+        if (isValid == false) {
+            dbProvider = new DbProvider();
+        }
+
+        return dbProvider;
     }
 
     @Override
