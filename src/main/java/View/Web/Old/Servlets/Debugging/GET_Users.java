@@ -1,5 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_User;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_User;
@@ -32,7 +33,10 @@ public class GET_Users extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
+            DbProvider dbProvider = getDb();
             List<T_User> arr = I_User.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            dbProvider.disconnect();
+
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_User.REFERENCE);
 
             // Finalize
@@ -42,6 +46,7 @@ public class GET_Users extends GET_Database_Interaction {
             writer.println(document);
             writer.close();
 
+            dbProvider.disconnect();
             CustomLogs.InfoLog("Exited " + SERVLET_URL + ".", true);
 
         } catch (Exception e) {

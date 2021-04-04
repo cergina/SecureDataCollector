@@ -102,10 +102,13 @@ public class DbProvider {
      */
     private void afterSqlExecution(boolean successful) {
         try {
-            if (successful) {
-                conn.commit();
-            } else {
+            if (successful == false) {
                 conn.rollback();
+                return;
+            }
+
+            if (isItTransaction) {
+                conn.commit();
             }
             conn.setAutoCommit(true);
         } catch (Exception e) {

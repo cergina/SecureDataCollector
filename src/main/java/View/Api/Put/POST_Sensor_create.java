@@ -1,5 +1,6 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Sensor;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
@@ -35,7 +36,9 @@ public class POST_Sensor_create extends POST_Database_Interaction {
             T_Sensor ts = T_Sensor.CreateFromScratch(tmpDict);
 
             // Insertion
+            DbProvider dbProvider = getDb();
             I_Sensor.insert(dbProvider.getConn(), dbProvider.getPs(), ts);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

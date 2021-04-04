@@ -13,7 +13,7 @@ import java.io.IOException;
 public abstract class ConnectionServlet extends HttpServlet implements PrivilegeInterface {
 
     protected static final boolean trueIfRunningRemotely = ConfigClass.RUNNING_ON_SERVER;
-    protected DbProvider dbProvider;
+    private DbProvider dbProvider;
 
     // GENERIC, has to be in every Servlet class, abstract, or extend does not work, tried
     public void init (){

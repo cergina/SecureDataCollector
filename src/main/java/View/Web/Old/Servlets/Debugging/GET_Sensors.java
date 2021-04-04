@@ -1,5 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Sensor;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Sensor;
@@ -32,7 +33,10 @@ public class GET_Sensors extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
+            DbProvider dbProvider = getDb();
             List<T_Sensor> arr = I_Sensor.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            dbProvider.disconnect();
+
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Sensor.REFERENCE);
 
             // Finalize

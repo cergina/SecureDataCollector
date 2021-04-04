@@ -1,5 +1,6 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_User;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
@@ -40,7 +41,9 @@ public class POST_User_Create extends POST_Database_Interaction {
             T_User tu = T_User.CreateFromScratch(tmpDict);
 
             // Insertion
+            DbProvider dbProvider = getDb();
             I_User.insert(dbProvider.getConn(), dbProvider.getPs(), tu);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

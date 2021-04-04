@@ -1,5 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_SensorType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Enum.E_SensorType;
@@ -32,7 +33,10 @@ public class GET_SensorTypes extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
+            DbProvider dbProvider = getDb();
             List<E_SensorType> arr = I_SensorType.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            dbProvider.disconnect();
+
             document = CoreBuilder.GenerateDataForPresentation(document, arr, E_SensorType.REFERENCE);
 
             // Finalize

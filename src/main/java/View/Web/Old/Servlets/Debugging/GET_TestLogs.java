@@ -1,5 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_TestLogs;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_TestLog;
@@ -32,7 +33,10 @@ public class GET_TestLogs extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
+            DbProvider dbProvider = getDb();
             List<T_TestLog> arr = I_TestLogs.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            dbProvider.disconnect();
+
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_TestLog.REFERENCE);
 
             // Finalize

@@ -1,5 +1,6 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
@@ -36,7 +37,9 @@ public class POST_ControllerUnit_Create extends POST_Database_Interaction {
             T_ControllerUnit tcu = T_ControllerUnit.CreateFromScratch(tmpDict);
 
             // Insertion
+            DbProvider dbProvider = getDb();
             I_ControllerUnit.insert(dbProvider.getConn(), dbProvider.getPs(), tcu);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
             ServletHelper.Send404(resp);

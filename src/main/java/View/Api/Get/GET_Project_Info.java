@@ -1,5 +1,6 @@
 package View.Api.Get;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Tables.Table.T_Project;
 import View.Support.ServletHelper;
@@ -26,7 +27,9 @@ public class GET_Project_Info extends GET_Database_Interaction {
 
             writer.println("<html><body>");
 
+            DbProvider dbProvider = getDb();
             T_Project ret_tp = I_Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), Integer.parseInt(req.getParameter("id")));
+            dbProvider.disconnect();
 
             if (null == ret_tp) {
                 writer.println("<p>No project returned!</p>");
