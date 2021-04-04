@@ -2,9 +2,10 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.*;
-import Model.Database.Tables.Table.*;
+import Model.Database.Tables.Enum.E_CommType;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
+import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.InvalidOperationException;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,19 +28,24 @@ public class UC_Create {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution(false);
+            db.beforeSqlExecution(true);
+
+            if (I_CommType.retrieveByName(db.getConn(), db.getPs(), db.getRs(), commType.getName()) != null) {
+                jsonResponse.setMessage("Communication type with this name already exists.");
+                throw new AlreadyExistsException("Communication type with this name already exists.");
+            }
 
             // modify Commtype table START
             Dictionary dict_commtype = new Hashtable();
-            dict_commtype.put(T_CommType.DBNAME_NAME, commType.getName());
+            dict_commtype.put(E_CommType.DBNAME_NAME, commType.getName());
 
-            T_CommType t_commType = T_CommType.CreateFromScratch(dict_commtype);
-            if (!t_commType.IsTableOkForDatabaseEnter()) {
+            E_CommType e_commType = E_CommType.CreateFromScratch(dict_commtype);
+            if (!e_commType.IsEnumTableOkForDatabaseEnter()) {
                 jsonResponse.setMessage("Data does not match database scheme.");
                 throw new InvalidOperationException("Data does not match database scheme.");
             }
 
-            I_CommType.insert(db.getConn(), db.getPs(), t_commType);
+            I_CommType.insert(db.getConn(), db.getPs(), e_commType);
             // modify Commtype table END
 
             db.afterOkSqlExecution();
@@ -51,6 +57,10 @@ public class UC_Create {
             db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (AlreadyExistsException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_CONFLICT);
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
 

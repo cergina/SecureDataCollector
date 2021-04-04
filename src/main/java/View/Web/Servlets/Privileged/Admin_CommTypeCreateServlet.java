@@ -27,10 +27,10 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
-        if (checkPrivilege(request, response) == false) {
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+//        if (checkPrivilege(request, response) == false) {
+//            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+//            return;
+//        }
 
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
