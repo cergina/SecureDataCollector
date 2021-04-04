@@ -26,7 +26,7 @@ public class User extends PrettyObject {
     private Integer userID;
 
     // empty constructor for Gson
-    public User() {} // empty constructor for Gson
+    public User() {}
 
     // GETTERS
     public String getEmail() {
