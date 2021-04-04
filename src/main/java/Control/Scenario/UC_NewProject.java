@@ -10,6 +10,7 @@ import Model.Database.Tables.Table.T_Project_user;
 import Model.Database.Tables.Table.T_User;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.ProjectCreation;
+import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.ProjectCreationException;
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -28,7 +29,7 @@ public class UC_NewProject {
         this.db = dbProvider;
     }
 
-    public final @NotNull JsonResponse createNewProject(ProjectCreation projectCreation) {
+    public final @NotNull JsonResponse createNewProject(@NotNull final ProjectCreation projectCreation) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
@@ -37,14 +38,14 @@ public class UC_NewProject {
             // do not create project that already exists
             if (getProjectByName(projectCreation.getProject_name()) != null) {
                 jsonResponse.setMessage("Project with this  name already exists.");
-                throw new ProjectCreationException("Project with this  name already exists.");
+                throw new AlreadyExistsException("Project with this  name already exists.");
             }
 
             // remove elements that are "" or null
-            modifyForCorrections(projectCreation);
+            removeEmptyElements(projectCreation);
 
             // check whether all emails provided are already user's
-            if (areAllRequirementsMet(projectCreation) == false) {
+            if (isProjectNameAndEmailsValid(projectCreation) == false) {
                 jsonResponse.setMessage("Some field's are incorrect or some required are missing.");
                 throw new ProjectCreationException("Some field's are incorrect or some required are missing.");
             }
@@ -57,7 +58,7 @@ public class UC_NewProject {
             }
 
             // Create a new project and project_user connections
-            manageAllInserts(projectCreation, listOfUsers);
+            insertProjectAndProjectUsersIntoDatabase(projectCreation, listOfUsers);
 
             // Success
             db.afterOkSqlExecution();
@@ -73,13 +74,18 @@ public class UC_NewProject {
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
+        } catch (AlreadyExistsException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            jsonResponse.setMessage("Project with this name already exists.");
         }
 
         return jsonResponse;
     }
 
     // Privates
-    private void manageAllInserts(ProjectCreation projectCreation, List<T_User> listOfUsers) throws SQLException{
+    private void insertProjectAndProjectUsersIntoDatabase(@NotNull final ProjectCreation projectCreation, @NotNull final List<T_User> listOfUsers) throws SQLException{
         // Insert new Project
         I_Project.insert(db.getConn(), db.getPs(), T_Project.CreateFromScratch(projectCreation.getProject_name()));
 
@@ -97,7 +103,7 @@ public class UC_NewProject {
         }
     }
 
-    private List<T_User> getAllUsersThatWillBeOwners(ProjectCreation projectCreation) throws SQLException{
+    private List<T_User> getAllUsersThatWillBeOwners(@NotNull final ProjectCreation projectCreation) throws SQLException{
         List<T_User> list = new ArrayList<>();
 
         // process required email
@@ -123,7 +129,13 @@ public class UC_NewProject {
         return list;
     }
 
-    private boolean areAllRequirementsMet(ProjectCreation projectCreation) {
+
+    /***
+     * Project name has to be valid, emails have to be valid: basic requirements
+     * @param projectCreation
+     * @return
+     */
+    private boolean isProjectNameAndEmailsValid(@NotNull final ProjectCreation projectCreation) {
 
         // Valid project name
         if (projectCreation == null || projectCreation.getProject_name().equals(""))
@@ -143,11 +155,11 @@ public class UC_NewProject {
         return requiredPresent;
     }
 
-    private void modifyForCorrections(ProjectCreation projectCreation) {
+    private void removeEmptyElements(@NotNull final ProjectCreation projectCreation) {
         projectCreation.getAdditional_emails().removeIf(em -> (em == null || em.equals("")));
     }
 
-    private T_Project getProjectByName(String name) {
+    private T_Project getProjectByName(@NotNull final String name) {
         T_Project t = null;
 
         try {

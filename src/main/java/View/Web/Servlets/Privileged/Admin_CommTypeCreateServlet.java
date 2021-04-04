@@ -22,7 +22,7 @@ import java.io.PrintWriter;
 @WebServlet(name = "Admin_CommTypeCreateServlet", urlPatterns = Admin_CommTypeCreateServlet.SERVLET_URL)
 public class Admin_CommTypeCreateServlet extends AdminServlet {
     public static final String SERVLET_URL =  "/admin/comm-type/create";
-    public static final String TEMPLATE_NAME = "views/adminOnly/admin_create-commtype.html";
+    public static final String TEMPLATE_NAME = "views/adminOnly/admin-commtype_create.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 @WebServlet(name = "Admin_ProjectCreateServlet", urlPatterns = Admin_ProjectCreateServlet.SERVLET_URL)
 public class Admin_ProjectCreateServlet extends AdminServlet {
     public static final String SERVLET_URL =  "/admin/projects/create";
-    public static final String TEMPLATE_NAME = "views/adminOnly/admin_create-project.html";
+    public static final String TEMPLATE_NAME = "views/adminOnly/admin-project_create.html";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);

@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 @WebServlet(name = "Admin_UserCreateServlet", urlPatterns = Admin_UserCreateServlet.SERVLET_URL)
 public class Admin_UserCreateServlet extends AdminServlet {
     public static final String SERVLET_URL =  "/admin/user/create";
-    public static final String TEMPLATE_NAME = "authentication/admin_create-user.html";
+    public static final String TEMPLATE_NAME = "authentication/admin-user_create.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -29,7 +29,7 @@ function buildAuth() {
 
 // build JSON object by Api spec: CommType
 
-function buildProject() {
+function buildProjectCreation() {
     return {
         project_name: $("#project_name").val(),
         required_email: $("#project_email_0").val(),
@@ -140,11 +140,23 @@ function createProject() {
         url: $SCRIPT_ROOT + "/admin/projects/create",
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
-        data: JSON.stringify(buildProject()),
+        data: JSON.stringify(buildProjectCreation()),
         statusCode: {
             201: function(response) {
                 $(':input').val('');
                 alert('Vytvorený nový projekt.');
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
 
 // Create new communication type
 function createCommType() {
