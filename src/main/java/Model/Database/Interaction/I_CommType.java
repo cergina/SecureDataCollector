@@ -3,7 +3,6 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Enum.E_CommType;
-import Model.Database.Tables.Table.T_Address;
 import Model.Database.Tables.Table.T_CommType;
 
 import java.sql.Connection;
@@ -66,7 +65,7 @@ public class I_CommType {
         int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
 
         if (affectedRows == 0)
-            throw new SQLException("Something happened. Insertion of address into db failed.");
+            throw new SQLException("Something happened. Insertion of communication type into db failed.");
 
         return affectedRows;
     }

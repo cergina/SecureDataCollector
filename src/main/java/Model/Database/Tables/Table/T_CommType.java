@@ -5,10 +5,8 @@ import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
 import Model.Database.Tables.DbEntity;
-import org.json.JSONObject;
 
 import java.util.Dictionary;
-import java.util.List;
 
 public class T_CommType extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "commtype" : "commtype";
