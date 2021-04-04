@@ -23,7 +23,7 @@ public class E_CommType extends DbEntity implements DBEnum, DBToHtml {
 
     public static E_CommType REFERENCE = new E_CommType();
     public static String[] TABLE_CODENAMES = {
-            "Name"
+            DBNAME_NAME
     };
 
     // Constructors

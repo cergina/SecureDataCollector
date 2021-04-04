@@ -21,12 +21,9 @@ public class I_CommType {
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
-                        E_CommType.DBTABLE_NAME + "(" +
-                        "Name" +
-                        ") " +
-                        "VALUES (" +
-                        "?" +
-                        ") "
+                        E_CommType.DBTABLE_NAME +
+                        "(" + E_CommType.DBNAME_NAME + ") " +
+                        "VALUES (?)"
         );
 
         int col = 0;
@@ -50,11 +47,42 @@ public class I_CommType {
                 "SELECT " +
                         "* " +
                         "FROM " + E_CommType.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
+                        "WHERE " + E_CommType.DBNAME_ID + "=?"
         );
 
         int col = 0;
         ps.setInt(++col, id);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        E_CommType ct = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            ct = I_CommType.FillEntity(rs);
+        }
+
+        return ct;
+    }
+
+    public static E_CommType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
+        Assurance.IsVarcharOk(name);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + E_CommType.DBTABLE_NAME + " " +
+                        "WHERE " + E_CommType.DBNAME_NAME + "=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, name);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

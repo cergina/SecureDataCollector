@@ -2,6 +2,7 @@ var CONTENT_TYPE = "application/json; charset=utf-8";
 var DATA_TYPE = "json";
 
 
+// REQUEST BODY BUILDERS:
 
 // build JSON object by Api spec: User
 function buildUser() {
@@ -25,6 +26,16 @@ function buildAuth() {
         verificationcode: $("#verificationcode").val()
     };
 }
+
+// build JSON object by Api spec: CommType
+function buildCommType() {
+    return {
+        name: $("#comm-type_name").val()
+    };
+}
+
+
+// POST calls
 
 // Create new user
 function createUser() {
@@ -108,6 +119,32 @@ function loginUser() {
         }
     });
 }
+
+// Create new communication type
+function createCommType() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/comm-type/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildCommType()),
+        statusCode: {
+            201: function(response) {
+                $(':input').val('');
+                alert('Vytvorený nový typ komunikácie: ' + response.data.name);
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
 
 // NAVIGATION
 // Login user
