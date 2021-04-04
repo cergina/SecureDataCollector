@@ -102,20 +102,29 @@ public class DbProvider {
      */
     private void afterSqlExecution(boolean successful) {
         try {
+            // when query was unsuccesfull do not commit
             if (successful == false) {
                 conn.rollback();
                 return;
             }
 
+            // commit only when it was an insert or sth of that sort
             if (isItTransaction) {
                 conn.commit();
             }
-            conn.setAutoCommit(true);
+
         } catch (Exception e) {
             CustomLogs.Error(e.getMessage());
         } finally {
             isItTransaction = false;
-            //disconnect();
+
+            try {
+                conn.setAutoCommit(true);
+            } catch (Exception e) {
+                CustomLogs.Error("Set autocommit true failed." + e.getMessage());
+            }
+
+            //disconnect(); - probably will not be needed here
         }
     }
 
