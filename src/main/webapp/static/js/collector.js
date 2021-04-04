@@ -26,6 +26,18 @@ function buildAuth() {
     };
 }
 
+// build JSON object by Api spec: CommType
+function buildProject() {
+    return {
+        project_name: $("#project_name").val(),
+        required_email: $("#project_email_0").val(),
+        additional_emails: [
+            $("#project_email_1").val(),
+            $("#project_email_2").val()
+        ]
+    };
+}
+
 // Create new user
 function createUser() {
     $.ajax({
@@ -105,6 +117,28 @@ function loginUser() {
         complete: function(jqXHR) { // keep for DEBUG only
             console.log("---DEBUG---");
             console.log(jqXHR);
+        }
+    });
+}
+
+// CREATING STUFF
+// Create new project from data acquired from another js function
+function createProject() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/projects/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildProject()),
+        statusCode: {
+            201: function(response) {
+                $(':input').val('');
+                alert('Vytvorený nový projekt.');
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
         }
     });
 }

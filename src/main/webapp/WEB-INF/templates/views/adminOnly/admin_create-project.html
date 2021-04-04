@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row" id="two-column-container">
+            <!-- PANEL -->
+            <div class="grid col-sm-12 ">
+                <div class="row justify-content-center regpadding rowinrightcol createuser">
+                    <h1 class="reglogheader">Create a new project</h1>
+                </div>
+                <div class="grid">
+                    <!-- One necessarry name and email -->
+                    <div class="row justify-content-center">
+                        <label for="project_name">Name</label>
+                        <div><input type="text" id="project_name" placeholder="Pomenovanie" required></div>
+                    </div>
+                    <!-- UP TO 3 Project users -->
+                    <div class="row justify-content-center">
+                        <label for="project_email_0">Required user's email: </label>
+                        <div><input type="email" id="project_email_0" placeholder="required@example.com" required></div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <label for="project_email_1">Optional user's email: </label>
+                        <div><input type="email" id="project_email_1" placeholder="optional1@example.com"></div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <label for="project_email_2">Optional user's email: </label>
+                        <div><input type="email" id="project_email_2" placeholder="optional2@example.com"></div>
+                    </div>
+                </div>
+                <!-- ACTIONS AND NAVIGATION -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button class="roundedbutton" onclick="createProject()">Create</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button class="roundedbutton" onclick="goHome()">Go home</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END PANEL -->
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
