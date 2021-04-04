@@ -3,6 +3,8 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Enum.E_CommType;
+import Model.Database.Tables.Table.T_Address;
+import Model.Database.Tables.Table.T_CommType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,6 +40,33 @@ public class I_CommType {
 
         if (affectedRows == 0)
             throw new SQLException("Something happened. Insertion of CommType into db failed.");
+
+        return affectedRows;
+    }
+
+    public static int insert(Connection conn, PreparedStatement ps, T_CommType tct) throws SQLException {
+        if (tct.IsTableOkForDatabaseEnter() == false)
+            throw new SQLException("Given attribute T_CommType is not ok for database enter");
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "INSERT INTO " +
+                        T_CommType.DBTABLE_NAME + "(" +
+                        T_CommType.DBNAME_NAME + ") " +
+                        "VALUES (" +
+                        "?" +
+                        ") "
+        );
+
+        int col = 0;
+        ps.setString(++col, tct.getA_Name());
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        int affectedRows = scotr.TryUpdateFirstTime(conn, ps);
+
+        if (affectedRows == 0)
+            throw new SQLException("Something happened. Insertion of address into db failed.");
 
         return affectedRows;
     }
