@@ -8,6 +8,8 @@ import Model.Web.JsonResponse;
 import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.InvalidOperationException;
+import View.Support.CustomExceptions.UserCreationException;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -47,7 +49,7 @@ public class UC_Auth {
     // PUBLIC METHODS
 
     /**
-     * Create new user
+     * Create new user: PREREGISTRATION
      * NEEDS TO BE A TRANSACTION - doing inserts
      * @param auth User data
      * @return final Api response body
@@ -57,6 +59,11 @@ public class UC_Auth {
 
         try {
             db.beforeSqlExecution(true);
+
+            if (EmailValidator.getInstance().isValid(auth.getUser().getEmail()) == false) {
+                jsonResponse.setMessage("Presented email is not valid for use.");
+                throw new UserCreationException("Presented email is not valid for use.");
+            }
 
             if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
@@ -81,8 +88,6 @@ public class UC_Auth {
 
             I_User.insert(db.getConn(), db.getPs(), t_user);
             // modify User table END
-
-
 
             int createdUserID = I_User.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
@@ -129,7 +134,13 @@ public class UC_Auth {
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
+        } catch (UserCreationException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            jsonResponse.setMessage("Invalid email for user.");
         }
+
         return jsonResponse;
     }
 

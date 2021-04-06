@@ -22,6 +22,7 @@ public abstract class REST_ConnectionServlet extends HttpServlet {
         boolean isValid = dbProvider.testConnection();
 
         if (isValid == false) {
+            dbProvider.disconnect();
             dbProvider = new DbProvider();
         }
 

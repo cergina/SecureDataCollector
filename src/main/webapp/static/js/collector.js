@@ -69,6 +69,10 @@ function createUser() {
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         },
         complete: function(jqXHR) { // keep for DEBUG only
@@ -96,6 +100,10 @@ function registerUser() {
                 alert(response.message); // TODO impact layout
             },
             401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             }
@@ -153,6 +161,10 @@ function createProject() {
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         }
     });
@@ -176,6 +188,10 @@ function createCommType() {
                 alert(response.message); // TODO impact layout
             },
             409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             }

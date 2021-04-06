@@ -5,27 +5,34 @@
 <div class="container-fluid">
     <div class="container">
         <div class="row" id="two-column-container">
-            <div class="col-sm-12 ">
+            <!-- PANEL -->
+            <div class="grid col-sm-12 ">
+                <!-- NAME -->
                 <div class="row justify-content-center regpadding rowinrightcol createuser">
                     <h1 class="reglogheader">Create communication type</h1>
                 </div>
+                <!-- FIELDS -->
+                <div class="grid regpadding">
+                    <div class="row justify-content-center rowinrightcol">
+                        <div class="regpaddingtopbottom">
+                            <label for="comm-type_name">Name</label>
+                            <div><input class="min-width-300" type="text" id="comm-type_name" required/></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ACTIONS AND NAVIGATION -->
                 <div class="row justify-content-center rowinrightcol">
-                    <div class="regpaddingtopbottom">
-                        <label for="comm-type_name">Name</label>
-                        <div><input type="text" id="comm-type_name" required/></div>
+                    <div class="regpaddingbottom">
+                        <button class="roundedbutton min-width-300" onclick="createCommType()">Create</button>
                     </div>
                 </div>
                 <div class="row justify-content-center rowinrightcol">
                     <div class="regpaddingbottom">
-                        <button class="roundedbutton" onclick="createCommType()">Create</button>
-                    </div>
-                </div>
-                <div class="row justify-content-center rowinrightcol">
-                    <div class="regpaddingbottom">
-                        <button class="roundedbutton" onclick="goHome()">Go home</button>
+                        <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
                     </div>
                 </div>
             </div>
+            <!-- END PANEL -->
         </div>
     </div>
 </div>
