@@ -1,7 +1,7 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.*;
+import Model.Database.Interaction.I_CommType;
 import Model.Database.Tables.Enum.E_CommType;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
@@ -29,6 +29,11 @@ public class UC_Create {
 
         try {
             db.beforeSqlExecution(true);
+
+            if (commType.getName().equals("")) {
+                jsonResponse.setMessage("Communication type name cannot be empty.");
+                throw new InvalidOperationException("Communication type name cannot be empty.");
+            }
 
             if (I_CommType.retrieveByName(db.getConn(), db.getPs(), db.getRs(), commType.getName()) != null) {
                 jsonResponse.setMessage("Communication type with this name already exists.");

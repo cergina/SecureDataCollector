@@ -124,7 +124,7 @@ public class DbProvider {
                 CustomLogs.Error("Set autocommit true failed." + e.getMessage());
             }
 
-            //disconnect(); - probably will not be needed here
+            disconnect(); //- probably will not be needed here
         }
     }
 

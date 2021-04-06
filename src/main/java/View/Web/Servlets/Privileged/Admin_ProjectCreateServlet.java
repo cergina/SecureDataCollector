@@ -1,10 +1,11 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_Create;
-import Model.Web.CommType;
+import Control.Scenario.UC_NewProject;
+import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
+import Model.Web.Specific.ProjectCreation;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
@@ -19,11 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "Admin_CommTypeCreateServlet", urlPatterns = Admin_CommTypeCreateServlet.SERVLET_URL)
-public class Admin_CommTypeCreateServlet extends AdminServlet {
-    public static final String SERVLET_URL =  "/admin/comm-type/create";
-    public static final String TEMPLATE_NAME = "views/adminOnly/admin-commtype_create.html";
-
+@WebServlet(name = "Admin_ProjectCreateServlet", urlPatterns = Admin_ProjectCreateServlet.SERVLET_URL)
+public class Admin_ProjectCreateServlet extends AdminServlet {
+    public static final String SERVLET_URL =  "/admin/projects/create";
+    public static final String TEMPLATE_NAME = "views/adminOnly/admin-project_create.html";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
@@ -44,9 +44,14 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
-        CommType commType = (CommType) PrettyObject.parse(ServletHelper.RequestBody(request), CommType.class);
+        // parse JSON from Body object
+        ProjectCreation projectCreation = (ProjectCreation) PrettyObject.parse(ServletHelper.RequestBody(request), ProjectCreation.class);
 
-        final JsonResponse jsonResponse = (new UC_Create(getDb()).createCommType(commType));
+        CustomLogs.Error(projectCreation.getProject_name() + projectCreation.getRequired_email());
+        CustomLogs.Error(projectCreation.getProject_name() + projectCreation.getRequired_email() + projectCreation.getAdditional_emails().get(0) + projectCreation.getAdditional_emails().get(1));
+
+        final JsonResponse jsonResponse = (new UC_NewProject(getDb()).createNewProject(projectCreation)); // create new project
+
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

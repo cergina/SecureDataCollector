@@ -28,6 +28,18 @@ function buildAuth() {
 }
 
 // build JSON object by Api spec: CommType
+
+function buildProjectCreation() {
+    return {
+        project_name: $("#project_name").val(),
+        required_email: $("#project_email_0").val(),
+        additional_emails: [
+            $("#project_email_1").val(),
+            $("#project_email_2").val()
+        ]
+    };
+}
+
 function buildCommType() {
     return {
         name: $("#comm-type_name").val()
@@ -57,6 +69,10 @@ function createUser() {
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         },
         complete: function(jqXHR) { // keep for DEBUG only
@@ -84,6 +100,10 @@ function registerUser() {
                 alert(response.message); // TODO impact layout
             },
             401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             }
@@ -120,6 +140,36 @@ function loginUser() {
     });
 }
 
+// CREATING STUFF
+// Create new project from data acquired from another js function
+function createProject() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/projects/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildProjectCreation()),
+        statusCode: {
+            201: function(response) {
+                $(':input').val('');
+                alert('Vytvorený nový projekt.');
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
 // Create new communication type
 function createCommType() {
     $.ajax({
@@ -140,11 +190,14 @@ function createCommType() {
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
             }
         }
     });
 }
-
 
 // NAVIGATION
 // Login user

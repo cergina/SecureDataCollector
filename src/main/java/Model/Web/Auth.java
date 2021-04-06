@@ -33,7 +33,8 @@ public class Auth extends PrettyObject {
                 user.getFirstname().equals("") ||
                 user.getLastname().equals("") ||
                 user.getResidence().equals("") ||
-                user.getPhone().equals(""))
+                user.getPhone().equals("") ||
+                (user.getPhone().matches("^(\\+)?[0-9 ]+$") == false))
             return false;
 
         return true;

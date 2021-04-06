@@ -29,6 +29,7 @@ public abstract class ConnectionServlet extends HttpServlet implements Privilege
         boolean isValid = dbProvider.testConnection();
 
         if (isValid == false) {
+            dbProvider.disconnect();
             dbProvider = new DbProvider();
         }
 

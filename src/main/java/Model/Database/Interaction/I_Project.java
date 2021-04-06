@@ -89,6 +89,62 @@ public class I_Project {
         return tp;
     }
 
+    public static T_Project retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String projectName) throws SQLException {
+        Assurance.IsVarcharOk(projectName);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "ID, Name, CreatedAt, DeletedAt " +
+                        "FROM " + T_Project.DBTABLE_NAME + " " +
+                        "WHERE Name=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, projectName);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_Project tp = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tp = I_Project.FillEntity(rs);
+        }
+
+        return tp;
+    }
+
+    /*
+     * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
+     */
+    public static int retrieveLatestPerConnectionInsertedID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        int latest  = -1;
+
+        ps = conn.prepareStatement(
+                "SELECT LAST_INSERT_ID();"
+        );
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            latest = rs.getInt(1);
+        }
+
+        return latest;
+    }
+
     /*****
      *
      * @param conn
