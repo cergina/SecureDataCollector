@@ -134,3 +134,15 @@ body, html{
 .min-width-300 {
     min-width: 300px;
 }
+
+.padding-right-5{
+    padding-right: 5px;
+}
+
+.padding-left-5{
+    padding-left: 5px;
+}
+
+.padding-top-10{
+    padding-top: 10px;
+}

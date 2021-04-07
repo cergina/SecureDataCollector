@@ -148,5 +148,38 @@ public class I_Address {
         return T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
     }
 
+    public static boolean checkIfExists(Connection conn, PreparedStatement ps, ResultSet rs, String street, String houseno, String city, String zip, String country) throws SQLException {
+        Assurance.varcharCheck(street);
+        Assurance.varcharCheck(houseno);
+        Assurance.varcharCheck(city);
+        Assurance.varcharCheck(zip);
+        Assurance.varcharCheck(country);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "ID, Country, City, Street, HouseNO, Zip " +
+                        "FROM " + T_Address.DBTABLE_NAME + " " +
+                        "WHERE Street=? AND HouseNO=? AND City=? AND Zip=? AND Country=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, street);
+        ps.setString(++col, houseno);
+        ps.setString(++col, city);
+        ps.setString(++col, zip);
+        ps.setString(++col, country);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            return false;
+        }
+
+        return true;
+    }
 
 }

@@ -27,8 +27,6 @@ function buildAuth() {
     };
 }
 
-// build JSON object by Api spec: CommType
-
 function buildProjectCreation() {
     return {
         project_name: $("#project_name").val(),
@@ -40,6 +38,17 @@ function buildProjectCreation() {
     };
 }
 
+function buildAddressCreation() {
+    return {
+        street: $("#street").val(),
+        houseno: $("#houseno").val(),
+        city: $("#city").val(),
+        zip: $("#zip").val(),
+        country: $("#country").val(),
+    };
+}
+
+// build JSON object by Api spec: CommType
 function buildCommType() {
     return {
         name: $("#comm-type_name").val()
@@ -153,6 +162,34 @@ function createProject() {
             201: function(response) {
                 $(':input').val('');
                 alert('Vytvorený nový projekt.');
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
+function createAddress() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/addresses/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildAddressCreation()),
+        statusCode: {
+            201: function(response) {
+                $(':input').val('');
+                alert('Úspešne sa podarilo vytvoriť novú adresu.');
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);

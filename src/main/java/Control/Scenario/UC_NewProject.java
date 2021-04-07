@@ -46,8 +46,8 @@ public class UC_NewProject {
 
             // check whether all emails provided are already user's
             if (isProjectNameAndEmailsValid(projectCreation) == false) {
-                jsonResponse.setMessage("Some field's are incorrect or some required are missing.");
-                throw new ProjectCreationException("Some field's are incorrect or some required are missing.");
+                jsonResponse.setMessage("Some fields are incorrect or some required are missing.");
+                throw new ProjectCreationException("Some fields are incorrect or some required are missing.");
             }
 
             // Get all user's that need addition to Project_User table -- check if they exist
@@ -64,16 +64,16 @@ public class UC_NewProject {
             db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
-            jsonResponse.setMessage("User created.");
+            jsonResponse.setMessage("Project created.");
         } catch (ProjectCreationException e) {
             db.afterExceptionInSqlExecution(e);
-
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
-
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
+
         } catch (AlreadyExistsException e) {
             db.afterExceptionInSqlExecution(e);
 
@@ -141,7 +141,7 @@ public class UC_NewProject {
         if (projectCreation == null || projectCreation.getProject_name().equals(""))
             return false;
 
-        // All email's are valid
+        // All emails are valid
         String required = projectCreation.getRequired_email();
 
         boolean requiredPresent = EmailValidator.getInstance().isValid(required);
