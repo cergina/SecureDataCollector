@@ -27,6 +27,8 @@ function buildAuth() {
     };
 }
 
+
+// build JSON object by Api spec: ProjectCreation
 function buildProjectCreation() {
     return {
         project_name: $("#project_name").val(),
@@ -52,6 +54,15 @@ function buildAddressCreation() {
 function buildCommType() {
     return {
         name: $("#comm-type_name").val()
+    };
+}
+
+// build JSON object by Api spec: SensorType
+function buildSensorType() {
+    return {
+        name: $("#sensor-type_name").val(),
+        measuredin: $("#sensor-type_measured-in").val(),
+        commType: buildCommType()
     };
 }
 
@@ -219,6 +230,35 @@ function createCommType() {
             201: function(response) {
                 $(':input').val('');
                 alert('Vytvorený nový typ komunikácie: ' + response.data.name);
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
+// Create new sensor type
+function createSensorType() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/sensor-type/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildSensorType()),
+        statusCode: {
+            201: function(response) {
+                $(':input').val('');
+                alert('Vytvorený nový typ sensora: ' + response.data.name);
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
