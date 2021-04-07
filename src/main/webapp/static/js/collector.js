@@ -104,35 +104,39 @@ function createUser() {
 
 // Finish registration
 function registerUser() {
-    $.ajax({
-        method: "POST",
-        url: $SCRIPT_ROOT + "/register",
-        contentType: CONTENT_TYPE,
-        dataType: DATA_TYPE,
-        data: JSON.stringify(buildAuth()),
-        statusCode: {
-            200: function(response) {
-                // TODO thank user for registration
-                alert('Thank you for your registration\n' + response.message)
+    if ($("#password-retype").val() != $("#password").val()) {
+      alert("Passwords does not match!")
+    } else {
+        $.ajax({
+            method: "POST",
+            url: $SCRIPT_ROOT + "/register",
+            contentType: CONTENT_TYPE,
+            dataType: DATA_TYPE,
+            data: JSON.stringify(buildAuth()),
+            statusCode: {
+                200: function(response) {
+                    // TODO thank user for registration
+                    alert('Thank you for your registration\n' + response.message)
+                },
+                400: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                401: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                500: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                }
             },
-            400: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+            complete: function(jqXHR) { // keep for DEBUG only
+                console.log("---DEBUG---");
+                console.log(jqXHR);
             }
-        },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
-        }
-    });
+        });
+    }
 }
 
 // Login user
