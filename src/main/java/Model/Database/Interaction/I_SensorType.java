@@ -52,7 +52,7 @@ public class I_SensorType {
                 "SELECT " +
                         "* " +
                         "FROM " + E_SensorType.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
+                        "WHERE " + E_SensorType.DBNAME_ID + "=?"
         );
 
         int col = 0;
@@ -62,17 +62,48 @@ public class I_SensorType {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        E_SensorType est = null;
+        E_SensorType st = null;
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
         } else {
             rs.next();
 
-            est = I_SensorType.FillEntity(rs);
+            st = I_SensorType.FillEntity(rs);
         }
 
-        return est;
+        return st;
+    }
+
+    public static E_SensorType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
+        Assurance.IsVarcharOk(name);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + E_SensorType.DBTABLE_NAME + " " +
+                        "WHERE " + E_SensorType.DBNAME_NAME + "=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, name);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        E_SensorType st = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            st = I_SensorType.FillEntity(rs);
+        }
+
+        return st;
     }
 
     /*****

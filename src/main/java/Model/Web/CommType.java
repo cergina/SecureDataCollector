@@ -7,13 +7,17 @@ import com.google.gson.annotations.Expose;
  */
 public class CommType extends PrettyObject {
 
-    @Expose
     private Integer id;
     @Expose
-    private String name;
+    public String name;
 
     // empty constructor for Gson
     public CommType() {}
+
+    public CommType(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

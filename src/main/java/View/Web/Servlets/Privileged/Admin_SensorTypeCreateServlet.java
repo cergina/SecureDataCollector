@@ -5,6 +5,7 @@ import Control.Scenario.UC_CreateTypes;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
+import Model.Web.SensorType;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
@@ -18,11 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
-@WebServlet(name = "Admin_CommTypeCreateServlet", urlPatterns = Admin_CommTypeCreateServlet.SERVLET_URL)
-public class Admin_CommTypeCreateServlet extends AdminServlet {
-    public static final String SERVLET_URL =  "/admin/comm-type/create";
-    public static final String TEMPLATE_NAME = "views/adminOnly/admin-commtype_create.html";
+@WebServlet(name = "Admin_SensorTypeCreateServlet", urlPatterns = Admin_SensorTypeCreateServlet.SERVLET_URL)
+public class Admin_SensorTypeCreateServlet extends AdminServlet {
+    public static final String SERVLET_URL =  "/admin/sensor-type/create";
+    public static final String TEMPLATE_NAME = "views/adminOnly/admin-sensortype_create.html";
+
+    private static final String VARIABLE_COMM_TYPES = "commTypes";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -36,6 +40,9 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
+        final List<CommType> commTypeList = (new UC_CreateTypes(getDb()).getAllCommType());
+        context.setVariable(VARIABLE_COMM_TYPES, commTypeList);
+
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
@@ -44,9 +51,9 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
-        CommType commType = (CommType) PrettyObject.parse(ServletHelper.RequestBody(request), CommType.class);
+        SensorType sensorType = (SensorType) PrettyObject.parse(ServletHelper.RequestBody(request), SensorType.class);
 
-        final JsonResponse jsonResponse = (new UC_CreateTypes(getDb()).createCommType(commType));
+        final JsonResponse jsonResponse = (new UC_CreateTypes(getDb()).createSensorType(sensorType));
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());
