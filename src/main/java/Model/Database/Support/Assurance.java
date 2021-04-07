@@ -38,6 +38,11 @@ public class Assurance {
         return true;
     }
 
+    public static void varcharCheck(String value) throws SQLException {
+        if (Assurance.IsVarcharOk(value) == false)
+            throw new SQLException("Value is not valid for use in database.");
+    }
+
     public static void IdCheck(int idToBeChecked) throws SQLException {
         if (idToBeChecked <= 0)
             throw new SQLException("ID is less or equal to 0, which is an invalid Database id.");
