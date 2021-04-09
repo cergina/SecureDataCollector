@@ -18,11 +18,16 @@ public class I_CommType {
         if (ec.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_CommType is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    E_CommType.DBNAME_NAME
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         E_CommType.DBTABLE_NAME +
-                        "(" + E_CommType.DBNAME_NAME + ") " +
+                        "(" + tableNames + ") " +
                         "VALUES (?)"
         );
 
@@ -40,7 +45,7 @@ public class I_CommType {
     }
 
     public static E_CommType retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -71,7 +76,7 @@ public class I_CommType {
     }
 
     public static E_CommType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
-        Assurance.IsVarcharOk(name);
+        Assurance.isVarcharOk(name);
 
         // SQL Definition
         ps = conn.prepareStatement(

@@ -25,14 +25,14 @@ public class UserAccessHelper {
         try {
             factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            CustomLogs.Error(e.getMessage());
         }
         try {
             byte[] hash = factory.generateSecret(spec).getEncoded();
             String hexaString = new BigInteger(1, hash).toString(16);
             return hexaString;
         } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
+            CustomLogs.Error(e.getMessage());
         }
         return null;
     }

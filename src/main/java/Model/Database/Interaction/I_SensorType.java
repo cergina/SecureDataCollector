@@ -18,11 +18,16 @@ public class I_SensorType {
         if (es.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_SensorType is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    E_SensorType.DBNAME_NAME, E_SensorType.DBNAME_MEASUREDIN, E_SensorType.DBNAME_COMMTYPE_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         E_SensorType.DBTABLE_NAME + "(" +
-                        "Name, MeasuredIn, CommTypeID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?" +
@@ -45,7 +50,7 @@ public class I_SensorType {
     }
 
     public static E_SensorType retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -76,7 +81,7 @@ public class I_SensorType {
     }
 
     public static E_SensorType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
-        Assurance.IsVarcharOk(name);
+        Assurance.isVarcharOk(name);
 
         // SQL Definition
         ps = conn.prepareStatement(

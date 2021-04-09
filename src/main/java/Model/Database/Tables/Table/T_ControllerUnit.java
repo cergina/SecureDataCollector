@@ -80,21 +80,21 @@ public class T_ControllerUnit extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsIntOk(a_Uid) &&
-                Assurance.IsVarcharOk(a_DipAddress) &&
-                Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsFkOk(a_CentralUnitID) &&
-                Assurance.IsFkOk(a_FlatID);
+        return Assurance.isIntOk(a_Uid) &&
+                Assurance.isVarcharOk(a_DipAddress) &&
+                Assurance.isVarcharOk(a_Zwave) &&
+                Assurance.isFkOk(a_CentralUnitID) &&
+                Assurance.isFkOk(a_FlatID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsIntOk(a_Uid) &&
-                Assurance.IsVarcharOk(a_DipAddress) &&
-                Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsFkOk(a_CentralUnitID) &&
-                Assurance.IsFkOk(a_FlatID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isIntOk(a_Uid) &&
+                Assurance.isVarcharOk(a_DipAddress) &&
+                Assurance.isVarcharOk(a_Zwave) &&
+                Assurance.isFkOk(a_CentralUnitID) &&
+                Assurance.isFkOk(a_FlatID);
     }
 
     @Override

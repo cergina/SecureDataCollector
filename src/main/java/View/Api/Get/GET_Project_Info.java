@@ -2,6 +2,7 @@ package View.Api.Get;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
+import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.GET_Database_Interaction;
@@ -44,8 +45,8 @@ public class GET_Project_Info extends GET_Database_Interaction {
             writer.close();
         }
         catch (Exception e) {
-            e.printStackTrace();
-            ServletHelper.Send404(resp);
+            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
+            CustomLogs.Error(e.getMessage());
         }
     }
 

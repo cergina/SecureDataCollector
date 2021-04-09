@@ -96,25 +96,25 @@ public class T_User extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_BeforeTitle) &&
-                Assurance.IsVarcharOk(a_FirstName) &&
-                Assurance.IsVarcharOk(a_MiddleName) &&
-                Assurance.IsVarcharOk(a_LastName) &&
-                Assurance.IsVarcharOk(a_Phone) &&
-                Assurance.IsVarcharOk(a_Email) &&
-                Assurance.IsVarcharOk(a_PermanentResidence);
+        return Assurance.isVarcharOk(a_BeforeTitle) &&
+                Assurance.isVarcharOk(a_FirstName) &&
+                Assurance.isVarcharOk(a_MiddleName) &&
+                Assurance.isVarcharOk(a_LastName) &&
+                Assurance.isVarcharOk(a_Phone) &&
+                Assurance.isVarcharOk(a_Email) &&
+                Assurance.isVarcharOk(a_PermanentResidence);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsVarcharOk(a_BeforeTitle) &&
-                Assurance.IsVarcharOk(a_FirstName) &&
-                Assurance.IsVarcharOk(a_MiddleName) &&
-                Assurance.IsVarcharOk(a_LastName) &&
-                Assurance.IsVarcharOk(a_Phone) &&
-                Assurance.IsVarcharOk(a_Email) &&
-                Assurance.IsVarcharOk(a_PermanentResidence);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_BeforeTitle) &&
+                Assurance.isVarcharOk(a_FirstName) &&
+                Assurance.isVarcharOk(a_MiddleName) &&
+                Assurance.isVarcharOk(a_LastName) &&
+                Assurance.isVarcharOk(a_Phone) &&
+                Assurance.isVarcharOk(a_Email) &&
+                Assurance.isVarcharOk(a_PermanentResidence);
     }
 
     @Override

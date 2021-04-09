@@ -40,7 +40,7 @@ public class POST_SensorType_Insert extends POST_Database_Interaction {
             dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

@@ -27,11 +27,16 @@ public class I_Address {
         if (ta.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Address is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                T_Address.DBNAME_COUNTRY, T_Address.DBNAME_CITY, T_Address.DBNAME_STREET, T_Address.DBNAME_HOUSENO, T_Address.DBNAME_ZIP
+        );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Address.DBTABLE_NAME + "(" +
-                        "Country, City, Street, HouseNO, Zip" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?, ?" +
@@ -65,7 +70,7 @@ public class I_Address {
      * @throws SQLException
      */
     public static T_Address retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -158,7 +163,7 @@ public class I_Address {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
-                        "ID, Country, City, Street, HouseNO, Zip " +
+                        "* " +
                         "FROM " + T_Address.DBTABLE_NAME + " " +
                         "WHERE Street=? AND HouseNO=? AND City=? AND Zip=? AND Country=?"
         );

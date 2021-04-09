@@ -39,7 +39,7 @@ public class POST_Address_Get extends POST_Database_Interaction {
             out.flush();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

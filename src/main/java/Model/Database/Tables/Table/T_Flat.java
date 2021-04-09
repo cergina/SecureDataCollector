@@ -65,15 +65,15 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_ApartmentNO) &&
-                Assurance.IsFkOk(a_AddressID);
+        return Assurance.isVarcharOk(a_ApartmentNO) &&
+                Assurance.isFkOk(a_AddressID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsVarcharOk(a_ApartmentNO) &&
-                Assurance.IsFkOk(a_AddressID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_ApartmentNO) &&
+                Assurance.isFkOk(a_AddressID);
     }
 
     @Override

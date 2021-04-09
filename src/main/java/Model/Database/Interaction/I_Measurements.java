@@ -24,11 +24,16 @@ public class I_Measurements {
         T_Measurement tm_recentInDb = retrieveNewest(conn, ps, rs, tm.getA_SensorID());
         int newAccumulated = (tm_recentInDb == null) ? tm.getA_Value() : tm.getA_Value() + tm_recentInDb.getA_AccumulatedValue();
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Measurement.DBNAME_VALUE, T_Measurement.DBNAME_REQUESTNO, T_Measurement.DBNAME_MEASUREDAT, T_Measurement.DBNAME_ACCUMULATEDVALUE, T_Measurement.DBNAME_SENSOR_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Measurement.DBTABLE_NAME + "(" +
-                        "Value, RequestNo, MeasuredAt, AccumulatedValue,SensorID" +
+                        tableNames +
                         ") " +
                         "VALUES ( " +
                         "?, " + // value
@@ -57,7 +62,7 @@ public class I_Measurements {
     }
 
     public static T_Measurement retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -180,7 +185,7 @@ public class I_Measurements {
     }
 
     public static T_Measurement retrieveNewest(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
-        Assurance.IdCheck(sensorId);
+        Assurance.idCheck(sensorId);
 
         // SQL Definition
         ps = conn.prepareStatement(

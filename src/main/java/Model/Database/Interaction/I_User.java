@@ -19,11 +19,16 @@ public class I_User {
         if (tu.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_User is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_User.DBNAME_BEFORETITLE, T_User.DBNAME_FIRSTNAME, T_User.DBNAME_MIDDLENAME, T_User.DBNAME_LASTNAME, T_User.DBNAME_PHONE, T_User.DBNAME_EMAIL, T_User.DBNAME_PERMANENTRESIDENCE
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_User.DBTABLE_NAME + "(" +
-                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, PermanentResidence" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?, ?, ?, ?" +
@@ -50,7 +55,7 @@ public class I_User {
     }
 
     public static T_User retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -81,7 +86,7 @@ public class I_User {
     }
 
     public static T_User retrieveByEmail(Connection conn, PreparedStatement ps, ResultSet rs, String email) throws SQLException {
-        Assurance.IsVarcharOk(email);
+        Assurance.isVarcharOk(email);
 
         // SQL Definition
         ps = conn.prepareStatement(

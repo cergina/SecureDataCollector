@@ -19,11 +19,16 @@ public class I_FlatOwner {
         if (tfo.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_FlatOwner is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_FlatOwner.DBNAME_BEFORETITLE, T_FlatOwner.DBNAME_FIRSTNAME, T_FlatOwner.DBNAME_MIDDLENAME, T_FlatOwner.DBNAME_LASTNAME, T_FlatOwner.DBNAME_PHONE,T_FlatOwner.DBNAME_EMAIL, T_FlatOwner.DBNAME_ADDRESS
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_FlatOwner.DBTABLE_NAME + "(" +
-                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, Address" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?, ?, ?, ?" +
@@ -50,7 +55,7 @@ public class I_FlatOwner {
     }
 
     public static T_FlatOwner retrieveByAdditionalArguments(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -81,7 +86,7 @@ public class I_FlatOwner {
     }
 
     public static T_FlatOwner retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

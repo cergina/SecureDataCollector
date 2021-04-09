@@ -87,19 +87,19 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsFkOk(a_UserID) &&
-                Assurance.IsFkOk(a_AccessPrivilegeID) &&
-                Assurance.IsFkOk(a_CreatedByUserID);
+        return Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isFkOk(a_UserID) &&
+                Assurance.isFkOk(a_AccessPrivilegeID) &&
+                Assurance.isFkOk(a_CreatedByUserID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsFkOk(a_UserID) &&
-                Assurance.IsFkOk(a_AccessPrivilegeID) &&
-                Assurance.IsFkOk(a_CreatedByUserID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isFkOk(a_UserID) &&
+                Assurance.isFkOk(a_AccessPrivilegeID) &&
+                Assurance.isFkOk(a_CreatedByUserID);
     }
 
     @Override

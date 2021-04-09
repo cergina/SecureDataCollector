@@ -21,11 +21,16 @@ public class I_ControllerUnit {
         if (tc.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_ControllerUnit is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_ControllerUnit.DBNAME_UID, T_ControllerUnit.DBNAME_DIPADDRESS, T_ControllerUnit.DBNAME_ZWAVE, T_ControllerUnit.DBNAME_CENTRALUNIT_ID, T_ControllerUnit.DBNAME_FLAT_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_ControllerUnit.DBTABLE_NAME + "(" +
-                        "Uid, DipAddress, Zwave, CentralUnitID, FlatID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?, ?" +
@@ -52,7 +57,7 @@ public class I_ControllerUnit {
     }
 
     public static T_ControllerUnit retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

@@ -81,15 +81,15 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsVarcharOk(a_Name);
+        return Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isVarcharOk(a_Name);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsVarcharOk(a_Name);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isVarcharOk(a_Name);
     }
 
 
@@ -140,16 +140,16 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
     public String toString() {
         StringBuilder str = new StringBuilder("[");
 
-        if (Assurance.IsFkOk(a_pk))
+        if (Assurance.isFkOk(a_pk))
             str.append("ID: " + a_pk + "; ");
 
-        if (Assurance.IsVarcharOk(a_Name))
+        if (Assurance.isVarcharOk(a_Name))
             str.append("name " + a_Name + "; ");
 
-        if (Assurance.IsDateOk(a_CreatedAt))
+        if (Assurance.isDateOk(a_CreatedAt))
             str.append("created: " + a_CreatedAt + "; ");
 
-        if (Assurance.IsDateOk(a_DeletedAt))
+        if (Assurance.isDateOk(a_DeletedAt))
             str.append("deleted: " + a_DeletedAt + "; ");
 
         str.append("]");

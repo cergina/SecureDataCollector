@@ -79,7 +79,7 @@ public class UC_Controller {
         }
 
         if (creation == null || creation.getUid() < 0 || creation.getZwave().equals("") ||
-            creation.getDipAddress().equals("") || Assurance.IsFkOk(creation.getFlatId()) == false)
+            creation.getDipAddress().equals("") || Assurance.isFkOk(creation.getFlatId()) == false)
             return false;
 
         return true;

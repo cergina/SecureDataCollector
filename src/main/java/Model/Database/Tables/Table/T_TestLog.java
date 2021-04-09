@@ -65,15 +65,15 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_Event) &&
-                Assurance.IsVarcharOk(a_Body);
+        return Assurance.isVarcharOk(a_Event) &&
+                Assurance.isVarcharOk(a_Body);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsVarcharOk(a_Event) &&
-                Assurance.IsVarcharOk(a_Body);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_Event) &&
+                Assurance.isVarcharOk(a_Body);
     }
 
     @Override

@@ -19,11 +19,16 @@ public class I_ProjectUser {
         if (tpu.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Project_user is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Project_user.DBNAME_PROJECTID, T_Project_user.DBNAME_USERID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Project_user.DBTABLE_NAME + "(" +
-                        "ProjectID, UserID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?" +
@@ -45,7 +50,7 @@ public class I_ProjectUser {
     }
 
     public static List<T_Project_user> retrieveAllForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userId) throws SQLException {
-        Assurance.IdCheck(userId);
+        Assurance.idCheck(userId);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -79,7 +84,7 @@ public class I_ProjectUser {
 
     /* useless ? */
     public static T_Project_user retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

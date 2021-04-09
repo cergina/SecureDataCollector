@@ -77,17 +77,17 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_Session) &&
-                Assurance.IsVarcharOk(a_Data) &&
-                Assurance.IsDateOk(a_CreatedAt);
+        return Assurance.isVarcharOk(a_Session) &&
+                Assurance.isVarcharOk(a_Data) &&
+                Assurance.isDateOk(a_CreatedAt);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsVarcharOk(a_Session) &&
-                Assurance.IsVarcharOk(a_Data) &&
-                Assurance.IsDateOk(a_CreatedAt);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_Session) &&
+                Assurance.isVarcharOk(a_Data) &&
+                Assurance.isDateOk(a_CreatedAt);
     }
 
     @Override

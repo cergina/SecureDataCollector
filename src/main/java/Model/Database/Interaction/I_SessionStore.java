@@ -15,11 +15,16 @@ public class I_SessionStore {
         if (ec.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_SessionStore is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_SessionStore.DBNAME_SESSION, T_SessionStore.DBNAME_DATA, T_SessionStore.DBNAME_CREATEDAT
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_SessionStore.DBTABLE_NAME + "(" +
-                        "Session, Data, CreatedAt" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?" +
@@ -43,7 +48,7 @@ public class I_SessionStore {
     }
 
     public static T_SessionStore retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

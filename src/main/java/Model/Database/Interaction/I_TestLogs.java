@@ -18,11 +18,16 @@ public class I_TestLogs {
         if (tt.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_TestLog is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_TestLog.DBNAME_EVENT, T_TestLog.DBNAME_BODY
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_TestLog.DBTABLE_NAME + "(" +
-                        "Event, Body" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?" +
@@ -45,7 +50,7 @@ public class I_TestLogs {
     }
 
     public static T_TestLog retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

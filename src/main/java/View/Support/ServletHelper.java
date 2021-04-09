@@ -14,13 +14,6 @@ public class ServletHelper {
         resp.sendError(code);
     }
 
-    public static void SendUnauthorized(HttpServletResponse resp) throws IOException {
-        resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-    }
-
-    public static void Send404(HttpServletResponse resp) throws IOException {
-        resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-    }
 
     public static String ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, IOException {
         // get body of request

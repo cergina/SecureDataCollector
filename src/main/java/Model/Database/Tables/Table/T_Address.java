@@ -79,21 +79,21 @@ public class T_Address extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_City) &&
-                Assurance.IsVarcharOk(a_Country) &&
-                Assurance.IsVarcharOk(a_HouseNO) &&
-                Assurance.IsVarcharOk(a_Street) &&
-                Assurance.IsVarcharOk(a_ZIP);
+        return Assurance.isVarcharOk(a_City) &&
+                Assurance.isVarcharOk(a_Country) &&
+                Assurance.isVarcharOk(a_HouseNO) &&
+                Assurance.isVarcharOk(a_Street) &&
+                Assurance.isVarcharOk(a_ZIP);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsFkOk(a_pk) &&
-                Assurance.IsVarcharOk(a_City) &&
-                Assurance.IsVarcharOk(a_Country) &&
-                Assurance.IsVarcharOk(a_HouseNO) &&
-                Assurance.IsVarcharOk(a_Street) &&
-                Assurance.IsVarcharOk(a_ZIP);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_City) &&
+                Assurance.isVarcharOk(a_Country) &&
+                Assurance.isVarcharOk(a_HouseNO) &&
+                Assurance.isVarcharOk(a_Street) &&
+                Assurance.isVarcharOk(a_ZIP);
     }
 
 
@@ -147,22 +147,22 @@ public class T_Address extends DbEntity implements DBTable, DBToHtml {
     public String toString() {
         StringBuilder str = new StringBuilder("[");
 
-        if (Assurance.IsFkOk(a_pk))
+        if (Assurance.isFkOk(a_pk))
             str.append("ID: " + a_pk + "; ");
 
-        if (Assurance.IsVarcharOk(a_Country))
+        if (Assurance.isVarcharOk(a_Country))
             str.append("Country " + a_Country + "; ");
 
-        if (Assurance.IsVarcharOk(a_Street))
+        if (Assurance.isVarcharOk(a_Street))
             str.append("Street " + a_Street + "; ");
 
-        if (Assurance.IsVarcharOk(a_HouseNO))
+        if (Assurance.isVarcharOk(a_HouseNO))
             str.append("HouseNO " + a_HouseNO + "; ");
 
-        if (Assurance.IsVarcharOk(a_City))
+        if (Assurance.isVarcharOk(a_City))
             str.append("City " + a_City + "; ");
 
-        if (Assurance.IsVarcharOk(a_ZIP))
+        if (Assurance.isVarcharOk(a_ZIP))
             str.append("ZIP " + a_ZIP + "; ");
 
         str.append("]");

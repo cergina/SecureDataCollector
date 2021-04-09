@@ -44,7 +44,7 @@ public class POST_CentralUnit_Create extends POST_Database_Interaction {
             dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

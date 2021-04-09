@@ -55,7 +55,7 @@ public class GENERIC_INFO extends GET_Database_Interaction {
             CustomLogs.InfoLog("Exited " + SERVLET_URL + ".", true);
 
         } catch (Exception e) {
-            ServletHelper.Send404(resp);
+            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }
