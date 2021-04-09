@@ -67,14 +67,14 @@ public class T_Hash extends DbEntity implements DBTable, DBToHtml {
     @Override
     public boolean IsTableOkForDatabaseEnter() {
         return Assurance.IsVarcharOk(a_Value) &&
-                Assurance.IsIntOk(a_UserID);
+                Assurance.IsFkOk(a_UserID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_Value) &&
-                Assurance.IsIntOk(a_UserID);
+                Assurance.IsFkOk(a_UserID);
     }
 
     @Override

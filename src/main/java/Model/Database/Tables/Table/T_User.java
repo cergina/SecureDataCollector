@@ -107,7 +107,7 @@ public class T_User extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_BeforeTitle) &&
                 Assurance.IsVarcharOk(a_FirstName) &&
                 Assurance.IsVarcharOk(a_MiddleName) &&

@@ -120,6 +120,7 @@ public class UC_FlatSummary {
         );
 
         Flat flat = new Flat(
+                t_flat.getA_pk(),
                 t_flat.getA_ApartmentNO(),
                 address,
                 centralUnit,

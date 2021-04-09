@@ -83,18 +83,18 @@ public class T_ControllerUnit extends DbEntity implements DBTable, DBToHtml {
         return Assurance.IsIntOk(a_Uid) &&
                 Assurance.IsVarcharOk(a_DipAddress) &&
                 Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsIntOk(a_CentralUnitID) &&
-                Assurance.IsIntOk(a_FlatID);
+                Assurance.IsFkOk(a_CentralUnitID) &&
+                Assurance.IsFkOk(a_FlatID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsIntOk(a_Uid) &&
                 Assurance.IsVarcharOk(a_DipAddress) &&
                 Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsIntOk(a_CentralUnitID) &&
-                Assurance.IsIntOk(a_FlatID);
+                Assurance.IsFkOk(a_CentralUnitID) &&
+                Assurance.IsFkOk(a_FlatID);
     }
 
     @Override

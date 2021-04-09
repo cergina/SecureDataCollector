@@ -193,4 +193,30 @@ public class I_ControllerUnit {
 
         return T_ControllerUnit.CreateFromRetrieved(rs.getInt(T_ControllerUnit.DBNAME_ID), dict);
     }
+
+    public static boolean checkIfExists(Connection conn, PreparedStatement ps, ResultSet rs, int uid, String dip, int flatId) throws SQLException{
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                        "WHERE Uid=? OR (FlatID=? AND DipAddress=?)"
+        );
+
+        int col = 0;
+        ps.setInt(++col, uid);
+        ps.setInt(++col, flatId);
+        ps.setString(++col, dip);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            return false;
+        }
+
+        return true;
+    }
 }

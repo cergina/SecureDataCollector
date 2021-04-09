@@ -15,10 +15,15 @@ import javax.servlet.annotation.WebListener;
 public class ThymeleafConfig implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent sce) {
-        TemplateEngine engine = templateEngine(sce.getServletContext());
-        ContextUtil.storeTemplateEngine(sce.getServletContext(), engine);
+        ServletContext sceInternal = sce.getServletContext();
+        sceInternal.setRequestCharacterEncoding("UTF-8");
+        sceInternal.setResponseCharacterEncoding("UTF-8");
 
-        ContextUtil.storeDbProvider(sce.getServletContext(), new DbProvider());
+        TemplateEngine engine = templateEngine(sceInternal);
+
+        ContextUtil.storeTemplateEngine(sceInternal, engine);
+
+        ContextUtil.storeDbProvider(sceInternal, new DbProvider());
     }
 
     public void contextDestroyed(ServletContextEvent sce) {

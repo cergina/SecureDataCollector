@@ -65,7 +65,7 @@ public class E_AccessPrivilege extends DbEntity implements DBEnum, DBToHtml {
 
     @Override
     public boolean WasEnumTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_Name);
     }
 

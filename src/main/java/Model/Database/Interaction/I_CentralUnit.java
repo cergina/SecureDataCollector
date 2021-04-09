@@ -96,6 +96,37 @@ public class I_CentralUnit {
         return tc;
     }
 
+    public static T_CentralUnit retrieveByAddressId(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException {
+        Assurance.IdCheck(addressId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE AddressID=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, addressId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_CentralUnit tc = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tc = I_CentralUnit.FillEntity(rs);
+        }
+
+        return tc;
+    }
+
     /*****
      *
      * @param conn

@@ -88,7 +88,7 @@ public class T_Address extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_City) &&
                 Assurance.IsVarcharOk(a_Country) &&
                 Assurance.IsVarcharOk(a_HouseNO) &&
@@ -147,7 +147,7 @@ public class T_Address extends DbEntity implements DBTable, DBToHtml {
     public String toString() {
         StringBuilder str = new StringBuilder("[");
 
-        if (Assurance.IsIntOk(a_pk))
+        if (Assurance.IsFkOk(a_pk))
             str.append("ID: " + a_pk + "; ");
 
         if (Assurance.IsVarcharOk(a_Country))

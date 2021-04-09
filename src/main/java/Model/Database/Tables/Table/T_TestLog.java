@@ -71,7 +71,7 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_Event) &&
                 Assurance.IsVarcharOk(a_Body);
     }

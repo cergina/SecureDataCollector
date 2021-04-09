@@ -86,17 +86,17 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
                 // This cant be known at this time
                 //Assurance.IsIntOk(a_AccumulatedValue) &&
                 Assurance.IsDateOk(a_MeasuredAt) &&
-                Assurance.IsIntOk(a_SensorID);
+                Assurance.IsFkOk(a_SensorID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsIntOk(a_Value) &&
                 Assurance.IsIntOk(a_RequestNo) &&
                 Assurance.IsIntOk(a_AccumulatedValue) &&
                 Assurance.IsDateOk(a_MeasuredAt) &&
-                Assurance.IsIntOk(a_SensorID);
+                Assurance.IsFkOk(a_SensorID);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     public String toString(){
         StringBuilder str = new StringBuilder("[");
 
-        if (Assurance.IsIntOk(a_pk))
+        if (Assurance.IsFkOk(a_pk))
             str.append(DBNAME_ID + ": " + a_pk + "; ");
 
         if (Assurance.IsIntOk(a_Value))

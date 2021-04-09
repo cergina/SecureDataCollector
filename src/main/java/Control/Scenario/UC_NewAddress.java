@@ -68,11 +68,13 @@ public class UC_NewAddress {
 
     private void insertAddressIntoDatabase(@NotNull final AddressCreation addressCreation) throws SQLException{
         Dictionary dict = new Hashtable();
+
         dict.put(T_Address.DBNAME_CITY, addressCreation.getCity());
         dict.put(T_Address.DBNAME_COUNTRY, addressCreation.getCountry());
         dict.put(T_Address.DBNAME_HOUSENO, addressCreation.getHouseNo());
         dict.put(T_Address.DBNAME_STREET, addressCreation.getStreet());
         dict.put(T_Address.DBNAME_ZIP, addressCreation.getZIP());
+
         I_Address.insert(db.getConn(), db.getPs(), T_Address.CreateFromScratch(dict));
     }
 

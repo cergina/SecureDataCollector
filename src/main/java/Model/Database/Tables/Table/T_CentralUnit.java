@@ -95,20 +95,20 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
                 Assurance.IsVarcharOk(a_SimNO) &&
                 Assurance.IsVarcharOk(a_Imei) &&
                 Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsIntOk(a_ProjectID) &&
-                Assurance.IsIntOk(a_AddressID);
+                Assurance.IsFkOk(a_ProjectID) &&
+                Assurance.IsFkOk(a_AddressID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsIntOk(a_Uid) &&
                 Assurance.IsVarcharOk(a_FriendlyName) &&
                 Assurance.IsVarcharOk(a_SimNO) &&
                 Assurance.IsVarcharOk(a_Imei) &&
                 Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsIntOk(a_ProjectID) &&
-                Assurance.IsIntOk(a_AddressID);
+                Assurance.IsFkOk(a_ProjectID) &&
+                Assurance.IsFkOk(a_AddressID);
     }
 
     @Override

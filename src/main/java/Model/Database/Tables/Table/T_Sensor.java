@@ -77,17 +77,17 @@ public class T_Sensor extends DbEntity implements DBTable, DBToHtml {
     public boolean IsTableOkForDatabaseEnter() {
         return Assurance.IsVarcharOk(a_Input) &&
                 Assurance.IsVarcharOk(a_Name) &&
-                Assurance.IsIntOk(a_SensorTypeID) &&
-                Assurance.IsIntOk(a_ControllerUnitID);
+                Assurance.IsFkOk(a_SensorTypeID) &&
+                Assurance.IsFkOk(a_ControllerUnitID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_Input) &&
                 Assurance.IsVarcharOk(a_Name) &&
-                Assurance.IsIntOk(a_SensorTypeID) &&
-                Assurance.IsIntOk(a_ControllerUnitID);
+                Assurance.IsFkOk(a_SensorTypeID) &&
+                Assurance.IsFkOk(a_ControllerUnitID);
     }
 
     @Override

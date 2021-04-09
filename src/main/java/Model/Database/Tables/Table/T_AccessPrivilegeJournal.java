@@ -88,18 +88,18 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     @Override
     public boolean IsTableOkForDatabaseEnter() {
         return Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsIntOk(a_UserID) &&
-                Assurance.IsIntOk(a_AccessPrivilegeID) &&
-                Assurance.IsIntOk(a_CreatedByUserID);
+                Assurance.IsFkOk(a_UserID) &&
+                Assurance.IsFkOk(a_AccessPrivilegeID) &&
+                Assurance.IsFkOk(a_CreatedByUserID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsIntOk(a_UserID) &&
-                Assurance.IsIntOk(a_AccessPrivilegeID) &&
-                Assurance.IsIntOk(a_CreatedByUserID);
+                Assurance.IsFkOk(a_UserID) &&
+                Assurance.IsFkOk(a_AccessPrivilegeID) &&
+                Assurance.IsFkOk(a_CreatedByUserID);
     }
 
     @Override

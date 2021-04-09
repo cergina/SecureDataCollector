@@ -84,7 +84,7 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsVarcharOk(a_Session) &&
                 Assurance.IsVarcharOk(a_Data) &&
                 Assurance.IsDateOk(a_CreatedAt);

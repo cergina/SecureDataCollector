@@ -74,7 +74,7 @@ public class T_Project_user extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
+        return Assurance.IsFkOk(a_pk) &&
                 Assurance.IsFkOk(a_ProjectID) &&
                 Assurance.IsFkOk(a_UserID);
     }
