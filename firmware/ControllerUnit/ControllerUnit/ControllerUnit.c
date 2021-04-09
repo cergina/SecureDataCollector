@@ -10,15 +10,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
+#include <stdint.h>
 #include <avr/sleep.h>
-
-#include <util/delay.h>
 
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
 #include "lib/uart.h"
 #include "lib/crc8.h"
+#include "lib/atmega-adc.h"
 
 #define F_CPU 16000000UL
 //define F_CPU 7372800UL
@@ -26,6 +26,8 @@
 #ifndef F_CPU
 #error "F_CPU undefined, please define CPU frequency in Hz in Makefile"
 #endif
+
+#include "util/delay.h"	
 
 #define UART_BAUD_RATE 9600
 
@@ -44,33 +46,10 @@
 
 #define CHUNK_LEN 50
 
-// Function to convert integer to character array
-char* convertIntegerToChar(int N)
-{
-	int m = N;
-	int digit = 0;
-	while (m) {
-		digit++;
-		m /= 10;
-	}
-	
-	char* arr;
-	char arr1[digit];
-	arr = (char*)malloc(digit);
-	int index = 0;
-	
-	while (N) {
-		arr1[++index] = N % 10 + '0';
-		N /= 10;
-	}
-	
-	int i;
-	for (i = 0; i < index; i++) {
-		arr[i] = arr1[index - i];
-	}
-	arr[i] = '\0';
-	return (char*)arr;
-}
+#define LOW_DOWN 0
+#define LOW_UP 164
+#define HIGH_DOWN 410
+#define HIGH_UP 1023
 
 void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	char * message = (char* )calloc(CHUNK_LEN, sizeof(char));
@@ -128,26 +107,25 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 
 /*
 void SendMessageToCEU_zwave(int mData, char controller_ID, short input_NO){
-	
 }*/
 
-#define TRIGPOINT 164
 
-unsigned int ReadAnalog(unsigned char chnl){
-	chnl = chnl & 0b00000111; // select adc channel between 0 to 7
-	ADMUX = 0x40;        //channel A0 selected
-	ADCSRA|=(1<<ADSC);   // start conversion
-	while(!(ADCSRA & (1<<ADIF)));   // wait for ADIF conversion complete return
-	ADCSRA|=(1<<ADIF);   // clear ADIF when conversion complete by writing 1
-	return (ADC); //return calculated ADC value
+ISR(PCIN13){
+	uint16_t adc_value = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
+	
+	char result[50];
+	sprintf(result, "%d", adc_value);
+	
+	uart_puts(result);
+	
+	if (adc_value >= HIGH_DOWN)
+	uart_puts("INT citam\r\n");
+	
+	if (adc_value <= LOW_UP)
+	uart_puts("INT necitam\r\n");
 }
 
-/*
-ISR (INT0_vect)          //External interrupt_zero ISR
-{
-	cnt_zero++;
-}
-*/
+
 
 int main(void)
 {	
@@ -158,20 +136,33 @@ int main(void)
 	
 	unsigned char UID = 0xAA; // for test purposes
 	
-	//ADMUX=(1<<REFS0);      // Selecting internal reference voltage
-	//ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);     // Enable ADC also set Prescaler as 128
-	
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.2 \r\n");
+	uart_puts("ControllerUnit  Build v0.6 \r\n");
 	
-	//Debug
-	_delay_ms(5000); 
-	SendMessageToCEU_uart(UID,1,10); // for test purpose
-	
-	int analogValue; 
+	//SendMessageToCEU_uart(UID,1,10); // for test purpose
 	
 	char checksum;
+	
+	while(1) {
+		_delay_ms(1000);
+		
+		uint16_t adc_value = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
+		
+		char result[50];
+		sprintf(result, "%d", adc_value);
+		
+		uart_puts(result);
+		
+		if (adc_value >= HIGH_DOWN)
+		  		uart_puts("citam\r\n");
+				  
+		if (adc_value <= LOW_UP)
+		  		uart_puts("necitam\r\n");
+	}
+	
+	
+	/*
 	while(1){
 		c = uart_getc();
 		if (c & UART_NO_DATA){
@@ -218,6 +209,6 @@ int main(void)
 			current_flag = NULL;
 			free(message);
 		}
-    }
+    }*/
 }
 
