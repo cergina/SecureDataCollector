@@ -93,46 +93,53 @@
                 </div>
 
 
-                <!-- zoznam controller jednotiek -->
-                <div th:each="controllerUnit: ${flat.controllerUnits}">
-                    <!-- info o controller jednotke -->
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">UID of controller</th>
-                            <th scope="col">DIP Address</th>
-                            <th scope="col">ZWAVE identifier</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td th:text="${controllerUnit.UID}"></td>
-                            <td th:text="${controllerUnit.dipAddress}"></td>
-                            <td th:text="${controllerUnit.zwave}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <!-- test only -->
 
-                    <!-- Senzory konkretneho controllera -->
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Input number</th>
-                            <th scope="col">Senzor name</th>
-                            <th scope="col">Measured value [30 days]</th>
-                            <th scope="col">Measured value [together]</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="sensor: ${controllerUnit.sensors}">
-                            <td th:text="${sensor.input}"></td>
-                            <td th:text="${sensor.name}"></td>
-                            <td th:text="${sensor.measuredLast30Days}"></td>
-                            <td th:text="${sensor.measuredTotal}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <main class="st_viewport">
+                    <div th:each="controllerUnit: ${flat.controllerUnits}">
+                        <div class="st_wrap_table" data-table_id="sensor">
+                            <!-- controller -->
+                            <header class="st_table_header">
+                                <h2>Controller</h2>
+                                <div class="st_row">
+                                    <div class="st_column _uid">UID of controller</div>
+                                    <div class="st_column _dip">DIP Address</div>
+                                    <div class="st_column _zwave">Zwave identifier</div>
+                                </div>
+                            </header>
+                            <div class="st_table" data-table_id="controller">
+                                <div class="st_row">
+                                    <div class="st_column _uid" th:text="${controllerUnit.UID}"></div>
+                                    <div class="st_column _dip" th:text="${controllerUnit.dipAddress}"></div>
+                                    <div class="st_column _zwave" th:text="${controllerUnit.zwave}"></div>
+                                </div>
+                            </div>
+                            <!-- senzory -->
+                            <div class="st_wrap_table" data-table_id="sensor">
+                                <header class="st_table_header">
+                                    <h2>Controller's sensors</h2>
+                                    <div class="st_row">
+                                        <div class="st_column _inputNum">Input number</div>
+                                        <div class="st_column _sensorName">Sensor name</div>
+                                        <div class="st_column _Meas30Days">Measured value [30 days]</div>
+                                        <div class="st_column _MeasuredAll">Measured value [Together]</div>
+                                    </div>
+                                </header>
+                                <div class="st_table">
+                                    <div class="st_row" th:each="sensor: ${controllerUnit.sensors}">
+                                        <div class="st_column _inputNum" th:text="${sensor.input}"></div>
+                                        <div class="st_column _sensorName" th:text="${sensor.name}"></div>
+                                        <div class="st_column _Meas30Days" th:text="${sensor.measuredLast30Days}"></div>
+                                        <div class="st_column _MeasuredAll" th:text="${sensor.measuredTotal}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                <!-- test only -->
+
             </div>
         </div>
     </div>
