@@ -38,7 +38,7 @@ public class POST_TestLog_Receive extends POST_Database_Interaction {
             dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

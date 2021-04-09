@@ -5,7 +5,6 @@ import Model.Database.Interaction.I_CommType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Enum.E_CommType;
-import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 
@@ -38,7 +37,7 @@ public class POST_CommType_Insert extends POST_Database_Interaction {
             dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

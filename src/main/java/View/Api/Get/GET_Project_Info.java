@@ -45,7 +45,8 @@ public class GET_Project_Info extends GET_Database_Interaction {
             writer.close();
         }
         catch (Exception e) {
-            ServletHelper.SendReturnCode(resp, HttpServletResponse.SC_NOT_FOUND);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+
             CustomLogs.Error(e.getMessage());
         }
     }

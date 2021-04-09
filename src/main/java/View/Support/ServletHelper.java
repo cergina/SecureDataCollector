@@ -10,11 +10,6 @@ import java.util.stream.Collectors;
 
 public class ServletHelper {
 
-    public static void SendReturnCode(HttpServletResponse resp, int code) throws  IOException {
-        resp.sendError(code);
-    }
-
-
     public static String ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, IOException {
         // get body of request
         String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));

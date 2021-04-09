@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class AdminOrUserServlet extends SessionServlet {
+public class AdminEditableUserViewableServlet extends SessionServlet {
     @Override
     public boolean checkPrivilege(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Request has no session

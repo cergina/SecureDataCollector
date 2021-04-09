@@ -4,7 +4,6 @@ import Control.ConfigClass;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
-import View.Support.ServletHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -22,7 +21,7 @@ public class AdminPageServlet extends AdminServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
         if (checkPrivilege(request, response) == false) {
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

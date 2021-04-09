@@ -7,8 +7,7 @@ import Model.Web.User;
 import Model.Web.thymeleaf.Flat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
-import View.Support.ServletAbstracts.AdminOrUserServlet;
-import View.Support.ServletHelper;
+import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
 import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -18,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "FlatInformationServlet", urlPatterns = FlatInformationServlet.SERVLET_URL)
-public class FlatInformationServlet extends AdminOrUserServlet {
+@WebServlet(name = "FlatInformationServlet", urlPatterns = FlatInformationViewableServlet.SERVLET_URL)
+public class FlatInformationViewableServlet extends AdminEditableUserViewableServlet {
     public static final String SERVLET_URL =  "/action/projects/flats";
     public static final String TEMPLATE_NAME = "views/privileged/my_flat.html";
 
@@ -32,7 +31,7 @@ public class FlatInformationServlet extends AdminOrUserServlet {
         // AUTHENTICATION
         super.doGet(request, response); // call always parent method first
         if (checkPrivilege(request, response) == false) {
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         boolean isAdmin = super.checkIfPrivilegeIsAdmin(request);
@@ -46,7 +45,7 @@ public class FlatInformationServlet extends AdminOrUserServlet {
             CustomLogs.Development("V requeste prisiel flat id: " + requestedFlatId);
         } catch (NumberFormatException nfe) {
             CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -60,7 +59,7 @@ public class FlatInformationServlet extends AdminOrUserServlet {
         UC_FlatSummary uc = new UC_FlatSummary(getDb());
         if (uc.doesUserHaveRightToSeeProjectBelongingToFlat(user.getUserID(), requestedFlatId) == false) {
             if (isAdmin == false) {
-                ServletHelper.SendReturnCode(response, HttpServletResponse.SC_FORBIDDEN);
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
         }
@@ -68,7 +67,7 @@ public class FlatInformationServlet extends AdminOrUserServlet {
         /* this will not happen - then why is it here */
         Flat flat = uc.getFlatSummary(requestedFlatId);
         if (flat == null) {
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         context.setVariable(VARIABLE_FLAT, flat);
