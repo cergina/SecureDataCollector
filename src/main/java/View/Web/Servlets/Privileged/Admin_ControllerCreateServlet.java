@@ -1,6 +1,7 @@
 package View.Web.Servlets.Privileged;
 
 import Control.Scenario.UC_Controller;
+import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import Model.Web.Specific.ControllerCreation;
@@ -24,12 +25,26 @@ public class Admin_ControllerCreateServlet extends AdminServlet {
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
-        ControllerCreation controllerCreation = (ControllerCreation) PrettyObject.parse(ServletHelper.RequestBody(request), ControllerCreation.class);
 
-        final JsonResponse jsonResponse = (new UC_Controller(getDb()).createControllerUnit(controllerCreation));
-        response.setStatus(jsonResponse.getStatus());
+        JsonResponse jsonResponse = new JsonResponse();
 
-        writer.println(jsonResponse.toString());
-        writer.close();
+        try {
+            // exception during parsing occured when UID wasnt a number
+            ControllerCreation controllerCreation = (ControllerCreation) PrettyObject.parse(ServletHelper.RequestBody(request), ControllerCreation.class);
+
+            // Execute creation
+            jsonResponse = (new UC_Controller(getDb()).createControllerUnit(controllerCreation));
+
+            // Confirm to user
+            response.setStatus(jsonResponse.getStatus());
+        } catch (Exception e) {
+            CustomLogs.Error(e.getMessage());
+
+            jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            jsonResponse.setMessage("UID can be only a number.");
+        } finally {
+            writer.println(jsonResponse.toString());
+            writer.close();
+        }
     }
 }

@@ -33,7 +33,6 @@ public class UC_Controller {
 
         try {
             if (isDataValid(creation) == false) {
-                jsonResponse.setMessage("Some required fields are missing.");
                 throw new CreationException("Some required fields are missing.");
             }
 
@@ -48,6 +47,10 @@ public class UC_Controller {
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("Controller Unit created.");
 
+        } catch (NumberFormatException ne) {
+            db.afterExceptionInSqlExecution(ne);
+            jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            jsonResponse.setMessage("UID can be only a number.");
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -66,20 +69,20 @@ public class UC_Controller {
     }
 
 
-    private boolean isDataValid(@NotNull final ControllerCreation creation) {
-
+    private boolean isDataValid(@NotNull final ControllerCreation creation) throws NumberFormatException{
         // dip address can only be between min 1 and max 255
-        try {
-            int temp = Integer.parseInt(creation.getDipAddress());
-            if (temp < 1 || temp > 255)
-                return false;
-
-        } catch (NumberFormatException e) {
+        int temp = Integer.parseInt(creation.getDipAddress());
+        if (temp < 1 || temp > 255)
             return false;
-        }
 
-        if (creation == null || creation.getUid() < 0 || creation.getZwave().equals("") ||
-            creation.getDipAddress().equals("") || Assurance.isFkOk(creation.getFlatId()) == false)
+        // just to see if its an integer it will throw an exception
+        temp = creation.getUid();
+        if (temp < 0)
+            return false;
+
+        // other fields cannot be empty
+        if (creation == null || creation.getZwave().equals("") ||
+                creation.getDipAddress().equals("") || Assurance.isFkOk(creation.getFlatId()) == false)
             return false;
 
         return true;
