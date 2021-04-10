@@ -190,6 +190,7 @@ function createControllerUnitForThisFlat() {
                 $("#controller-dip_address").val('');
                 $("#controller-zwave").val('');
                 alert('Vytvorený nový controller unit.');
+                window.location.reload();
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
