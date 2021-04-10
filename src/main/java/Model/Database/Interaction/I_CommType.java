@@ -76,7 +76,7 @@ public class I_CommType {
     }
 
     public static E_CommType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
-        Assurance.isVarcharOk(name);
+        Assurance.varcharCheck(name);
 
         // SQL Definition
         ps = conn.prepareStatement(

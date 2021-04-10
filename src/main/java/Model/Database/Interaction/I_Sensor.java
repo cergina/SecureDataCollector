@@ -90,7 +90,7 @@ public class I_Sensor {
     ///////////////////////
 
     public static int retrieve_ID_by_SensorIO(Connection conn, PreparedStatement ps, ResultSet rs, String sensorIO) throws SQLException {
-        Assurance.isVarcharOk(sensorIO);
+        Assurance.varcharCheck(sensorIO);
 
         // SQL Definition
         ps = conn.prepareStatement(

@@ -95,7 +95,7 @@ public class I_Project {
     }
 
     public static T_Project retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String projectName) throws SQLException {
-        Assurance.isVarcharOk(projectName);
+        Assurance.varcharCheck(projectName);
 
         // SQL Definition
         ps = conn.prepareStatement(

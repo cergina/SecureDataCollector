@@ -86,7 +86,7 @@ public class I_User {
     }
 
     public static T_User retrieveByEmail(Connection conn, PreparedStatement ps, ResultSet rs, String email) throws SQLException {
-        Assurance.isVarcharOk(email);
+        Assurance.varcharCheck(email);
 
         // SQL Definition
         ps = conn.prepareStatement(

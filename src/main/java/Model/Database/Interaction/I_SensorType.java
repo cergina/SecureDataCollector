@@ -81,7 +81,7 @@ public class I_SensorType {
     }
 
     public static E_SensorType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
-        Assurance.isVarcharOk(name);
+        Assurance.varcharCheck(name);
 
         // SQL Definition
         ps = conn.prepareStatement(
