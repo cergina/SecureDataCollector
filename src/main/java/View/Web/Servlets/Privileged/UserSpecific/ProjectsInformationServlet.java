@@ -8,7 +8,6 @@ import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.SessionServlet;
-import View.Support.ServletHelper;
 import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -28,7 +27,7 @@ public class ProjectsInformationServlet extends SessionServlet {
         // AUTHENTICATION
         super.doGet(request, response); // call always parent method first
         if (checkPrivilege(request, response) == false) {
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

@@ -70,7 +70,8 @@ public class UC_FlatSummary {
         db.beforeSqlExecution(false);
 
         T_Flat t_flat = getFlatById(flatId);
-        if (t_flat == null) return null;
+        if (t_flat == null)
+            return null;
 
         List<T_ControllerUnit> t_controllerUnits = getAllControllersForFlat(flatId);
         List<ControllerUnit> controllerUnits = new ArrayList<>();
@@ -120,6 +121,7 @@ public class UC_FlatSummary {
         );
 
         Flat flat = new Flat(
+                t_flat.getA_pk(),
                 t_flat.getA_ApartmentNO(),
                 address,
                 centralUnit,
@@ -198,6 +200,12 @@ public class UC_FlatSummary {
 
         try {
             T_Measurement t_measurement = I_Measurements.retrieveNewest(db.getConn(), db.getPs(), db.getRs(), sensorId);
+
+            // in case no measurement found for sensor Id
+            if (t_measurement == null) {
+                return value;
+            }
+
             value = t_measurement.getA_AccumulatedValue();
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());

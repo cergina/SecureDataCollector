@@ -77,17 +77,17 @@ public class T_FlatOwner_flat extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsFkOk(a_FlatOwnerID) &&
-                Assurance.IsFkOk(a_FlatID);
+        return Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isFkOk(a_FlatOwnerID) &&
+                Assurance.isFkOk(a_FlatID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsFkOk(a_FlatOwnerID) &&
-                Assurance.IsFkOk(a_FlatID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isFkOk(a_FlatOwnerID) &&
+                Assurance.isFkOk(a_FlatID);
     }
 
     @Override

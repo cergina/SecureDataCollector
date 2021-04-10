@@ -70,17 +70,17 @@ public class E_SensorType extends DbEntity implements DBEnum, DBToHtml {
     // Interface specific
     @Override
     public boolean IsEnumTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_Name) &&
-                Assurance.IsVarcharOk(a_MeasuredIn) &&
-                Assurance.IsFkOk(a_CommTypeID);
+        return Assurance.isVarcharOk(a_Name) &&
+                Assurance.isVarcharOk(a_MeasuredIn) &&
+                Assurance.isFkOk(a_CommTypeID);
     }
 
     @Override
     public boolean WasEnumTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsVarcharOk(a_Name) &&
-                Assurance.IsVarcharOk(a_MeasuredIn) &&
-                Assurance.IsFkOk(a_CommTypeID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_Name) &&
+                Assurance.isVarcharOk(a_MeasuredIn) &&
+                Assurance.isFkOk(a_CommTypeID);
     }
 
     @Override

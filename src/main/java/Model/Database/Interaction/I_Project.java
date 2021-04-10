@@ -27,11 +27,16 @@ public class I_Project {
         if (tp.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Project is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Project.DBNAME_NAME, T_Project.DBNAME_CreatedAt
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Project.DBTABLE_NAME + "(" +
-                        "Name, CreatedAt" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, CURDATE()" +
@@ -59,7 +64,7 @@ public class I_Project {
      * @throws SQLException
      */
     public static T_Project retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -90,7 +95,7 @@ public class I_Project {
     }
 
     public static T_Project retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String projectName) throws SQLException {
-        Assurance.IsVarcharOk(projectName);
+        Assurance.varcharCheck(projectName);
 
         // SQL Definition
         ps = conn.prepareStatement(

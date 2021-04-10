@@ -32,7 +32,7 @@ public class Admin_SensorTypeCreateServlet extends AdminServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
         if (checkPrivilege(request, response) == false) {
-            ServletHelper.SendReturnCode(response, HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

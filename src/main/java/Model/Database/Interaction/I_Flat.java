@@ -18,11 +18,16 @@ public class I_Flat {
         if (tf.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Flat is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Flat.DBNAME_APARTMENTNO, T_Flat.DBNAME_ADDRESS_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Flat.DBTABLE_NAME + "(" +
-                        "ApartmentNO, AddressID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?" +
@@ -44,7 +49,7 @@ public class I_Flat {
     }
 
     public static T_Flat retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

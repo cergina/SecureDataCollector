@@ -7,12 +7,14 @@ import java.util.List;
  */
 public class Flat {
 
+    public int id;
     public String apartmentNO;
     public Address address;
     public CentralUnit centralUnit;
     public List<ControllerUnit> controllerUnits;
 
-    public Flat(String apartmentNO, Address address, CentralUnit centralUnit, List<ControllerUnit> controllerUnits) {
+    public Flat(int id, String apartmentNO, Address address, CentralUnit centralUnit, List<ControllerUnit> controllerUnits) {
+        this.id = id;
         this.apartmentNO = apartmentNO;
         this.address = address;
         this.centralUnit = centralUnit;

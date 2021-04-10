@@ -68,15 +68,15 @@ public class T_Project_user extends DbEntity implements DBTable, DBToHtml {
 
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsFkOk(a_ProjectID) &&
-                Assurance.IsFkOk(a_UserID);
+        return Assurance.isFkOk(a_ProjectID) &&
+                Assurance.isFkOk(a_UserID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsFkOk(a_ProjectID) &&
-                Assurance.IsFkOk(a_UserID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isFkOk(a_ProjectID) &&
+                Assurance.isFkOk(a_UserID);
     }
 
 

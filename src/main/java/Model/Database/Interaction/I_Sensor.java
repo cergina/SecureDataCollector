@@ -21,11 +21,16 @@ public class I_Sensor {
         if (ts.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Sensor is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Sensor.DBNAME_INPUT, T_Sensor.DBNAME_NAME, T_Sensor.DBNAME_SENSORTYPE_ID, T_Sensor.DBNAME_CONTROLLERUNIT_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Sensor.DBTABLE_NAME + "(" +
-                        "Input, Name, SensorTypeID, ControllerUnitID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?" +
@@ -50,7 +55,7 @@ public class I_Sensor {
     }
 
     public static T_Sensor retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -85,7 +90,7 @@ public class I_Sensor {
     ///////////////////////
 
     public static int retrieve_ID_by_SensorIO(Connection conn, PreparedStatement ps, ResultSet rs, String sensorIO) throws SQLException {
-        Assurance.IsVarcharOk(sensorIO);
+        Assurance.varcharCheck(sensorIO);
 
         // SQL Definition
         ps = conn.prepareStatement(

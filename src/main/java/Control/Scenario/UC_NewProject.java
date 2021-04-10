@@ -11,7 +11,7 @@ import Model.Database.Tables.Table.T_User;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.ProjectCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;
-import View.Support.CustomExceptions.ProjectCreationException;
+import View.Support.CustomExceptions.CreationException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,14 +47,14 @@ public class UC_NewProject {
             // check whether all emails provided are already user's
             if (isProjectNameAndEmailsValid(projectCreation) == false) {
                 jsonResponse.setMessage("Some fields are incorrect or some required are missing.");
-                throw new ProjectCreationException("Some fields are incorrect or some required are missing.");
+                throw new CreationException("Some fields are incorrect or some required are missing.");
             }
 
             // Get all user's that need addition to Project_User table -- check if they exist
             List<T_User> listOfUsers = getAllUsersThatWillBeOwners(projectCreation);
             if (listOfUsers == null) {
                 jsonResponse.setMessage("All e-mails have to be already registered in the project in advance.");
-                throw new ProjectCreationException("All e-mails have to be already registered in the project in advance.");
+                throw new CreationException("All e-mails have to be already registered in the project in advance.");
             }
 
             // Create a new project and project_user connections
@@ -65,7 +65,7 @@ public class UC_NewProject {
 
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("Project created.");
-        } catch (ProjectCreationException e) {
+        } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 

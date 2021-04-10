@@ -24,8 +24,8 @@ public class GeneralAccessibility {
      * @throws SQLException
      */
     public static T_Project_user doesUserHaveRightToAccessFlat(Connection conn, PreparedStatement ps, ResultSet rs, int userId, int flatId) throws SQLException {
-        Assurance.IdCheck(userId);
-        Assurance.IdCheck(flatId);
+        Assurance.idCheck(userId);
+        Assurance.idCheck(flatId);
 
         // SELECT * FROM dcs.project_user WHERE dcs.project_user.ProjectID=(SELECT dcs.centralunit.ProjectID FROM dcs.centralunit WHERE dcs.centralunit.AddressID=(SELECT dcs.flat.AddressID FROM dcs.flat WHERE dcs.flat.ID=1)) AND dcs.project_user.UserID=1;
         // SQL Definition

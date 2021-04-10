@@ -18,11 +18,16 @@ public class I_Hash {
         if (th.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Hash is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Hash.DBNAME_VALUE, T_Hash.DBNAME_USER_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Hash.DBTABLE_NAME + "(" +
-                        "Value, UserID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?" +
@@ -44,7 +49,7 @@ public class I_Hash {
     }
 
     public static T_Hash retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -75,7 +80,7 @@ public class I_Hash {
     }
 
     public static T_Hash retrieveCode(Connection conn, PreparedStatement ps, ResultSet rs, int userID) throws SQLException {
-        Assurance.IdCheck(userID);
+        Assurance.idCheck(userID);
 
         ps = conn.prepareStatement(
                 "SELECT * FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? GROUP BY UserID ORDER BY ID ASC LIMIT 1"
@@ -102,7 +107,7 @@ public class I_Hash {
     }
 
     public static T_Hash retrieveLatest(Connection conn, PreparedStatement ps, ResultSet rs, int userID) throws SQLException {
-        Assurance.IdCheck(userID);
+        Assurance.idCheck(userID);
 
         ps = conn.prepareStatement(
                 "SELECT * FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? ORDER BY ID DESC LIMIT 1"
@@ -128,7 +133,7 @@ public class I_Hash {
     }
 
     public static int countHashesForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userID) throws SQLException {
-        Assurance.IdCheck(userID);
+        Assurance.idCheck(userID);
 
         ps = conn.prepareStatement(
                 "SELECT COUNT(*) AS numHashes FROM " + T_Hash.DBTABLE_NAME + " WHERE UserID=? GROUP BY UserID"

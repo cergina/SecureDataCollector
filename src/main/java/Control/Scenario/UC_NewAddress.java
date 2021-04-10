@@ -6,8 +6,8 @@ import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Address;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.AddressCreation;
-import View.Support.CustomExceptions.AddressCreationException;
 import View.Support.CustomExceptions.AlreadyExistsException;
+import View.Support.CustomExceptions.CreationException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -29,7 +29,7 @@ public class UC_NewAddress {
         try {
             if (isDataValid(addressCreation) == false) {
                 jsonResponse.setMessage("Some required fields are missing.");
-                throw new AddressCreationException("Some required fields are missing.");
+                throw new CreationException("Some required fields are missing.");
             }
 
             if(checkIfAddressExists(addressCreation.getStreet(), addressCreation.getHouseNo(), addressCreation.getCity(), addressCreation.getZIP(), addressCreation.getCountry())){
@@ -45,7 +45,7 @@ public class UC_NewAddress {
 
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
-        } catch (AddressCreationException e) {
+        } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (AlreadyExistsException e) {
@@ -68,11 +68,13 @@ public class UC_NewAddress {
 
     private void insertAddressIntoDatabase(@NotNull final AddressCreation addressCreation) throws SQLException{
         Dictionary dict = new Hashtable();
+
         dict.put(T_Address.DBNAME_CITY, addressCreation.getCity());
         dict.put(T_Address.DBNAME_COUNTRY, addressCreation.getCountry());
         dict.put(T_Address.DBNAME_HOUSENO, addressCreation.getHouseNo());
         dict.put(T_Address.DBNAME_STREET, addressCreation.getStreet());
         dict.put(T_Address.DBNAME_ZIP, addressCreation.getZIP());
+
         I_Address.insert(db.getConn(), db.getPs(), T_Address.CreateFromScratch(dict));
     }
 

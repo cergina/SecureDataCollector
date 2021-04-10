@@ -7,8 +7,8 @@ import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
+import View.Support.CustomExceptions.CreationException;
 import View.Support.CustomExceptions.InvalidOperationException;
-import View.Support.CustomExceptions.UserCreationException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +62,7 @@ public class UC_Auth {
 
             if (EmailValidator.getInstance().isValid(auth.getUser().getEmail()) == false) {
                 jsonResponse.setMessage("Presented email is not valid for use.");
-                throw new UserCreationException("Presented email is not valid for use.");
+                throw new CreationException("Presented email is not valid for use.");
             }
 
             if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
@@ -134,7 +134,7 @@ public class UC_Auth {
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
-        } catch (UserCreationException e) {
+        } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);

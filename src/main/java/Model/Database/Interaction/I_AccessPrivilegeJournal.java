@@ -15,11 +15,19 @@ public class I_AccessPrivilegeJournal {
         if (tapj.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_AccessPrivilegeJournal is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                T_AccessPrivilegeJournal.DBNAME_CREATED_AT,
+                T_AccessPrivilegeJournal.DBNAME_USER_ID,
+                T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID,
+                T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID
+        );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_AccessPrivilegeJournal.DBTABLE_NAME + "(" +
-                        "CreatedAt, UserID, AccessPrivilegeID, CreatedByUserID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?" +
@@ -43,7 +51,7 @@ public class I_AccessPrivilegeJournal {
     }
 
     public static T_AccessPrivilegeJournal retrieveValidForUser(Connection conn, PreparedStatement ps, ResultSet rs, int userId) throws SQLException {
-        Assurance.IdCheck(userId);
+        Assurance.idCheck(userId);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -77,7 +85,7 @@ public class I_AccessPrivilegeJournal {
         by specific Id, probably will not be used
     */
     public static T_AccessPrivilegeJournal retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

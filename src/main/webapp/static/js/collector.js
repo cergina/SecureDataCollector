@@ -40,6 +40,7 @@ function buildProjectCreation() {
     };
 }
 
+
 function buildAddressCreation() {
     return {
         street: $("#street").val(),
@@ -66,6 +67,15 @@ function buildSensorType() {
     };
 }
 
+// build JSON object by Api spec: ControllerCreation
+function buildControllerCreation() {
+    return {
+        uid: $("#controller-uid").val(),
+        dipAddress: $("#controller-dip_address").val(),
+        zwave: $("#controller-zwave").val(),
+        flatId: $("#controller-flat-id").val()
+    };
+}
 
 // POST calls
 
@@ -116,6 +126,7 @@ function registerUser() {
             statusCode: {
                 200: function(response) {
                     // TODO thank user for registration
+                    $(':input').val('');
                     alert('Thank you for your registration\n' + response.message)
                 },
                 400: function(jqXHR) {
@@ -165,6 +176,38 @@ function loginUser() {
 }
 
 // CREATING STUFF
+// Create new controller unit from inside of flat
+function createControllerUnitForThisFlat() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/controllers/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildControllerCreation()),
+        statusCode: {
+            201: function(response) {
+                $("#controller-uid").val('');
+                $("#controller-dip_address").val('');
+                $("#controller-zwave").val('');
+                alert('Vytvorený nový controller unit.');
+                window.location.reload();
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
 // Create new project from data acquired from another js function
 function createProject() {
     $.ajax({
@@ -294,6 +337,44 @@ function goToFlatId1() {
 // Login user
 function goToSeeYourProjects() {
     $(location).attr('href', $SCRIPT_ROOT + '/action/projects');
+}
+
+
+function showVisibilityOfAdditionElement() {
+    switchVisibilityOfAdditionElement();
+
+    switchToggles();
+}
+
+function hideVisibilityOfAdditionElement() {
+    switchVisibilityOfAdditionElement();
+
+    switchToggles();
+}
+
+function switchVisibilityOfAdditionElement() {
+    var x = document.getElementById("addition-toggle");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+function switchToggles() {
+    var x = document.getElementById("toggle-button-addition-show");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+
+    var x = document.getElementById("toggle-button-addition-hide");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
 }
 
 $(function() {

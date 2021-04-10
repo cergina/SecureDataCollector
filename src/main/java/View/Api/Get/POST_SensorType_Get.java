@@ -39,7 +39,7 @@ public class POST_SensorType_Get extends POST_Database_Interaction {
             out.flush();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

@@ -39,7 +39,7 @@ public class POST_Measurements_Get extends POST_Database_Interaction {
             out.flush();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

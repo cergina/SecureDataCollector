@@ -18,11 +18,16 @@ public class I_LoginLog {
         if (ec.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_LoginLog is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_LoginLog.DBNAME_LOGGEDAT, T_LoginLog.DBNAME_SRCIP, T_LoginLog.DBNAME_USERID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_LoginLog.DBTABLE_NAME + "(" +
-                        "LoggedAt, SrcIp, UserID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?" +
@@ -45,7 +50,7 @@ public class I_LoginLog {
     }
 
     public static T_LoginLog retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(

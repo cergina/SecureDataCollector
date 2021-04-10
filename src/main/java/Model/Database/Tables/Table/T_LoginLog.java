@@ -71,17 +71,17 @@ public class T_LoginLog extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsDateOk(a_LoggedAt) &&
-                Assurance.IsVarcharOk(a_SrcIp) &&
-                Assurance.IsIntOk(a_UserId);
+        return Assurance.isDateOk(a_LoggedAt) &&
+                Assurance.isVarcharOk(a_SrcIp) &&
+                Assurance.isFkOk(a_UserId);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsDateOk(a_LoggedAt) &&
-                Assurance.IsVarcharOk(a_SrcIp) &&
-                Assurance.IsIntOk(a_UserId);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isDateOk(a_LoggedAt) &&
+                Assurance.isVarcharOk(a_SrcIp) &&
+                Assurance.isFkOk(a_UserId);
     }
 
     @Override

@@ -60,13 +60,13 @@ public class E_CommType extends DbEntity implements DBEnum, DBToHtml {
     // Interface specific
     @Override
     public boolean IsEnumTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_Name);
+        return Assurance.isVarcharOk(a_Name);
     }
 
     @Override
     public boolean WasEnumTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsVarcharOk(a_Name);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_Name);
     }
 
     @Override

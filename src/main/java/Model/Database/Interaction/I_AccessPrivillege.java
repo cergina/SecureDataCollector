@@ -18,11 +18,16 @@ public class I_AccessPrivillege {
         if (ec.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_AccessPrivilege is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    E_AccessPrivilege.DBNAME_NAME
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         E_AccessPrivilege.DBTABLE_NAME + "(" +
-                        "Name" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?" +
@@ -43,7 +48,7 @@ public class I_AccessPrivillege {
     }
 
     public static E_AccessPrivilege retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
