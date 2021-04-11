@@ -1,8 +1,9 @@
 /*
- * CentralUnit.cpp
- *
- * Created: 26. 2. 2021 18:55:53
- * Author: Tomas
+ * CentralUnit.c
+ * Project: DCS
+ * Version: 0.3
+ * Controller: ATmega128
+ * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */
 
 #include <stdio.h>
@@ -92,6 +93,23 @@ uint8_t ProcessQMessage(char *msg)
 	return 0;
 }
 
+uint8_t readDipAddress()
+{
+	// set input mode (port C)			ATmega128	ATmega2560
+	DDRC &= ~(1<<DDC0); //DIP1 LSB		phy_35		phy_53 ard_37
+	DDRC &= ~(1<<DDC1); //DIP2			phy_36		phy_54 ard_36
+	DDRC &= ~(1<<DDC2); //DIP3			phy_37		phy_55 ard_35
+	DDRC &= ~(1<<DDC3); //DIP4			phy_38		phy_56 ard_34
+	DDRC &= ~(1<<DDC4); //DIP5			phy_39		phy_57 ard_33
+	DDRC &= ~(1<<DDC5); //DIP6			phy_40		phy_58 ard_32
+	DDRC &= ~(1<<DDC6); //DIP7			phy_41		phy_59 ard_31
+	DDRC &= ~(1<<DDC7); //DIP8 MSB		phy_42		phy_60 ard_30	
+	
+	uint8_t address = PINC;	//DIP1-8 
+	address ^= 0xFF;		//to positive logic	
+	return address;
+}
+
 //Parse Datov� ?as? paketu a vytiahne z nej d�ta pre spracovanie
 void ParsePacket(char *message)
 {
@@ -109,6 +127,7 @@ int main(void)
 	unsigned short current_flag = NULL;
 	uint8_t current_proto = PROTO_CEQ;
 	unsigned int index = 0;
+	unsigned char UID = readDipAddress(); // only at startup!
 
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	uart1_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
@@ -116,8 +135,19 @@ int main(void)
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
-	uart_puts("CentralUnit  Build v0.2 \r\n");
+	uart_puts("CentralUnit  Build v0.3 \r\n");
+	
+	// #region DIP address print
+	uart_puts("DIP address is: ");
+	message = malloc(3);
+	sprintf(message,"%02X\n",UID);
+	uart_puts(message);
+	free(message);
+	// #endregion
+	
 	uart_putc(current_proto);
+	uart_putc('\n');
+	
 	char checksum;
 	while (1)
 	{
