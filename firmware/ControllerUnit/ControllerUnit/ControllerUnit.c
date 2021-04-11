@@ -1,9 +1,9 @@
 /*
  * ControllerUnit.c
  * Project: DCS
- * Version: 0.2
+ * Version: 0.47
  * Controller: ATmega8 
- * Author: Bc. Tomas Zátka
+ * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */ 
 
 #include <stdio.h>
@@ -61,6 +61,25 @@ ISR(PCINT1_vect){
 	ADC5_readFlag = 1;
 }
 
+uint8_t readDipAddress()
+{
+	// set input mode
+	DDRD &= ~(1<<DDD2); //DIP1 LSB
+	DDRD &= ~(1<<DDD3); //DIP2
+	DDRD &= ~(1<<DDD4); //DIP3
+	DDRD &= ~(1<<DDD5); //DIP4
+	DDRD &= ~(1<<DDD6); //DIP5
+	DDRD &= ~(1<<DDD7); //DIP6
+	DDRB &= ~(1<<DDB0); //DIP7
+	DDRB &= ~(1<<DDB1); //DIP8 MSB
+	
+	uint8_t address = PIND>>2;		//DIP1-6
+	address |= (PINB & 0x03)<<6;	//DIP7-8
+	address ^= 0xFF;				//to positive logic
+	
+	return address;
+}
+
 void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	char * message = (char* )calloc(CHUNK_LEN, sizeof(char));
 	int mlen = 0; // 1B of stx + 2B of length
@@ -71,7 +90,7 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	message[++mlen] = 0;
 	
 	//DATA PART (in ascii)	
-	//Identifikátor kontroleru
+	//Identifikï¿½tor kontroleru
 	char temp[4];
 	sprintf(temp,"%x",UID);
 	message[++mlen] = temp[0];
@@ -126,14 +145,22 @@ int main(void)
 	unsigned short current_flag = NULL;
 	unsigned int index = 0;
 	char checksum;
-	unsigned char UID = 0xAA; // for test purposes
+	unsigned char UID = readDipAddress(); // only at startup!
 	
 	PCICR |= (1 << PCIE1);     // set PCIE1 to enable PCMSK1 scan
 	PCMSK1 |= (1 << PCINT13);   // set PCINT13 to trigger an interrupt on state change
 
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.46 \r\n");
+	uart_puts("ControllerUnit  Build v0.47 \r\n");
+	
+	// #region DIP address print
+	uart_puts("DIP address is: ");
+	message = malloc(3);
+	sprintf(message,"%02X\n",UID);
+	uart_puts(message);
+	free(message);
+	// #endregion
 	
 	//Init value ADC5 - PCINT13
 	ADC5_lastValue = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
