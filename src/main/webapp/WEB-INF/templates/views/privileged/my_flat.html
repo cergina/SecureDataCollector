@@ -72,16 +72,7 @@
                                 </div>
                             </div>
                             <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
-                            <div class="grid regpadding" hidden>
-                                <div class="row justify-content-center rowinrightcol">
-                                    <div class="regpaddingtopbottom">
-                                        <label for="controller-flat-id">FLAT ID</label>
-                                        <div><select class="min-width-300" id="controller-flat-id">
-                                            <option th:default="${flat.id}" th:value="${flat.id}" th:text="${'id je: ' + flat.id}"></option>
-                                        </select></div>
-                                    </div>
-                                </div>
-                            </div>
+                            <input type="hidden" th:value="${flat.id}" id="controller-flat-id">
                             <!-- BUTTONS FOR ADDITION -->
                             <div class="row justify-content-center rowinrightcol">
                                 <div class="regpaddingbottom padding-top-10">

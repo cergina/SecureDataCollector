@@ -339,6 +339,12 @@ function goToSeeYourProjects() {
     $(location).attr('href', $SCRIPT_ROOT + '/action/projects');
 }
 
+// used in index to visit flat with id in the box
+function accessFlatWithId() {
+    var idToVisit = idToVisit = $("#access-flatId").val();
+    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
+}
+
 
 function showVisibilityOfAdditionElement() {
     switchVisibilityOfAdditionElement();

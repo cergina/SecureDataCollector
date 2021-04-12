@@ -6,6 +6,7 @@ import Model.Database.Tables.Table.T_Address;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
+import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
 import View.Support.ServletAbstracts.SessionServlet;
 import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
@@ -19,9 +20,11 @@ import java.util.List;
 
 // TODO to be replaced with info about registrated user
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
-public class IndexServlet extends SessionServlet {
+public class IndexServlet extends AdminEditableUserViewableServlet {
     public static final String SERVLET_URL =  "/index";
     public static final String TEMPLATE_NAME = "index.html";
+
+    private static final String VARIABLE_ISADMIN = "isAdmin";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -30,6 +33,8 @@ public class IndexServlet extends SessionServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
+        boolean isAdmin = super.checkIfPrivilegeIsAdmin(request);
 
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
@@ -63,6 +68,8 @@ public class IndexServlet extends SessionServlet {
         context.setVariable(T_Address.DBNAME_STREET, "" + arr.get(0).getA_Street());
         context.setVariable(T_Address.DBNAME_HOUSENO, "" + arr.get(0).getA_HouseNO());
         context.setVariable(T_Address.DBNAME_ZIP, "" + arr.get(0).getA_ZIP());
+
+        context.setVariable(VARIABLE_ISADMIN, isAdmin);
 
         // part 4
         engine.process(TEMPLATE_NAME, context, response.getWriter());

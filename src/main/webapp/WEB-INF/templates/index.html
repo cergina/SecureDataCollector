@@ -2,38 +2,179 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
-
-    <h1>Welcome <span th:text="${FirstName}"></span></h1>
-
-    <header id="header"></header>
-    <div id="content">
-
-        <p>Your name: <span th:text="${BeforeTitle}"></span> <span th:text="${FirstName}"></span> <span th:text="${MiddleName}"></span> <span th:text="${LastName}"></span></p>
-        <p>You're logged in under email: <span th:text="${Email}"></span></p>
-        <p>We can contact you at: <span th:text="${Phone}"></span></p>
-        <p>Your id: [will not be shown]<span th:text="${loggedId}"></span>/p>
-        <p>Where you live: <span th:text="${logged_address}"></span></p>
-
-        <p>City: <span th:text="${City}"></span></p>
-        <p>Street: <span th:text="${Street}"></span></p>
-        <p>House Nr: <span th:text="${HouseNO}"></span></p>
-        <p>ZIP: <span th:text="${Zip}"></span></p>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
 
 
-        <p>Country: <span th:text="${Country}"></span></p>
-        <p>City: <span th:text="${City}"></span></p>
-        <p>Street: <span th:text="${Street}"></span></p>
-        <p>House Nr: <span th:text="${HouseNO}"></span></p>
-        <p>ZIP: <span th:text="${Zip}"></span></p>
+            <div class="wrapper wrapper-content animated fadeInRight">
+
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is your place. You can access any link here and proceed to next place.<br></span>
+                        <span th:if="${isAdmin}">You're admin.</span>
+                        <span th:if="${isAdmin==false}">You're allowed to have projects.</span>
+                    </div>
+                </div>
+
+                <div id="content">
+                    <p>Your name: <span th:text="${BeforeTitle}"></span> <span th:text="${FirstName}"></span> <span th:text="${MiddleName}"></span> <span th:text="${LastName}"></span></p>
+                    <p>You're logged in under email: <span th:text="${Email}"></span></p>
+                    <p>We can contact you at: <span th:text="${Phone}"></span></p>
+                    <p>Your id: [will not be shown]<span th:text="${loggedId}"></span>/p>
+
+                    <p>Where you live: <span th:text="${logged_address}"></span></p>
+                    <p>City: <span th:text="${City + '[' + Country + ']'}"></span></p>
+                    <p>Street: <span th:text="${Street + ' ' + HouseNO}"></span></p>
+                    <p>ZIP: <span th:text="${Zip}"></span></p>
+                </div>
+
+                <!-- MAIN PANEL -->
+                <div class="ibox-content forum-container">
+
+                    <!-- ADMIN Panel  -->
+                    <div th:if="${isAdmin}" class="forum-title">
+                        <div class="pull-right forum-desc">
+                            <samll>Only admin has right to view this</samll>
+                        </div>
+                        <h3>MANAGEMENT</h3>
+                    </div>
+
+                    <div th:if="${isAdmin}" class="forum-item">
+                        <!-- specific access to flat-->
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="#" class="forum-item-title">Access flat with ID</a>
+                                <div class="forum-sub-title">Access flat with id you enter in that input over there and click on the button</div>
+                            </div>
+                            <!-- input value -->
+                            <div class="col-md-1 forum-info">
+                                <div class="regpaddingbottom padding-top-10">
+                                    <input type="text" id="access-flatId"/>
+                                </div>
+                            </div>
+                            <!-- Button -->
+                            <div class="col-md-1 forum-info">
+                                <div class="regpaddingbottom padding-top-10">
+                                    <button class="roundedbutton" onclick="accessFlatWithId()">ACCESS</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- creations -->
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/admin/user/create" class="forum-item-title">Create new user</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/admin/projects/create" class="forum-item-title">Create new project</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/admin/comm-type/create" class="forum-item-title">Create new communication type</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/admin/sensor-type/create" class="forum-item-title">Create new sensor type</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/admin/addresses/create" class="forum-item-title">Create new address</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <div class="pull-right forum-desc">
+                            <samll>Everyone can view this</samll>
+                        </div>
+                        <h3>GENERAL</h3>
+                    </div>
+
+                    <div class="forum-item">
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a onclick="goHome()" class="forum-item-title">HOMESITE</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a onclick="goToFlatId1()" class="forum-item-title">See flat with id 1 [temp]</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a onclick="goToSeeYourProjects()" class="forum-item-title">See your projects</a>
+                                <div class="forum-sub-title">Description</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
-
-    <div>
-        <button onclick="goHome()">Homesite</button>
-        <button onclick="goToFlatId1()">Visit flat with id 1</button>
-        <button onclick="goToSeeYourProjects()">See your projects</button>
-    </div>
-
-    <footer id="footer"></footer>
-
+</div>
 </body>
 </html>
