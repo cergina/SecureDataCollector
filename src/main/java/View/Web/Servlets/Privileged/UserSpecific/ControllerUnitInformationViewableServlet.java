@@ -1,0 +1,76 @@
+package View.Web.Servlets.Privileged.UserSpecific;
+
+import Control.ConfigClass;
+import Control.Scenario.UC_CreateTypes;
+import Control.Scenario.UC_FlatSummary;
+import Model.Database.Support.CustomLogs;
+import Model.Web.CommType;
+import Model.Web.SensorType;
+import Model.Web.User;
+import Model.Web.thymeleaf.ControllerUnit;
+import Model.Web.thymeleaf.Flat;
+import View.Configuration.ContextUtil;
+import View.Support.DcsWebContext;
+import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
+import View.Support.SessionUtil;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet(name = "ControllerUnit0InformationServlet", urlPatterns = ControllerUnitInformationViewableServlet.SERVLET_URL)
+public class ControllerUnitInformationViewableServlet extends AdminEditableUserViewableServlet {
+    public static final String SERVLET_URL =  "/action/controllerUnit";
+    public static final String TEMPLATE_NAME = "views/privileged/my_controllerUnit.html";
+
+    private static final String VARIABLE_CONTROLLER_UNIT = "controllerUnit";
+    private static final String VARIABLE_ISADMIN = "isAdmin";
+    private static final String VARIABLE_SENSOR_TYPES = "sensorTypes";
+    private static final String REQUEST_PARAM_CONTROLLER_UNIT_ID = "id";
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // AUTHENTICATION
+        super.doGet(request, response); // call always parent method first
+        if (checkPrivilege(request, response) == false) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        boolean isAdmin = super.checkIfPrivilegeIsAdmin(request);
+
+        // has to have some request for controller unit id
+        int requestedControllerUnitId;
+        try {
+            requestedControllerUnitId = Integer.parseInt(request.getParameter(REQUEST_PARAM_CONTROLLER_UNIT_ID));
+            CustomLogs.Development("V requeste prisiel controller unit id: " + requestedControllerUnitId);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // TEMPLATE PREPARATION
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
+        WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
+                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
+
+        ControllerUnit controllerUnit = (new UC_FlatSummary(getDb())).getControllerUnit(requestedControllerUnitId);
+        if (controllerUnit == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        final List<SensorType> sensorTypeList = (new UC_CreateTypes(getDb()).getAllSensorType());
+        context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
+
+        context.setVariable(VARIABLE_CONTROLLER_UNIT, controllerUnit);
+        context.setVariable(VARIABLE_ISADMIN, isAdmin);
+
+        // Generate html and return it
+        engine.process(TEMPLATE_NAME, context, response.getWriter());
+    }
+}
