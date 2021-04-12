@@ -169,6 +169,18 @@ body, html{
     color: rgb(220,220,220);
 }
 
+._index-general {
+    min-width: 230px;
+}
+
+._index-short {
+    min-width: 190px;
+}
+
+._index-long {
+    min-width: 500px;
+}
+
 ._uid {
     min-width: 175px;
 }
