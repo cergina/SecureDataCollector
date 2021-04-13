@@ -29,7 +29,8 @@
 
 #include "util/delay.h"	
 
-#define DEBUG
+#define DEBUG_TEST
+#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
 
 #define UART_BAUD_RATE 9600
 
@@ -159,21 +160,26 @@ int main(void)
 	message = malloc(3);
 	sprintf(message,"%02X\n",UID);
 	uart_puts(message);
+	uart_puts("\r\n");
 	free(message);
 	// #endregion
 	
 	//Init value ADC5 - PCINT13
 	ADC5_lastValue = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
-	#ifdef DEBUG
+	#ifdef DEBUG_TEST
 		char result[50];
 		sprintf(result, "%d", ADC5_lastValue);
+		uart_puts("ADC5 value is: ");
 		uart_puts(result);
 		uart_puts("\r\n");
+		free(result);
 	#endif
-	ADC5_lastValue = 1; // We begin with logical 1 bcs on device its means idle state
+	ADC5_lastValue = 1; // We begin with logical 1 because on device its means idle state
 	
-	int tick= 0;
-	
+	#ifdef DEBUG_TEST_TICK
+		int tick= 0;
+	#endif
+
 	while(1) {
 		//Process code for ADC5 (PCINT13)
 		if(ADC5_readFlag == 1){
@@ -183,14 +189,14 @@ int main(void)
 			
 			// RISE UP
 			if (bValue != ADC5_lastValue && bValue == 1 ){
-				#ifdef DEBUG
+				#ifdef DEBUG_TEST
 					uart_puts("Rising edge\r\n");
 				#endif
 				//ignore
 			}
 			
 			if (bValue != ADC5_lastValue && bValue == 0 ){
-				#ifdef DEBUG
+				#ifdef DEBUG_TEST
 					uart_puts("Falling edge\r\n");
 				#endif
 				//We send 1 as measured value because for now its trigger every time
@@ -252,7 +258,15 @@ int main(void)
 				current_flag = NULL;
 				free(message);
 			}
-		}*/
+
+		#ifdef DEBUG_TEST_TICK 
+			char result1[50];
+			sprintf(result1, "%d", ++tick);
+			uart_puts(result1);
+			uart_puts("\r\n");
+			_delay_ms(1000);
+		#endif
+
 	}
 }
 		
