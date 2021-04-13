@@ -141,18 +141,34 @@ public class UC_CreateTypes {
     }
 
     public final @NotNull List<CommType> getAllCommType() {
-        List<CommType> commTypeList = new ArrayList<>();
+        List<CommType> arr = new ArrayList<>();
 
         try {
             List<E_CommType> e_commTypeList = I_CommType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
             for (E_CommType e_commType : e_commTypeList) {
                 CommType commType = new CommType(e_commType.getA_pk(), e_commType.getA_Name());
-                commTypeList.add(commType);
+                arr.add(commType);
             }
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
 
-        return commTypeList;
+        return arr;
+    }
+
+    public final @NotNull List<SensorType> getAllSensorType() {
+        List<SensorType> arr = new ArrayList<>();
+
+        try {
+            List<E_SensorType> e_sensorTypeList = I_SensorType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            for (E_SensorType e_sensorType : e_sensorTypeList) {
+                SensorType sensorType = new SensorType(e_sensorType.getA_pk(), e_sensorType.getA_Name(), e_sensorType.getA_MeasuredIn());
+                arr.add(sensorType);
+            }
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return arr;
     }
 }

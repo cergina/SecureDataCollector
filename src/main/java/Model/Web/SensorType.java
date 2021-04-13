@@ -18,6 +18,12 @@ public class SensorType extends PrettyObject {
     // empty constructor for Gson
     public SensorType() {}
 
+    public SensorType(Integer id, String name, String measuredin) {
+        this.id = id;
+        this.name = name;
+        this.measuredin = measuredin;
+    }
+
     public Integer getId() {
         return id;
     }

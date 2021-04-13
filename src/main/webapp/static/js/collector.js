@@ -27,6 +27,16 @@ function buildAuth() {
     };
 }
 
+// build JSON object by Api spec: Sensor
+function buildSensor() {
+    return {
+        input: $("#sensor_input").val(),
+        name: $("#sensor_name").val(),
+        sensorTypeName: $("#sensor-type_name").val(),
+        controllerUnitId: getUrlParameter('id')
+    };
+}
+
 
 // build JSON object by Api spec: ProjectCreation
 function buildProjectCreation() {
@@ -114,7 +124,7 @@ function createUser() {
 
 // Finish registration
 function registerUser() {
-    if ($("#password-retype").val() != $("#password").val()) {
+    if ($("#password-retype").val() !== $("#password").val()) {
       alert("Passwords does not match!")
     } else {
         $.ajax({
@@ -176,8 +186,8 @@ function loginUser() {
 }
 
 // CREATING STUFF
-// Create new controller unit from inside of flat
-function createControllerUnitForThisFlat() {
+// Create new controller unit
+function createControllerUnit() {
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/admin/controllers/create",
@@ -197,6 +207,35 @@ function createControllerUnitForThisFlat() {
                 alert(response.message); // TODO impact layout
             },
             400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
+// Create new sensor
+function createSensor() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/sensors/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildSensor()),
+        statusCode: {
+            201: function(response) {
+                alert('Vytvorený nový sensor.');
+                window.location.reload();
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             },
@@ -383,6 +422,27 @@ function switchToggles() {
     }
 }
 
-$(function() {
+function getUrlParameter(sParam) { // https://stackoverflow.com/a/21903119/5148218
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
 
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+}
+
+$(function() {
+    $(".controllerUnit_link").each(function(index, value){
+        var controllerUnitId = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + controllerUnitId + '">link</a>'
+        );
+    });
 });

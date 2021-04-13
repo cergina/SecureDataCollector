@@ -7,6 +7,7 @@ import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.*;
 import Model.Web.Project;
 import Model.Web.Projects;
+import Model.Web.Sensor;
 import Model.Web.thymeleaf.*;
 
 import javax.validation.constraints.NotNull;
@@ -65,7 +66,7 @@ public class UC_FlatSummary {
      * @param flatId from request
      * @return {@link Flat}, null if it does not exist
      */
-    public Flat getFlatSummary(@NotNull Integer flatId) {
+    public Flat getFlatSummary(@NotNull final Integer flatId) {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
@@ -76,27 +77,7 @@ public class UC_FlatSummary {
         List<T_ControllerUnit> t_controllerUnits = getAllControllersForFlat(flatId);
         List<ControllerUnit> controllerUnits = new ArrayList<>();
         for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
-            List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
-            List<Sensor> sensors = new ArrayList<>();
-            for (T_Sensor t_sensor : t_sensors) {
-                int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk());
-                int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk());
-
-                Sensor sensor = new Sensor(
-                        t_sensor.getA_Input(),
-                        t_sensor.getA_Name(),
-                        measuredLast30Days,
-                        mesuredTotal
-                );
-                sensors.add(sensor);
-            }
-            ControllerUnit controllerUnit = new ControllerUnit(
-                    t_controllerUnit.getA_Uid(),
-                    t_controllerUnit.getA_DipAddress(),
-                    t_controllerUnit.getA_Zwave(),
-                    sensors
-            );
-            controllerUnits.add(controllerUnit);
+            controllerUnits.add(buildControllerUnit(t_controllerUnit));
         }
 
         CentralUnit centralUnit = null;
@@ -134,6 +115,48 @@ public class UC_FlatSummary {
         return flat;
     }
 
+    public ControllerUnit getControllerUnit(@NotNull final Integer controllerUnitId) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        T_ControllerUnit t_controllerUnit = getControllerUnitById(controllerUnitId);
+        if (t_controllerUnit == null) {
+            return null;
+        }
+
+        ControllerUnit controllerUnit = buildControllerUnit(t_controllerUnit);
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.afterOkSqlExecution();
+
+        return controllerUnit;
+    }
+
+    private @NotNull ControllerUnit buildControllerUnit(@NotNull final T_ControllerUnit t_controllerUnit) {
+
+        List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
+        List<Sensor> sensors = new ArrayList<>();
+        for (T_Sensor t_sensor : t_sensors) {
+            int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk());
+            int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk());
+
+            Sensor sensor = new Sensor(
+                    t_sensor.getA_Input(),
+                    t_sensor.getA_Name(),
+                    measuredLast30Days,
+                    mesuredTotal
+            );
+            sensors.add(sensor);
+        }
+        return new ControllerUnit(
+                t_controllerUnit.getA_pk(),
+                t_controllerUnit.getA_Uid(),
+                t_controllerUnit.getA_DipAddress(),
+                t_controllerUnit.getA_Zwave(),
+                sensors
+        );
+    }
+
     /***
      * Verifies rights for user's right to view flat (that belongs to certain project)
       * @param userId from session
@@ -159,7 +182,7 @@ public class UC_FlatSummary {
 
     /// PRIVATES
 
-    private @NotNull List<T_ControllerUnit> getAllControllersForFlat(@NotNull Integer flatId) {
+    private @NotNull List<T_ControllerUnit> getAllControllersForFlat(@NotNull final Integer flatId) {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
@@ -171,7 +194,7 @@ public class UC_FlatSummary {
         return arr;
     }
 
-    private @NotNull List<T_Sensor> getAllSensorsForController(@NotNull Integer controllerId) {
+    private @NotNull List<T_Sensor> getAllSensorsForController(@NotNull final Integer controllerId) {
         List<T_Sensor> arr = new ArrayList<>();
 
         try {
@@ -183,7 +206,7 @@ public class UC_FlatSummary {
         return arr;
     }
 
-    private int getMeasuredLast30Days(@NotNull Integer sensorId) {
+    private int getMeasuredLast30Days(@NotNull final Integer sensorId) {
         int value = 0;
 
         try {
@@ -195,7 +218,7 @@ public class UC_FlatSummary {
         return value;
     }
 
-    private int getMeasuredTotal(@NotNull Integer sensorId) {
+    private int getMeasuredTotal(@NotNull final Integer sensorId) {
         int value = 0;
 
         try {
@@ -214,7 +237,7 @@ public class UC_FlatSummary {
         return value;
     }
 
-    private T_Address getAddressById(@NotNull Integer id) {
+    private T_Address getAddressById(@NotNull final Integer id) {
         T_Address t = null;
 
         try {
@@ -226,7 +249,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_CentralUnit getCentralUnitById(@NotNull Integer id) {
+    private T_CentralUnit getCentralUnitById(@NotNull final Integer id) {
         T_CentralUnit t = null;
 
         try {
@@ -238,7 +261,19 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_Flat getFlatById(@NotNull Integer id) {
+    private T_ControllerUnit getControllerUnitById(@NotNull final Integer id) {
+        T_ControllerUnit t = null;
+
+        try {
+            t = I_ControllerUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return t;
+    }
+
+    private T_Flat getFlatById(@NotNull final Integer id) {
         T_Flat t = null;
 
         try {
