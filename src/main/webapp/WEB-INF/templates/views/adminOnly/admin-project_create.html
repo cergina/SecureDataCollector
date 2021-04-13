@@ -11,39 +11,45 @@
                 <div class="row justify-content-center regpadding rowinrightcol createuser">
                     <h1 class="reglogheader">Create a new project</h1>
                 </div>
-                <!-- FIELDS -->
-                <div class="grid regpadding">
-                    <!-- One necessarry name and email -->
-                    <div class="row justify-content-center">
-                        <div class="regpaddingtopbottom">
-                            <label for="project_name">Name</label>
-                            <div><input class="min-width-300" type="text" id="project_name" placeholder="Pomenovanie" required></div>
+
+                <!-- FORM -->
+                <form>
+                    <!-- FIELDS -->
+                    <div class="grid regpadding">
+                        <!-- One necessarry name and email -->
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="project_name">Name</label>
+                                <div><input class="min-width-300" type="text" id="project_name" placeholder="Pomenovanie" required=""></div>
+                            </div>
+                        </div>
+                        <!-- UP TO 3 Project users -->
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="project_email_0">Required user's email: </label>
+                                <div><input class="min-width-300" type="email" id="project_email_0" placeholder="required@example.com" required=""></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="project_email_1">Optional user's email: </label>
+                                <div><input class="min-width-300" type="email" id="project_email_1" placeholder="optional1@example.com"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="project_email_2">Optional user's email: </label>
+                                <div><input class="min-width-300" type="email" id="project_email_2" placeholder="optional2@example.com"></div>
+                            </div>
                         </div>
                     </div>
-                    <!-- UP TO 3 Project users -->
-                    <div class="row justify-content-center">
-                        <div class="regpaddingtopbottom">
-                            <label for="project_email_0">Required user's email: </label>
-                            <div><input class="min-width-300" type="email" id="project_email_0" placeholder="required@example.com" required></div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="regpaddingtopbottom">
-                            <label for="project_email_1">Optional user's email: </label>
-                            <div><input class="min-width-300" type="email" id="project_email_1" placeholder="optional1@example.com"></div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="regpaddingtopbottom">
-                            <label for="project_email_2">Optional user's email: </label>
-                            <div><input class="min-width-300" type="email" id="project_email_2" placeholder="optional2@example.com"></div>
-                        </div>
-                    </div>
-                </div>
+
+                </form>
+
                 <!-- ACTIONS AND NAVIGATION -->
                 <div class="row justify-content-center rowinrightcol">
                     <div class="regpaddingbottom">
-                        <button class="roundedbutton min-width-300" onclick="createProject()">Create</button>
+                        <button type="submit" class="roundedbutton min-width-300" onclick="createProject()">Create</button>
                     </div>
                 </div>
                 <div class="row justify-content-center rowinrightcol">

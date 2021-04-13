@@ -16,6 +16,8 @@ public class Auth extends PrettyObject {
     @Expose(serialize = false)
     private String password; // password OR password hash
     @Expose
+    private String oldPassword;
+    @Expose
     private String verificationcode;
 
     // empty constructor for Gson
@@ -71,6 +73,10 @@ public class Auth extends PrettyObject {
         return password;
     }
 
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
     public String getVerificationcode() {
         return verificationcode;
     }
@@ -87,6 +93,10 @@ public class Auth extends PrettyObject {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public void setVerificationcode(String verificationcode) {

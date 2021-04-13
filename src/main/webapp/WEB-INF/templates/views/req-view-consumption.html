@@ -19,35 +19,27 @@
                 <div class="grid">
 
                     <div class="row justify-content-center">
-                        <h1 class="reglogheader">Login</h1>
+                        <h1 class="reglogheader">Request for INFO</h1>
                     </div>
-
 
                     <form>
                         <div class="row justify-content-center">
                             <div class="regfields">
-                                <label for="email" class="sr-only">Email</label>
-                                <input class="reginput min-width-300" type="email" id="email" name="email" placeholder="email">
-                            </div>
-                        </div>
-
-                        <div class="row justify-content-center">
-                            <div class="regfields">
-                                <label for="password" class="sr-only">Password</label>
-                                <input class="reginput min-width-300" type="password" id="password" name="password" placeholder="password">
+                                <label for="request-uid" class="sr-only">Controller UID</label>
+                                <input class="reginput min-width-300" type="email" id="request-uid" name="request-uid" placeholder="In your contract">
                             </div>
                         </div>
                     </form>
 
+                    <!-- ACTIONS -->
                     <div class="row justify-content-center">
                         <div class="buttondiv">
-                            <button type="submit" class="roundedbutton min-width-300" onclick="loginUser()">Login</button>
+                            <button type="submit" class="roundedbutton min-width-300" onclick="requestViewConsumption()">Make a request</button>
                         </div>
                         <div class="buttondiv">
                             <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

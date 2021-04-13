@@ -70,7 +70,7 @@ public class UC_FlatSummary {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
-        T_Flat t_flat = getFlatById(flatId);
+        T_Flat t_flat = getTFlatById(flatId);
         if (t_flat == null)
             return null;
 
@@ -82,7 +82,7 @@ public class UC_FlatSummary {
 
         CentralUnit centralUnit = null;
         if (!controllerUnits.isEmpty()) {
-            T_CentralUnit t_centralUnit = getCentralUnitById(t_controllerUnits.get(0).getA_CentralUnitID());
+            T_CentralUnit t_centralUnit = getTCentralUnitById(t_controllerUnits.get(0).getA_CentralUnitID());
             centralUnit = new CentralUnit(
                     t_centralUnit.getA_Uid(),
                     t_centralUnit.getA_FriendlyName(),
@@ -92,7 +92,7 @@ public class UC_FlatSummary {
             );
         }
 
-        T_Address t_address = getAddressById(t_flat.getA_AddressID());
+        T_Address t_address = getTAddressById(t_flat.getA_AddressID());
         Address address = new Address(
                 t_address.getA_Country(),
                 t_address.getA_City(),
@@ -115,11 +115,28 @@ public class UC_FlatSummary {
         return flat;
     }
 
+    public ControllerUnit getControllerUnitByUid(@NotNull final Integer controllerUnitUid) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        T_ControllerUnit t_controllerUnit = getTControllerUnitByUid(controllerUnitUid);
+        if (t_controllerUnit == null) {
+            return null;
+        }
+
+        ControllerUnit controllerUnit = buildControllerUnit(t_controllerUnit);
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.afterOkSqlExecution();
+
+        return controllerUnit;
+    }
+
     public ControllerUnit getControllerUnit(@NotNull final Integer controllerUnitId) {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
-        T_ControllerUnit t_controllerUnit = getControllerUnitById(controllerUnitId);
+        T_ControllerUnit t_controllerUnit = getTControllerUnitById(controllerUnitId);
         if (t_controllerUnit == null) {
             return null;
         }
@@ -237,7 +254,7 @@ public class UC_FlatSummary {
         return value;
     }
 
-    private T_Address getAddressById(@NotNull final Integer id) {
+    private T_Address getTAddressById(@NotNull final Integer id) {
         T_Address t = null;
 
         try {
@@ -249,7 +266,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_CentralUnit getCentralUnitById(@NotNull final Integer id) {
+    private T_CentralUnit getTCentralUnitById(@NotNull final Integer id) {
         T_CentralUnit t = null;
 
         try {
@@ -261,7 +278,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_ControllerUnit getControllerUnitById(@NotNull final Integer id) {
+    private T_ControllerUnit getTControllerUnitById(@NotNull final Integer id) {
         T_ControllerUnit t = null;
 
         try {
@@ -273,7 +290,19 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_Flat getFlatById(@NotNull final Integer id) {
+    private T_ControllerUnit getTControllerUnitByUid(@NotNull final Integer uid) {
+        T_ControllerUnit t = null;
+
+        try {
+            t = I_ControllerUnit.retrieveByUid(db.getConn(), db.getPs(), db.getRs(), uid);
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return t;
+    }
+
+    private T_Flat getTFlatById(@NotNull final Integer id) {
         T_Flat t = null;
 
         try {

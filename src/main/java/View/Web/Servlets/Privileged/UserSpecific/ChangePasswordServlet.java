@@ -1,16 +1,16 @@
-package View.Web.Servlets.Public;
+package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
-import View.Support.ServletAbstracts.PublicServlet;
+import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
 import View.Support.ServletHelper;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -21,10 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "RegisterServlet", urlPatterns = RegisterServlet.SERVLET_URL)
-public class RegisterServlet extends PublicServlet {
-    public static final String SERVLET_URL =  "/register";
-    public static final String TEMPLATE_NAME = "authentication/register.html";
+@WebServlet(name = "ChangePasswordServlet", urlPatterns = ChangePasswordServlet.SERVLET_URL)
+public class ChangePasswordServlet extends AdminEditableUserViewableServlet {
+    public static final String SERVLET_URL =  "/action/change-password";
+    public static final String TEMPLATE_NAME = "authentication/change-password.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -47,6 +47,7 @@ public class RegisterServlet extends PublicServlet {
 
         // parse JSON from Body object as Auth java representation
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
+        auth.setUser(SessionUtil.getUser(request.getSession(false)));
 
         // Check validity of user requested password to be used
         if (auth.isSuchPasswordOkay() == false) {
@@ -62,8 +63,13 @@ public class RegisterServlet extends PublicServlet {
             return;
         }
 
-        final JsonResponse jsonResponse = (new UC_Auth(getDb())).finishRegistration(auth); // finish registration
+        // Change password
+        final JsonResponse jsonResponse = (new UC_Auth(getDb())).changePassword(auth);
         response.setStatus(jsonResponse.getStatus());
+
+        if (jsonResponse.getStatus() == HttpServletResponse.SC_OK) {
+
+        }
 
         writer.println(jsonResponse.toString());
         writer.close();
