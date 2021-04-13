@@ -1,8 +1,8 @@
 /*
  * ControllerUnit.c
  * Project: DCS
- * Version: 0.47
- * Controller: ATmega8 
+ * Version: 0.49
+ * Processor: ATmega328P
  * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */ 
 
@@ -12,12 +12,12 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <avr/sleep.h>
-
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
 #include "lib/uart.h"
 #include "lib/crc8.h"
+//Source https://github.com/jvalrog/atmega-adc
 #include "lib/atmega-adc.h"
 
 #define F_CPU 16000000UL
@@ -27,7 +27,7 @@
 #error "F_CPU undefined, please define CPU frequency in Hz in Makefile"
 #endif
 
-#include "util/delay.h"	
+#include "util/delay.h"
 
 #define DEBUG_TEST
 #define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
@@ -57,6 +57,12 @@
 // Control flags for ADC5 (PCINT13)
 uint16_t ADC5_lastValue;
 volatile short int ADC5_readFlag = 0; // True/false
+
+
+// Sleep flag (if this flag is set to 1 we put processor to power-down mode)
+uint8_t Standing_by =  0;
+// Busy flag (this flag indicate that program is busy and we cant go to sleep mode)
+uint8_t Busy = 1;
 
 ISR(PCINT1_vect){
 	ADC5_readFlag = 1;
@@ -150,10 +156,10 @@ int main(void)
 	
 	PCICR |= (1 << PCIE1);     // set PCIE1 to enable PCMSK1 scan
 	PCMSK1 |= (1 << PCINT13);   // set PCINT13 to trigger an interrupt on state change
-
+		
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.47 \r\n");
+	uart_puts("ControllerUnit  Build v0.49 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -181,8 +187,11 @@ int main(void)
 	#endif
 
 	while(1) {
+		c = uart_getc();
+		
 		//Process code for ADC5 (PCINT13)
 		if(ADC5_readFlag == 1){
+			Standing_by = 0;
 			uint16_t adc_value = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
 			uart_puts("Measure\r\n");
 			uint8_t bValue = adc_value >= HIGH_DOWN ? 1 : (adc_value <= LOW_UP ? 0 : -1);
@@ -206,20 +215,16 @@ int main(void)
 			ADC5_lastValue = bValue;
 			ADC5_readFlag = 0;
 		}
-		
-		#ifdef DEBUG
-			char result1[50];
-			sprintf(result1, "%d", ++tick);
-			uart_puts(result1);
-			uart_puts("\r\n");
-		#endif
-		_delay_ms(1000);
-		/*
-		c = uart_getc();
+		else {
+			Standing_by = 1; //no action, go sleep;
+		}
+
 		if (c & UART_NO_DATA){
-			continue;
+			//do nothing
+			Standing_by = 1; // nothing to do, go sleep
 		}
 		else{		
+			Standing_by = 0;
 			if (c == STX){
 				current_flag = F_DATA;
 				index = 0;
@@ -248,8 +253,6 @@ int main(void)
 				checksum = crc8((uint8_t*)message, len);
 				if(c != checksum){
 					uart_puts("Wrong Checksum \r\n");
-					//uart_putc(c);
-					//uart_putc(checksum);
 				}
 				else{
 					uart_puts("ACK");
@@ -258,6 +261,7 @@ int main(void)
 				current_flag = NULL;
 				free(message);
 			}
+		}		
 
 		#ifdef DEBUG_TEST_TICK 
 			char result1[50];
@@ -267,6 +271,16 @@ int main(void)
 			_delay_ms(1000);
 		#endif
 
+	/*
+		if(Standing_by){
+			set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
+			cli(); // deactivate interrupts
+			sleep_enable(); // sets the SE (sleep enable) bit
+			sei(); //
+			sleep_cpu(); // sleep now!!
+			sleep_disable(); // deletes the SE bit
+		}
+	*/
 	}
 }
 		
