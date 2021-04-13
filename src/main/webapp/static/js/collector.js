@@ -235,6 +235,10 @@ function createSensor() {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout
             },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
                 alert(response.message); // TODO impact layout

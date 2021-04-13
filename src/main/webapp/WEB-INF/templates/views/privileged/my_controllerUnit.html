@@ -30,7 +30,9 @@
                                 </div>
                                 <div class="regpaddingtopbottom padding-left-5">
                                     <label for="sensor_input">Input</label>
-                                    <div><input type="text" id="sensor_input" required></div>
+                                    <div th:with="optionList = ${ {1,2,3,4,5,6,7,8} }"><select id="sensor_input">
+                                        <option th:each="option : ${optionList}" th:value="${option}" th:text="${option}"></option>
+                                    </select></div>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
