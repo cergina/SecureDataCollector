@@ -23,10 +23,10 @@ import java.util.List;
 /**
  * Use Case class for creating database entries by admin
  */
-public class UC_CreateTypes {
+public class UC_Types {
     private DbProvider db;
 
-    public UC_CreateTypes(@NotNull DbProvider dbProvider) {
+    public UC_Types(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
@@ -141,34 +141,47 @@ public class UC_CreateTypes {
     }
 
     public final @NotNull List<CommType> getAllCommType() {
-        List<CommType> arr = new ArrayList<>();
+        List<CommType> commTypeList = new ArrayList<>();
 
         try {
             List<E_CommType> e_commTypeList = I_CommType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
             for (E_CommType e_commType : e_commTypeList) {
                 CommType commType = new CommType(e_commType.getA_pk(), e_commType.getA_Name());
-                arr.add(commType);
+                commTypeList.add(commType);
             }
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
 
-        return arr;
+        return commTypeList;
     }
 
-    public final @NotNull List<SensorType> getAllSensorType() {
-        List<SensorType> arr = new ArrayList<>();
+    public final @NotNull List<SensorType> getAllSensorType(boolean includeCommTypes) {
+        List<SensorType> sensorTypeList = new ArrayList<>();
 
+        List<CommType> commTypeList = includeCommTypes ? getAllCommType() : null;
         try {
             List<E_SensorType> e_sensorTypeList = I_SensorType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
             for (E_SensorType e_sensorType : e_sensorTypeList) {
-                SensorType sensorType = new SensorType(e_sensorType.getA_pk(), e_sensorType.getA_Name(), e_sensorType.getA_MeasuredIn());
-                arr.add(sensorType);
+
+                if (includeCommTypes) {
+                    List<CommType> commTypes = new ArrayList<>();
+                    for (CommType commType : commTypeList) {
+                        if (e_sensorType.getA_CommTypeID() == commType.getId()) {
+                            commTypes.add(commType);
+                        }
+                    }
+                    SensorType sensorType = new SensorType(e_sensorType.getA_pk(), e_sensorType.getA_Name(), e_sensorType.getA_MeasuredIn(), commTypes);
+                    sensorTypeList.add(sensorType);
+                } else {
+                    SensorType sensorType = new SensorType(e_sensorType.getA_pk(), e_sensorType.getA_Name(), e_sensorType.getA_MeasuredIn());
+                    sensorTypeList.add(sensorType);
+                }
             }
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
 
-        return arr;
+        return sensorTypeList;
     }
 }

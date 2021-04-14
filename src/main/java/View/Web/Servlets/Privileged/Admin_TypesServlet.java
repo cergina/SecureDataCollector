@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "Admin_SensorTypeCreateServlet", urlPatterns = Admin_SensorTypeCreateServlet.SERVLET_URL)
-public class Admin_SensorTypeCreateServlet extends AdminServlet {
-    public static final String SERVLET_URL =  "/admin/sensor-type/create";
-    public static final String TEMPLATE_NAME = "views/adminOnly/admin-sensortype_create.html";
+@WebServlet(name = "Admin_TypesServlet", urlPatterns = Admin_TypesServlet.SERVLET_URL)
+public class Admin_TypesServlet extends AdminServlet {
+    public static final String SERVLET_URL =  "/admin/types";
+    public static final String TEMPLATE_NAME = "views/adminOnly/admin-types.html";
 
-    private static final String VARIABLE_COMM_TYPES = "commTypes";
+    private static final String VARIABLE_SENSOR_TYPES = "sensorTypes";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,23 +40,9 @@ public class Admin_SensorTypeCreateServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        final List<CommType> commTypeList = (new UC_Types(getDb()).getAllCommType());
-        context.setVariable(VARIABLE_COMM_TYPES, commTypeList);
+        final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAllSensorType(true));
+        context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        super.doPost(request, response);
-        PrintWriter writer = response.getWriter();
-
-        SensorType sensorType = (SensorType) PrettyObject.parse(ServletHelper.RequestBody(request), SensorType.class);
-
-        final JsonResponse jsonResponse = (new UC_Types(getDb()).createSensorType(sensorType));
-        response.setStatus(jsonResponse.getStatus());
-
-        writer.println(jsonResponse.toString());
-        writer.close();
     }
 }
