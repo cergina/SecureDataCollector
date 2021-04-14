@@ -53,13 +53,13 @@ public class ConsumptionViewServlet extends PublicServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        ControllerUnit controllerUnit = (new UC_FlatSummary(getDb())).getControllerUnitByUid(requestedControllerUnitUid);
+        ControllerUnit controllerUnit = (new UC_FlatSummary(getDb())).get_ControllerUnit_ByUid(requestedControllerUnitUid);
         if (controllerUnit == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        final List<SensorType> sensorTypeList = (new UC_CreateTypes(getDb()).getAllSensorType());
+        final List<SensorType> sensorTypeList = (new UC_CreateTypes(getDb()).getAll_SensorType());
         context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
 
         context.setVariable(VARIABLE_CONTROLLER_UNIT, controllerUnit);

@@ -2,12 +2,10 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.*;
-import Model.Database.Support.CustomLogs;
 import Model.Database.Support.UserAccessHelper;
 import Model.Database.Tables.Table.*;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
-import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.CreationException;
 import View.Support.CustomExceptions.InvalidOperationException;
@@ -16,10 +14,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Use Case class for authentication
@@ -29,23 +25,6 @@ public class UC_Auth {
 
     public UC_Auth(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
-    }
-
-    public List<T_Address> retrieveAllAddress() { // TODO remove this method later
-        List<T_Address> arr = new ArrayList<T_Address>();
-
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
-        db.beforeSqlExecution(false);
-
-        try {
-            arr = I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
-
-            db.afterOkSqlExecution();
-        } catch (SQLException e) {
-            db.afterExceptionInSqlExecution(e);
-        }
-
-        return arr;
     }
 
     // PUBLIC METHODS
@@ -67,7 +46,7 @@ public class UC_Auth {
                 throw new CreationException("Presented email is not valid for use.");
             }
 
-            if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
+            if (Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
                 throw new AuthenticationException("User with this email already exists.");
             }
@@ -159,7 +138,7 @@ public class UC_Auth {
         try {
             db.beforeSqlExecution(true);
 
-            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
@@ -220,7 +199,7 @@ public class UC_Auth {
             db.beforeSqlExecution(true);
 
             // VERIFY CURRENT PASSWORD matches
-            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
 
             final byte[] saltDb = (I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID())).getA_NaCl();
 
@@ -289,7 +268,7 @@ public class UC_Auth {
             // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
             db.beforeSqlExecution(false);
 
-            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
 
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
@@ -357,37 +336,4 @@ public class UC_Auth {
         }
     }
 
-
-    // PRIVATE METHODS
-
-    /**
-     * Retrieve user and password hash
-     * @param email User to search for
-     * @return {@link Auth} instance, null if email not in database
-     */
-    private @NotNull Auth retrieveAuthByEmail(@NotNull final String email) throws SQLException {
-
-        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
-        if (t_user == null) { // isnt email in db?
-            return null;
-        }
-
-        User user = new User();
-        user.setBeforetitle(t_user.getA_BeforeTitle());
-        user.setFirstname(t_user.getA_FirstName());
-        user.setMiddlename(t_user.getA_MiddleName());
-        user.setLastname(t_user.getA_LastName());
-        user.setPhone(t_user.getA_Phone());
-        user.setEmail(t_user.getA_Email());
-        user.setResidence(t_user.getA_PermanentResidence());
-        user.setUserID(t_user.getA_pk());
-
-        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
-
-        Auth auth = new Auth();
-        auth.setUser(user);
-        auth.setPassword(t_hash.getA_Value());
-
-        return auth;
-    }
 }

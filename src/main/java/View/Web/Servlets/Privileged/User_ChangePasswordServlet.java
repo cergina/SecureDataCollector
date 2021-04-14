@@ -1,4 +1,4 @@
-package View.Web.Servlets.Privileged.UserSpecific;
+package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
@@ -8,7 +8,7 @@ import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
-import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
+import View.Support.ServletAbstracts.SessionServlet;
 import View.Support.ServletHelper;
 import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "ChangePasswordServlet", urlPatterns = ChangePasswordServlet.SERVLET_URL)
-public class ChangePasswordServlet extends AdminEditableUserViewableServlet {
+@WebServlet(name = "User_ChangePasswordServlet", urlPatterns = User_ChangePasswordServlet.SERVLET_URL)
+public class User_ChangePasswordServlet extends SessionServlet {
     public static final String SERVLET_URL =  "/action/change-password";
     public static final String TEMPLATE_NAME = "authentication/change-password.html";
 
@@ -66,10 +66,6 @@ public class ChangePasswordServlet extends AdminEditableUserViewableServlet {
         // Change password
         final JsonResponse jsonResponse = (new UC_Auth(getDb())).changePassword(auth);
         response.setStatus(jsonResponse.getStatus());
-
-        if (jsonResponse.getStatus() == HttpServletResponse.SC_OK) {
-
-        }
 
         writer.println(jsonResponse.toString());
         writer.close();

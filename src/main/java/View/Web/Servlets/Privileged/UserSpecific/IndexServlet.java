@@ -1,8 +1,6 @@
-package View.Web.Servlets.Privileged;
+package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_Auth;
-import Model.Database.Tables.Table.T_Address;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -15,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 // TODO to be replaced with info about registrated user
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
@@ -47,26 +44,10 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
 
         context.setVariable("BeforeTitle", user.getBeforetitle());
         context.setVariable("Phone", user.getPhone());
-        context.setVariable("loggedId", user.getUserID());
-        context.setVariable("logged_address", user.getResidence());
+        context.setVariable("LoggedAddress", user.getResidence());
         context.setVariable("FirstName", user.getFirstname());
         context.setVariable("MiddleName", user.getMiddlename());
         context.setVariable("LastName", user.getLastname());
-
-        List<T_Address> arr = (new UC_Auth(getDb())).retrieveAllAddress();
-
-        if (arr == null) {
-            // example sending error for GET request
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        // part 3
-        context.setVariable(T_Address.DBNAME_COUNTRY, "" + arr.get(0).getA_Country());
-        context.setVariable(T_Address.DBNAME_CITY, "" + arr.get(0).getA_City());
-        context.setVariable(T_Address.DBNAME_STREET, "" + arr.get(0).getA_Street());
-        context.setVariable(T_Address.DBNAME_HOUSENO, "" + arr.get(0).getA_HouseNO());
-        context.setVariable(T_Address.DBNAME_ZIP, "" + arr.get(0).getA_ZIP());
 
         context.setVariable(VARIABLE_ISADMIN, isAdmin);
 

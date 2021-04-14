@@ -15,7 +15,7 @@ public class Auth extends PrettyObject {
     private Boolean isadmin;
     @Expose(serialize = false)
     private String password; // password OR password hash
-    @Expose
+    @Expose(serialize = false)
     private String oldPassword;
     @Expose
     private String verificationcode;

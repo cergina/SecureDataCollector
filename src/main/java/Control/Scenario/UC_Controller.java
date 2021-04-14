@@ -95,7 +95,7 @@ public class UC_Controller {
         dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, creation.getDipAddress());
         dict.put(T_ControllerUnit.DBNAME_ZWAVE, creation.getZwave());
 
-        T_CentralUnit tc = getCentralUnitByFlatId(creation.getFlatId());
+        T_CentralUnit tc = get_TCentralUnit_ByFlatId(creation.getFlatId());
         int centralUnitId = (tc != null ? tc.getA_pk() : -1);
 
         dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, centralUnitId);
@@ -117,7 +117,7 @@ public class UC_Controller {
         return true;
     }
 
-    private T_CentralUnit getCentralUnitByFlatId(@NotNull Integer flatId) {
+    private T_CentralUnit get_TCentralUnit_ByFlatId(@NotNull Integer flatId) {
         T_CentralUnit t = null;
 
         try {

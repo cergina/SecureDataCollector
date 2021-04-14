@@ -70,11 +70,11 @@ public class UC_FlatSummary {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
-        T_Flat t_flat = getTFlatById(flatId);
+        T_Flat t_flat = get_TFlat_ById(flatId);
         if (t_flat == null)
             return null;
 
-        List<T_ControllerUnit> t_controllerUnits = getAllControllersForFlat(flatId);
+        List<T_ControllerUnit> t_controllerUnits = getAll_Controllers_ForFlat(flatId);
         List<ControllerUnit> controllerUnits = new ArrayList<>();
         for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
             controllerUnits.add(buildControllerUnit(t_controllerUnit));
@@ -82,7 +82,7 @@ public class UC_FlatSummary {
 
         CentralUnit centralUnit = null;
         if (!controllerUnits.isEmpty()) {
-            T_CentralUnit t_centralUnit = getTCentralUnitById(t_controllerUnits.get(0).getA_CentralUnitID());
+            T_CentralUnit t_centralUnit = get_TCentralUnit_ById(t_controllerUnits.get(0).getA_CentralUnitID());
             centralUnit = new CentralUnit(
                     t_centralUnit.getA_Uid(),
                     t_centralUnit.getA_FriendlyName(),
@@ -92,7 +92,7 @@ public class UC_FlatSummary {
             );
         }
 
-        T_Address t_address = getTAddressById(t_flat.getA_AddressID());
+        T_Address t_address = get_TAddress_ById(t_flat.getA_AddressID());
         Address address = new Address(
                 t_address.getA_Country(),
                 t_address.getA_City(),
@@ -115,11 +115,11 @@ public class UC_FlatSummary {
         return flat;
     }
 
-    public ControllerUnit getControllerUnitByUid(@NotNull final Integer controllerUnitUid) {
+    public ControllerUnit get_ControllerUnit_ByUid(@NotNull final Integer controllerUnitUid) {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
-        T_ControllerUnit t_controllerUnit = getTControllerUnitByUid(controllerUnitUid);
+        T_ControllerUnit t_controllerUnit = get_TControllerUnit_ByUid(controllerUnitUid);
         if (t_controllerUnit == null) {
             return null;
         }
@@ -132,11 +132,11 @@ public class UC_FlatSummary {
         return controllerUnit;
     }
 
-    public ControllerUnit getControllerUnit(@NotNull final Integer controllerUnitId) {
+    public ControllerUnit get_ControllerUnit(@NotNull final Integer controllerUnitId) {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
-        T_ControllerUnit t_controllerUnit = getTControllerUnitById(controllerUnitId);
+        T_ControllerUnit t_controllerUnit = get_TControllerUnit_ById(controllerUnitId);
         if (t_controllerUnit == null) {
             return null;
         }
@@ -151,7 +151,7 @@ public class UC_FlatSummary {
 
     private @NotNull ControllerUnit buildControllerUnit(@NotNull final T_ControllerUnit t_controllerUnit) {
 
-        List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
+        List<T_Sensor> t_sensors = getAll_Sensors_ForController(t_controllerUnit.getA_pk());
         List<Sensor> sensors = new ArrayList<>();
         for (T_Sensor t_sensor : t_sensors) {
             int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk());
@@ -199,7 +199,7 @@ public class UC_FlatSummary {
 
     /// PRIVATES
 
-    private @NotNull List<T_ControllerUnit> getAllControllersForFlat(@NotNull final Integer flatId) {
+    private @NotNull List<T_ControllerUnit> getAll_Controllers_ForFlat(@NotNull final Integer flatId) {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
@@ -211,7 +211,7 @@ public class UC_FlatSummary {
         return arr;
     }
 
-    private @NotNull List<T_Sensor> getAllSensorsForController(@NotNull final Integer controllerId) {
+    private @NotNull List<T_Sensor> getAll_Sensors_ForController(@NotNull final Integer controllerId) {
         List<T_Sensor> arr = new ArrayList<>();
 
         try {
@@ -254,7 +254,7 @@ public class UC_FlatSummary {
         return value;
     }
 
-    private T_Address getTAddressById(@NotNull final Integer id) {
+    private T_Address get_TAddress_ById(@NotNull final Integer id) {
         T_Address t = null;
 
         try {
@@ -266,7 +266,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_CentralUnit getTCentralUnitById(@NotNull final Integer id) {
+    private T_CentralUnit get_TCentralUnit_ById(@NotNull final Integer id) {
         T_CentralUnit t = null;
 
         try {
@@ -278,7 +278,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_ControllerUnit getTControllerUnitById(@NotNull final Integer id) {
+    private T_ControllerUnit get_TControllerUnit_ById(@NotNull final Integer id) {
         T_ControllerUnit t = null;
 
         try {
@@ -290,7 +290,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_ControllerUnit getTControllerUnitByUid(@NotNull final Integer uid) {
+    private T_ControllerUnit get_TControllerUnit_ByUid(@NotNull final Integer uid) {
         T_ControllerUnit t = null;
 
         try {
@@ -302,7 +302,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_Flat getTFlatById(@NotNull final Integer id) {
+    private T_Flat get_TFlat_ById(@NotNull final Integer id) {
         T_Flat t = null;
 
         try {

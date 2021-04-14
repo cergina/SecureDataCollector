@@ -21,6 +21,7 @@ public class DbProvider {
     private ResultSet rs = null;
 
     private boolean isItTransaction = false;
+    private boolean insideOfExecution = false;
     // PUBLIC
 
     public DbProvider() {
@@ -44,6 +45,7 @@ public class DbProvider {
                 conn.setAutoCommit(false);
                 isItTransaction = willItBeTransaction;
             }
+            insideOfExecution = true;
         } catch (Exception e) {
             afterExceptionInSqlExecution(e);
             return;
@@ -117,6 +119,7 @@ public class DbProvider {
             CustomLogs.Error(e.getMessage());
         } finally {
             isItTransaction = false;
+            insideOfExecution = false;
 
             try {
                 conn.setAutoCommit(true);

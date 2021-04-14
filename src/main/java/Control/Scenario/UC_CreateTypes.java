@@ -140,7 +140,7 @@ public class UC_CreateTypes {
         return jsonResponse;
     }
 
-    public final @NotNull List<CommType> getAllCommType() {
+    public final @NotNull List<CommType> getAll_CommType() {
         List<CommType> arr = new ArrayList<>();
 
         try {
@@ -156,7 +156,7 @@ public class UC_CreateTypes {
         return arr;
     }
 
-    public final @NotNull List<SensorType> getAllSensorType() {
+    public final @NotNull List<SensorType> getAll_SensorType() {
         List<SensorType> arr = new ArrayList<>();
 
         try {
