@@ -1,7 +1,7 @@
 package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_CreateTypes;
+import Control.Scenario.UC_Types;
 import Control.Scenario.UC_FlatSummary;
 import Model.Database.Support.CustomLogs;
 import Model.Web.SensorType;
@@ -60,7 +60,7 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
             return;
         }
 
-        final List<SensorType> sensorTypeList = (new UC_CreateTypes(getDb()).getAll_SensorType());
+        final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType(false));
         context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
 
         context.setVariable(VARIABLE_CONTROLLER_UNIT, controllerUnit);
