@@ -49,7 +49,7 @@
                         <div class="st_table" data-table_id="controller">
                             <div class="st_row">
                                 <div class="st_column _index-long" th:text="${Phone}"></div>
-                                <div class="st_column _index-long" th:text="${City + ',' + Street + ' ' + HouseNO + ', ' + Zip + '[' + Country + ']'}"></div>
+                                <div class="st_column _index-long" th:text="${LoggedAddress}"></div>
                             </div>
                         </div>
                     </div>
@@ -179,6 +179,17 @@
                                 </div>
                                 <a onclick="goToSeeYourProjects()" class="forum-item-title">See your projects</a>
                                 <div class="forum-sub-title">Look at all projects that you have priviliges to see.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/action/change-password" class="forum-item-title">Change your password</a>
+                                <div class="forum-sub-title">In case you feel your colleague has seen you write your password.</div>
                             </div>
                         </div>
 

@@ -54,21 +54,23 @@
                         <div class="row justify-content-center regpadding rowinrightcol createuser">
                             <h1 class="reglogheader">Create new Controller Unit for this flat</h1>
                         </div>
+
+
                         <div class="grid regpadding">
                             <div class="row justify-content-center">
                                 <div class="regpaddingtopbottom padding-right-5">
                                     <label for="controller-uid">UID:</label>
-                                    <div><input type="text" id="controller-uid" placeholder="should be generated" required></div>
+                                    <div><input type="text" id="controller-uid" placeholder="should be generated" required=""></div>
                                 </div>
                                 <div class="regpaddingtopbottom padding-left-5">
                                     <label for="controller-dip_address">DIP Address:</label>
-                                    <div><input type="text" id="controller-dip_address" placeholder="1-255" required></div>
+                                    <div><input type="text" id="controller-dip_address" placeholder="1-255" required=""></div>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
                                 <div class="regpaddingtopbottom">
                                     <label for="controller-zwave">Zwave identifier:</label>
-                                    <div><input class="min-width-300" type="text" id="controller-zwave" placeholder="ZW-XXX" required></div>
+                                    <div><input class="min-width-300" type="text" id="controller-zwave" placeholder="ZW-XXX" required=""></div>
                                 </div>
                             </div>
                             <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
@@ -76,10 +78,12 @@
                             <!-- BUTTONS FOR ADDITION -->
                             <div class="row justify-content-center rowinrightcol">
                                 <div class="regpaddingbottom padding-top-10">
-                                    <button class="roundedbutton min-width-300" onclick="createControllerUnit()">Create</button>
+                                    <button type="submit" class="roundedbutton min-width-300" onclick="createControllerUnitForThisFlat()">Create</button>
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
 

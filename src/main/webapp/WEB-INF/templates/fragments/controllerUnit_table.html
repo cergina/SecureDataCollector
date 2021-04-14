@@ -9,7 +9,7 @@
             <div class="st_column _uid">UID of controller</div>
             <div class="st_column _dip">DIP Address</div>
             <div class="st_column _zwave">Zwave identifier</div>
-            <div class="st_column _link">Link</div>
+            <div class="st_column _link" th:if="${isAdmin}">Link</div>
         </div>
     </header>
     <div class="st_table" data-table_id="controller">
@@ -17,7 +17,7 @@
             <div class="st_column _uid" th:text="${controllerUnit.UID}"></div>
             <div class="st_column _dip" th:text="${controllerUnit.dipAddress}"></div>
             <div class="st_column _zwave" th:text="${controllerUnit.zwave}"></div>
-            <div class="st_column _link controllerUnit_link" th:text="${controllerUnit.id}"></div>
+            <div class="st_column _link controllerUnit_link" th:text="${controllerUnit.id}" th:if="${isAdmin}"></div>
             <div></div>
         </div>
     </div>

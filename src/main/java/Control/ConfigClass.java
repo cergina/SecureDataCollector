@@ -9,7 +9,7 @@ public class ConfigClass {
     // changes db table names from lowercase to camelcase if true and some other things
     public final static boolean RUNNING_ON_SERVER = false;
     // in TimakCommonFiles there is a setup File for creation database, the number should match
-    public final static int CODE_SUPPOSED_TO_WORK_WITH_SQL_VERSION = 16;
+    public final static int CODE_SUPPOSED_TO_WORK_WITH_SQL_VERSION = 17;
 
     // HTML variable name that tells if we are running remotely
     public final static String HTML_VARIABLENAME_RUNNINGREMOTELY = "trueIfRunningRemotely";
