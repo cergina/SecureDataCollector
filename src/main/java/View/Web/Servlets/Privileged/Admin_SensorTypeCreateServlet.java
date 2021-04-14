@@ -40,7 +40,7 @@ public class Admin_SensorTypeCreateServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        final List<CommType> commTypeList = (new UC_Types(getDb()).get_AllCommType());
+        final List<CommType> commTypeList = (new UC_Types(getDb()).getAll_CommType());
         context.setVariable(VARIABLE_COMM_TYPES, commTypeList);
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());

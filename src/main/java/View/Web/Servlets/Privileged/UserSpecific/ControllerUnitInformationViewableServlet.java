@@ -60,7 +60,7 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
             return;
         }
 
-        final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType());
+        final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType(false));
         context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
 
         context.setVariable(VARIABLE_CONTROLLER_UNIT, controllerUnit);

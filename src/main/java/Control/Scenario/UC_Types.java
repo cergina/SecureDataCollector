@@ -159,7 +159,7 @@ public class UC_Types {
     public final @NotNull List<SensorType> getAll_SensorType(boolean includeCommTypes) {
         List<SensorType> sensorTypeList = new ArrayList<>();
 
-        List<CommType> commTypeList = includeCommTypes ? getAllCommType() : null;
+        List<CommType> commTypeList = includeCommTypes ? getAll_CommType() : null;
         try {
             List<E_SensorType> e_sensorTypeList = I_SensorType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
             for (E_SensorType e_sensorType : e_sensorTypeList) {
