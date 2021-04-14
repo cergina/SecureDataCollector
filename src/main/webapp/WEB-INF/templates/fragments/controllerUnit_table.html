@@ -9,7 +9,7 @@
             <div class="st_column _uid">UID of controller</div>
             <div class="st_column _dip">DIP Address</div>
             <div class="st_column _zwave">Zwave identifier</div>
-            <div class="st_column _link">Link</div>
+            <div class="st_column _link" th:if="${isAdmin}">Link</div>
         </div>
     </header>
     <div class="st_table" data-table_id="controller">
@@ -17,14 +17,14 @@
             <div class="st_column _uid" th:text="${controllerUnit.UID}"></div>
             <div class="st_column _dip" th:text="${controllerUnit.dipAddress}"></div>
             <div class="st_column _zwave" th:text="${controllerUnit.zwave}"></div>
-            <div class="st_column _link controllerUnit_link" th:text="${controllerUnit.id}"></div>
+            <div class="st_column _link controllerUnit_link" th:text="${controllerUnit.id}" th:if="${isAdmin}"></div>
             <div></div>
         </div>
     </div>
     <!-- senzory -->
     <div class="st_wrap_table" data-table_id="sensor">
         <header class="st_table_header">
-            <h2>Controller's sensors</h2>
+            <h4>Controller's sensors</h4>
             <div class="st_row">
                 <div class="st_column _inputNum">Input number</div>
                 <div class="st_column _sensorName">Sensor name</div>

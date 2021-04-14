@@ -233,6 +233,12 @@ body, html{
     margin: 0 20px;
     padding: 20px 0 0;
 }
+
+h4 {
+    font-weight: 200;
+    margin: 0 20px;
+    padding: 20px 0 0;
+}
 .st_table_header .st_row{
     color: rgba(220,220,220, .7);
 }

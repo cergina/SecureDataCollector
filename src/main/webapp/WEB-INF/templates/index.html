@@ -49,7 +49,7 @@
                         <div class="st_table" data-table_id="controller">
                             <div class="st_row">
                                 <div class="st_column _index-long" th:text="${Phone}"></div>
-                                <div class="st_column _index-long" th:text="${City + ',' + Street + ' ' + HouseNO + ', ' + Zip + '[' + Country + ']'}"></div>
+                                <div class="st_column _index-long" th:text="${LoggedAddress}"></div>
                             </div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="pull-right forum-desc">
                             <samll>Only admin has right to view this</samll>
                         </div>
-                        <h3>MANAGEMENT</h3>
+                        <h4>MANAGEMENT</h4>
                     </div>
 
                     <div th:if="${isAdmin}" class="forum-item">
@@ -132,6 +132,16 @@
                                 <div class="forum-icon">
                                     <i class="fa fa-bolt"></i>
                                 </div>
+                                <a href="/dcs/admin/types" class="forum-item-title">All sensor & communication types</a>
+                                <div class="forum-sub-title">To see what is available in our system go here.</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
                                 <a href="/dcs/admin/addresses/create" class="forum-item-title">Create new address</a>
                                 <div class="forum-sub-title">When adding central units you need to assign them to a specific address.</div>
                             </div>
@@ -145,7 +155,7 @@
                         <div class="pull-right forum-desc">
                             <samll>Everyone can view this</samll>
                         </div>
-                        <h3>GENERAL</h3>
+                        <h4>GENERAL</h4>
                     </div>
 
                     <div class="forum-item">
@@ -179,6 +189,17 @@
                                 </div>
                                 <a onclick="goToSeeYourProjects()" class="forum-item-title">See your projects</a>
                                 <div class="forum-sub-title">Look at all projects that you have priviliges to see.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/action/change-password" class="forum-item-title">Change your password</a>
+                                <div class="forum-sub-title">In case you feel your colleague has seen you write your password.</div>
                             </div>
                         </div>
 

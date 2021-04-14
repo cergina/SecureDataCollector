@@ -140,7 +140,7 @@ public class UC_Types {
         return jsonResponse;
     }
 
-    public final @NotNull List<CommType> getAllCommType() {
+    public final @NotNull List<CommType> getAll_CommType() {
         List<CommType> commTypeList = new ArrayList<>();
 
         try {
@@ -156,10 +156,10 @@ public class UC_Types {
         return commTypeList;
     }
 
-    public final @NotNull List<SensorType> getAllSensorType(boolean includeCommTypes) {
+    public final @NotNull List<SensorType> getAll_SensorType(boolean includeCommTypes) {
         List<SensorType> sensorTypeList = new ArrayList<>();
 
-        List<CommType> commTypeList = includeCommTypes ? getAllCommType() : null;
+        List<CommType> commTypeList = includeCommTypes ? getAll_CommType() : null;
         try {
             List<E_SensorType> e_sensorTypeList = I_SensorType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
             for (E_SensorType e_sensorType : e_sensorTypeList) {

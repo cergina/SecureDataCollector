@@ -2,10 +2,10 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.*;
+import Model.Database.Support.UserAccessHelper;
 import Model.Database.Tables.Table.*;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
-import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.CreationException;
 import View.Support.CustomExceptions.InvalidOperationException;
@@ -14,10 +14,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Use Case class for authentication
@@ -27,23 +25,6 @@ public class UC_Auth {
 
     public UC_Auth(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
-    }
-
-    public List<T_Address> retrieveAllAddress() { // TODO remove this method later
-        List<T_Address> arr = new ArrayList<T_Address>();
-
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
-        db.beforeSqlExecution(false);
-
-        try {
-            arr = I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
-
-            db.afterOkSqlExecution();
-        } catch (SQLException e) {
-            db.afterExceptionInSqlExecution(e);
-        }
-
-        return arr;
     }
 
     // PUBLIC METHODS
@@ -65,7 +46,7 @@ public class UC_Auth {
                 throw new CreationException("Presented email is not valid for use.");
             }
 
-            if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
+            if (Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
                 throw new AuthenticationException("User with this email already exists.");
             }
@@ -95,6 +76,7 @@ public class UC_Auth {
             Dictionary dict_hash = new Hashtable();
             dict_hash.put(T_Hash.DBNAME_VALUE, auth.getVerificationcode()); // save verification instead of password hash
             dict_hash.put(T_Hash.DBNAME_USER_ID, createdUserID);
+            dict_hash.put(T_Hash.DBNAME_NACL, UserAccessHelper.getNextSalt());
 
             T_Hash hashToInsert = T_Hash.CreateFromScratch(dict_hash);
             I_Hash.insert(db.getConn(), db.getPs(), hashToInsert);
@@ -156,7 +138,7 @@ public class UC_Auth {
         try {
             db.beforeSqlExecution(true);
 
-            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
@@ -172,9 +154,14 @@ public class UC_Auth {
             }
 
             // modify Hash table END
+            byte[] newSalt = UserAccessHelper.getNextSalt();
+            String passwordHash = UserAccessHelper.hashPassword(auth.getPassword(), newSalt); // hash password
+            auth.setPassword(passwordHash);
+
             Dictionary dict_hash = new Hashtable();
             dict_hash.put(T_Hash.DBNAME_VALUE, auth.getPassword()); // replace verification code with password hash
             dict_hash.put(T_Hash.DBNAME_USER_ID, authDb.getUser().getUserID());
+            dict_hash.put(T_Hash.DBNAME_NACL, newSalt);
 
             T_Hash t_hash = T_Hash.CreateFromScratch(dict_hash);
             I_Hash.insert(db.getConn(), db.getPs(), t_hash);
@@ -185,6 +172,75 @@ public class UC_Auth {
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Registration complete.");
+            jsonResponse.setData(authDb);
+        } catch (AuthenticationException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (SQLException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            jsonResponse.setMessage("Internal server error.");
+        }
+        return jsonResponse;
+    }
+
+    /**
+     * Change password
+     * NEEDS TO BE A TRANSACTION - doing inserts
+     * @param auth User data that contains email, password hash, verification code
+     * @return final Api response body
+     */
+    public final @NotNull JsonResponse changePassword(@NotNull final Auth auth) {
+        JsonResponse jsonResponse = new JsonResponse();
+
+        try {
+            db.beforeSqlExecution(true);
+
+            // VERIFY CURRENT PASSWORD matches
+            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
+
+            final byte[] saltDb = (I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID())).getA_NaCl();
+
+            String passwordHash = UserAccessHelper.hashPassword(auth.getOldPassword(), saltDb); // hash password
+
+            auth.setOldPassword(passwordHash);
+
+            if (!authDb.getPassword().equals(auth.getOldPassword())) {
+                jsonResponse.setMessage("Current password does not match.");
+                throw new AuthenticationException("Current password does not match.");
+            }
+
+            // new and current password cant be the same
+            String newPasswordWithOldsaltHash = UserAccessHelper.hashPassword(auth.getPassword(), saltDb); // hash password
+            if (newPasswordWithOldsaltHash.equals(auth.getOldPassword())) {
+                jsonResponse.setMessage("New and old password can't be the same.");
+                throw new AuthenticationException("New and old password can't be the same.");
+            }
+
+            // CREATE A NEW PASSWORD
+            byte[] newSalt = UserAccessHelper.getNextSalt();
+            passwordHash = UserAccessHelper.hashPassword(auth.getPassword(), newSalt); // hash password
+            auth.setPassword(passwordHash);
+
+            // create a table for db hash insertion
+            Dictionary dict_hash = new Hashtable();
+            dict_hash.put(T_Hash.DBNAME_VALUE, auth.getPassword()); // new password set
+            dict_hash.put(T_Hash.DBNAME_USER_ID, authDb.getUser().getUserID());
+            dict_hash.put(T_Hash.DBNAME_NACL, newSalt);
+
+            T_Hash t_hash = T_Hash.CreateFromScratch(dict_hash);
+
+            // do insert
+            I_Hash.insert(db.getConn(), db.getPs(), t_hash);
+            authDb.setPassword(passwordHash);
+
+            // After SQL SQL execution
+            db.afterOkSqlExecution();
+
+            jsonResponse.setStatus(HttpServletResponse.SC_OK);
+            jsonResponse.setMessage("Password succesffully changed.");
             jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
             db.afterExceptionInSqlExecution(e);
@@ -212,12 +268,18 @@ public class UC_Auth {
             // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
             db.beforeSqlExecution(false);
 
-            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
 
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
             }
+
+            // combine with salt from db - will not throw null, because in retrieveAuthByEmail it worked ok step before
+            final byte[] saltDb = (I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID())).getA_NaCl();
+
+            String passwordHash = UserAccessHelper.hashPassword(auth.getPassword(), saltDb); // hash password
+            auth.setPassword(passwordHash);
 
             if (!authDb.getPassword().equals(auth.getPassword())) {
                 jsonResponse.setMessage("Password does not match.");
@@ -274,37 +336,4 @@ public class UC_Auth {
         }
     }
 
-
-    // PRIVATE METHODS
-
-    /**
-     * Retrieve user and password hash
-     * @param email User to search for
-     * @return {@link Auth} instance, null if email not in database
-     */
-    private @NotNull Auth retrieveAuthByEmail(@NotNull final String email) throws SQLException {
-
-        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
-        if (t_user == null) { // isnt email in db?
-            return null;
-        }
-
-        User user = new User();
-        user.setBeforetitle(t_user.getA_BeforeTitle());
-        user.setFirstname(t_user.getA_FirstName());
-        user.setMiddlename(t_user.getA_MiddleName());
-        user.setLastname(t_user.getA_LastName());
-        user.setPhone(t_user.getA_Phone());
-        user.setEmail(t_user.getA_Email());
-        user.setResidence(t_user.getA_PermanentResidence());
-        user.setUserID(t_user.getA_pk());
-
-        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
-
-        Auth auth = new Auth();
-        auth.setUser(user);
-        auth.setPassword(t_hash.getA_Value());
-
-        return auth;
-    }
 }

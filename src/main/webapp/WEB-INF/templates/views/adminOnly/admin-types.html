@@ -4,9 +4,12 @@
 <body>
 <div class="container-fluid">
     <div class="container">
+
         <main class="st_viewport">
+            <!-- LIST -->
             <div th:each="sensorType: ${sensorTypes}">
                 <div class="st_wrap_table">
+
                     <header class="st_table_header">
                         <h2>Sensor type</h2>
                         <div class="st_row">
@@ -23,7 +26,7 @@
                     </div>
                     <div class="st_wrap_table">
                         <header class="st_table_header">
-                            <h3>Communication type</h3>
+                            <h4>Communication type</h4>
                             <div class="st_row">
                                 <div class="st_column col-sm-4 _commtype_name">Name</div>
                                 <div class="st_column col-sm-4"></div>
@@ -36,9 +39,11 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </main>
+
     </div>
 </div>
 

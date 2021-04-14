@@ -1,0 +1,15 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+
+        <main class="st_viewport">
+            <div th:replace="fragments/controllerUnit_table.html :: controllerUnit_table(controllerUnit=${controllerUnit})"></div>
+        </main>
+
+    </div>
+</div>
+</body>
+</html>

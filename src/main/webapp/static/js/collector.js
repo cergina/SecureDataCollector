@@ -22,6 +22,7 @@ function buildAuth() {
     return {
         user: buildUser(),
         isadmin: $("#isadmin").prop("checked"),
+        oldPassword: $("#password-now").val(),
         password: $("#password").val(),
         verificationcode: $("#verificationcode").val()
     };
@@ -160,6 +161,44 @@ function registerUser() {
     }
 }
 
+// Change user's password
+function changePassword() {
+    if ($("#password-retype").val() != $("#password").val()) {
+        alert("Passwords does not match!")
+    } else {
+        $.ajax({
+            method: "POST",
+            url: $SCRIPT_ROOT + "/action/change-password",
+            contentType: CONTENT_TYPE,
+            dataType: DATA_TYPE,
+            timeout: 20000,
+            data: JSON.stringify(buildAuth()),
+            statusCode: {
+                200: function(response) {
+                    $(':input').val('');
+                    alert('You\'ve successfully changed your password.\n' + response.message)
+                },
+                400: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                401: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                500: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                }
+            },
+            complete: function(jqXHR) { // keep for DEBUG only
+                console.log("---DEBUG---");
+                console.log(jqXHR);
+            }
+        });
+    }
+}
+
 // Login user
 function loginUser() {
     $.ajax({
@@ -187,7 +226,7 @@ function loginUser() {
 
 // CREATING STUFF
 // Create new controller unit
-function createControllerUnit() {
+function createControllerUnitForThisFlat() {
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/admin/controllers/create",
@@ -365,10 +404,10 @@ function createSensorType() {
 // NAVIGATION
 // Login user
 function goHome() {
-    $(location).attr('href', $SCRIPT_ROOT);
+    $(location).prop('href', $SCRIPT_ROOT);
 }
 
-// Login user
+// TEST ONLY
 function goToFlatId1() {
     $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=1');
 }
@@ -384,6 +423,11 @@ function accessFlatWithId() {
     $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
 }
 
+// used in public request for consumption to visit by uid
+function requestViewConsumption() {
+    var uidToVisit = uidToVisit = $("#request-uid").val();
+    $(location).attr('href', $SCRIPT_ROOT + '/consumption-view?uid=' + uidToVisit);
+}
 
 function showVisibilityOfAdditionElement() {
     switchVisibilityOfAdditionElement();

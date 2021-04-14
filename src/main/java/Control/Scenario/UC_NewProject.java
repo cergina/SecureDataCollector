@@ -36,7 +36,7 @@ public class UC_NewProject {
             db.beforeSqlExecution(true);
 
             // do not create project that already exists
-            if (getProjectByName(projectCreation.getProject_name()) != null) {
+            if (get_TProject_ByName(projectCreation.getProject_name()) != null) {
                 jsonResponse.setMessage("Project with this  name already exists.");
                 throw new AlreadyExistsException("Project with this  name already exists.");
             }
@@ -51,7 +51,7 @@ public class UC_NewProject {
             }
 
             // Get all user's that need addition to Project_User table -- check if they exist
-            List<T_User> listOfUsers = getAllUsersThatWillBeOwners(projectCreation);
+            List<T_User> listOfUsers = getAll_TUsers_ThatWillBeOwners(projectCreation);
             if (listOfUsers == null) {
                 jsonResponse.setMessage("All e-mails have to be already registered in the project in advance.");
                 throw new CreationException("All e-mails have to be already registered in the project in advance.");
@@ -103,7 +103,7 @@ public class UC_NewProject {
         }
     }
 
-    private List<T_User> getAllUsersThatWillBeOwners(@NotNull final ProjectCreation projectCreation) throws SQLException{
+    private List<T_User> getAll_TUsers_ThatWillBeOwners(@NotNull final ProjectCreation projectCreation) throws SQLException{
         List<T_User> list = new ArrayList<>();
 
         // process required email
@@ -159,7 +159,7 @@ public class UC_NewProject {
         projectCreation.getAdditional_emails().removeIf(em -> (em == null || em.equals("")));
     }
 
-    private T_Project getProjectByName(@NotNull final String name) {
+    private T_Project get_TProject_ByName(@NotNull final String name) {
         T_Project t = null;
 
         try {
