@@ -30,7 +30,7 @@
 #include "util/delay.h"
 
 #define DEBUG_TEST
-#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
+//#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
 
 #define UART_BAUD_RATE 9600
 
@@ -66,6 +66,13 @@ uint8_t Busy = 1;
 
 ISR(PCINT1_vect){
 	ADC5_readFlag = 1;
+}
+
+ISR(PCINT2_vect){	
+	DDRB |= (1<<DDB5); //LED L
+	PORTB &= ~(1<<DDB5);
+	_delay_ms(1000);
+	PORTB |= (1<<DDB5);
 }
 
 uint8_t readDipAddress()
@@ -156,6 +163,11 @@ int main(void)
 	
 	PCICR |= (1 << PCIE1);     // set PCIE1 to enable PCMSK1 scan
 	PCMSK1 |= (1 << PCINT13);   // set PCINT13 to trigger an interrupt on state change
+
+	PCICR |= (1 << PCIE2);     // set PCIE2 to enable PCMSK2 scan
+	PCMSK2 |= (1 << PCINT16);   // set PCINT16 trigger (RX)
+
+
 		
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
@@ -271,16 +283,16 @@ int main(void)
 			_delay_ms(1000);
 		#endif
 
-	/*
+	
 		if(Standing_by){
 			set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
 			cli(); // deactivate interrupts
 			sleep_enable(); // sets the SE (sleep enable) bit
+			sleep_bod_disable();  
 			sei(); //
 			sleep_cpu(); // sleep now!!
 			sleep_disable(); // deletes the SE bit
 		}
-	*/
 	}
 }
 		
