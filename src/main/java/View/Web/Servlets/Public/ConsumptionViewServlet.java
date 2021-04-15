@@ -1,7 +1,7 @@
 package View.Web.Servlets.Public;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_FlatSummary;
+import Control.Scenario.UC_OutsiderConsumption;
 import Control.Scenario.UC_Types;
 import Model.Database.Support.CustomLogs;
 import Model.Web.SensorType;
@@ -53,7 +53,7 @@ public class ConsumptionViewServlet extends PublicServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        ControllerUnit controllerUnit = (new UC_FlatSummary(getDb())).get_ControllerUnit_ByUid(requestedControllerUnitUid);
+        ControllerUnit controllerUnit = (new UC_OutsiderConsumption(getDb())).get_ControllerUnit_ByUid(requestedControllerUnitUid);
         if (controllerUnit == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;

@@ -1,60 +1,95 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_Hash;
-import Model.Database.Interaction.I_User;
-import Model.Database.Tables.Table.T_Hash;
-import Model.Database.Tables.Table.T_User;
-import Model.Web.Auth;
-import Model.Web.User;
+import Model.Database.Interaction.I_Measurements;
+import Model.Database.Interaction.I_Sensor;
+import Model.Database.Support.CustomLogs;
+import Model.Database.Tables.Table.*;
+import Model.Web.Sensor;
+import Model.Web.thymeleaf.ControllerUnit;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 /*
 *  Make sure it stays NON-public. Only the same package will have access to this
 * */
 class Shared_Uc {
-    ////////////////////////////////////////
-    //          Authentication            //
-    ///////////////////////////////////////
 
-    /**
-     * Retrieve user and password hash
-     * @param email User to search for
-     * @return {@link Auth} instance, null if email not in database
-     */
-    protected static @NotNull Auth retrieveAuthByEmail(@NotNull final String email, DbProvider db) throws SQLException {
+    //////////////////////////////////////////
+    //          Consumption-Flat            //
+    //////////////////////////////////////////
+    protected static @NotNull ControllerUnit buildControllerUnit(@NotNull final T_ControllerUnit t_controllerUnit, DbProvider db) {
 
-        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
-        if (t_user == null) { // isnt email in db?
-            return null;
+        List<T_Sensor> t_sensors = getAll_TSensors_ForController(t_controllerUnit.getA_pk(), db);
+        List<Sensor> sensors = new ArrayList<>();
+        for (T_Sensor t_sensor : t_sensors) {
+            int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk(), db);
+            int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk(), db);
+
+            Sensor sensor = new Sensor(
+                    t_sensor.getA_Input(),
+                    t_sensor.getA_Name(),
+                    measuredLast30Days,
+                    mesuredTotal
+            );
+            sensors.add(sensor);
         }
-
-        User user = new User();
-        user.setBeforetitle(t_user.getA_BeforeTitle());
-        user.setFirstname(t_user.getA_FirstName());
-        user.setMiddlename(t_user.getA_MiddleName());
-        user.setLastname(t_user.getA_LastName());
-        user.setPhone(t_user.getA_Phone());
-        user.setEmail(t_user.getA_Email());
-        user.setResidence(t_user.getA_PermanentResidence());
-        user.setUserID(t_user.getA_pk());
-
-        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
-
-        Auth auth = new Auth();
-        auth.setUser(user);
-        auth.setPassword(t_hash.getA_Value());
-
-        return auth;
+        return new ControllerUnit(
+                t_controllerUnit.getA_pk(),
+                t_controllerUnit.getA_Uid(),
+                t_controllerUnit.getA_DipAddress(),
+                t_controllerUnit.getA_Zwave(),
+                sensors
+        );
     }
 
-    ////////////////////////////////////////
-    //          DACO            //
-    ///////////////////////////////////////
+    protected static @NotNull List<T_Sensor> getAll_TSensors_ForController(@NotNull final Integer controllerId, DbProvider db) {
+        List<T_Sensor> arr = new ArrayList<>();
 
+        try {
+            arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, controllerId);
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
 
+        return arr;
+    }
+
+    protected static int getMeasuredLast30Days(@NotNull final Integer sensorId, DbProvider db) {
+        int value = 0;
+
+        try {
+            value = I_Measurements.measuredLast30DaysForSensor(db.getConn(), db.getPs(), db.getRs(), sensorId);
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return value;
+    }
+
+    protected static int getMeasuredTotal(@NotNull final Integer sensorId, DbProvider db) {
+        int value = 0;
+
+        try {
+            T_Measurement t_measurement = I_Measurements.retrieveNewest(db.getConn(), db.getPs(), db.getRs(), sensorId);
+
+            // in case no measurement found for sensor Id
+            if (t_measurement == null) {
+                return value;
+            }
+
+            value = t_measurement.getA_AccumulatedValue();
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return value;
+    }
     ////////////////////////////////////////
     //          DACO            //
     ///////////////////////////////////////

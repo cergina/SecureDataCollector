@@ -74,10 +74,10 @@ public class UC_FlatSummary {
         if (t_flat == null)
             return null;
 
-        List<T_ControllerUnit> t_controllerUnits = getAll_Controllers_ForFlat(flatId);
+        List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForFlat(flatId);
         List<ControllerUnit> controllerUnits = new ArrayList<>();
         for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
-            controllerUnits.add(buildControllerUnit(t_controllerUnit));
+            controllerUnits.add(Shared_Uc.buildControllerUnit(t_controllerUnit, db));
         }
 
         CentralUnit centralUnit = null;
@@ -115,23 +115,6 @@ public class UC_FlatSummary {
         return flat;
     }
 
-    public ControllerUnit get_ControllerUnit_ByUid(@NotNull final Integer controllerUnitUid) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
-        db.beforeSqlExecution(false);
-
-        T_ControllerUnit t_controllerUnit = get_TControllerUnit_ByUid(controllerUnitUid);
-        if (t_controllerUnit == null) {
-            return null;
-        }
-
-        ControllerUnit controllerUnit = buildControllerUnit(t_controllerUnit);
-
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
-        db.afterOkSqlExecution();
-
-        return controllerUnit;
-    }
-
     public ControllerUnit get_ControllerUnit(@NotNull final Integer controllerUnitId) {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
@@ -141,37 +124,12 @@ public class UC_FlatSummary {
             return null;
         }
 
-        ControllerUnit controllerUnit = buildControllerUnit(t_controllerUnit);
+        ControllerUnit controllerUnit = Shared_Uc.buildControllerUnit(t_controllerUnit, db);
 
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return controllerUnit;
-    }
-
-    private @NotNull ControllerUnit buildControllerUnit(@NotNull final T_ControllerUnit t_controllerUnit) {
-
-        List<T_Sensor> t_sensors = getAll_Sensors_ForController(t_controllerUnit.getA_pk());
-        List<Sensor> sensors = new ArrayList<>();
-        for (T_Sensor t_sensor : t_sensors) {
-            int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk());
-            int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk());
-
-            Sensor sensor = new Sensor(
-                    t_sensor.getA_Input(),
-                    t_sensor.getA_Name(),
-                    measuredLast30Days,
-                    mesuredTotal
-            );
-            sensors.add(sensor);
-        }
-        return new ControllerUnit(
-                t_controllerUnit.getA_pk(),
-                t_controllerUnit.getA_Uid(),
-                t_controllerUnit.getA_DipAddress(),
-                t_controllerUnit.getA_Zwave(),
-                sensors
-        );
     }
 
     /***
@@ -199,7 +157,7 @@ public class UC_FlatSummary {
 
     /// PRIVATES
 
-    private @NotNull List<T_ControllerUnit> getAll_Controllers_ForFlat(@NotNull final Integer flatId) {
+    private @NotNull List<T_ControllerUnit> getAll_TControllers_ForFlat(@NotNull final Integer flatId) {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
@@ -211,48 +169,7 @@ public class UC_FlatSummary {
         return arr;
     }
 
-    private @NotNull List<T_Sensor> getAll_Sensors_ForController(@NotNull final Integer controllerId) {
-        List<T_Sensor> arr = new ArrayList<>();
 
-        try {
-            arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, controllerId);
-        } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
-        }
-
-        return arr;
-    }
-
-    private int getMeasuredLast30Days(@NotNull final Integer sensorId) {
-        int value = 0;
-
-        try {
-            value = I_Measurements.measuredLast30DaysForSensor(db.getConn(), db.getPs(), db.getRs(), sensorId);
-        } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
-        }
-
-        return value;
-    }
-
-    private int getMeasuredTotal(@NotNull final Integer sensorId) {
-        int value = 0;
-
-        try {
-            T_Measurement t_measurement = I_Measurements.retrieveNewest(db.getConn(), db.getPs(), db.getRs(), sensorId);
-
-            // in case no measurement found for sensor Id
-            if (t_measurement == null) {
-                return value;
-            }
-
-            value = t_measurement.getA_AccumulatedValue();
-        } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
-        }
-
-        return value;
-    }
 
     private T_Address get_TAddress_ById(@NotNull final Integer id) {
         T_Address t = null;
@@ -290,17 +207,7 @@ public class UC_FlatSummary {
         return t;
     }
 
-    private T_ControllerUnit get_TControllerUnit_ByUid(@NotNull final Integer uid) {
-        T_ControllerUnit t = null;
 
-        try {
-            t = I_ControllerUnit.retrieveByUid(db.getConn(), db.getPs(), db.getRs(), uid);
-        } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
-        }
-
-        return t;
-    }
 
     private T_Flat get_TFlat_ById(@NotNull final Integer id) {
         T_Flat t = null;

@@ -6,6 +6,7 @@ import Model.Database.Support.UserAccessHelper;
 import Model.Database.Tables.Table.*;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
+import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
 import View.Support.CustomExceptions.CreationException;
 import View.Support.CustomExceptions.InvalidOperationException;
@@ -46,7 +47,7 @@ public class UC_Auth {
                 throw new CreationException("Presented email is not valid for use.");
             }
 
-            if (Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db) != null) {
+            if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
                 throw new AuthenticationException("User with this email already exists.");
             }
@@ -138,7 +139,7 @@ public class UC_Auth {
         try {
             db.beforeSqlExecution(true);
 
-            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
+            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
@@ -199,7 +200,7 @@ public class UC_Auth {
             db.beforeSqlExecution(true);
 
             // VERIFY CURRENT PASSWORD matches
-            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
+            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
 
             final byte[] saltDb = (I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID())).getA_NaCl();
 
@@ -268,7 +269,7 @@ public class UC_Auth {
             // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
             db.beforeSqlExecution(false);
 
-            Auth authDb = Shared_Uc.retrieveAuthByEmail(auth.getUser().getEmail(), db);
+            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
 
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
@@ -336,4 +337,36 @@ public class UC_Auth {
         }
     }
 
+
+    // PRIVATE
+    /**
+     * Retrieve user and password hash
+     * @param email User to search for
+     * @return {@link Auth} instance, null if email not in database
+     */
+    private @NotNull Auth retrieveAuthByEmail(@NotNull final String email) throws SQLException {
+
+        T_User t_user = I_User.retrieveByEmail(db.getConn(), db.getPs(), db.getRs(), email);
+        if (t_user == null) { // isnt email in db?
+            return null;
+        }
+
+        User user = new User();
+        user.setBeforetitle(t_user.getA_BeforeTitle());
+        user.setFirstname(t_user.getA_FirstName());
+        user.setMiddlename(t_user.getA_MiddleName());
+        user.setLastname(t_user.getA_LastName());
+        user.setPhone(t_user.getA_Phone());
+        user.setEmail(t_user.getA_Email());
+        user.setResidence(t_user.getA_PermanentResidence());
+        user.setUserID(t_user.getA_pk());
+
+        T_Hash t_hash = I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), t_user.getA_pk());
+
+        Auth auth = new Auth();
+        auth.setUser(user);
+        auth.setPassword(t_hash.getA_Value());
+
+        return auth;
+    }
 }
