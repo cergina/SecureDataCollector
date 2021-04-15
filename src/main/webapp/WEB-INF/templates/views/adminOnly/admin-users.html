@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+    <div class="row">
+        <div class="col-xl-">
+
+
+            <div class="wrapper wrapper-content animated fadeInRight">
+
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is panel that provides list of users in system.<br></span>
+                    </div>
+                </div>
+
+
+                <!-- MAIN PANEL -->
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <div class="pull-right forum-desc">
+                            <samll>Only admin has right to view this</samll>
+                        </div>
+                        <h4>GENERAL</h4>
+                    </div>
+                    <!-- LIST -->
+                    <div th:each="user: ${users.getUsers()}">
+                        <div th:replace="fragments/users_table.html :: users_table(user=${user})"></div>
+                    </div>
+                    <!-- END LIST -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

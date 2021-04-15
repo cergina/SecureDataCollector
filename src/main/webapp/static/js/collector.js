@@ -503,3 +503,13 @@ $(function() {
         );
     });
 });
+
+$(function() {
+    // add link to single controller page
+    $(".user_link").each(function(index, value){
+        var userId = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/admin/users?id=' + userId + '">link</a>'
+        );
+    });
+});

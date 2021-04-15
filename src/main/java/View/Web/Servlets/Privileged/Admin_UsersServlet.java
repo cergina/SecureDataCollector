@@ -1,0 +1,94 @@
+package View.Web.Servlets.Privileged;
+
+import Control.ConfigClass;
+import Control.Scenario.UC_UserListing;
+import Model.Database.Support.CustomLogs;
+import Model.Web.User;
+import Model.Web.Users;
+import View.Configuration.ContextUtil;
+import View.Support.DcsWebContext;
+import View.Support.ServletAbstracts.AdminServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet(name = "Admin_UsersServlet", urlPatterns = Admin_UsersServlet.SERVLET_URL)
+public class Admin_UsersServlet extends AdminServlet {
+    public static final String SERVLET_URL =  "/admin/users";
+    public static final String TEMPLATE_NAME = "views/adminOnly/admin-users.html";
+    public static final String SINGLEUSER_TEMPLATENAME = "views/adminOnly/admin-user.html";
+
+    private static final String VARIABLE_ISADMIN = "isAdmin";
+    private static final String VARIABLE_USERS = "users";
+    private static final String VARIABLE_USER = "user";
+    private static final String REQUEST_PARAM_ID = "id";
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        super.doGet(request, response);
+        if (checkPrivilege(request, response) == false) {
+            return;
+        }
+
+        // if exception is thrown
+        boolean displaySingleUser = request.getParameterNames().hasMoreElements();
+
+        if (displaySingleUser == false) {
+            processAllUsers(request, response);
+            return;
+        }
+
+
+        int requestedUserId;
+        try {
+            requestedUserId = Integer.parseInt(request.getParameter(REQUEST_PARAM_ID));
+            CustomLogs.Development("V requeste prisiel user id: " + requestedUserId);
+
+            processSingleUser(request, response, requestedUserId);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+
+    private void processAllUsers(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
+        WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
+                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
+
+        UC_UserListing uc = new UC_UserListing(getDb());
+        Users users = uc.allUsers();
+        if (users == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        context.setVariable(VARIABLE_ISADMIN, true);
+        context.setVariable(VARIABLE_USERS, users);
+
+        engine.process(TEMPLATE_NAME, context, response.getWriter());
+    }
+
+    private void processSingleUser(HttpServletRequest request, HttpServletResponse response, int requestedUserId) throws IOException {
+        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
+        WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
+                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
+
+        UC_UserListing uc = new UC_UserListing(getDb());
+        User user = uc.specificUser(requestedUserId);
+        if (user == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        context.setVariable(VARIABLE_ISADMIN, true);
+        context.setVariable(VARIABLE_USER, user);
+
+        engine.process(SINGLEUSER_TEMPLATENAME, context, response.getWriter());
+    }
+}

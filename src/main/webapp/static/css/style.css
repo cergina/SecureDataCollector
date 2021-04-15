@@ -173,6 +173,10 @@ body, html{
     min-width: 230px;
 }
 
+._index-general-longer {
+    min-width: 320px;
+}
+
 ._index-short {
     min-width: 190px;
 }
