@@ -1,0 +1,185 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+
+        <p th:text="${': ' + centralUnit.id}"></p>
+        <p th:text="${': ' + centralUnit.uid}"></p>
+        <p th:text="${': ' + centralUnit.dip}"></p>
+        <p th:text="${': ' + centralUnit.friendlyName}"></p>
+        <p th:text="${': ' + centralUnit.simNo}"></p>
+        <p th:text="${': ' + centralUnit.zwave}"></p>
+        <p th:text="${': ' + centralUnit.projectId}"></p>
+        <p th:text="${': ' + centralUnit.addressId}"></p>
+
+        <p th:if="${centralUnit.flats.isEmpty()}">Tento CU este nema byty priradene.</p>
+
+        <div th:unless="${centralUnit.flats.isEmpty()}">
+
+            <!-- Zobrazenie len ak si admin -->
+            <!-- PRIDAVACI FORMULAR -->
+            <!-- Formular na pridavanie nového flatu -->
+            <!-- tlacidlo prepinac -->
+            <div class="regpaddingbottom padding-top-10">
+                <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Flat Creation</button>
+            </div>
+            <div class="regpaddingbottom padding-top-10">
+                <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Flat Creation</button>
+            </div>
+
+            <!-- HIDEABLE -->
+            <div id="addition-toggle">
+                <form>
+                    <div class="row justify-content-center regpadding rowinrightcol createuser">
+                        <h1 class="reglogheader">Create new Flat, owners and Controller Unit for this Central unit.</h1>
+                    </div>
+
+                    <p>Insert apartment number of the newly created flat (residing same address)</p>
+                    <div class="regpaddingtopbottom padding-left-5">
+                        <label for="apartment-No">Apartment NO:</label>
+                        <div><input type="text" id="apartment-No"></div>
+                    </div>
+
+                    <!-- MUST BE ONE OWNER -->
+                    <div>
+                        <p>Owner of the new flat must be set</p>
+                        <div class="regpaddingtopbottom padding-left-5">
+                            <label for="owner1-address">Address:</label>
+                            <div><input type="text" id="owner1-address"></div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="owner1-title">Title:</label>
+                                <div><input type="text" id="owner1-title"></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="owner1-name">Name:</label>
+                                <div><input type="text" id="owner1-name"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="owner1-middlename">Middlename:</label>
+                                <div><input type="text" id="owner1-middlename"></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="owner1-lastname">Surname:</label>
+                                <div><input type="text" id="owner1-lastname"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="owner1-phone">Phone:</label>
+                                <div><input type="text" id="owner1-phone"></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="owner1-email">E-mail:</label>
+                                <div><input type="text" id="owner1-email"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- OPTIONAL OWNER -->
+                    <div style="display: none" id="toggle-optional-flatowner">
+                        <p>This flat owner is purely optional</p>
+                        <div class="regpaddingtopbottom padding-left-5">
+                            <label for="owner2-address">Address:</label>
+                            <div><input type="text" id="owner2-address"></div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="owner2-title">Title:</label>
+                                <div><input type="text" id="owner2-title"></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="owner2-name">Name:</label>
+                                <div><input type="text" id="owner2-name"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="owner2-middlename">Middlename:</label>
+                                <div><input type="text" id="owner2-middlename"></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="owner2-lastname">Surname:</label>
+                                <div><input type="text" id="owner2-lastname"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="owner2-phone">Phone:</label>
+                                <div><input type="text" id="owner2-phone"></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="owner2-email">E-mail:</label>
+                                <div><input type="text" id="owner2-email"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Controller Unit first creation -->
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="controller-uid">UID:</label>
+                                <div><input type="text" id="controller-uid" placeholder="should be generated" required=""></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="controller-dip_address">DIP Address:</label>
+                                <div><input type="text" id="controller-dip_address" placeholder="1-255" required=""></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="controller-zwave">Zwave identifier:</label>
+                                <div><input class="min-width-300" type="text" id="controller-zwave" placeholder="ZW-XXX" required=""></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
+                    <input type="hidden" th:value="${centralUnit.id}" id="controller-central-id">
+                </form>
+
+                <!-- BUTTONS FOR ADDITION -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom padding-top-10">
+                        <button type="submit" class="roundedbutton min-width-300" onclick="switchBetweenAdditionOfOptUser()">Switch between addition of 2nd user</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom padding-top-10">
+                        <button type="submit" class="roundedbutton min-width-300" onclick="createFlatOwnersAndControllerForThisFlat()">Create</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- test only -->
+
+
+            <main class="st_viewport">
+                <div th:each="flat: ${centralUnit.flats}">
+                    <div th:replace="fragments/flat_table.html :: flat_table(flat=${flat})"></div>
+                </div>
+            </main>
+
+            <!-- test only -->
+
+            <!-- BUTTONS FOR NAVIGATION -->
+            <div class="row justify-content-center rowinrightcol">
+                <div class="regpaddingbottom">
+                    <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

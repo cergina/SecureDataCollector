@@ -62,6 +62,10 @@ public class DbProvider {
      */
     public void afterExceptionInSqlExecution(Exception exceptionToLog) {
         CustomLogs.Error(exceptionToLog.getMessage());
+        afterFailedSqlExecution();
+    }
+
+    public void afterFailedSqlExecution() {
         afterSqlExecution(false);
     }
 
@@ -105,13 +109,13 @@ public class DbProvider {
     private void afterSqlExecution(boolean successful) {
         try {
             // when query was unsuccesfull do not commit
-            if (successful == false) {
+            if (successful == false && isItTransaction) {
                 conn.rollback();
                 return;
             }
 
             // commit only when it was an insert or sth of that sort
-            if (isItTransaction) {
+            if (successful && isItTransaction) {
                 conn.commit();
             }
 

@@ -8,6 +8,7 @@ import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class T_FlatOwner_flat extends DbEntity implements DBTable, DBToHtml {
     public static T_FlatOwner_flat CreateFromScratch(Dictionary dict) {
         T_FlatOwner_flat temp = new T_FlatOwner_flat();
 
-        temp.a_CreatedAt = (Date)dict.get(DBNAME_CREATEDAT);
+        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
         temp.a_FlatOwnerID = (int)dict.get(DBNAME_FLATOWNERID);
         temp.a_FlatID = (int)dict.get(DBNAME_FLATID);
 
