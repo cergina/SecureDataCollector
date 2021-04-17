@@ -1,7 +1,7 @@
 /*
  * ControllerUnit.c
  * Project: DCS
- * Version: 0.49
+ * Version: 0.50
  * Processor: ATmega328P
  * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */ 
@@ -31,6 +31,7 @@
 
 #define DEBUG_TEST
 //#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
+//#define DEBUG_TEST_BLINK_L
 
 #define UART_BAUD_RATE 9600
 
@@ -62,17 +63,20 @@ volatile short int ADC5_readFlag = 0; // True/false
 // Sleep flag (if this flag is set to 1 we put processor to power-down mode)
 uint8_t Standing_by =  0;
 // Busy flag (this flag indicate that program is busy and we cant go to sleep mode)
-uint8_t Busy = 1;
+uint8_t UART_Busy = 1;
 
 ISR(PCINT1_vect){
 	ADC5_readFlag = 1;
 }
 
-ISR(PCINT2_vect){	
-	DDRB |= (1<<DDB5); //LED L
-	PORTB &= ~(1<<DDB5);
-	_delay_ms(1000);
-	PORTB |= (1<<DDB5);
+ISR(PCINT2_vect){
+	UART_Busy = 1;
+	#ifdef DEBUG_TEST_BLINK_L
+		DDRB |= (1<<DDB5); //LED L
+		PORTB |= (1<<DDB5);
+		_delay_ms(100);
+		PORTB &= ~(1<<DDB5);
+	#endif
 }
 
 uint8_t readDipAddress()
@@ -166,12 +170,13 @@ int main(void)
 
 	PCICR |= (1 << PCIE2);     // set PCIE2 to enable PCMSK2 scan
 	PCMSK2 |= (1 << PCINT16);   // set PCINT16 trigger (RX)
+	PCMSK2 |= (1 << PCINT17);   // set PCINT17 trigger (TX)
 
 
 		
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.49 \r\n");
+	uart_puts("ControllerUnit  Build v0.51 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -203,7 +208,6 @@ int main(void)
 		
 		//Process code for ADC5 (PCINT13)
 		if(ADC5_readFlag == 1){
-			Standing_by = 0;
 			uint16_t adc_value = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
 			uart_puts("Measure\r\n");
 			uint8_t bValue = adc_value >= HIGH_DOWN ? 1 : (adc_value <= LOW_UP ? 0 : -1);
@@ -226,17 +230,12 @@ int main(void)
 			
 			ADC5_lastValue = bValue;
 			ADC5_readFlag = 0;
+			continue;
 		}
-		else {
-			Standing_by = 1; //no action, go sleep;
-		}
+		
 
-		if (c & UART_NO_DATA){
-			//do nothing
-			Standing_by = 1; // nothing to do, go sleep
-		}
-		else{		
-			Standing_by = 0;
+		
+		if (!(c & UART_NO_DATA)){		
 			if (c == STX){
 				current_flag = F_DATA;
 				index = 0;
@@ -273,8 +272,9 @@ int main(void)
 				current_flag = NULL;
 				free(message);
 			}
+			continue;
 		}		
-
+		
 		#ifdef DEBUG_TEST_TICK 
 			char result1[50];
 			sprintf(result1, "%d", ++tick);
@@ -282,8 +282,23 @@ int main(void)
 			uart_puts("\r\n");
 			_delay_ms(1000);
 		#endif
-
-	
+		
+		//IF Uart is active, we continue working
+		if (UART_Busy)
+		{
+			continue;
+		}
+		
+		//Nothing else to do we go sleep
+		set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
+		cli(); // deactivate interrupts
+		sleep_enable(); // sets the SE (sleep enable) bit
+		sleep_bod_disable();
+		sei(); //
+		sleep_cpu(); // sleep now!!
+		sleep_disable(); // deletes the SE bit
+		
+		/*
 		if(Standing_by){
 			set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
 			cli(); // deactivate interrupts
@@ -293,6 +308,7 @@ int main(void)
 			sleep_cpu(); // sleep now!!
 			sleep_disable(); // deletes the SE bit
 		}
+		*/
 	}
 }
 		
