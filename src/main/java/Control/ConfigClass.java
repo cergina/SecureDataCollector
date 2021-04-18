@@ -7,7 +7,7 @@ public class ConfigClass {
     public final static String JNDI_DATASOURCE_NAME = "jdbc/MySQLDataSource";
 
     // changes db table names from lowercase to camelcase if true and some other things
-    public final static boolean RUNNING_ON_SERVER = false;
+    public final static boolean RUNNING_ON_SERVER = true;
     // in TimakCommonFiles there is a setup File for creation database, the number should match
     public final static int CODE_SUPPOSED_TO_WORK_WITH_SQL_VERSION = 17;
 

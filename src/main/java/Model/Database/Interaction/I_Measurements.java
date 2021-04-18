@@ -229,7 +229,7 @@ public class I_Measurements {
                 "SELECT " +
                         "SUM(Value) " +
                         "FROM " + T_Measurement.DBTABLE_NAME + " " +
-                        "WHERE MeasuredAt > ? AND SensorID = ? GROUP BY SensorID ORDER BY ID asc"
+                        "WHERE MeasuredAt > ? AND SensorID = ? GROUP BY SensorID, ID ORDER BY ID asc"
         );
 
         int col = 0;
