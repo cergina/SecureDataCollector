@@ -586,6 +586,14 @@ $(function() {
 });
 
 $(function() {
+    // add link to single controller page
+    $(".user_link").each(function(index, value){
+        var userId = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/admin/users?id=' + userId + '">link</a>'
+        );
+    });
+
     // add link to single flat page
     $(".flat_link").each(function(index, value){
         var flatId = $(value).text();
@@ -593,5 +601,4 @@ $(function() {
             '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + flatId + '">link</a>'
         );
     });
-
 });
