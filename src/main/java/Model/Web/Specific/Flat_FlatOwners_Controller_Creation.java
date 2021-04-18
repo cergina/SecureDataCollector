@@ -3,7 +3,7 @@ package Model.Web.Specific;
 import Model.Web.PrettyObject;
 import com.google.gson.annotations.Expose;
 
-public class FlatFirstTimeCreation extends PrettyObject {
+public class Flat_FlatOwners_Controller_Creation extends PrettyObject {
     @Expose
     String apartmentNo;
     // Flatowner flat

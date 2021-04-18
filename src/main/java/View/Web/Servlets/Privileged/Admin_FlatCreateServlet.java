@@ -4,7 +4,7 @@ import Control.Scenario.UC_CreateFlat;
 import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import Model.Web.Specific.FlatFirstTimeCreation;
+import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import View.Support.ServletAbstracts.AdminServlet;
 import View.Support.ServletHelper;
 
@@ -30,10 +30,10 @@ public class Admin_FlatCreateServlet extends AdminServlet {
         // parse JSON from Body object
         try {
             // exception during parsing occured when some fields werent a number
-            FlatFirstTimeCreation flatFirstTimeCreation = (FlatFirstTimeCreation) PrettyObject.parse(ServletHelper.RequestBody(request), FlatFirstTimeCreation.class);
+            Flat_FlatOwners_Controller_Creation flatFlatOwnersControllerCreation = (Flat_FlatOwners_Controller_Creation) PrettyObject.parse(ServletHelper.RequestBody(request), Flat_FlatOwners_Controller_Creation.class);
 
             // Execute creation
-            jsonResponse = (new UC_CreateFlat(getDb()).createNewFlat_Owner_Controller(flatFirstTimeCreation)); // create new flat, owner and controller
+            jsonResponse = (new UC_CreateFlat(getDb()).createNewFlat_Owner_Controller(flatFlatOwnersControllerCreation)); // create new flat, owner and controller
 
             // Confirm to user
             response.setStatus(jsonResponse.getStatus());

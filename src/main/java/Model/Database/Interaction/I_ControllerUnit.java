@@ -245,11 +245,14 @@ public class I_ControllerUnit {
         boolean flatRule = flatId > 0;
         boolean dipRule = dip.equals("") == false;
 
+        /* add first WHERE clause */
         usedSql = (centralRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".CentralUnitID=? " : usedSql);
 
+        /* add second WHERE clause - watch out for possibility of AND requirement if first line rule was added */
         usedSql = (flatRule && (centralRule == false) ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
         usedSql = (flatRule && centralRule ? usedSql + " AND " + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
 
+        /* add second WHERE clause - watch out for possibility of AND requirement if first or second line rule was added */
         usedSql = (dipRule && (centralRule || flatRule) ? usedSql + " AND " + T_ControllerUnit.DBTABLE_NAME + ".DipAddress=? " : usedSql);
         usedSql = (dipRule && (!centralRule  && !flatRule) ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".DipAddress=? " : usedSql);
 

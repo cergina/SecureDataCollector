@@ -89,7 +89,7 @@ function buildControllerCreation() {
 }
 
 // build JSON object by Api spec: Flat, FlatOwners and First Controller Unit for FlatFirstTimeCreation
-function buildFlatFirstTime() {
+function buildFlat() {
     return {
         apartmentNo: $("#apartment-No").val(),
         owner1: {
@@ -120,13 +120,13 @@ function buildFlatFirstTime() {
 
 // POST calls
 
-function createFlatOwnersAndControllerForThisFlat() {
+function createFlat() {
     $.ajax({
         method: "POST",
         url: $SCRIPT_ROOT + "/admin/flats/create",
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
-        data: JSON.stringify(buildFlatFirstTime()),
+        data: JSON.stringify(buildFlat()),
         statusCode: {
             201: function(response) {
                 $(':input').val('');

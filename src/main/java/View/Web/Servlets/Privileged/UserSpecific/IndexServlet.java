@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// TODO to be replaced with info about registrated user
+
 @WebServlet(name = "IndexServlet", urlPatterns = IndexServlet.SERVLET_URL)
 public class IndexServlet extends AdminEditableUserViewableServlet {
     public static final String SERVLET_URL =  "/index";

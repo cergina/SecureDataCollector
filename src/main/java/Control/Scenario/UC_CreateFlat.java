@@ -5,7 +5,7 @@ import Model.Database.Interaction.*;
 import Model.Database.Support.Assurance;
 import Model.Database.Tables.Table.*;
 import Model.Web.JsonResponse;
-import Model.Web.Specific.FlatFirstTimeCreation;
+import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import Model.Web.Specific.FlatOwner;
 import View.Support.CustomExceptions.CreationException;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -27,12 +27,13 @@ public class UC_CreateFlat {
     }
 
 
-    public final @NotNull JsonResponse createNewFlat_Owner_Controller(@NotNull final FlatFirstTimeCreation firstTimeCreation) {
+    public final @NotNull JsonResponse createNewFlat_Owner_Controller(@NotNull final Flat_FlatOwners_Controller_Creation firstTimeCreation) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
             // check data
             if (everythingOkForCreation(firstTimeCreation) == false) {
+                jsonResponse.setMessage("Something is invalid");
                 throw new CreationException("Something is invalid");
             }
 
@@ -43,6 +44,7 @@ public class UC_CreateFlat {
 
             // dip has to be non repetitive for central unit
             if (dipControllerAlreadyPresentForCentralUnit(firstTimeCreation.getCentralUnitId(), firstTimeCreation.getDip())) {
+                jsonResponse.setMessage("DIP address is already present for central unit.");
                 throw new CreationException("DIP address is already present for central unit.");
             }
 
@@ -137,7 +139,6 @@ public class UC_CreateFlat {
         } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonResponse.setMessage("Testing");
         }
 
         return jsonResponse;
@@ -146,25 +147,21 @@ public class UC_CreateFlat {
     private boolean dipControllerAlreadyPresentForCentralUnit(int centralUnitId, String dip) throws SQLException {
         List<T_ControllerUnit> list = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), centralUnitId, DB_DO_NOT_USE_THIS_FILTER, dip);
 
-        if (list.size() > 0) {
-            return true;
-        }
-
-        return false;
+        return list.size() > 0;
     }
 
 
     // privates
-    private boolean everythingOkForCreation(@NotNull final FlatFirstTimeCreation firstTimeCreation) throws NumberFormatException {
+    private boolean everythingOkForCreation(@NotNull final Flat_FlatOwners_Controller_Creation firstTimeCreation) throws NumberFormatException {
         // data of flatowners are ok
 
-        if (isOkFlatOwner(firstTimeCreation.getOwner1()) == false) {
+        if (isFlatOwnerOk(firstTimeCreation.getOwner1()) == false) {
             return false;
         }
 
         // if second user is provided for enter check him as well
         if (firstTimeCreation.getOwner2().getFirstName().equals("") == false) {
-            if (isOkFlatOwner(firstTimeCreation.getOwner2()) == false) {
+            if (isFlatOwnerOk(firstTimeCreation.getOwner2()) == false) {
                 return false;
             }
         }
@@ -196,7 +193,7 @@ public class UC_CreateFlat {
         return true;
     }
 
-    private boolean isOkFlatOwner(FlatOwner fo) {
+    private boolean isFlatOwnerOk(FlatOwner fo) {
         // emails are valid
         if (EmailValidator.getInstance().isValid(fo.getEmail()) == false) {
             return false;

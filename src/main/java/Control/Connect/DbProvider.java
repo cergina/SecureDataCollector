@@ -109,6 +109,7 @@ public class DbProvider {
     private void afterSqlExecution(boolean successful) {
         try {
             // when query was unsuccesfull do not commit
+            // do not rollback if it was just a get (no point in rollbacking)
             if (successful == false && isItTransaction) {
                 conn.rollback();
                 return;

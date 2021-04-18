@@ -41,6 +41,12 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         }
     }
 
+    /****
+     * Decider between empty and already initialized central unit
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     private void processSingleCentralUnit(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // has to have some request for controller unit id
         int requestedCentralUnitId;
@@ -59,8 +65,20 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         if (count == 0) {
             processYetSingleEmptyCentralUnit(request, response, requestedCentralUnitId);
             return;
+        } else {
+            processSingleCentralUnit(request, response, requestedCentralUnitId);
+            return;
         }
+    }
 
+    /***
+     * specific central unit view
+     * @param request
+     * @param response
+     * @param requestedCentralUnitId
+     * @throws IOException
+     */
+    private void processSingleCentralUnit(HttpServletRequest request, HttpServletResponse response, int requestedCentralUnitId) throws IOException {
         // only continue this way when there is something to show
         // TEMPLATE PREPARATION
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
@@ -82,6 +100,13 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
+    /***+
+     * specific but empty central unit
+     * @param request
+     * @param response
+     * @param requestedCentralUnitId
+     * @throws IOException
+     */
     private void processYetSingleEmptyCentralUnit(HttpServletRequest request, HttpServletResponse response, int requestedCentralUnitId) throws IOException {
         // TEMPLATE PREPARATION
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
@@ -102,7 +127,14 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         engine.process(ONETIME_TEMPLATE_NAME, context, response.getWriter());
     }
 
+    /***
+     * See inside comments
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     private void processForAllCentralUnits(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // TODO
         // admin sees  every central unit
         // eg.: list of central units of project 1, list of central units of project 2, ...
 
