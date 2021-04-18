@@ -10,13 +10,11 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Project;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_Project {
     /***
@@ -29,11 +27,16 @@ public class I_Project {
         if (tp.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Project is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Project.DBNAME_NAME, T_Project.DBNAME_CreatedAt
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Project.DBTABLE_NAME + "(" +
-                        "Name, CreatedAt" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, CURDATE()" +
@@ -41,7 +44,7 @@ public class I_Project {
         );
 
         int col = 0;
-        ps.setString(++col, tp.getA_name());
+        ps.setString(++col, tp.getA_Name());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -61,7 +64,7 @@ public class I_Project {
      * @throws SQLException
      */
     public static T_Project retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -91,6 +94,62 @@ public class I_Project {
         return tp;
     }
 
+    public static T_Project retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String projectName) throws SQLException {
+        Assurance.varcharCheck(projectName);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "ID, Name, CreatedAt, DeletedAt " +
+                        "FROM " + T_Project.DBTABLE_NAME + " " +
+                        "WHERE Name=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, projectName);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_Project tp = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tp = I_Project.FillEntity(rs);
+        }
+
+        return tp;
+    }
+
+    /*
+     * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
+     */
+    public static int retrieveLatestPerConnectionInsertedID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+        int latest  = -1;
+
+        ps = conn.prepareStatement(
+                "SELECT LAST_INSERT_ID();"
+        );
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            latest = rs.getInt(1);
+        }
+
+        return latest;
+    }
+
     /*****
      *
      * @param conn
@@ -99,7 +158,7 @@ public class I_Project {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Project> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_Project> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -108,13 +167,11 @@ public class I_Project {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Project> arr = new ArrayList<>();
+        List<T_Project> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -129,14 +186,16 @@ public class I_Project {
 
     // Privates
     private static T_Project FillEntity(ResultSet rs) throws SQLException {
-        T_Project t = null;
 
         Dictionary tmpDict = new Hashtable();
+
         tmpDict.put(T_Project.DBNAME_NAME, rs.getString(T_Project.DBNAME_NAME));
         tmpDict.put(T_Project.DBNAME_CreatedAt, rs.getDate(T_Project.DBNAME_CreatedAt));
 
-        t = T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict, rs.getDate(T_Project.DBNAME_DeletedAt));
+        Date deletedAt = rs.getDate(T_Project.DBNAME_DeletedAt);
+        if (deletedAt != null)
+            tmpDict.put(T_Project.DBNAME_DeletedAt, deletedAt);
 
-        return t;
+        return T_Project.CreateFromRetrieved(rs.getInt(T_Project.DBNAME_ID), tmpDict);
     }
 }

@@ -1,5 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_CentralUnit;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "GET_CentralUnits", urlPatterns = GET_CentralUnits.SERVLET_URL)
 public class GET_CentralUnits extends GET_Database_Interaction {
@@ -32,7 +33,10 @@ public class GET_CentralUnits extends GET_Database_Interaction {
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
             // Tables
-            ArrayList<T_CentralUnit> arr = I_CentralUnit.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            DbProvider dbProvider = getDb();
+            List<T_CentralUnit> arr = I_CentralUnit.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            dbProvider.disconnect();
+
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_CentralUnit.REFERENCE);
 
             // Finalize
@@ -44,7 +48,7 @@ public class GET_CentralUnits extends GET_Database_Interaction {
 
             CustomLogs.InfoLog("Exited " + SERVLET_URL + ".", true);
         } catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

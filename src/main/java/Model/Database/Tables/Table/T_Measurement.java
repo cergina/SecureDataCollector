@@ -8,8 +8,8 @@ import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "measurement" : "measurement";
@@ -81,22 +81,22 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsIntOk(a_Value) &&
-                Assurance.IsIntOk(a_RequestNo) &&
+        return Assurance.isIntOk(a_Value) &&
+                Assurance.isIntOk(a_RequestNo) &&
                 // This cant be known at this time
                 //Assurance.IsIntOk(a_AccumulatedValue) &&
-                Assurance.IsDateOk(a_MeasuredAt) &&
-                Assurance.IsIntOk(a_SensorID);
+                Assurance.isDateOk(a_MeasuredAt) &&
+                Assurance.isFkOk(a_SensorID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsIntOk(a_Value) &&
-                Assurance.IsIntOk(a_RequestNo) &&
-                Assurance.IsIntOk(a_AccumulatedValue) &&
-                Assurance.IsDateOk(a_MeasuredAt) &&
-                Assurance.IsIntOk(a_SensorID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isIntOk(a_Value) &&
+                Assurance.isIntOk(a_RequestNo) &&
+                Assurance.isIntOk(a_AccumulatedValue) &&
+                Assurance.isDateOk(a_MeasuredAt) &&
+                Assurance.isFkOk(a_SensorID);
     }
 
     @Override
@@ -127,8 +127,8 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
 
     // For HTML purposes
     @Override
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(Integer.toString(a_Value));
         str.add(Integer.toString(a_RequestNo));
@@ -150,22 +150,22 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     public String toString(){
         StringBuilder str = new StringBuilder("[");
 
-        if (Assurance.IsIntOk(a_pk))
+        if (Assurance.isFkOk(a_pk))
             str.append(DBNAME_ID + ": " + a_pk + "; ");
 
-        if (Assurance.IsIntOk(a_Value))
+        if (Assurance.isIntOk(a_Value))
             str.append(DBNAME_VALUE + ": " + a_Value + "; ");
 
-        if (Assurance.IsIntOk(a_RequestNo))
+        if (Assurance.isIntOk(a_RequestNo))
             str.append(DBNAME_REQUESTNO + ": " + a_RequestNo + "; ");
 
-        if (Assurance.IsIntOk(a_AccumulatedValue))
+        if (Assurance.isIntOk(a_AccumulatedValue))
             str.append(DBNAME_ACCUMULATEDVALUE + ": " + a_AccumulatedValue + "; ");
 
-        if (Assurance.IsDateOk(a_MeasuredAt))
+        if (Assurance.isDateOk(a_MeasuredAt))
             str.append(DBNAME_MEASUREDAT + ": " + a_MeasuredAt + "; ");
 
-        if (Assurance.IsIntOk(a_SensorID))
+        if (Assurance.isIntOk(a_SensorID))
             str.append(DBNAME_SENSOR_ID + ": " + a_SensorID + "; ");
 
         str.append("]");

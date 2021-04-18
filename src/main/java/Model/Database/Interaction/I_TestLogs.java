@@ -11,17 +11,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_TestLogs {
     public static int insert(Connection conn, PreparedStatement ps, T_TestLog tt) throws SQLException {
         if (tt.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_TestLog is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_TestLog.DBNAME_EVENT, T_TestLog.DBNAME_BODY
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_TestLog.DBTABLE_NAME + "(" +
-                        "Event, Body" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?" +
@@ -44,7 +50,7 @@ public class I_TestLogs {
     }
 
     public static T_TestLog retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -82,7 +88,7 @@ public class I_TestLogs {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_TestLog> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_TestLog> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -91,13 +97,11 @@ public class I_TestLogs {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_TestLog> arr = new ArrayList<>();
+        List<T_TestLog> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -112,14 +116,12 @@ public class I_TestLogs {
 
     // Privates
     private static T_TestLog FillEntity(ResultSet rs) throws SQLException {
-        T_TestLog t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_TestLog.DBNAME_EVENT, rs.getString(T_TestLog.DBNAME_EVENT));
         dict.put(T_TestLog.DBNAME_BODY, rs.getString(T_TestLog.DBNAME_BODY));
 
-        t = T_TestLog.CreateFromRetrieved(rs.getInt(T_TestLog.DBNAME_ID), dict);
-
-        return t;
+        return T_TestLog.CreateFromRetrieved(rs.getInt(T_TestLog.DBNAME_ID), dict);
     }
 }

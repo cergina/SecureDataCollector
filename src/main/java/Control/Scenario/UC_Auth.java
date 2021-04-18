@@ -1,25 +1,20 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_AccessPrivilegeJournal;
-import Model.Database.Interaction.I_Address;
-import Model.Database.Interaction.I_Hash;
-import Model.Database.Interaction.I_User;
-import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_AccessPrivilegeJournal;
-import Model.Database.Tables.Table.T_Address;
-import Model.Database.Tables.Table.T_Hash;
-import Model.Database.Tables.Table.T_User;
+import Model.Database.Interaction.*;
+import Model.Database.Support.UserAccessHelper;
+import Model.Database.Tables.Table.*;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.User;
 import View.Support.CustomExceptions.AuthenticationException;
+import View.Support.CustomExceptions.CreationException;
 import View.Support.CustomExceptions.InvalidOperationException;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -33,19 +28,11 @@ public class UC_Auth {
         this.db = dbProvider;
     }
 
-    public ArrayList<T_Address> retrieveAllAddress() { // TODO remove this method later
-        try {
-            return I_Address.retrieveAll(db.getConn(), db.getPs(), db.getRs());
-        } catch (SQLException e) {
-            CustomLogs.Error(e.getMessage());
-        }
-        return null;
-    }
-
     // PUBLIC METHODS
 
     /**
-     * Create new user
+     * Create new user: PREREGISTRATION
+     * NEEDS TO BE A TRANSACTION - doing inserts
      * @param auth User data
      * @return final Api response body
      */
@@ -53,7 +40,12 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution();
+            db.beforeSqlExecution(true);
+
+            if (EmailValidator.getInstance().isValid(auth.getUser().getEmail()) == false) {
+                jsonResponse.setMessage("Presented email is not valid for use.");
+                throw new CreationException("Presented email is not valid for use.");
+            }
 
             if (retrieveAuthByEmail(auth.getUser().getEmail()) != null) {
                 jsonResponse.setMessage("User with this email already exists.");
@@ -79,14 +71,13 @@ public class UC_Auth {
             I_User.insert(db.getConn(), db.getPs(), t_user);
             // modify User table END
 
-
-
             int createdUserID = I_User.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
             // modify Hash table START
             Dictionary dict_hash = new Hashtable();
             dict_hash.put(T_Hash.DBNAME_VALUE, auth.getVerificationcode()); // save verification instead of password hash
             dict_hash.put(T_Hash.DBNAME_USER_ID, createdUserID);
+            dict_hash.put(T_Hash.DBNAME_NACL, UserAccessHelper.getNextSalt());
 
             T_Hash hashToInsert = T_Hash.CreateFromScratch(dict_hash);
             I_Hash.insert(db.getConn(), db.getPs(), hashToInsert);
@@ -108,30 +99,37 @@ public class UC_Auth {
             I_AccessPrivilegeJournal.insert(db.getConn(), db.getPs(), journalEntryToSave);
             // modify AccessPrivilegeJournal table END
 
-            db.afterSqlExecution(true);
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("User created.");
             jsonResponse.setData(auth);
         } catch (InvalidOperationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (AuthenticationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
+        } catch (CreationException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            jsonResponse.setMessage("Invalid email for user.");
         }
+
         return jsonResponse;
     }
 
     /**
      * Finish user registration
+     * NEEDS TO BE A TRANSACTION - doing inserts
      * @param auth User data that contains email, password hash, verification code
      * @return final Api response body
      */
@@ -139,7 +137,7 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution();
+            db.beforeSqlExecution(true);
 
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
             if (authDb == null) {
@@ -157,25 +155,100 @@ public class UC_Auth {
             }
 
             // modify Hash table END
+            byte[] newSalt = UserAccessHelper.getNextSalt();
+            String passwordHash = UserAccessHelper.hashPassword(auth.getPassword(), newSalt); // hash password
+            auth.setPassword(passwordHash);
+
             Dictionary dict_hash = new Hashtable();
             dict_hash.put(T_Hash.DBNAME_VALUE, auth.getPassword()); // replace verification code with password hash
             dict_hash.put(T_Hash.DBNAME_USER_ID, authDb.getUser().getUserID());
+            dict_hash.put(T_Hash.DBNAME_NACL, newSalt);
 
             T_Hash t_hash = T_Hash.CreateFromScratch(dict_hash);
             I_Hash.insert(db.getConn(), db.getPs(), t_hash);
             // modify Hash table END
 
-            db.afterSqlExecution(true);
+            // After SQL SQL execution
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Registration complete.");
             jsonResponse.setData(authDb);
         } catch (AuthenticationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            jsonResponse.setMessage("Internal server error.");
+        }
+        return jsonResponse;
+    }
+
+    /**
+     * Change password
+     * NEEDS TO BE A TRANSACTION - doing inserts
+     * @param auth User data that contains email, password hash, verification code
+     * @return final Api response body
+     */
+    public final @NotNull JsonResponse changePassword(@NotNull final Auth auth) {
+        JsonResponse jsonResponse = new JsonResponse();
+
+        try {
+            db.beforeSqlExecution(true);
+
+            // VERIFY CURRENT PASSWORD matches
+            Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+
+            final byte[] saltDb = (I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID())).getA_NaCl();
+
+            String passwordHash = UserAccessHelper.hashPassword(auth.getOldPassword(), saltDb); // hash password
+
+            auth.setOldPassword(passwordHash);
+
+            if (!authDb.getPassword().equals(auth.getOldPassword())) {
+                jsonResponse.setMessage("Current password does not match.");
+                throw new AuthenticationException("Current password does not match.");
+            }
+
+            // new and current password cant be the same
+            String newPasswordWithOldsaltHash = UserAccessHelper.hashPassword(auth.getPassword(), saltDb); // hash password
+            if (newPasswordWithOldsaltHash.equals(auth.getOldPassword())) {
+                jsonResponse.setMessage("New and old password can't be the same.");
+                throw new AuthenticationException("New and old password can't be the same.");
+            }
+
+            // CREATE A NEW PASSWORD
+            byte[] newSalt = UserAccessHelper.getNextSalt();
+            passwordHash = UserAccessHelper.hashPassword(auth.getPassword(), newSalt); // hash password
+            auth.setPassword(passwordHash);
+
+            // create a table for db hash insertion
+            Dictionary dict_hash = new Hashtable();
+            dict_hash.put(T_Hash.DBNAME_VALUE, auth.getPassword()); // new password set
+            dict_hash.put(T_Hash.DBNAME_USER_ID, authDb.getUser().getUserID());
+            dict_hash.put(T_Hash.DBNAME_NACL, newSalt);
+
+            T_Hash t_hash = T_Hash.CreateFromScratch(dict_hash);
+
+            // do insert
+            I_Hash.insert(db.getConn(), db.getPs(), t_hash);
+            authDb.setPassword(passwordHash);
+
+            // After SQL SQL execution
+            db.afterOkSqlExecution();
+
+            jsonResponse.setStatus(HttpServletResponse.SC_OK);
+            jsonResponse.setMessage("Password succesffully changed.");
+            jsonResponse.setData(authDb);
+        } catch (AuthenticationException e) {
+            db.afterExceptionInSqlExecution(e);
+
+            jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (SQLException e) {
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -185,6 +258,7 @@ public class UC_Auth {
 
     /**
      * Login user
+     * DOES NOT NEED TO BE A TRANSACTION - only retrieving stuff
      * @param auth User data that contains email, password hash
      * @return final Api response body
      */
@@ -192,13 +266,21 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            db.beforeSqlExecution();
+            // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+            db.beforeSqlExecution(false);
 
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
+
             if (authDb == null) {
                 jsonResponse.setMessage("User with this email does not exist.");
                 throw new AuthenticationException("User with this email does not exist.");
             }
+
+            // combine with salt from db - will not throw null, because in retrieveAuthByEmail it worked ok step before
+            final byte[] saltDb = (I_Hash.retrieveLatest(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID())).getA_NaCl();
+
+            String passwordHash = UserAccessHelper.hashPassword(auth.getPassword(), saltDb); // hash password
+            auth.setPassword(passwordHash);
 
             if (!authDb.getPassword().equals(auth.getPassword())) {
                 jsonResponse.setMessage("Password does not match.");
@@ -209,17 +291,20 @@ public class UC_Auth {
             T_AccessPrivilegeJournal t_accessPrivilegeJournal = I_AccessPrivilegeJournal.retrieveValidForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
-            db.afterSqlExecution(true);
+
+            // After SQL execution - ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+            db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);
             jsonResponse.setMessage("Login successful.");
             jsonResponse.setData(authDb);
+
         } catch (AuthenticationException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (SQLException e) {
-            db.afterSqlExecution(false);
+            db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.setMessage("Internal server error.");
@@ -227,9 +312,33 @@ public class UC_Auth {
         return jsonResponse;
     }
 
+    /***
+     * Method that is responsible for putting log of ip address into database and map it onto userid from session
+     * NEEDS TO BE A TRANSACTION - doing inserts
+     * @param userId
+     * @param ipAddress
+     */
+    public void LogLoginIntoTheDatabase(int userId, String ipAddress) {
+        try {
+            db.beforeSqlExecution(true);
 
-    // PRIVATE METHODS
+            Dictionary tmpDict = new Hashtable();
 
+            java.util.Date date = new java.util.Date();
+            tmpDict.put(T_LoginLog.DBNAME_LOGGEDAT, new java.sql.Date(date.getTime()));
+            tmpDict.put(T_LoginLog.DBNAME_SRCIP, ipAddress);
+            tmpDict.put(T_LoginLog.DBNAME_USERID, userId);
+
+            I_LoginLog.insert(db.getConn(), db.getPs(), T_LoginLog.CreateFromScratch(tmpDict));
+
+            db.afterOkSqlExecution();
+        } catch (SQLException e) {
+            db.afterExceptionInSqlExecution(e);
+        }
+    }
+
+
+    // PRIVATE
     /**
      * Retrieve user and password hash
      * @param email User to search for

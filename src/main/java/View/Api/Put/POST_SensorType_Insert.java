@@ -1,10 +1,10 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_SensorType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Enum.E_SensorType;
-import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 
@@ -34,10 +34,12 @@ public class POST_SensorType_Insert extends POST_Database_Interaction {
             E_SensorType es = E_SensorType.CreateFromScratch(tmpDict);
 
             // Insertion
+            DbProvider dbProvider = getDb();
             I_SensorType.insert(dbProvider.getConn(), dbProvider.getPs(), es);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

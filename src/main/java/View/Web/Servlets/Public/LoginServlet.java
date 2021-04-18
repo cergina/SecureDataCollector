@@ -2,7 +2,6 @@ package View.Web.Servlets.Public;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
-import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
@@ -50,9 +49,6 @@ public class LoginServlet extends PublicServlet {
         // parse JSON from Body object as Auth java representation
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
-        String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
-        auth.setPassword(passwordHash);
-
         final JsonResponse jsonResponse = (new UC_Auth(getDb())).authenticateUser(auth); // login user
         response.setStatus(jsonResponse.getStatus());
 
@@ -61,6 +57,14 @@ public class LoginServlet extends PublicServlet {
             HttpSession session = request.getSession();
             SessionUtil.setUser(session, ((Auth) jsonResponse.getData()).getUser());
             SessionUtil.setIsadmin(session, ((Auth) jsonResponse.getData()).getIsadmin());
+
+            // add log to database
+            String ipAddress = request.getHeader("X-Forwarded-For");
+            if (ipAddress == null) {
+                ipAddress = request.getRemoteAddr();
+            }
+
+            (new UC_Auth(getDb())).LogLoginIntoTheDatabase(SessionUtil.getUser(session).getUserID(), ipAddress);
         }
 
         writer.println(jsonResponse.toString());

@@ -1,6 +1,8 @@
 package View.Api.Get;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
+import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.GET_Database_Interaction;
@@ -26,7 +28,9 @@ public class GET_Project_Info extends GET_Database_Interaction {
 
             writer.println("<html><body>");
 
+            DbProvider dbProvider = getDb();
             T_Project ret_tp = I_Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), Integer.parseInt(req.getParameter("id")));
+            dbProvider.disconnect();
 
             if (null == ret_tp) {
                 writer.println("<p>No project returned!</p>");
@@ -34,15 +38,16 @@ public class GET_Project_Info extends GET_Database_Interaction {
                 writer.println("<p> RETURNED THESE ITEMS</p>");
 
                 writer.println("<p>ID: " + ret_tp.getA_pk() + "</p>");
-                writer.println("<p>Project Name: " + ret_tp.getA_name() + "</p>");
-                writer.println("<p>Created at: " + ret_tp.getA_created() + "</p>");
+                writer.println("<p>Project Name: " + ret_tp.getA_Name() + "</p>");
+                writer.println("<p>Created at: " + ret_tp.getA_CreatedAt() + "</p>");
             }
             writer.println("</body></html>");
             writer.close();
         }
         catch (Exception e) {
-            e.printStackTrace();
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+            CustomLogs.Error(e.getMessage());
         }
     }
 

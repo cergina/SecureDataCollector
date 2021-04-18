@@ -23,10 +23,11 @@ public class User extends PrettyObject {
     private String phone;
     @Expose
     private String residence;
+    @Expose
     private Integer userID;
 
     // empty constructor for Gson
-    public User() {} // empty constructor for Gson
+    public User() {}
 
     // GETTERS
     public String getEmail() {

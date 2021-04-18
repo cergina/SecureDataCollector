@@ -1,0 +1,48 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row" id="two-column-container">
+            <!-- PANEL -->
+            <div class="grid col-sm-12 ">
+                <!-- NAME -->
+                <div class="row justify-content-center regpadding rowinrightcol createuser">
+                    <h1 class="reglogheader">Create communication type</h1>
+                </div>
+
+
+                <form>
+                    <!-- FIELDS -->
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="comm-type_name">Name</label>
+                                <div><input class="min-width-300" type="text" id="comm-type_name" required=""/></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <!-- ACTIONS AND NAVIGATION -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button type="submit" class="roundedbutton min-width-300" onclick="createCommType()">Create</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END PANEL -->
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

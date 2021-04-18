@@ -1,10 +1,10 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Support.Measuring.Measurements_Process;
 import Model.Database.Support.Measuring.Measurements_SupportedModes;
-import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 
@@ -32,10 +32,12 @@ public class POST_Measurements_Receive extends POST_Database_Interaction {
                 throw new IOException("MessageType unsupported");
 
             // process
+            DbProvider dbProvider = getDb();
             Measurements_Process.HandleFromPost(dbProvider.getConn(), dbProvider.getPs(), mode, jsonMain);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

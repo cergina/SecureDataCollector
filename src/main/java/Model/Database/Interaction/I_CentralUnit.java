@@ -3,6 +3,7 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_CentralUnit;
+import Model.Database.Tables.Table.T_ControllerUnit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
+
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class I_CentralUnit {
     /****
@@ -25,19 +29,32 @@ public class I_CentralUnit {
         if (tcu.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_CentralUnit is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                T_CentralUnit.DBNAME_UID,
+                T_CentralUnit.DBNAME_DIPADDRESS,
+                T_CentralUnit.DBNAME_FRIENDLYNAME,
+                T_CentralUnit.DBNAME_SIMNO,
+                T_CentralUnit.DBNAME_IMEI,
+                T_CentralUnit.DBNAME_ZWAVE,
+                T_CentralUnit.DBNAME_PROJECT_ID,
+                T_CentralUnit.DBNAME_ADDRESS_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_CentralUnit.DBTABLE_NAME + "(" +
-                        "Uid, FriendlyName, SimNO, Imei, Zwave, ProjectID, AddressID" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
-                        "?, ?, ?, ?, ?, ?, ?" +
+                        "?, ?, ?, ?, ?, ?, ?, ?" +
                         ") "
         );
 
         int col = 0;
         ps.setInt(++col, tcu.getA_Uid());
+        ps.setString(++col, tcu.getA_DipAddress());
         ps.setString(++col, tcu.getA_FriendlyName());
         ps.setString(++col, tcu.getA_SimNO());
         ps.setString(++col, tcu.getA_Imei());
@@ -65,7 +82,7 @@ public class I_CentralUnit {
      * @throws SQLException
      */
     public static T_CentralUnit retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -95,6 +112,84 @@ public class I_CentralUnit {
         return tc;
     }
 
+    public static List<T_CentralUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int projectId) throws SQLException {
+
+        // No Filter is being used
+        if (projectId <= DB_DO_NOT_USE_THIS_FILTER) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean projectRule = projectId > 0;
+
+        usedSql = (projectRule ? usedSql + T_CentralUnit.DBTABLE_NAME + ".ProjectID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (projectRule)
+            ps.setInt(++col, projectId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_CentralUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_CentralUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    public static T_CentralUnit retrieveByAddressId(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException {
+        Assurance.idCheck(addressId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE " + T_CentralUnit.DBNAME_ADDRESS_ID +"=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, addressId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_CentralUnit tc = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tc = I_CentralUnit.FillEntity(rs);
+        }
+
+        return tc;
+    }
+
     /*****
      *
      * @param conn
@@ -103,7 +198,7 @@ public class I_CentralUnit {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_CentralUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_CentralUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -112,13 +207,11 @@ public class I_CentralUnit {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_CentralUnit> arr = new ArrayList<>();
+        List<T_CentralUnit> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -133,10 +226,11 @@ public class I_CentralUnit {
 
     // Privates
     private static T_CentralUnit FillEntity(ResultSet rs) throws SQLException {
-        T_CentralUnit t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_CentralUnit.DBNAME_UID, rs.getInt(T_CentralUnit.DBNAME_UID));
+        dict.put(T_CentralUnit.DBNAME_DIPADDRESS, rs.getString(T_CentralUnit.DBNAME_DIPADDRESS));
         dict.put(T_CentralUnit.DBNAME_FRIENDLYNAME, rs.getString(T_CentralUnit.DBNAME_FRIENDLYNAME));
         dict.put(T_CentralUnit.DBNAME_SIMNO, rs.getString(T_CentralUnit.DBNAME_SIMNO));
         dict.put(T_CentralUnit.DBNAME_IMEI, rs.getString(T_CentralUnit.DBNAME_IMEI));
@@ -144,8 +238,6 @@ public class I_CentralUnit {
         dict.put(T_CentralUnit.DBNAME_PROJECT_ID, rs.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
         dict.put(T_CentralUnit.DBNAME_ADDRESS_ID, rs.getInt(T_CentralUnit.DBNAME_ADDRESS_ID));
 
-        t = T_CentralUnit.CreateFromRetrieved(rs.getInt(T_CentralUnit.DBNAME_ID), dict);
-
-        return t;
+        return T_CentralUnit.CreateFromRetrieved(rs.getInt(T_CentralUnit.DBNAME_ID), dict);
     }
 }

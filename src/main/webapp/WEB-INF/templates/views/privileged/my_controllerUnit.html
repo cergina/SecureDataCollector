@@ -1,0 +1,72 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+    <div class="container-fluid">
+        <!-- UPPER PANEL -->
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="p-xs">
+                <div class="pull-left m-r-md">
+                    <i class="fa fa-globe text-navy mid-icon"></i>
+                </div>
+                <h2>Secure Data Collector - 2021</h2>
+                <span>This is panel that provides list of communication and sensor types.</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Zobrazenie len ak si admin -->
+            <div th:if="${isAdmin}">
+                <!-- Formular na pridavanie nového sensor -->
+                <!-- tlacidlo prepinac -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom padding-top-10">
+                        <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Sensor Creation</button>
+                    </div>
+                    <div class="regpaddingbottom padding-top-10">
+                        <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Sensor Creation</button>
+                    </div>
+                </div>
+                <!-- samotny formular co sa skryva -->
+                <div class="grid col-sm-12 " id="addition-toggle">
+                    <div class="row justify-content-center regpadding rowinrightcol createuser">
+                        <h1 class="reglogheader">Create new sensor for this controller unit</h1>
+                    </div>
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="sensor_name">Name</label>
+                                <div><input type="text" id="sensor_name" required></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="sensor_input">Input</label>
+                                <div th:with="optionList = ${ {1,2,3,4,5,6,7,8} }"><select id="sensor_input">
+                                    <option th:each="option : ${optionList}" th:value="${option}" th:text="${option}"></option>
+                                </select></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="sensor-type_name">Sensor type</label>
+                                <div><select id="sensor-type_name">
+                                    <option th:each="sensorType : ${sensorTypes}" th:value="${sensorType.name}" th:text="${sensorType.name}"></option>
+                                </select></div>
+                            </div>
+                        </div>
+                        <!-- BUTTONS FOR ADDITION -->
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingbottom padding-top-10">
+                                <button class="roundedbutton min-width-300" onclick="createSensor()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main class="st_viewport">
+                <div th:replace="fragments/controllerUnit_table.html :: controllerUnit_table(controllerUnit=${controllerUnit})"></div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

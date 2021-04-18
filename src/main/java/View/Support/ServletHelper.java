@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class ServletHelper {
-    public static void Send404(HttpServletResponse resp) throws IOException {
-        resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-    }
 
     public static String ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, IOException {
         // get body of request

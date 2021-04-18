@@ -2,7 +2,14 @@ body, html{
     background-color:#dbecf4;
     font-family: 'Open Sans Condensed', sans-serif;
     font-size: 18px;
+    height: 100%;
+}
 
+.bgimg {
+    background-image: url('./../images/forestbridge.jpg');
+    min-height: 100%;
+    background-position: center;
+    background-size: cover;
 }
 
 .columnleft{
@@ -122,4 +129,248 @@ body, html{
 
 .regpaddingbottom {
     padding-bottom: 10px;
+}
+
+.min-width-300 {
+    min-width: 300px;
+}
+
+.padding-right-5{
+    padding-right: 5px;
+}
+
+.padding-left-5{
+    padding-left: 5px;
+}
+
+.padding-top-10{
+    padding-top: 10px;
+}
+
+/* CONCERNING TABLES EXAMPLE */
+
+*{
+    margin: 0;
+    pading: 0;
+    box-sizing: border-box;
+}
+
+.st_viewport{
+    max-height: 700px;
+    overflow: auto;
+}
+
+/* */
+[data-table_id="controller"]{
+    background-color: rgb(255,115,0);
+}
+[data-table_id="sensor"]{
+    background-color: rgb(0,100,200);
+    color: rgb(220,220,220);
+}
+
+._index-general {
+    min-width: 230px;
+}
+
+._index-general-longer {
+    min-width: 320px;
+}
+
+._index-short {
+    min-width: 190px;
+}
+
+._index-long {
+    min-width: 500px;
+}
+
+._uid {
+    min-width: 175px;
+}
+
+._dip {
+    min-width: 145px;
+}
+
+._zwave {
+    min-width: 170px;
+}
+
+._inputNum {
+    min-width: 150px;
+}
+
+._sensorName {
+    min-width: 300px;
+}
+
+._Meas30Days {
+    min-width: 255px;
+}
+
+._MeasuredAll {
+    min-width: 255px;
+}
+
+/** Sticky table styles **/
+.st_viewport{
+    background-color: rgb(62,148,236);
+    color: rgb(27,30,36);
+    margin: 20px 0;
+}
+/* ###  Table wrap */
+.st_wrap_table{
+
+}
+/* ##   header */
+.st_table_header{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    background-color: rgb(27,30,36);
+    color: rgb(220,220,220);
+}
+.st_table_header h2{
+    font-weight: 400;
+    margin: 0 20px;
+    padding: 20px 0 0;
+}
+
+h4 {
+    font-weight: 200;
+    margin: 0 20px;
+    padding: 20px 0 0;
+}
+.st_table_header .st_row{
+    color: rgba(220,220,220, .7);
+}
+.st_table_header .st_column{
+
+}
+/* ##  table */
+.st_table{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+/* #   row */
+.st_row{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0;
+}
+.st_table .st_row:nth-child(even){
+    background-color: rgba(0,0,0, .1)
+}
+/* #   column */
+.st_column{
+    padding: 10px 20px;
+}
+
+
+
+
+
+/* INDEX */
+
+.mid-icon {
+    font-size: 66px;
+}
+.forum-item {
+    margin: 10px 0;
+    padding: 10px 0 20px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.forum-container,
+.forum-post-container {
+    padding: 30px !important;
+}
+.forum-item small {
+    color: #999;
+}
+.forum-item .forum-sub-title {
+    color: #999;
+    margin-left: 50px;
+}
+.forum-title {
+    margin: 15px 0 15px 0;
+}
+.forum-info {
+    text-align: center;
+}
+.forum-desc {
+    color: #999;
+}
+.forum-icon {
+    float: left;
+    width: 30px;
+    margin-right: 20px;
+    text-align: center;
+}
+a.forum-item-title {
+    color: inherit;
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+}
+a.forum-item-title:hover {
+    color: inherit;
+}
+.forum-icon .fa {
+    font-size: 30px;
+    margin-top: 8px;
+    color: #9b9b9b;
+}
+.forum-item.active .fa {
+    color: #1ab394;
+}
+.forum-item.active a.forum-item-title {
+    color: #1ab394;
+}
+@media (max-width: 992px) {
+    .forum-info {
+        margin: 15px 0 10px 0;
+        /* Comment this is you want to show forum info in small devices */
+        display: none;
+    }
+    .forum-desc {
+        float: none !important;
+    }
+}
+
+.ibox-content {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0;
+}
+
+.text-navy {
+    color: #1ab394;
+}
+.mid-icon {
+    font-size: 66px !important;
+}
+.m-b-sm {
+    margin-bottom: 10px;
+}
+
+graph-last30days {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }

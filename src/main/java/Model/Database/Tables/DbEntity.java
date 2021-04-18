@@ -1,6 +1,7 @@
 package Model.Database.Tables;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DbEntity {
     private static DbEntity reference = new DbEntity();
@@ -8,8 +9,8 @@ public class DbEntity {
         "Reference", "Table", "CodeNames"
     };
 
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> arr = new ArrayList<String>();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> arr = new ArrayList<String>();
 
         return arr;
     }

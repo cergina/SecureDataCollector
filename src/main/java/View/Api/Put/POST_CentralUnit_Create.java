@@ -1,10 +1,10 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_CentralUnit;
-import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 
@@ -38,10 +38,12 @@ public class POST_CentralUnit_Create extends POST_Database_Interaction {
             T_CentralUnit tcu = T_CentralUnit.CreateFromScratch(tmpDict);
 
             // Insertion
+            DbProvider dbProvider = getDb();
             I_CentralUnit.insert(dbProvider.getConn(), dbProvider.getPs(), tcu);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

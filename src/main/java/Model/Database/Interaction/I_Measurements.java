@@ -3,14 +3,16 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Measurement;
+import Model.Database.Tables.Table.T_Sensor;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
+
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class I_Measurements {
 
@@ -23,11 +25,16 @@ public class I_Measurements {
         T_Measurement tm_recentInDb = retrieveNewest(conn, ps, rs, tm.getA_SensorID());
         int newAccumulated = (tm_recentInDb == null) ? tm.getA_Value() : tm.getA_Value() + tm_recentInDb.getA_AccumulatedValue();
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_Measurement.DBNAME_VALUE, T_Measurement.DBNAME_REQUESTNO, T_Measurement.DBNAME_MEASUREDAT, T_Measurement.DBNAME_ACCUMULATEDVALUE, T_Measurement.DBNAME_SENSOR_ID
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Measurement.DBTABLE_NAME + "(" +
-                        "Value, RequestNo, MeasuredAt, AccumulatedValue,SensorID" +
+                        tableNames +
                         ") " +
                         "VALUES ( " +
                         "?, " + // value
@@ -56,7 +63,7 @@ public class I_Measurements {
     }
 
     public static T_Measurement retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -86,6 +93,62 @@ public class I_Measurements {
         return tm;
     }
 
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param sensorId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @return
+     * @throws SQLException
+     */
+    public static List<T_Measurement> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+
+        // No Filter is being used
+        if (sensorId <= DB_DO_NOT_USE_THIS_FILTER) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean sensorRule = sensorId > 0;
+
+        usedSql = (sensorRule ? usedSql + T_Measurement.DBTABLE_NAME + ".SensorID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (sensorRule)
+            ps.setInt(++col, sensorId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_Measurement> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Measurements.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
     /*****
      *
      * @param conn
@@ -94,7 +157,7 @@ public class I_Measurements {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -103,13 +166,11 @@ public class I_Measurements {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Measurement> arr = new ArrayList<>();
+        List<T_Measurement> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -123,7 +184,7 @@ public class I_Measurements {
     }
 
     public static T_Measurement retrieveNewest(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
-        Assurance.IdCheck(sensorId);
+        Assurance.idCheck(sensorId);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -153,20 +214,121 @@ public class I_Measurements {
         return tm;
     }
 
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param sensorId
+     * @return -1 when no sum is measured || some actual value
+     * @throws SQLException
+     */
+    public static int measuredLast30DaysForSensor(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "SUM(Value) " +
+                        "FROM " + T_Measurement.DBTABLE_NAME + " " +
+                        "WHERE MeasuredAt > ? AND SensorID = ? GROUP BY SensorID, ID ORDER BY ID asc"
+        );
+
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setDate(++col, date);
+        ps.setInt(++col, sensorId);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        int sum = 0;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                sum = rs.getInt(1);
+            }
+        }
+
+        return sum;
+    }
+
+    public static List<T_Measurement> getLast30DaysMeasurements(Connection conn, PreparedStatement ps, ResultSet rs, int sensorID) throws SQLException {
+        // SQL Definition
+        //Spravit select pre vytahovanie najnovsieho zaznamu pre kazdy den
+        /*ps = conn.prepareStatement(
+                "SELECT * FROM (SELECT * FROM " + T_Measurement.DBTABLE_NAME +
+                " WHERE SensorID = ? AND MeasuredAt > ? ORDER BY ID ASC) AS x GROUP BY MeasuredAt"
+        );*/
+        ps = conn.prepareStatement(
+                "SELECT * FROM " + T_Measurement.DBTABLE_NAME +
+                " WHERE SensorID = ? AND MeasuredAt > ?"
+        );
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setInt(++col, sensorID);
+        ps.setDate(++col, date);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_Measurement> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Measurements.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    public static Integer getAccumulatedValueOf30DaysAgo(Connection conn, PreparedStatement ps, ResultSet rs, int sensorID) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT AccumulatedValue FROM " + T_Measurement.DBTABLE_NAME +
+                        " WHERE SensorID = ? AND MeasuredAt <= ? ORDER BY MeasuredAt DESC, AccumulatedValue DESC LIMIT 1"
+        );
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setInt(++col, sensorID);
+        ps.setDate(++col, date);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        int accValue = 0;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+            return 0;
+        } else {
+            while (rs.next()) {
+                accValue = rs.getInt(1);
+            }
+        }
+
+        return accValue;
+    }
+
 
     // Privates
     private static T_Measurement FillEntity(ResultSet rs) throws SQLException {
-        T_Measurement t = null;
 
         Dictionary dict = new Hashtable();
+
         dict.put(T_Measurement.DBNAME_VALUE, rs.getInt(T_Measurement.DBNAME_VALUE));
         dict.put(T_Measurement.DBNAME_REQUESTNO, rs.getInt(T_Measurement.DBNAME_REQUESTNO));
         dict.put(T_Measurement.DBNAME_MEASUREDAT, rs.getDate(T_Measurement.DBNAME_MEASUREDAT));
         dict.put(T_Measurement.DBNAME_ACCUMULATEDVALUE, rs.getInt(T_Measurement.DBNAME_ACCUMULATEDVALUE));
         dict.put(T_Measurement.DBNAME_SENSOR_ID, rs.getInt(T_Measurement.DBNAME_SENSOR_ID));
 
-        t = T_Measurement.CreateFromRetrieved(rs.getInt(T_Measurement.DBNAME_ID), dict);
-
-        return t;
+        return T_Measurement.CreateFromRetrieved(rs.getInt(T_Measurement.DBNAME_ID), dict);
     }
 }

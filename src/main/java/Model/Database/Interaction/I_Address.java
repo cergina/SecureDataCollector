@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_Address {
 
@@ -26,11 +27,16 @@ public class I_Address {
         if (ta.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Address is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                T_Address.DBNAME_COUNTRY, T_Address.DBNAME_CITY, T_Address.DBNAME_STREET, T_Address.DBNAME_HOUSENO, T_Address.DBNAME_ZIP
+        );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_Address.DBTABLE_NAME + "(" +
-                        "Country, City, Street, HouseNO, Zip" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?, ?" +
@@ -64,7 +70,7 @@ public class I_Address {
      * @throws SQLException
      */
     public static T_Address retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -102,7 +108,7 @@ public class I_Address {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_Address> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_Address> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         CustomLogs.Debug("Entering retrieveAll");
 
         // SQL Definition
@@ -117,7 +123,7 @@ public class I_Address {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_Address> arr = new ArrayList<>();
+        List<T_Address> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -135,7 +141,6 @@ public class I_Address {
 
     // Privates
     private static T_Address FillEntity(ResultSet rs) throws SQLException {
-        T_Address t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -145,10 +150,41 @@ public class I_Address {
         dict.put(T_Address.DBNAME_HOUSENO, rs.getString(T_Address.DBNAME_HOUSENO));
         dict.put(T_Address.DBNAME_ZIP, rs.getString(T_Address.DBNAME_ZIP));
 
-        t = T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
-
-        return t;
+        return T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
     }
 
+    public static boolean checkIfExists(Connection conn, PreparedStatement ps, ResultSet rs, String street, String houseno, String city, String zip, String country) throws SQLException {
+        Assurance.varcharCheck(street);
+        Assurance.varcharCheck(houseno);
+        Assurance.varcharCheck(city);
+        Assurance.varcharCheck(zip);
+        Assurance.varcharCheck(country);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Address.DBTABLE_NAME + " " +
+                        "WHERE Street=? AND HouseNO=? AND City=? AND Zip=? AND Country=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, street);
+        ps.setString(++col, houseno);
+        ps.setString(++col, city);
+        ps.setString(++col, zip);
+        ps.setString(++col, country);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            return false;
+        }
+
+        return true;
+    }
 
 }

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_User {
 
@@ -18,11 +19,16 @@ public class I_User {
         if (tu.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_User is not ok for database enter");
 
+        // Fill SQL db table names
+        String tableNames = String.join(", ",
+                    T_User.DBNAME_BEFORETITLE, T_User.DBNAME_FIRSTNAME, T_User.DBNAME_MIDDLENAME, T_User.DBNAME_LASTNAME, T_User.DBNAME_PHONE, T_User.DBNAME_EMAIL, T_User.DBNAME_PERMANENTRESIDENCE
+                );
+
         // SQL Definition
         ps = conn.prepareStatement(
                 "INSERT INTO " +
                         T_User.DBTABLE_NAME + "(" +
-                        "BeforeTitle, FirstName, MiddleName, LastName, Phone, Email, PermanentResidence" +
+                        tableNames +
                         ") " +
                         "VALUES (" +
                         "?, ?, ?, ?, ?, ?, ?" +
@@ -49,7 +55,7 @@ public class I_User {
     }
 
     public static T_User retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.IdCheck(id);
+        Assurance.idCheck(id);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -80,7 +86,7 @@ public class I_User {
     }
 
     public static T_User retrieveByEmail(Connection conn, PreparedStatement ps, ResultSet rs, String email) throws SQLException {
-        Assurance.IsVarcharOk(email);
+        Assurance.varcharCheck(email);
 
         // SQL Definition
         ps = conn.prepareStatement(
@@ -144,7 +150,7 @@ public class I_User {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<T_User> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
+    public static List<T_User> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -153,13 +159,11 @@ public class I_User {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        ArrayList<T_User> arr = new ArrayList<>();
+        List<T_User> arr = new ArrayList<>();
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -174,7 +178,6 @@ public class I_User {
 
     // Privates
     private static T_User FillEntity(ResultSet rs) throws SQLException {
-        T_User t = null;
 
         Dictionary dict = new Hashtable();
 
@@ -187,9 +190,7 @@ public class I_User {
         dict.put(T_User.DBNAME_PERMANENTRESIDENCE, rs.getString(T_User.DBNAME_PERMANENTRESIDENCE));
         dict.put(T_User.DBNAME_BLOCKED, rs.getInt(T_User.DBNAME_BLOCKED));
 
-        t = T_User.CreateFromRetrieved(rs.getInt(T_User.DBNAME_ID), dict);
-
-        return t;
+        return T_User.CreateFromRetrieved(rs.getInt(T_User.DBNAME_ID), dict);
     }
 
 

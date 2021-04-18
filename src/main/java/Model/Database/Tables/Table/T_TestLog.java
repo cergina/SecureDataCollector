@@ -8,8 +8,8 @@ import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "logs" : "logs";
@@ -65,15 +65,15 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsVarcharOk(a_Event) &&
-                Assurance.IsVarcharOk(a_Body);
+        return Assurance.isVarcharOk(a_Event) &&
+                Assurance.isVarcharOk(a_Body);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsVarcharOk(a_Event) &&
-                Assurance.IsVarcharOk(a_Body);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isVarcharOk(a_Event) &&
+                Assurance.isVarcharOk(a_Body);
     }
 
     @Override
@@ -99,8 +99,8 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
 
     // For HTML purposes
     @Override
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(this.a_Event);
         str.add(this.a_Body);

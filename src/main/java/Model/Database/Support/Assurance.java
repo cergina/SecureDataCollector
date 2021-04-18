@@ -13,32 +13,37 @@ public class Assurance {
     // complex types
 
     // base types
-    public static boolean IsDateOk(Date value) {
+    public static boolean isDateOk(Date value) {
         if (null == value)
             return false;
 
         return true;
     }
 
-    public static boolean IsIntOk(int value) {
+    public static boolean isIntOk(int value) {
         return true;
     }
 
-    public static boolean IsFkOk(int value) {
+    public static boolean isFkOk(int value) {
         if (value <= 0)
             return false;
 
         return true;
     }
 
-    public static boolean IsVarcharOk(String value) {
+    public static boolean isVarcharOk(String value) {
         if (null == value)
             return false;
 
         return true;
     }
 
-    public static void IdCheck(int idToBeChecked) throws SQLException {
+    public static void varcharCheck(String value) throws SQLException {
+        if (Assurance.isVarcharOk(value) == false)
+            throw new SQLException("Value is not valid for use in database.");
+    }
+
+    public static void idCheck(int idToBeChecked) throws SQLException {
         if (idToBeChecked <= 0)
             throw new SQLException("ID is less or equal to 0, which is an invalid Database id.");
     }

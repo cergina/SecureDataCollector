@@ -15,11 +15,50 @@ public class Auth extends PrettyObject {
     private Boolean isadmin;
     @Expose(serialize = false)
     private String password; // password OR password hash
+    @Expose(serialize = false)
+    private String oldPassword;
     @Expose
     private String verificationcode;
 
     // empty constructor for Gson
     public Auth() {}
+
+    // public methods
+
+    /***
+     * Minimum required fields during admin preregistration are email, whole name, number and phone
+     * @return
+     */
+    public boolean isModelOkayForCreation() {
+        if (user == null ||
+                user.getEmail().equals("") ||
+                user.getFirstname().equals("") ||
+                user.getLastname().equals("") ||
+                user.getResidence().equals("") ||
+                user.getPhone().equals("") ||
+                (user.getPhone().matches("^(\\+)?[0-9 ]+$") == false))
+            return false;
+
+        return true;
+    }
+
+    /***
+     * regex validation for password creation phase
+     * at least one number, at least one lowercase letter,
+     * at least one uppercase letter, at least one special character,
+     * no whitespaces allowed
+     * betwewen 5 and 15 letters
+     * @return
+     */
+    public boolean isSuchPasswordOkay() {
+        if (password == null)
+            return false;
+
+        if (password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#.?!@$%^&*-]).{8,15}$") == false)
+            return false;
+
+        return true;
+    }
 
     // GETTERS
     public User getUser() {
@@ -34,9 +73,14 @@ public class Auth extends PrettyObject {
         return password;
     }
 
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
     public String getVerificationcode() {
         return verificationcode;
     }
+
 
     // SETTERS
     public void setUser(User user) {
@@ -49,6 +93,10 @@ public class Auth extends PrettyObject {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public void setVerificationcode(String verificationcode) {

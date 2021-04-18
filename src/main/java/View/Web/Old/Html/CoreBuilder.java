@@ -4,7 +4,7 @@ import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.DbEntity;
 import View.Web.Old.Servlets.Debugging.GENERIC_INFO;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CoreBuilder{
     // Html start
@@ -45,7 +45,7 @@ public class CoreBuilder{
     * */
 
     //CentralUnit - User
-    public static <T extends DbEntity> StringBuilder GenerateDataForPresentation(StringBuilder document, ArrayList<T> arr, T objectX) {
+    public static <T extends DbEntity> StringBuilder GenerateDataForPresentation(StringBuilder document, List<T> arr, T objectX) {
         CustomLogs.Debug("Entering GenerateDataForPresentation");
 
         document = GenerateSiteWithDataPresentation(document);

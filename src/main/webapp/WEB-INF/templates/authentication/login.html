@@ -22,26 +22,29 @@
                         <h1 class="reglogheader">Login</h1>
                     </div>
 
-                    <div class="row justify-content-center">
-                        <div class="regfields">
-                            <label for="email" class="sr-only">Email</label>
-                            <input class="reginput" type="email" id="email" name="email" placeholder="email">
-                        </div>
-                    </div>
 
-                    <div class="row justify-content-center">
-                        <div class="regfields">
-                            <label for="password" class="sr-only">Password</label>
-                            <input class="reginput" type="password" id="password" name="password" placeholder="password">
+                    <form>
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="email" class="sr-only">Email</label>
+                                <input class="reginput min-width-300" type="email" id="email" name="email" placeholder="email">
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="password" class="sr-only">Password</label>
+                                <input class="reginput min-width-300" type="password" id="password" name="password" placeholder="password">
+                            </div>
+                        </div>
+                    </form>
 
                     <div class="row justify-content-center">
                         <div class="buttondiv">
-                            <button class="roundedbutton" onclick="loginUser()">Login</button>
+                            <button type="submit" class="roundedbutton min-width-300" onclick="loginUser()">Login</button>
                         </div>
                         <div class="buttondiv">
-                            <button class="roundedbutton" onclick="goHome()">Go home</button>
+                            <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
                         </div>
                     </div>
 

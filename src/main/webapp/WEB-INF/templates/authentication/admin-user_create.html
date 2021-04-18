@@ -1,0 +1,89 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row" id="two-column-container">
+            <!-- PANEL -->
+            <div class="grid col-sm-12 ">
+                <!-- NAME -->
+                <div class="row justify-content-center regpadding rowinrightcol createuser">
+                    <h1 class="reglogheader">Create user</h1>
+                </div>
+
+                <form>
+                    <!-- FIELDS -->
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="email">Email</label>
+                                <div><input class="min-width-300" type="email" id="email" placeholder="youremail@example.com"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="beforetitle">Before title</label>
+                                <div><input class="min-width-300" type="text" id="beforetitle"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="firstname">First name</label>
+                                <div><input class="min-width-300" type="text" id="firstname"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="middlename">Middle name</label>
+                                <div><input class="min-width-300" type="text" id="middlename"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="lastname">Last name</label>
+                                <div><input class="min-width-300" type="text" id="lastname"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="phone">Phone</label>
+                                <div><input class="min-width-300" type="text" id="phone" placeholder="+421 944 222 111 / 00 421 944 222 111"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="residence">Permanent residence</label>
+                                <div><input class="min-width-300" type="text" id="residence" placeholder="Adress + City + ZIP code"/></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom px-5">
+                                <input type="checkbox" id="isadmin"/>
+                                <label for="isadmin">Will the created user have admin privileges?</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- ACTIONS AND NAVIGATION -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button type="submit" class="roundedbutton min-width-300" onclick="createUser()">Create user</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- END PANEL -->
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

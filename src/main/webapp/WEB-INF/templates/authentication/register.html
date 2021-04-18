@@ -22,35 +22,45 @@
                         <h1 class="reglogheader">Sign Up</h1>
                     </div>
 
-                    <div class="row justify-content-center">
-                        <div class="regfields">
-                            <label for="email" class="sr-only">Email</label>
-                            <input class="reginput" type="email" id="email" name="email" placeholder="email">
-                        </div>
-                    </div>
 
-                    <div class="row justify-content-center">
-                        <div class="regfields">
-                            <label for="password" class="sr-only">Password</label>
-                            <input class="reginput" type="password" id="password" name="password" placeholder="password">
+                    <form>
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="email" class="sr-only">Email</label>
+                                <input class="reginput min-width-300" type="email" id="email" name="email" placeholder="email">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row justify-content-center">
-                        <div class="regfields">
-                            <label for="verificationcode" class="sr-only">Verification Code</label>
-                            <input class="reginput" type="text" id="verificationcode" name="verificationcode" placeholder="verification code">
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="password" class="sr-only">Password [1+ lower and upper case, 1+ number, 1 special character]</label>
+                                <input class="reginput min-width-300" type="password" id="password" name="password" placeholder="Create your password">
+                            </div>
                         </div>
-                    </div>
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="password-retype" class="sr-only">Password</label>
+                                <input class="reginput min-width-300" type="password" id="password-retype" name="password-retype" placeholder="Confirm your password">
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="verificationcode" class="sr-only">Verification Code</label>
+                                <input class="reginput min-width-300" type="text" id="verificationcode" name="verificationcode" placeholder="verification code">
+                            </div>
+                        </div>
+                    </form>
 
                     <div class="row justify-content-center">
                         <div class="buttondiv">
-                            <button class="roundedbutton" onclick="registerUser()">Register</button>
+                            <button type="submit" class="roundedbutton min-width-300" onclick="registerUser()">Register</button>
                         </div>
                         <div class="buttondiv">
-                            <button class="roundedbutton" onclick="goHome()">Go home</button>
+                            <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
                         </div>
                     </div>
+
 
                 </div>
             </div>

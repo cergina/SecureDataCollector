@@ -8,8 +8,10 @@ import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Dictionary;
+import java.util.List;
 
 public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "userAccessPrivilege_journal" : "useraccessprivilege_journal";
@@ -57,7 +59,7 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     public static T_AccessPrivilegeJournal CreateFromScratch(Dictionary dict) {
         T_AccessPrivilegeJournal temp = new T_AccessPrivilegeJournal();
 
-        temp.a_CreatedAt = (java.sql.Date)dict.get(DBNAME_CREATED_AT);
+        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
         temp.a_UserID = (int)dict.get(DBNAME_USER_ID);
         temp.a_AccessPrivilegeID = (int)dict.get(DBNAME_ACCESS_PRIVILEGE_ID);
         temp.a_CreatedByUserID = (int)dict.get(DBNAME_CREATED_BY_USER_ID);
@@ -71,7 +73,10 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
 
         jo.put(DBNAME_ID, tmp.getA_pk());
         jo.put(DBNAME_CREATED_AT, tmp.getA_CreatedAt());
-        jo.put(DBNAME_DELETED_AT, tmp.getA_DeletedAt());
+
+        if (tmp.getA_DeletedAt() != null)
+            jo.put(DBNAME_DELETED_AT, tmp.getA_DeletedAt());
+
         jo.put(DBNAME_USER_ID, tmp.getA_UserID());
         jo.put(DBNAME_ACCESS_PRIVILEGE_ID, tmp.getA_AccessPrivilegeID());
         jo.put(DBNAME_CREATED_BY_USER_ID, tmp.getA_CreatedByUserID());
@@ -84,19 +89,19 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsIntOk(a_UserID) &&
-                Assurance.IsIntOk(a_AccessPrivilegeID) &&
-                Assurance.IsIntOk(a_CreatedByUserID);
+        return Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isFkOk(a_UserID) &&
+                Assurance.isFkOk(a_AccessPrivilegeID) &&
+                Assurance.isFkOk(a_CreatedByUserID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsDateOk(a_CreatedAt) &&
-                Assurance.IsIntOk(a_UserID) &&
-                Assurance.IsIntOk(a_AccessPrivilegeID) &&
-                Assurance.IsIntOk(a_CreatedByUserID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isDateOk(a_CreatedAt) &&
+                Assurance.isFkOk(a_UserID) &&
+                Assurance.isFkOk(a_AccessPrivilegeID) &&
+                Assurance.isFkOk(a_CreatedByUserID);
     }
 
     @Override
@@ -122,11 +127,11 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
 
     // For HTML purposes
     @Override
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(a_CreatedAt.toString());
-        str.add(a_DeletedAt.toString());
+        str.add((this.a_DeletedAt == null) ? "" : this.a_DeletedAt.toString());
         str.add(Integer.toString(a_UserID));
         str.add(Integer.toString(a_AccessPrivilegeID));
         str.add(Integer.toString(a_CreatedByUserID));

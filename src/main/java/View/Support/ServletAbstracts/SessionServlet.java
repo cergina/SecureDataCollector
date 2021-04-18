@@ -14,7 +14,6 @@ public abstract class SessionServlet extends ConnectionServlet {
         // Request has no session
         if (req.getSession(false) == null) {
             CustomLogs.Error("User trying to access site. [No session] FAILED.");
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
 

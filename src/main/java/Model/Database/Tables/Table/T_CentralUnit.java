@@ -8,8 +8,8 @@ import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "centralUnit" : "centralunit";
@@ -17,6 +17,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     // Atributes
     private int a_pk;
     private int a_Uid;
+    private String a_DipAddress;
     private String a_FriendlyName;
     private String a_SimNO;
     private String a_Imei;
@@ -26,6 +27,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
     public static final String DBNAME_ID = "ID";
     public static final String DBNAME_UID = "Uid";
+    public static final String DBNAME_DIPADDRESS = "DipAddress";
     public static final String DBNAME_FRIENDLYNAME = "FriendlyName";
     public static final String DBNAME_SIMNO = "SimNO";
     public static final String DBNAME_IMEI = "Imei";
@@ -35,7 +37,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
     public static T_CentralUnit REFERENCE = new T_CentralUnit();
     public static String[] TABLE_CODENAMES = {
-            "UID", "Friendly Name", "SIM Number", "IMEI code", "Zwave number", "Project ID", "Address ID"
+            "UID", "Dip Address", "Friendly Name", "SIM Number", "IMEI code", "Zwave number", "Project ID", "Address ID"
     };
 
     // Constructors
@@ -47,6 +49,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
         temp.a_pk = pk;
         temp.a_Uid = (int)dict.get(DBNAME_UID);
+        temp.a_DipAddress = (String)dict.get(DBNAME_DIPADDRESS);
         temp.a_FriendlyName = (String)dict.get(DBNAME_FRIENDLYNAME);
         temp.a_SimNO = (String)dict.get(DBNAME_SIMNO);
         temp.a_Imei = (String)dict.get(DBNAME_IMEI);
@@ -61,6 +64,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
         T_CentralUnit temp = new T_CentralUnit();
 
         temp.a_Uid = (int)dict.get(DBNAME_UID);
+        temp.a_DipAddress = (String)dict.get(DBNAME_DIPADDRESS);
         temp.a_FriendlyName = (String)dict.get(DBNAME_FRIENDLYNAME);
         temp.a_SimNO = (String)dict.get(DBNAME_SIMNO);
         temp.a_Imei = (String)dict.get(DBNAME_IMEI);
@@ -77,6 +81,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
         jo.put(DBNAME_ID, tmp.getA_pk());
         jo.put(DBNAME_UID, tmp.getA_Uid());
+        jo.put(DBNAME_DIPADDRESS, tmp.getA_DipAddress());
         jo.put(DBNAME_FRIENDLYNAME, tmp.getA_FriendlyName());
         jo.put(DBNAME_SIMNO, tmp.getA_SimNO());
         jo.put(DBNAME_IMEI, tmp.getA_Imei());
@@ -90,25 +95,27 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.IsIntOk(a_Uid) &&
-                Assurance.IsVarcharOk(a_FriendlyName) &&
-                Assurance.IsVarcharOk(a_SimNO) &&
-                Assurance.IsVarcharOk(a_Imei) &&
-                Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsIntOk(a_ProjectID) &&
-                Assurance.IsIntOk(a_AddressID);
+        return Assurance.isIntOk(a_Uid) &&
+                Assurance.isVarcharOk(a_DipAddress) &&
+                Assurance.isVarcharOk(a_FriendlyName) &&
+                Assurance.isVarcharOk(a_SimNO) &&
+                Assurance.isVarcharOk(a_Imei) &&
+                Assurance.isVarcharOk(a_Zwave) &&
+                Assurance.isFkOk(a_ProjectID) &&
+                Assurance.isFkOk(a_AddressID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
-        return Assurance.IsIntOk(a_pk) &&
-                Assurance.IsIntOk(a_Uid) &&
-                Assurance.IsVarcharOk(a_FriendlyName) &&
-                Assurance.IsVarcharOk(a_SimNO) &&
-                Assurance.IsVarcharOk(a_Imei) &&
-                Assurance.IsVarcharOk(a_Zwave) &&
-                Assurance.IsIntOk(a_ProjectID) &&
-                Assurance.IsIntOk(a_AddressID);
+        return Assurance.isFkOk(a_pk) &&
+                Assurance.isIntOk(a_Uid) &&
+                Assurance.isVarcharOk(a_DipAddress) &&
+                Assurance.isVarcharOk(a_FriendlyName) &&
+                Assurance.isVarcharOk(a_SimNO) &&
+                Assurance.isVarcharOk(a_Imei) &&
+                Assurance.isVarcharOk(a_Zwave) &&
+                Assurance.isFkOk(a_ProjectID) &&
+                Assurance.isFkOk(a_AddressID);
     }
 
     @Override
@@ -134,10 +141,11 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
     // For HTML purposes
     @Override
-    public ArrayList<String> GenerateHtmlTableRow_FromDbRow() {
-        ArrayList<String> str = super.GenerateHtmlTableRow_FromDbRow();
+    public List<String> GenerateHtmlTableRow_FromDbRow() {
+        List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
         str.add(Integer.toString(a_Uid));
+        str.add(this.a_DipAddress);
         str.add(this.a_FriendlyName);
         str.add(this.a_SimNO);
         str.add(this.a_Imei);
@@ -169,6 +177,10 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
     public int getA_Uid() {
         return a_Uid;
+    }
+
+    public String getA_DipAddress() {
+        return a_DipAddress;
     }
 
     public String getA_FriendlyName() {

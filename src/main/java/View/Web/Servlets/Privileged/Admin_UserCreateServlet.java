@@ -2,6 +2,7 @@ package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
+import Model.Database.Support.CustomLogs;
 import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
@@ -24,12 +25,13 @@ import java.io.PrintWriter;
 @WebServlet(name = "Admin_UserCreateServlet", urlPatterns = Admin_UserCreateServlet.SERVLET_URL)
 public class Admin_UserCreateServlet extends AdminServlet {
     public static final String SERVLET_URL =  "/admin/user/create";
-    public static final String TEMPLATE_NAME = "authentication/admin_create-user.html";
+    public static final String TEMPLATE_NAME = "authentication/admin-user_create.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
         if (checkPrivilege(request, response) == false) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
@@ -48,6 +50,22 @@ public class Admin_UserCreateServlet extends AdminServlet {
         // parse JSON from Body object as Auth java representation
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
+        // Check validity of user inserted data
+        // TODO remake somehow better, it should not be here - this is test if it will work on server
+        if (auth.isModelOkayForCreation() == false) {
+            CustomLogs.Error("You cant expect me to create a user with some required fields empty.");
+
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setMessage("You cant expect me to create a user with some required fields empty.");
+            response.setStatus(400);
+
+            writer.println(jsonResponse.toString());
+            writer.close();
+
+            return;
+        }
+
+        // Continue
         String verificationCode = UserAccessHelper.generateVerification(ConfigClass.VERIFICATION_CODE_LENGTH);
         auth.setVerificationcode(verificationCode);
 

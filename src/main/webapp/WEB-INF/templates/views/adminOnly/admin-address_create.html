@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row" id="two-column-container">
+            <div class="grid col-sm-12 ">
+                <!-- TITLE -->
+                <div class="row justify-content-center regpadding rowinrightcol createuser">
+                    <h1 class="reglogheader">Create a new address</h1>
+                </div>
+
+                <!-- FORM -->
+                <form>
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="street">Street:</label>
+                                <div><input type="email" id="street" placeholder="Street" required=""></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="houseno">House number:</label>
+                                <div><input type="email" id="houseno" placeholder="House number" required=""></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="city">City:</label>
+                                <div><input type="email" id="city" placeholder="City" required=""></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="zip">ZIP:</label>
+                                <div><input type="email" id="zip" placeholder="ZIP" required=""></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="country">Country:</label>
+                                <div><input class="min-width-300" type="text" id="country" placeholder="Country" required=""></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- ACTIONS AND NAVIGATION -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom padding-top-10">
+                        <button type="submit" class="roundedbutton min-width-300" onclick="createAddress()">Create</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom">
+                        <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
+                    </div>
+                </div>
+                <!-- END PANEL -->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

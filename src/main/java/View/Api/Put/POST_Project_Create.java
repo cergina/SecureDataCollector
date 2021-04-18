@@ -1,10 +1,10 @@
 package View.Api.Put;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
 import Model.Database.Tables.Table.T_Project;
-import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 
@@ -35,10 +35,12 @@ public class POST_Project_Create extends POST_Database_Interaction {
 
             T_Project t = T_Project.CreateFromScratch(json.getString(T_Project.DBNAME_NAME));
 
+            DbProvider dbProvider = getDb();
             I_Project.insert(dbProvider.getConn(), dbProvider.getPs(), t);
+            dbProvider.disconnect();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }

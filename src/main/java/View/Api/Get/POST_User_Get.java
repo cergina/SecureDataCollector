@@ -1,5 +1,6 @@
 package View.Api.Get;
 
+import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_User;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
@@ -24,7 +25,9 @@ public class POST_User_Get extends POST_Database_Interaction {
             // parse
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
+            DbProvider dbProvider = getDb();
             T_User ret_ect = I_User.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_User.DBNAME_ID));
+            dbProvider.disconnect();
 
             // return
             JSONObject json_toRet = T_User.MakeJSONObjectFrom(ret_ect);
@@ -36,7 +39,7 @@ public class POST_User_Get extends POST_Database_Interaction {
             out.flush();
         }
         catch (Exception e) {
-            ServletHelper.Send404(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             CustomLogs.Error(e.getMessage());
         }
