@@ -23,6 +23,8 @@ public class Measurement extends PrettyObject {
         this.measuredAt = measuredAt;
     }
 
+    // GETTERS and SETTERS
+
     public int getValue() {
         return value;
     }
@@ -46,8 +48,5 @@ public class Measurement extends PrettyObject {
     public void setMeasuredAt(Date measuredAt) {
         this.measuredAt = measuredAt;
     }
-
-    // GETTERS and SETTERS
-
 
 }

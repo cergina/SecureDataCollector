@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
@@ -126,7 +125,7 @@ public class UC_Graph {
             List<Integer> dataArray = new ArrayList<>();
             Integer accumulatedValue30DaysAgo = I_Measurements.getAccumulatedValueOf30DaysAgo(db.getConn(), db.getPs(), db.getRs(), sensorID);
 
-            HashMap<Date, Integer> hashMap = new HashMap<>();
+            Map<Date, Integer> hashMap = new HashMap<>();
             for (Measurement measurement : measurements) {
                 if(hashMap.containsKey(measurement.getMeasuredAt())){
                     if(hashMap.get(measurement.getMeasuredAt()) < measurement.getValue()-accumulatedValue30DaysAgo){
@@ -144,7 +143,6 @@ public class UC_Graph {
             for(Date date : dates){
                 if(hashMap.containsKey(date)){
                     fillerValue = hashMap.get(date);
-                    //dataArray.add(fillerValue);
                 }
                 else{
                     hashMap.put(date, fillerValue);
@@ -152,7 +150,6 @@ public class UC_Graph {
                 dataArray.add(fillerValue);
             }
 
-            //dataArray.add(accumulatedValue30DaysAgo);
             return dataArray;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
