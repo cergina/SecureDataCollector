@@ -3,7 +3,7 @@ package View.Web.Servlets.Privileged.UserSpecific;
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
 import Model.Database.Support.CustomLogs;
-import Model.Web.Projects;
+import Model.Web.Project;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "ProjectsInformationServlet", urlPatterns = ProjectsInformationServlet.SERVLET_URL)
 public class ProjectsInformationServlet extends SessionServlet {
@@ -35,7 +36,7 @@ public class ProjectsInformationServlet extends SessionServlet {
 
         // Get user from session
         User user = SessionUtil.getUser(request.getSession(false));
-        Projects projects = (new UC_FlatSummary(getDb())).allProjectsForUser(user.getUserID());
+        List<Project> projects = (new UC_FlatSummary(getDb())).allProjectsForUser(user.getUserID());
 
         // TEMPLATE PREPARATION
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
@@ -45,7 +46,7 @@ public class ProjectsInformationServlet extends SessionServlet {
         // part 3
         // TODO
         context.setVariable("Email", user.getEmail());
-        context.setVariable("ProjectsCount", projects.getProjects().size());
+        context.setVariable("ProjectsCount", projects.size());
 
         // part 4
         engine.process(TEMPLATE_NAME, context, response.getWriter());

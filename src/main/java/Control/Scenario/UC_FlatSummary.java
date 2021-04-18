@@ -6,8 +6,6 @@ import Model.Database.Interaction.*;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.*;
 import Model.Web.Project;
-import Model.Web.Projects;
-import Model.Web.Sensor;
 import Model.Web.thymeleaf.*;
 
 import javax.validation.constraints.NotNull;
@@ -27,15 +25,15 @@ public class UC_FlatSummary {
         this.db = dbProvider;
     }
 
-    public final Projects allProjectsForUser(int userID) { // TODO move to different UC
-        Projects projects = new Projects();
+    public final List<Project> allProjectsForUser(int userID) { // TODO move to different UC
+        List<Project> temp = new ArrayList<Project>();
 
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {
             List<T_Project_user> arr = I_ProjectUser.retrieveAllForUser(db.getConn(), db.getPs(), db.getRs(), userID);
-            List<Project> temp = new ArrayList<Project>();
+
 
             for (T_Project_user  tpu: arr) {
                 Project project = new Project();
@@ -50,8 +48,6 @@ public class UC_FlatSummary {
                 temp.add(project);
             }
 
-            // dont forget to set data that was inserted into json
-            projects.setProjects(temp);
 
             db.afterOkSqlExecution();
 
@@ -59,7 +55,7 @@ public class UC_FlatSummary {
             db.afterExceptionInSqlExecution(sqle);
         }
 
-        return projects;
+        return temp;
     }
 
     /***

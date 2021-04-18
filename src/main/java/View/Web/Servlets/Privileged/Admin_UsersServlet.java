@@ -4,7 +4,6 @@ import Control.ConfigClass;
 import Control.Scenario.UC_UserListing;
 import Model.Database.Support.CustomLogs;
 import Model.Web.User;
-import Model.Web.Users;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
@@ -15,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "Admin_UsersServlet", urlPatterns = Admin_UsersServlet.SERVLET_URL)
 public class Admin_UsersServlet extends AdminServlet {
@@ -62,11 +62,7 @@ public class Admin_UsersServlet extends AdminServlet {
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
         UC_UserListing uc = new UC_UserListing(getDb());
-        Users users = uc.allUsers();
-        if (users == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
+        List<User> users = uc.allUsers();
 
         context.setVariable(VARIABLE_ISADMIN, true);
         context.setVariable(VARIABLE_USERS, users);

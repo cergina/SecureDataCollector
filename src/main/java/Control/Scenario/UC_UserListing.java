@@ -4,7 +4,6 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_User;
 import Model.Database.Tables.Table.T_User;
 import Model.Web.User;
-import Model.Web.Users;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -19,15 +18,15 @@ public class UC_UserListing {
     }
 
 
-    public final Users allUsers() {
-        Users users = new Users();
-
+    public final List<User> allUsers() {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
+        List<User> temp = new ArrayList<User>();
+
         try {
             List<T_User> arr = I_User.retrieveAll(db.getConn(), db.getPs(), db.getRs());
-            List<User> temp = new ArrayList<User>();
+
 
             for (T_User  t: arr) {
                 User usr = new User();
@@ -38,7 +37,6 @@ public class UC_UserListing {
             }
 
             // dont forget to set data that was inserted into json
-            users.setUsers(temp);
 
             db.afterOkSqlExecution();
 
@@ -46,11 +44,11 @@ public class UC_UserListing {
             db.afterExceptionInSqlExecution(sqle);
         }
 
-        return users;
+        return temp;
     }
 
     public final User specificUser(int id) {
-        User usr = new User();
+        User usr = null;
 
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
@@ -58,7 +56,10 @@ public class UC_UserListing {
         try {
             T_User t = I_User.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
 
-            FillEntityFromTable(usr, t);
+            if (t != null) {
+                usr = new User();
+                FillEntityFromTable(usr, t);
+            }
 
             db.afterOkSqlExecution();
 

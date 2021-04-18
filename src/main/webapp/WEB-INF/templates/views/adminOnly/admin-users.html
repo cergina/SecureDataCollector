@@ -32,7 +32,7 @@
                         <h4>GENERAL</h4>
                     </div>
                     <!-- LIST -->
-                    <div th:each="user: ${users.getUsers()}">
+                    <div th:each="user: ${users}">
                         <div th:replace="fragments/users_table.html :: users_table(user=${user})"></div>
                     </div>
                     <!-- END LIST -->

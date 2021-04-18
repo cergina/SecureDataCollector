@@ -100,8 +100,6 @@ public class I_FlatOwner_flat {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
