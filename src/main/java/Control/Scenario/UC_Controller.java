@@ -33,7 +33,8 @@ public class UC_Controller {
 
         try {
             if (isDataValid(creation) == false) {
-                throw new CreationException("Some required fields are missing.");
+                jsonResponse.setMessage("Some required fields are missing or incorrect.");
+                throw new CreationException("Some required fields are missing or incorrect.");
             }
 
             if(checkIfAlreadyExists(creation.getUid(), creation.getDipAddress(), creation.getFlatId())){
@@ -50,7 +51,7 @@ public class UC_Controller {
         } catch (NumberFormatException ne) {
             db.afterExceptionInSqlExecution(ne);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonResponse.setMessage("UID can be only a number.");
+            jsonResponse.setMessage("UID and DIP can be only a number.");
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -58,7 +59,6 @@ public class UC_Controller {
         } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonResponse.setMessage("Some required fields are missing or invalid.");
         } catch (AlreadyExistsException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);

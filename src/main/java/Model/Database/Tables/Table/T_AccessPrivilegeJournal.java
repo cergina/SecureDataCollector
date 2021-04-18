@@ -8,6 +8,8 @@ import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     public static T_AccessPrivilegeJournal CreateFromScratch(Dictionary dict) {
         T_AccessPrivilegeJournal temp = new T_AccessPrivilegeJournal();
 
-        temp.a_CreatedAt = (java.sql.Date)dict.get(DBNAME_CREATED_AT);
+        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
         temp.a_UserID = (int)dict.get(DBNAME_USER_ID);
         temp.a_AccessPrivilegeID = (int)dict.get(DBNAME_ACCESS_PRIVILEGE_ID);
         temp.a_CreatedByUserID = (int)dict.get(DBNAME_CREATED_BY_USER_ID);

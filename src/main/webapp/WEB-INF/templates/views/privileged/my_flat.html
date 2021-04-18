@@ -12,93 +12,90 @@
             <p th:text="${'ZIP code: ' + flat.address.zip}"></p>
 
             <!-- TODO testoval som tuto situaciu ale nikdy nenestala lebo zrejme hadzes v takom pripade uz vo doesUserHaveRightToSeeProjectBelongingToFlat 404. Musis ju prestat hadzat aby som to vedel zobrazit ako si chcel -->
-            <p th:if="${flat.controllerUnits.isEmpty()}">Tento byt este nema jednotky nainstalovane.</p>
-
-            <div th:unless="${flat.controllerUnits.isEmpty()}">
-
-                <!-- info o central jednotke -->
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Shortend identifier</th>
-                        <th scope="col">SIM NO</th>
-                        <th scope="col">IMEI</th>
-                        <th scope="col">ZWAVE identifier</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td th:text="${flat.centralUnit.friendlyName}"></td>
-                        <td th:text="${flat.centralUnit.simNO}"></td>
-                        <td th:text="${flat.centralUnit.imei}"></td>
-                        <td th:text="${flat.centralUnit.zwave}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <p th:if="${flat.controllerUnits.isEmpty()}">This flat does not have any controller units yet.</p>
 
 
-                <!-- Zobrazenie len ak si admin -->
-                <div th:if="${isAdmin}">
-                    <!-- Formular na pridavanie nového controllerUnit -->
-                    <!-- tlacidlo prepinac -->
-                    <div class="row justify-content-center rowinrightcol">
-                        <div class="regpaddingbottom padding-top-10">
-                            <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Controller Unition Creation</button>
-                        </div>
-                        <div class="regpaddingbottom padding-top-10">
-                            <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Controller Unition Creation</button>
-                        </div>
+            <!-- info o central jednotke -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Shortend identifier</th>
+                    <th scope="col">SIM NO</th>
+                    <th scope="col">IMEI</th>
+                    <th scope="col">ZWAVE identifier</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${flat.centralUnit.friendlyName}"></td>
+                    <td th:text="${flat.centralUnit.simNO}"></td>
+                    <td th:text="${flat.centralUnit.imei}"></td>
+                    <td th:text="${flat.centralUnit.zwave}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <!-- Zobrazenie len ak si admin -->
+            <div th:if="${isAdmin}">
+                <!-- Formular na pridavanie nového controllerUnit -->
+                <!-- tlacidlo prepinac -->
+                <div class="row justify-content-center rowinrightcol">
+                    <div class="regpaddingbottom padding-top-10">
+                        <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Controller Unition Creation</button>
                     </div>
-                    <!-- samotny formular co sa skryva -->
-                    <div class="grid col-sm-12 " id="addition-toggle">
-                        <div class="row justify-content-center regpadding rowinrightcol createuser">
-                            <h1 class="reglogheader">Create new Controller Unit for this flat</h1>
-                        </div>
-
-
-                        <div class="grid regpadding">
-                            <div class="row justify-content-center">
-                                <div class="regpaddingtopbottom padding-right-5">
-                                    <label for="controller-uid">UID:</label>
-                                    <div><input type="text" id="controller-uid" placeholder="should be generated" required=""></div>
-                                </div>
-                                <div class="regpaddingtopbottom padding-left-5">
-                                    <label for="controller-dip_address">DIP Address:</label>
-                                    <div><input type="text" id="controller-dip_address" placeholder="1-255" required=""></div>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="regpaddingtopbottom">
-                                    <label for="controller-zwave">Zwave identifier:</label>
-                                    <div><input class="min-width-300" type="text" id="controller-zwave" placeholder="ZW-XXX" required=""></div>
-                                </div>
-                            </div>
-                            <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
-                            <input type="hidden" th:value="${flat.id}" id="controller-flat-id">
-                            <!-- BUTTONS FOR ADDITION -->
-                            <div class="row justify-content-center rowinrightcol">
-                                <div class="regpaddingbottom padding-top-10">
-                                    <button type="submit" class="roundedbutton min-width-300" onclick="createControllerUnitForThisFlat()">Create</button>
-                                </div>
-                            </div>
-                        </div>
-
-
+                    <div class="regpaddingbottom padding-top-10">
+                        <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Controller Unition Creation</button>
                     </div>
                 </div>
+                <!-- samotny formular co sa skryva -->
+                <div class="grid col-sm-12 " id="addition-toggle">
+                    <div class="row justify-content-center regpadding rowinrightcol createuser">
+                        <h1 class="reglogheader">Create new Controller Unit for this flat</h1>
+                    </div>
 
 
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom padding-right-5">
+                                <label for="controller-uid">UID:</label>
+                                <div><input type="text" id="controller-uid" placeholder="should be generated" required=""></div>
+                            </div>
+                            <div class="regpaddingtopbottom padding-left-5">
+                                <label for="controller-dip_address">DIP Address:</label>
+                                <div><input type="text" id="controller-dip_address" placeholder="1-255" required=""></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="regpaddingtopbottom">
+                                <label for="controller-zwave">Zwave identifier:</label>
+                                <div><input class="min-width-300" type="text" id="controller-zwave" placeholder="ZW-XXX" required=""></div>
+                            </div>
+                        </div>
+                        <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
+                        <input type="hidden" th:value="${flat.id}" id="controller-flat-id">
+                        <!-- BUTTONS FOR ADDITION -->
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingbottom padding-top-10">
+                                <button type="submit" class="roundedbutton min-width-300" onclick="createControllerUnitForThisFlat()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div th:unless="${flat.controllerUnits.isEmpty()}">
                 <!-- test only -->
-
                 <main class="st_viewport">
                     <div th:each="controllerUnit: ${flat.controllerUnits}">
                         <div th:replace="fragments/controllerUnit_table.html :: controllerUnit_table(controllerUnit=${controllerUnit})"></div>
                     </div>
                 </main>
-
                 <!-- test only -->
-
             </div>
+
         </div>
     </div>
 </body>

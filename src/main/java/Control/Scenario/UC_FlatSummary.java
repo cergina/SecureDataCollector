@@ -7,6 +7,7 @@ import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.Table.*;
 import Model.Web.Project;
 import Model.Web.thymeleaf.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -58,6 +59,18 @@ public class UC_FlatSummary {
         return temp;
     }
 
+    public int countNumberOfControllersForCentralUnit(@NotNull final Integer centralUnitId) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForCentralUnit(centralUnitId);
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.afterOkSqlExecution();
+
+        return t_controllerUnits.size();
+    }
+
     /***
      * @param flatId from request
      * @return {@link Flat}, null if it does not exist
@@ -67,15 +80,22 @@ public class UC_FlatSummary {
         db.beforeSqlExecution(false);
 
         T_Flat t_flat = get_TFlat_ById(flatId);
-        if (t_flat == null)
+        if (t_flat == null) {
+            db.afterOkSqlExecution();
             return null;
-
-        List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForFlat(flatId);
-        List<ControllerUnit> controllerUnits = new ArrayList<>();
-        for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
-            controllerUnits.add(Shared_Uc.buildControllerUnit(t_controllerUnit, db));
         }
 
+        // get controllers from database, but allow returning of flat with no controllers
+        List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForFlat(flatId);
+        List<ControllerUnit> controllerUnits = new ArrayList<ControllerUnit>();
+
+        if (t_controllerUnits.isEmpty() == false) {
+            for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
+                controllerUnits.add(Shared_Uc.buildControllerUnit(t_controllerUnit, db));
+            }
+        }
+
+        // prepare info about central unit
         CentralUnit centralUnit = null;
         if (!controllerUnits.isEmpty()) {
             T_CentralUnit t_centralUnit = get_TCentralUnit_ById(t_controllerUnits.get(0).getA_CentralUnitID());
@@ -84,10 +104,12 @@ public class UC_FlatSummary {
                     t_centralUnit.getA_FriendlyName(),
                     t_centralUnit.getA_SimNO(),
                     t_centralUnit.getA_Imei(),
-                    t_centralUnit.getA_Zwave()
+                    t_centralUnit.getA_Zwave(),
+                    t_centralUnit.getA_AddressID()
             );
         }
 
+        // prepare info about address
         T_Address t_address = get_TAddress_ById(t_flat.getA_AddressID());
         Address address = new Address(
                 t_address.getA_Country(),
@@ -97,6 +119,7 @@ public class UC_FlatSummary {
                 t_address.getA_ZIP()
         );
 
+        // put all together
         Flat flat = new Flat(
                 t_flat.getA_pk(),
                 t_flat.getA_ApartmentNO(),
@@ -126,6 +149,86 @@ public class UC_FlatSummary {
         db.afterOkSqlExecution();
 
         return controllerUnit;
+    }
+
+    public Model.Web.CentralUnit get_CentralUnit(@NotNull final Integer centralUnitId) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        T_CentralUnit t = get_TCentralUnit_ById(centralUnitId);
+        if (t == null) {
+            db.afterFailedSqlExecution();
+            return null;
+        }
+
+        // pair
+        Model.Web.CentralUnit centralUnit = new Model.Web.CentralUnit();
+
+        centralUnit.setId(t.getA_pk());
+        centralUnit.setUid(t.getA_Uid());
+        centralUnit.setDip(t.getA_DipAddress());
+        centralUnit.setFriendlyName(t.getA_FriendlyName());
+        centralUnit.setSimNo(t.getA_SimNO());
+        centralUnit.setImei(t.getA_Imei());
+        centralUnit.setZwave(t.getA_Zwave());
+        centralUnit.setProjectId(t.getA_ProjectID());
+        centralUnit.setAddressId(t.getA_AddressID());
+
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.afterOkSqlExecution();
+
+        return centralUnit;
+    }
+
+    public Model.Web.CentralUnit get_CentralUnitWithFlats(@NotNull final Integer centralUnitId) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        T_CentralUnit t_centralUnit = get_TCentralUnit_ById(centralUnitId);
+        if (t_centralUnit == null) {
+            return null;
+        }
+
+        // pair
+        Model.Web.CentralUnit centralUnit = new Model.Web.CentralUnit();
+        centralUnit.setId(t_centralUnit.getA_pk());
+        centralUnit.setUid(t_centralUnit.getA_Uid());
+        centralUnit.setDip(t_centralUnit.getA_DipAddress());
+        centralUnit.setFriendlyName(t_centralUnit.getA_FriendlyName());
+        centralUnit.setSimNo(t_centralUnit.getA_SimNO());
+        centralUnit.setImei(t_centralUnit.getA_Imei());
+        centralUnit.setZwave(t_centralUnit.getA_Zwave());
+        centralUnit.setProjectId(t_centralUnit.getA_ProjectID());
+        centralUnit.setAddressId(t_centralUnit.getA_AddressID());
+
+
+        // fill with flats of setting address Id
+        List<T_Flat> arr = new ArrayList<T_Flat>();
+        try {
+            arr = I_Flat.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), centralUnit.getAddressId());
+        } catch (SQLException e) {
+            db.afterFailedSqlExecution();
+            return null;
+        }
+
+        // convert T_Flats into Flats
+        List<Flat> list = new ArrayList<Flat>();
+        for (T_Flat t: arr
+             ) {
+            // TODO this is weird af
+            Flat temp = new Flat(t);
+
+            list.add(temp);
+        }
+
+        centralUnit.setFlats(list);
+
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.afterOkSqlExecution();
+
+        return centralUnit;
     }
 
     /***
@@ -165,6 +268,17 @@ public class UC_FlatSummary {
         return arr;
     }
 
+    private @NotNull List<T_ControllerUnit> getAll_TControllers_ForCentralUnit(@NotNull final Integer centralUnitId) {
+        List<T_ControllerUnit> arr = new ArrayList<>();
+
+        try {
+            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, centralUnitId);
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return arr;
+    }
 
 
     private T_Address get_TAddress_ById(@NotNull final Integer id) {
