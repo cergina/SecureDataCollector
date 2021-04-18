@@ -2,6 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
+import Model.Database.Tables.Table.T_Measurement;
 import Model.Database.Tables.Table.T_Sensor;
 
 import java.sql.Connection;

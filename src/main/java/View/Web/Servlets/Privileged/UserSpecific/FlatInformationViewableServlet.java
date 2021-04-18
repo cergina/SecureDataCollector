@@ -2,7 +2,11 @@ package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
+import Control.Scenario.UC_Graph;
 import Model.Database.Support.CustomLogs;
+import Model.Web.JsonResponse;
+import Model.Web.Specific.AddressCreation;
+import Model.Web.Specific.GraphSingleFlat;
 import Model.Web.User;
 import Model.Web.thymeleaf.Flat;
 import View.Configuration.ContextUtil;
@@ -12,10 +16,12 @@ import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet(name = "FlatInformationServlet", urlPatterns = FlatInformationViewableServlet.SERVLET_URL)
 public class FlatInformationViewableServlet extends AdminEditableUserViewableServlet {
@@ -29,6 +35,7 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // AUTHENTICATION
+
         super.doGet(request, response); // call always parent method first
         if (checkPrivilege(request, response) == false) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -76,4 +83,20 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         // Generate html and return it
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
+        PrintWriter writer = response.getWriter();
+
+        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(1));
+
+        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraph(graph));
+
+        response.setStatus(jsonResponse.getStatus());
+
+        writer.println(jsonResponse.toString());
+        writer.close();
+    }
+
 }

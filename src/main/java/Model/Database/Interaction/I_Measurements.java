@@ -3,6 +3,7 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_Measurement;
+import Model.Database.Tables.Table.T_Sensor;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -243,7 +244,7 @@ public class I_Measurements {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        int sum = -1;
+        int sum = 0;
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
@@ -254,6 +255,68 @@ public class I_Measurements {
         }
 
         return sum;
+    }
+
+    public static List<T_Measurement> getLast30DaysMeasurements(Connection conn, PreparedStatement ps, ResultSet rs, int sensorID) throws SQLException {
+        // SQL Definition
+        //Spravit select pre vytahovanie najnovsieho zaznamu pre kazdy den
+        /*ps = conn.prepareStatement(
+                "SELECT * FROM (SELECT * FROM " + T_Measurement.DBTABLE_NAME +
+                " WHERE SensorID = ? AND MeasuredAt > ? ORDER BY ID ASC) AS x GROUP BY MeasuredAt"
+        );*/
+        ps = conn.prepareStatement(
+                "SELECT * FROM " + T_Measurement.DBTABLE_NAME +
+                " WHERE SensorID = ? AND MeasuredAt > ?"
+        );
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setInt(++col, sensorID);
+        ps.setDate(++col, date);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_Measurement> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Measurements.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    public static Integer getAccumulatedValueOf30DaysAgo(Connection conn, PreparedStatement ps, ResultSet rs, int sensorID) throws SQLException {
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT AccumulatedValue FROM " + T_Measurement.DBTABLE_NAME +
+                        " WHERE SensorID = ? AND MeasuredAt <= ? ORDER BY MeasuredAt DESC, AccumulatedValue DESC LIMIT 1"
+        );
+        int col = 0;
+        Date date = Date.valueOf(LocalDate.now().minusDays(30));
+        ps.setInt(++col, sensorID);
+        ps.setDate(++col, date);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        int accValue = 0;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+            return 0;
+        } else {
+            while (rs.next()) {
+                accValue = rs.getInt(1);
+            }
+        }
+
+        return accValue;
     }
 
 

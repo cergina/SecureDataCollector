@@ -80,13 +80,13 @@ public class UC_FlatSummary {
             List<Sensor> sensors = new ArrayList<>();
             for (T_Sensor t_sensor : t_sensors) {
                 int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk());
-                int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk());
+                int measuredTotal = getMeasuredTotal(t_sensor.getA_pk());
 
                 Sensor sensor = new Sensor(
                         t_sensor.getA_Input(),
                         t_sensor.getA_Name(),
                         measuredLast30Days,
-                        mesuredTotal
+                        measuredTotal
                 );
                 sensors.add(sensor);
             }

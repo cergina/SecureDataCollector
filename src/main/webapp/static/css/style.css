@@ -254,3 +254,9 @@ body, html{
 .st_column{
     padding: 10px 20px;
 }
+
+graph-last30days {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
