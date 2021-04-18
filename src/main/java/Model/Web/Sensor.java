@@ -2,6 +2,8 @@ package Model.Web;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 /**
  * Api model - sensor
  */
@@ -18,15 +20,29 @@ public class Sensor extends PrettyObject {
     private String sensorTypeName;
     @Expose
     private Integer controllerUnitId;
+    @Expose
+    private List<Measurement> measurements;
+    @Expose
+    private List<Integer> dataArray;
+
 
     // empty constructor for Gson
-    public Sensor() {}
+    public Sensor() {
+    }
 
     public Sensor(String input, String name, Integer measuredLast30Days, Integer measuredTotal) {
         this.input = input;
         this.name = name;
         this.measuredLast30Days = measuredLast30Days;
         this.measuredTotal = measuredTotal;
+    }
+
+    public Sensor(String input, String name, Integer controllerUnitID, List<Measurement> measurements, List<Integer> dataArray) {
+        this.input = input;
+        this.name = name;
+        this.controllerUnitId = controllerUnitID;
+        this.measurements = measurements;
+        this.dataArray = dataArray;
     }
 
     public String getInput() {
@@ -75,5 +91,21 @@ public class Sensor extends PrettyObject {
 
     public void setControllerUnitId(Integer controllerUnitId) {
         this.controllerUnitId = controllerUnitId;
+    }
+
+    public List<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public void setMeasurements(List<Measurement> measurements) {
+        this.measurements = measurements;
+    }
+
+    public List<Integer> getDataArray() {
+        return dataArray;
+    }
+
+    public void setDataArray(List<Integer> dataArray) {
+        this.dataArray = dataArray;
     }
 }

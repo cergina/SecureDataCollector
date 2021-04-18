@@ -368,3 +368,9 @@ a.forum-item-title:hover {
 .m-b-sm {
     margin-bottom: 10px;
 }
+
+graph-last30days {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}

@@ -8,14 +8,13 @@ function graphFUNC() {
     $.ajax({
         method: "POST",
         async: false,
-        url: $SCRIPT_ROOT + "/graph",
+        url: $SCRIPT_ROOT + "/action/projects/flats?fid=" + $("#flat-id").val(),
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
         statusCode: {
             201: function(response) {
                 DATES = response.data.dates;
                 SENSORS = response.data.sensors;
-                alert(' ' + JSON.stringify(response.data.sensors[0]));
             },
         },
     });
@@ -27,7 +26,7 @@ var GraphTotalDatasets = SENSORS.length;
 var GraphLabelArray = []
 for (i=0; i < GraphTotalDatasets; i++)
 {
-    GraphLabelArray[i] = "Controller #" + SENSORS[i].controllerUnitID + " Sensor: " + SENSORS[i].name;
+    GraphLabelArray[i] = "Controller #" + SENSORS[i].controllerUnitId + " Sensor: " + SENSORS[i].name;
 }
 
 

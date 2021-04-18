@@ -110,7 +110,7 @@ public class UC_Graph {
 
                     List<Integer> dataArray = getMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
 
-                    Sensor sensor = new Sensor(t_sensor.getA_pk(), t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_SensorTypeID(), t_sensor.getA_ControllerUnitID(), measurements, dataArray);
+                    Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray);
                     sensors.add(sensor);
                 } catch (SQLException sqle) {
                     CustomLogs.Error(sqle.getMessage());

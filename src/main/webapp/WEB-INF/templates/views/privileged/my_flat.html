@@ -7,6 +7,7 @@
         <div class="container">
             <div class="row">
             <div class="col-sm-2">
+                <input type="hidden" th:value="${flat.id}" id="flat-id">
                     <p th:text="${'Flat ID: ' + flat.id}"></p>
                     <p th:text="${'Flat detail: ' + flat.apartmentNO}"></p>
                     <p th:text="${'Country: ' + flat.address.country}"></p>
