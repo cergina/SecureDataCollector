@@ -44,7 +44,9 @@ class Shared_Uc {
                 t_controllerUnit.getA_Uid(),
                 t_controllerUnit.getA_DipAddress(),
                 t_controllerUnit.getA_Zwave(),
-                sensors
+                sensors,
+                t_controllerUnit.getA_FlatID(),
+                t_controllerUnit.getA_CentralUnitID()
         );
     }
 

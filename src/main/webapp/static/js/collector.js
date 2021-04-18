@@ -88,7 +88,70 @@ function buildControllerCreation() {
     };
 }
 
+// build JSON object by Api spec: Flat, FlatOwners and First Controller Unit for FlatFirstTimeCreation
+function buildFlat() {
+    return {
+        apartmentNo: $("#apartment-No").val(),
+        owner1: {
+            title: $("#owner1-title").val(),
+            firstName: $("#owner1-name").val(),
+            middleName: $("#owner1-middlename").val(),
+            lastName: $("#owner1-lastname").val(),
+            phone: $("#owner1-phone").val(),
+            email: $("#owner1-email").val(),
+            address: $("#owner1-address").val()
+        },
+        owner2: {
+            title: $("#owner2-title").val(),
+            firstName: $("#owner2-name").val(),
+            middleName: $("#owner2-middlename").val(),
+            lastName: $("#owner2-lastname").val(),
+            phone: $("#owner2-phone").val(),
+            email: $("#owner2-email").val(),
+            address: $("#owner2-address").val()
+        },
+        uid: $("#controller-uid").val(),
+        dip: $("#controller-dip_address").val(),
+        zwave: $("#controller-zwave").val(),
+
+        centralUnitId: $("#controller-central-id").val()
+    };
+}
+
 // POST calls
+
+function createFlat() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/flats/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildFlat()),
+        statusCode: {
+            201: function(response) {
+                $(':input').val('');
+                alert('Flat, owners and controller successfully created.');
+                window.location.reload();
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        },
+        complete: function(jqXHR) { // keep for DEBUG only
+            console.log("---DEBUG---");
+            console.log(jqXHR);
+        }
+    });
+}
 
 // Create new user
 function createUser() {
@@ -355,6 +418,7 @@ function createCommType() {
             201: function(response) {
                 $(':input').val('');
                 alert('Vytvorený nový typ komunikácie: ' + response.data.name);
+                window.location.reload();
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -384,6 +448,7 @@ function createSensorType() {
             201: function(response) {
                 $(':input').val('');
                 alert('Vytvorený nový typ sensora: ' + response.data.name);
+                window.location.reload();
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -423,6 +488,13 @@ function accessFlatWithId() {
     $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
 }
 
+
+// used in index to visit flat with id in the box
+function accessCentralWithId() {
+    var idToVisit = idToVisit = $("#access-centralId").val();
+    $(location).attr('href', $SCRIPT_ROOT + '/action/centralUnits?id=' + idToVisit);
+}
+
 // used in public request for consumption to visit by uid
 function requestViewConsumption() {
     var uidToVisit = uidToVisit = $("#request-uid").val();
@@ -443,6 +515,15 @@ function hideVisibilityOfAdditionElement() {
 
 function switchVisibilityOfAdditionElement() {
     var x = document.getElementById("addition-toggle");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+function switchBetweenAdditionOfOptUser() {
+    var x = document.getElementById("toggle-optional-flatowner");
     if (x.style.display === "none") {
         x.style.display = "block";
     } else {
@@ -502,4 +583,15 @@ $(function() {
             '<a href="' + $SCRIPT_ROOT + '/admin/comm-type/create">Create new communication type</a>'
         );
     });
+});
+
+$(function() {
+    // add link to single flat page
+    $(".flat_link").each(function(index, value){
+        var flatId = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + flatId + '">link</a>'
+        );
+    });
+
 });

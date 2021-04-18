@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class T_LoginLog extends DbEntity implements DBTable, DBToHtml {
     public static T_LoginLog CreateFromScratch(Dictionary dict) {
         T_LoginLog temp = new T_LoginLog();
 
-        temp.a_LoggedAt = (Date)dict.get(DBNAME_LOGGEDAT);
+        temp.a_LoggedAt = Date.valueOf(LocalDate.now());
         temp.a_SrcIp = (String) dict.get(DBNAME_SRCIP);
         temp.a_UserId = (int)dict.get(DBNAME_USERID);
 

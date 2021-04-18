@@ -3,6 +3,7 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_CentralUnit;
+import Model.Database.Tables.Table.T_ControllerUnit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+
+import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class I_CentralUnit {
     /****
@@ -107,6 +110,53 @@ public class I_CentralUnit {
         }
 
         return tc;
+    }
+
+    public static List<T_CentralUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int projectId) throws SQLException {
+
+        // No Filter is being used
+        if (projectId <= DB_DO_NOT_USE_THIS_FILTER) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean projectRule = projectId > 0;
+
+        usedSql = (projectRule ? usedSql + T_CentralUnit.DBTABLE_NAME + ".ProjectID=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (projectRule)
+            ps.setInt(++col, projectId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_CentralUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_CentralUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
     }
 
     public static T_CentralUnit retrieveByAddressId(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException {

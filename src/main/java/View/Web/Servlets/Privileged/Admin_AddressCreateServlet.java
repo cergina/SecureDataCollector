@@ -50,8 +50,6 @@ public class Admin_AddressCreateServlet extends AdminServlet {
         // parse JSON from Body object
         AddressCreation addressCreation = (AddressCreation) PrettyObject.parse(ServletHelper.RequestBody(request), AddressCreation.class);
 
-        CustomLogs.Error(addressCreation.getCity() + addressCreation.getStreet() + addressCreation.getCountry() + addressCreation.getHouseNo() + addressCreation.getZIP());
-
         final JsonResponse jsonResponse = (new UC_NewAddress(getDb()).createNewAddress(addressCreation));
 
         response.setStatus(jsonResponse.getStatus());
