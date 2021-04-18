@@ -89,7 +89,19 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
-        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(1));
+        // has to have some request for flat id
+        int requestedFlatId;
+        try {
+            requestedFlatId = Integer.parseInt(request.getParameter(REQUEST_PARAM_FLAT_ID));
+            CustomLogs.Development("V POST requeste prisiel flat id: " + requestedFlatId);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+
+        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(requestedFlatId));
 
         final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraph(graph));
 
