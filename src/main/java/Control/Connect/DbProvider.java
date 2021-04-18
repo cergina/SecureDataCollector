@@ -21,6 +21,7 @@ public class DbProvider {
     private ResultSet rs = null;
 
     private boolean isItTransaction = false;
+    private boolean insideOfExecution = false;
     // PUBLIC
 
     public DbProvider() {
@@ -44,6 +45,7 @@ public class DbProvider {
                 conn.setAutoCommit(false);
                 isItTransaction = willItBeTransaction;
             }
+            insideOfExecution = true;
         } catch (Exception e) {
             afterExceptionInSqlExecution(e);
             return;
@@ -60,6 +62,10 @@ public class DbProvider {
      */
     public void afterExceptionInSqlExecution(Exception exceptionToLog) {
         CustomLogs.Error(exceptionToLog.getMessage());
+        afterFailedSqlExecution();
+    }
+
+    public void afterFailedSqlExecution() {
         afterSqlExecution(false);
     }
 
@@ -103,13 +109,14 @@ public class DbProvider {
     private void afterSqlExecution(boolean successful) {
         try {
             // when query was unsuccesfull do not commit
-            if (successful == false) {
+            // do not rollback if it was just a get (no point in rollbacking)
+            if (successful == false && isItTransaction) {
                 conn.rollback();
                 return;
             }
 
             // commit only when it was an insert or sth of that sort
-            if (isItTransaction) {
+            if (successful && isItTransaction) {
                 conn.commit();
             }
 
@@ -117,6 +124,7 @@ public class DbProvider {
             CustomLogs.Error(e.getMessage());
         } finally {
             isItTransaction = false;
+            insideOfExecution = false;
 
             try {
                 conn.setAutoCommit(true);

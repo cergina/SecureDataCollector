@@ -11,37 +11,44 @@
                 <div class="row justify-content-center regpadding rowinrightcol createuser">
                     <h1 class="reglogheader">Create sensor type</h1>
                 </div>
-                <!-- FIELDS -->
-                <div class="grid regpadding">
-                    <div class="row justify-content-center rowinrightcol">
-                        <div class="regpaddingtopbottom">
-                            <label for="sensor-type_name">Name</label>
-                            <div><input class="min-width-300" type="text" id="sensor-type_name" required/></div>
+
+
+                <!-- FORM -->
+                <form>
+                    <!-- FIELDS -->
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="sensor-type_name">Name</label>
+                                <div><input class="min-width-300" type="text" id="sensor-type_name" required=""/></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="grid regpadding">
-                    <div class="row justify-content-center rowinrightcol">
-                        <div class="regpaddingtopbottom">
-                            <label for="sensor-type_measured-in">Measured in</label>
-                            <div><input class="min-width-300" type="text" id="sensor-type_measured-in"/></div>
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="sensor-type_measured-in">Measured in</label>
+                                <div><input class="min-width-300" type="text" id="sensor-type_measured-in"/></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="grid regpadding">
-                    <div class="row justify-content-center rowinrightcol">
-                        <div class="regpaddingtopbottom">
-                            <label for="comm-type_name">Communication type</label>
-                            <div><select class="min-width-300" id="comm-type_name">
-                                <option th:each="commType : ${commTypes}" th:value="${commType.name}" th:text="${commType.name}"></option>
-                            </select></div>
+                    <div class="grid regpadding">
+                        <div class="row justify-content-center rowinrightcol">
+                            <div class="regpaddingtopbottom">
+                                <label for="comm-type_name">Communication type</label>
+                                <div><select class="min-width-300" id="comm-type_name">
+                                    <option th:each="commType : ${commTypes}" th:value="${commType.name}" th:text="${commType.name}"></option>
+                                </select></div>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                </form>
+
                 <!-- ACTIONS AND NAVIGATION -->
                 <div class="row justify-content-center rowinrightcol">
                     <div class="regpaddingbottom">
-                        <button class="roundedbutton min-width-300" onclick="createSensorType()">Create</button>
+                        <button type="submit" class="roundedbutton min-width-300" onclick="createSensorType()">Create</button>
                     </div>
                 </div>
                 <div class="row justify-content-center rowinrightcol">

@@ -3,6 +3,7 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.Table.T_ControllerUnit;
+import Model.Database.Tables.Table.T_Measurement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,6 +70,38 @@ public class I_ControllerUnit {
 
         int col = 0;
         ps.setInt(++col, id);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_ControllerUnit tc = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tc = I_ControllerUnit.FillEntity(rs);
+        }
+
+        return tc;
+    }
+
+
+    public static T_ControllerUnit retrieveByUid(Connection conn, PreparedStatement ps, ResultSet rs, int uid) throws SQLException {
+        Assurance.idCheck(uid);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                        "WHERE Uid=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, uid);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -166,7 +199,75 @@ public class I_ControllerUnit {
                         "ORDER BY ID asc"
         );
 
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_ControllerUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_ControllerUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static List<T_ControllerUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int centralUnitId, int flatId, String dip) throws SQLException {
+
+        // No Filter is being used
+        if (centralUnitId <= DB_DO_NOT_USE_THIS_FILTER && flatId  <= DB_DO_NOT_USE_THIS_FILTER) {
+            return retrieveAll(conn, ps, rs);
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean centralRule = centralUnitId > 0;
+        boolean flatRule = flatId > 0;
+        boolean dipRule = dip.equals("") == false;
+
+        /* add first WHERE clause */
+        usedSql = (centralRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".CentralUnitID=? " : usedSql);
+
+        /* add second WHERE clause - watch out for possibility of AND requirement if first line rule was added */
+        usedSql = (flatRule && (centralRule == false) ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
+        usedSql = (flatRule && centralRule ? usedSql + " AND " + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
+
+        /* add second WHERE clause - watch out for possibility of AND requirement if first or second line rule was added */
+        usedSql = (dipRule && (centralRule || flatRule) ? usedSql + " AND " + T_ControllerUnit.DBTABLE_NAME + ".DipAddress=? " : usedSql);
+        usedSql = (dipRule && (!centralRule  && !flatRule) ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".DipAddress=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
         int col = 0;
+        if (centralRule)
+            ps.setInt(++col, centralUnitId);
+        if (flatRule)
+            ps.setInt(++col, flatId);
+        if (dipRule)
+            ps.setString(++col, dip);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -224,4 +325,5 @@ public class I_ControllerUnit {
 
         return true;
     }
+
 }

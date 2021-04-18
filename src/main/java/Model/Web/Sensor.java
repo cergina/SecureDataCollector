@@ -2,48 +2,31 @@ package Model.Web;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.List;
-
-
+/**
+ * Api model - sensor
+ */
 public class Sensor extends PrettyObject {
-    // PARAMETERS
-    @Expose
-    private int id;
-    @Expose
-    private String input;
-    @Expose
-    private String name;
-    @Expose
-    private Integer sensorTypeID;
-    @Expose
-    private Integer controllerUnitID;
-    @Expose
-    private List<Measurement> measurements;
-    @Expose
-    private List<Integer> dataArray;
 
+    // public can be accessed by thymeleaf
+    @Expose
+    public String input;
+    @Expose
+    public String name;
+    public Integer measuredLast30Days;
+    public Integer measuredTotal;
+    @Expose
+    private String sensorTypeName;
+    @Expose
+    private Integer controllerUnitId;
 
     // empty constructor for Gson
-    public Sensor() {
-    }
+    public Sensor() {}
 
-    public Sensor(int id, String input, String name, Integer sensorTypeID, Integer controllerUnitID, List<Measurement> measurements, List<Integer> dataArray) {
-        this.id = id;
+    public Sensor(String input, String name, Integer measuredLast30Days, Integer measuredTotal) {
         this.input = input;
         this.name = name;
-        this.sensorTypeID = sensorTypeID;
-        this.controllerUnitID = controllerUnitID;
-        this.measurements = measurements;
-        this.dataArray = dataArray;
-    }
-
-    // GETTERS and SETTERS
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.measuredLast30Days = measuredLast30Days;
+        this.measuredTotal = measuredTotal;
     }
 
     public String getInput() {
@@ -62,36 +45,35 @@ public class Sensor extends PrettyObject {
         this.name = name;
     }
 
-
-    public Integer getSensorTypeID() {
-        return sensorTypeID;
+    public Integer getMeasuredLast30Days() {
+        return measuredLast30Days;
     }
 
-    public void setSensorTypeID(Integer sensorTypeID) {
-        this.sensorTypeID = sensorTypeID;
+    public void setMeasuredLast30Days(Integer measuredLast30Days) {
+        this.measuredLast30Days = measuredLast30Days;
     }
 
-    public Integer getControllerUnitID() {
-        return controllerUnitID;
+    public Integer getMeasuredTotal() {
+        return measuredTotal;
     }
 
-    public void setControllerUnitID(Integer controllerUnitID) {
-        this.controllerUnitID = controllerUnitID;
+    public void setMeasuredTotal(Integer measuredTotal) {
+        this.measuredTotal = measuredTotal;
     }
 
-    public List<Measurement> getMeasurements() {
-        return measurements;
+    public String getSensorTypeName() {
+        return sensorTypeName;
     }
 
-    public void setMeasurements(List<Measurement> measurements) {
-        this.measurements = measurements;
+    public void setSensorTypeName(String sensorTypeName) {
+        this.sensorTypeName = sensorTypeName;
     }
 
-    public List<Integer> getDataArray() {
-        return dataArray;
+    public Integer getControllerUnitId() {
+        return controllerUnitId;
     }
 
-    public void setDataArray(List<Integer> dataArray) {
-        this.dataArray = dataArray;
+    public void setControllerUnitId(Integer controllerUnitId) {
+        this.controllerUnitId = controllerUnitId;
     }
 }

@@ -169,6 +169,22 @@ body, html{
     color: rgb(220,220,220);
 }
 
+._index-general {
+    min-width: 230px;
+}
+
+._index-general-longer {
+    min-width: 320px;
+}
+
+._index-short {
+    min-width: 190px;
+}
+
+._index-long {
+    min-width: 500px;
+}
+
 ._uid {
     min-width: 175px;
 }
@@ -221,6 +237,12 @@ body, html{
     margin: 0 20px;
     padding: 20px 0 0;
 }
+
+h4 {
+    font-weight: 200;
+    margin: 0 20px;
+    padding: 20px 0 0;
+}
 .st_table_header .st_row{
     color: rgba(220,220,220, .7);
 }
@@ -255,8 +277,94 @@ body, html{
     padding: 10px 20px;
 }
 
-graph-last30days {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
+
+
+
+
+/* INDEX */
+
+.mid-icon {
+    font-size: 66px;
+}
+.forum-item {
+    margin: 10px 0;
+    padding: 10px 0 20px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.forum-container,
+.forum-post-container {
+    padding: 30px !important;
+}
+.forum-item small {
+    color: #999;
+}
+.forum-item .forum-sub-title {
+    color: #999;
+    margin-left: 50px;
+}
+.forum-title {
+    margin: 15px 0 15px 0;
+}
+.forum-info {
+    text-align: center;
+}
+.forum-desc {
+    color: #999;
+}
+.forum-icon {
+    float: left;
+    width: 30px;
+    margin-right: 20px;
+    text-align: center;
+}
+a.forum-item-title {
+    color: inherit;
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+}
+a.forum-item-title:hover {
+    color: inherit;
+}
+.forum-icon .fa {
+    font-size: 30px;
+    margin-top: 8px;
+    color: #9b9b9b;
+}
+.forum-item.active .fa {
+    color: #1ab394;
+}
+.forum-item.active a.forum-item-title {
+    color: #1ab394;
+}
+@media (max-width: 992px) {
+    .forum-info {
+        margin: 15px 0 10px 0;
+        /* Comment this is you want to show forum info in small devices */
+        display: none;
+    }
+    .forum-desc {
+        float: none !important;
+    }
+}
+
+.ibox-content {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0;
+}
+
+.text-navy {
+    color: #1ab394;
+}
+.mid-icon {
+    font-size: 66px !important;
+}
+.m-b-sm {
+    margin-bottom: 10px;
 }

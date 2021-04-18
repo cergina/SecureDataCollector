@@ -86,6 +86,40 @@ public class I_Sensor {
         return ts;
     }
 
+    public static T_Sensor retrieveByInputAndControllerUnitId(Connection conn, PreparedStatement ps, ResultSet rs, String input, int cid) throws SQLException {
+        Assurance.varcharCheck(input);
+        Assurance.idCheck(cid);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Sensor.DBTABLE_NAME + " " +
+                        "WHERE " + T_Sensor.DBNAME_INPUT + "=? AND "
+                        + T_Sensor.DBNAME_CONTROLLERUNIT_ID + "=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, input);
+        ps.setInt(++col, cid);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_Sensor ts = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            ts = I_Sensor.FillEntity(rs);
+        }
+
+        return ts;
+    }
+
     ////////////////////////
     ////     Searches   ////
     ///////////////////////
@@ -199,8 +233,6 @@ public class I_Sensor {
                         "FROM " + T_Sensor.DBTABLE_NAME + " " +
                         "ORDER BY ID asc"
         );
-
-        int col = 0;
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

@@ -33,7 +33,8 @@ public class UC_Controller {
 
         try {
             if (isDataValid(creation) == false) {
-                throw new CreationException("Some required fields are missing.");
+                jsonResponse.setMessage("Some required fields are missing or incorrect.");
+                throw new CreationException("Some required fields are missing or incorrect.");
             }
 
             if(checkIfAlreadyExists(creation.getUid(), creation.getDipAddress(), creation.getFlatId())){
@@ -50,7 +51,7 @@ public class UC_Controller {
         } catch (NumberFormatException ne) {
             db.afterExceptionInSqlExecution(ne);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonResponse.setMessage("UID can be only a number.");
+            jsonResponse.setMessage("UID and DIP can be only a number.");
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -58,7 +59,6 @@ public class UC_Controller {
         } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonResponse.setMessage("Some required fields are missing or invalid.");
         } catch (AlreadyExistsException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -95,7 +95,7 @@ public class UC_Controller {
         dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, creation.getDipAddress());
         dict.put(T_ControllerUnit.DBNAME_ZWAVE, creation.getZwave());
 
-        T_CentralUnit tc = getCentralUnitByFlatId(creation.getFlatId());
+        T_CentralUnit tc = get_TCentralUnit_ByFlatId(creation.getFlatId());
         int centralUnitId = (tc != null ? tc.getA_pk() : -1);
 
         dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, centralUnitId);
@@ -117,7 +117,7 @@ public class UC_Controller {
         return true;
     }
 
-    private T_CentralUnit getCentralUnitByFlatId(@NotNull Integer flatId) {
+    private T_CentralUnit get_TCentralUnit_ByFlatId(@NotNull Integer flatId) {
         T_CentralUnit t = null;
 
         try {

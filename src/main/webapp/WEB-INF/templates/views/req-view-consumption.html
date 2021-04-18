@@ -1,0 +1,49 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row" id="two-column-container">
+            <div class="col-sm-7 columnleft">
+                <div class="row">
+                    <div id="imgdiv">
+                        <!--<img src="signup3.png" alt="Sign Up" style="width:100%;"> -->
+                        <img th:src="@{${base_url} + '/static/images/reglogimg.png'}" class="columnleft" alt="Sign Up">
+                        <h1 id="img-text-top">Welcome</h1>
+                        <h4 id="img-text-bottom">Data Collection System</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 align-self-center" id="columnright">
+                <div class="grid">
+
+                    <div class="row justify-content-center">
+                        <h1 class="reglogheader">Request for INFO</h1>
+                    </div>
+
+                    <form>
+                        <div class="row justify-content-center">
+                            <div class="regfields">
+                                <label for="request-uid" class="sr-only">Controller UID</label>
+                                <input class="reginput min-width-300" type="email" id="request-uid" name="request-uid" placeholder="In your contract">
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- ACTIONS -->
+                    <div class="row justify-content-center">
+                        <div class="buttondiv">
+                            <button type="submit" class="roundedbutton min-width-300" onclick="requestViewConsumption()">Make a request</button>
+                        </div>
+                        <div class="buttondiv">
+                            <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

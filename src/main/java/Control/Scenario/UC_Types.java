@@ -23,10 +23,10 @@ import java.util.List;
 /**
  * Use Case class for creating database entries by admin
  */
-public class UC_CreateTypes {
+public class UC_Types {
     private DbProvider db;
 
-    public UC_CreateTypes(@NotNull DbProvider dbProvider) {
+    public UC_Types(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
@@ -140,7 +140,7 @@ public class UC_CreateTypes {
         return jsonResponse;
     }
 
-    public final @NotNull List<CommType> getAllCommType() {
+    public final @NotNull List<CommType> getAll_CommType() {
         List<CommType> commTypeList = new ArrayList<>();
 
         try {
@@ -154,5 +154,34 @@ public class UC_CreateTypes {
         }
 
         return commTypeList;
+    }
+
+    public final @NotNull List<SensorType> getAll_SensorType(boolean includeCommTypes) {
+        List<SensorType> sensorTypeList = new ArrayList<>();
+
+        List<CommType> commTypeList = includeCommTypes ? getAll_CommType() : null;
+        try {
+            List<E_SensorType> e_sensorTypeList = I_SensorType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            for (E_SensorType e_sensorType : e_sensorTypeList) {
+
+                if (includeCommTypes) {
+                    List<CommType> commTypes = new ArrayList<>();
+                    for (CommType commType : commTypeList) {
+                        if (e_sensorType.getA_CommTypeID() == commType.getId()) {
+                            commTypes.add(commType);
+                        }
+                    }
+                    SensorType sensorType = new SensorType(e_sensorType.getA_pk(), e_sensorType.getA_Name(), e_sensorType.getA_MeasuredIn(), commTypes);
+                    sensorTypeList.add(sensorType);
+                } else {
+                    SensorType sensorType = new SensorType(e_sensorType.getA_pk(), e_sensorType.getA_Name(), e_sensorType.getA_MeasuredIn());
+                    sensorTypeList.add(sensorType);
+                }
+            }
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return sensorTypeList;
     }
 }

@@ -2,13 +2,10 @@ package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_NewAddress;
-import Control.Scenario.UC_NewProject;
 import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import Model.Web.Specific.AddressCreation;
-import Model.Web.Specific.ProjectCreation;
-import Model.Web.thymeleaf.Address;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
@@ -49,8 +46,6 @@ public class Admin_AddressCreateServlet extends AdminServlet {
 
         // parse JSON from Body object
         AddressCreation addressCreation = (AddressCreation) PrettyObject.parse(ServletHelper.RequestBody(request), AddressCreation.class);
-
-        CustomLogs.Error(addressCreation.getCity() + addressCreation.getStreet() + addressCreation.getCountry() + addressCreation.getHouseNo() + addressCreation.getZIP());
 
         final JsonResponse jsonResponse = (new UC_NewAddress(getDb()).createNewAddress(addressCreation));
 

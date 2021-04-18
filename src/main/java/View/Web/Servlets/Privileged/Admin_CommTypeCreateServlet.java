@@ -1,7 +1,7 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_CreateTypes;
+import Control.Scenario.UC_Types;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
@@ -46,7 +46,7 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
 
         CommType commType = (CommType) PrettyObject.parse(ServletHelper.RequestBody(request), CommType.class);
 
-        final JsonResponse jsonResponse = (new UC_CreateTypes(getDb()).createCommType(commType));
+        final JsonResponse jsonResponse = (new UC_Types(getDb()).createCommType(commType));
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

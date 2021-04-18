@@ -20,7 +20,7 @@ public class I_Hash {
 
         // Fill SQL db table names
         String tableNames = String.join(", ",
-                    T_Hash.DBNAME_VALUE, T_Hash.DBNAME_USER_ID
+                    T_Hash.DBNAME_VALUE, T_Hash.DBNAME_USER_ID, T_Hash.DBNAME_NACL
                 );
 
         // SQL Definition
@@ -30,13 +30,14 @@ public class I_Hash {
                         tableNames +
                         ") " +
                         "VALUES (" +
-                        "?, ?" +
+                        "?, ?, ?" +
                         ") "
         );
 
         int col = 0;
         ps.setString(++col, th.getA_Value());
         ps.setInt(++col, th.getA_UserID());
+        ps.setBytes(++col, th.getA_NaCl());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -170,8 +171,6 @@ public class I_Hash {
                         "ORDER BY ID asc"
         );
 
-        int col = 0;
-
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
@@ -196,6 +195,7 @@ public class I_Hash {
 
         dict.put(T_Hash.DBNAME_VALUE, rs.getString(T_Hash.DBNAME_VALUE));
         dict.put(T_Hash.DBNAME_USER_ID, rs.getInt(T_Hash.DBNAME_USER_ID));
+        dict.put(T_Hash.DBNAME_NACL, rs.getBytes(T_Hash.DBNAME_NACL));
 
         return T_Hash.CreateFromRetrieved(rs.getInt(T_Hash.DBNAME_ID), dict);
     }

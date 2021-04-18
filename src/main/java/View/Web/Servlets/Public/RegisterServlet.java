@@ -49,7 +49,6 @@ public class RegisterServlet extends PublicServlet {
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
         // Check validity of user requested password to be used
-        // TODO remake somehow better, it should not be here - this is test if it will work on server
         if (auth.isSuchPasswordOkay() == false) {
             CustomLogs.Error("Attempted password does not match one of our conditions");
 
@@ -62,10 +61,6 @@ public class RegisterServlet extends PublicServlet {
 
             return;
         }
-
-        String passwordHash = UserAccessHelper.hashPassword(auth.getPassword()); // hash password
-        auth.setPassword(passwordHash);
-
 
         final JsonResponse jsonResponse = (new UC_Auth(getDb())).finishRegistration(auth); // finish registration
         response.setStatus(jsonResponse.getStatus());

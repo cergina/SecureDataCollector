@@ -1,0 +1,66 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head">
+
+</head>
+<body>
+<div class="container">
+
+    <!-- UPPER PANEL -->
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="p-xs">
+            <div class="pull-left m-r-md">
+                <i class="fa fa-globe text-navy mid-icon"></i>
+            </div>
+            <h2>Secure Data Collector - 2021</h2>
+            <span>This is panel that provides list of communication and sensor types.</span>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="container">
+
+            <main class="st_viewport">
+                <!-- LIST -->
+                <div th:each="sensorType: ${sensorTypes}">
+                    <div class="st_wrap_table">
+
+                        <header class="st_table_header">
+                            <h2>Sensor type</h2>
+                            <div class="st_row">
+                                <div class="st_column col-sm-4 _sensortype_name">Name</div>
+                                <div class="st_column col-sm-4 _sensortype_measuredin">Measured in</div>
+                                <div class="st_column col-sm-4 _sensortype_createnewlink"></div>
+                            </div>
+                        </header>
+                        <div class="st_table">
+                            <div class="st_row">
+                                <div class="st_column col-sm-4 _sensortype_name" th:text="${sensorType.name}"></div>
+                                <div class="st_column col-sm-4 _sensortype_measuredin" th:text="${sensorType.measuredin}"></div>
+                            </div>
+                        </div>
+                        <div class="st_wrap_table" data-table_id="sensor">
+                            <header class="st_table_header" >
+                                <h4>Communication type</h4>
+                                <div class="st_row">
+                                    <div class="st_column col-sm-4 _commtype_name">Name</div>
+                                    <div class="st_column col-sm-4"></div>
+                                    <div class="st_column col-sm-4 _commtype_createnewlink"></div>
+                                </div>
+                            </header>
+                            <div class="st_table">
+                                <div class="st_row" th:each="commType: ${sensorType.commTypes}">
+                                    <div class="st_column col-sm-4 _commtype_name" th:text="${commType.name}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

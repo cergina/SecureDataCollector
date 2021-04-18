@@ -1,7 +1,7 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_CreateTypes;
+import Control.Scenario.UC_Types;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
@@ -40,7 +40,7 @@ public class Admin_SensorTypeCreateServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        final List<CommType> commTypeList = (new UC_CreateTypes(getDb()).getAllCommType());
+        final List<CommType> commTypeList = (new UC_Types(getDb()).getAll_CommType());
         context.setVariable(VARIABLE_COMM_TYPES, commTypeList);
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
@@ -53,7 +53,7 @@ public class Admin_SensorTypeCreateServlet extends AdminServlet {
 
         SensorType sensorType = (SensorType) PrettyObject.parse(ServletHelper.RequestBody(request), SensorType.class);
 
-        final JsonResponse jsonResponse = (new UC_CreateTypes(getDb()).createSensorType(sensorType));
+        final JsonResponse jsonResponse = (new UC_Types(getDb()).createSensorType(sensorType));
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
 
         temp.a_Session = (String)dict.get(DBNAME_SESSION);
         temp.a_Data = (String)dict.get(DBNAME_DATA);
-        temp.a_CreatedAt = (Date)dict.get(DBNAME_CREATEDAT);
+        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
 
         return temp;
     }

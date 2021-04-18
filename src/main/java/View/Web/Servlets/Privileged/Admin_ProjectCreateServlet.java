@@ -47,9 +47,6 @@ public class Admin_ProjectCreateServlet extends AdminServlet {
         // parse JSON from Body object
         ProjectCreation projectCreation = (ProjectCreation) PrettyObject.parse(ServletHelper.RequestBody(request), ProjectCreation.class);
 
-        CustomLogs.Error(projectCreation.getProject_name() + projectCreation.getRequired_email());
-        CustomLogs.Error(projectCreation.getProject_name() + projectCreation.getRequired_email() + projectCreation.getAdditional_emails().get(0) + projectCreation.getAdditional_emails().get(1));
-
         final JsonResponse jsonResponse = (new UC_NewProject(getDb()).createNewProject(projectCreation)); // create new project
 
         response.setStatus(jsonResponse.getStatus());
