@@ -16,6 +16,8 @@
 
 #include "lib/uart.h"
 #include "lib/crc8.h"
+#include "lib/eeprom_circular_buffer.h"
+#include "lib/jsmn.h"
 
 #define F_CPU 16000000UL
 

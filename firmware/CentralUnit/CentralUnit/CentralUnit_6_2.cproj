@@ -222,6 +222,15 @@
     <Compile Include="lib\crc8.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="lib\eeprom_circular_buffer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\eeprom_circular_buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\jsmn.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lib\ring_buffer.h">
       <SubType>compile</SubType>
     </Compile>
