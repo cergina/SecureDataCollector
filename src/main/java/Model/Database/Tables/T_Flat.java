@@ -1,13 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_Flat;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -29,20 +32,22 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_Flat() {}
+    protected T_Flat() {}
 
     // Creations
     public static T_Flat CreateFromRetrieved(int pk, Dictionary dict) {
-        T_Flat temp = new T_Flat();
+        T_Flat temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_ApartmentNO = (String)dict.get(DBNAME_APARTMENTNO);
-        temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
 
         return temp;
     }
 
     public static T_Flat CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_Flat CreateBase(Dictionary dict) {
         T_Flat temp = new T_Flat();
 
         temp.a_ApartmentNO = (String)dict.get(DBNAME_APARTMENTNO);
@@ -61,6 +66,17 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_Flat FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_Flat.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

@@ -1,12 +1,14 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_Address;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -34,23 +36,22 @@ public class T_Address extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_Address() {}
+    protected T_Address() {}
 
     // Creations
     public static T_Address CreateFromRetrieved(int pk, Dictionary dict) {
-        T_Address temp = new T_Address();
+        T_Address temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_Country = (String)dict.get(DBNAME_COUNTRY);
-        temp.a_City = (String)dict.get(DBNAME_CITY);
-        temp.a_Street = (String)dict.get(DBNAME_STREET);
-        temp.a_HouseNO = (String)dict.get(DBNAME_HOUSENO);
-        temp.a_ZIP = (String)dict.get(DBNAME_ZIP);
 
         return temp;
     }
 
     public static T_Address CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_Address CreateBase(Dictionary dict) {
         T_Address temp = new T_Address();
 
         temp.a_Country = (String)dict.get(DBNAME_COUNTRY);
@@ -74,6 +75,16 @@ public class T_Address extends DbEntity implements DBTable, DBToHtml {
         jo.put(DBNAME_ZIP, tmp.getA_ZIP());
 
         return jo;
+    }
+
+    // From DbEntity
+    public T_Address FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_Address.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
     }
 
     // Interface specific

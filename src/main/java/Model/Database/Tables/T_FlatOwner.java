@@ -1,12 +1,14 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_FlatOwner;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -37,23 +39,23 @@ public class T_FlatOwner extends DbEntity implements DBTable, DBToHtml {
             "title", "Name", "Middle-name", "Surname", "Phone", "E-mail", "Address"
     };
 
+    // Constructor
+    protected T_FlatOwner() {}
+
     // Creations
     public static T_FlatOwner CreateFromRetrieved(int pk, Dictionary dict) {
-        T_FlatOwner temp = new T_FlatOwner();
+        T_FlatOwner temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_BeforeTitle = (String)dict.get(DBNAME_BEFORETITLE);
-        temp.a_FirstName = (String)dict.get(DBNAME_FIRSTNAME);
-        temp.a_MiddleName = (String)dict.get(DBNAME_MIDDLENAME);
-        temp.a_LastName = (String)dict.get(DBNAME_LASTNAME);
-        temp.a_Phone = (String)dict.get(DBNAME_PHONE);
-        temp.a_Email = (String)dict.get(DBNAME_EMAIL);
-        temp.a_Address = (String)dict.get(DBNAME_ADDRESS);
 
         return temp;
     }
 
     public static T_FlatOwner CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_FlatOwner CreateBase(Dictionary dict) {
         T_FlatOwner temp = new T_FlatOwner();
 
         temp.a_BeforeTitle = (String)dict.get(DBNAME_BEFORETITLE);
@@ -82,6 +84,18 @@ public class T_FlatOwner extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+
+    // From DbEntity
+    public T_FlatOwner FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_FlatOwner.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

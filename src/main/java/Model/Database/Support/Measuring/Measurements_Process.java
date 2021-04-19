@@ -2,7 +2,7 @@ package Model.Database.Support.Measuring;
 
 import Model.Database.Interaction.I_Measurements;
 import Model.Database.Interaction.I_Sensor;
-import Model.Database.Tables.Table.T_Measurement;
+import Model.Database.Tables.T_Measurement;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

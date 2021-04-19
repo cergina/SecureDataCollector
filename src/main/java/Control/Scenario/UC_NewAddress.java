@@ -3,7 +3,7 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Address;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_Address;
+import Model.Database.Tables.T_Address;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.AddressCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;

@@ -1,14 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_LoginLog;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
@@ -33,24 +35,29 @@ public class T_LoginLog extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_LoginLog() {}
+    protected T_LoginLog() {}
 
     // Creations
     public static T_LoginLog CreateFromRetrieved(int pk, Dictionary dict) {
-        T_LoginLog temp = new T_LoginLog();
+        T_LoginLog temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_LoggedAt = (Date)dict.get(DBNAME_LOGGEDAT);
-        temp.a_SrcIp = (String) dict.get(DBNAME_SRCIP);
-        temp.a_UserId = (int)dict.get(DBNAME_USERID);
 
         return temp;
     }
 
     public static T_LoginLog CreateFromScratch(Dictionary dict) {
-        T_LoginLog temp = new T_LoginLog();
+        T_LoginLog temp = CreateBase(dict);
 
         temp.a_LoggedAt = Date.valueOf(LocalDate.now());
+
+        return temp;
+    }
+
+    private static T_LoginLog CreateBase(Dictionary dict) {
+        T_LoginLog temp = new T_LoginLog();
+
+        temp.a_LoggedAt = (Date)dict.get(DBNAME_LOGGEDAT);
         temp.a_SrcIp = (String) dict.get(DBNAME_SRCIP);
         temp.a_UserId = (int)dict.get(DBNAME_USERID);
 
@@ -68,6 +75,17 @@ public class T_LoginLog extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_LoginLog FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_LoginLog.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

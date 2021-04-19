@@ -8,7 +8,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_Project;
+import Model.Database.Tables.T_Project;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_Project {
+public class I_Project extends InteractionWithDatabase {
     /***
      * Attempt to insert the parsed argument T_Project into the real database
      * @param conn
@@ -150,42 +150,9 @@ public class I_Project {
         return latest;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_Project> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "ID, Name, CreatedAt, DeletedAt " +
-                        "FROM " + T_Project.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_Project> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_Project.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
 
     // Privates
-    private static T_Project FillEntity(ResultSet rs) throws SQLException {
+    public static T_Project FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary tmpDict = new Hashtable();
 

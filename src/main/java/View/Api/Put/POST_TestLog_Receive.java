@@ -3,7 +3,7 @@ package View.Api.Put;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_TestLogs;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_TestLog;
+import Model.Database.Tables.T_TestLog;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 

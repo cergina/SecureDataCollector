@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_Project_user;
+import Model.Database.Tables.T_Project_user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_ProjectUser {
+public class I_ProjectUser extends InteractionWithDatabase {
 
     public static int insert(Connection conn, PreparedStatement ps, T_Project_user tpu) throws SQLException {
         if (tpu.IsTableOkForDatabaseEnter() == false)
@@ -120,7 +120,7 @@ public class I_ProjectUser {
     }
 
     // Privates
-    private static T_Project_user FillEntity(ResultSet rs) throws SQLException {
+    public static T_Project_user FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

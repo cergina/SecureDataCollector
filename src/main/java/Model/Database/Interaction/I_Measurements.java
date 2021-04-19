@@ -2,8 +2,9 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_Measurement;
-import Model.Database.Tables.Table.T_Sensor;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_ControllerUnit;
+import Model.Database.Tables.T_Measurement;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
-public class I_Measurements {
+public class I_Measurements extends InteractionWithDatabase {
 
     public static int insert(Connection conn, PreparedStatement ps, T_Measurement tm) throws SQLException {
         if (tm.IsTableOkForDatabaseEnter() == false)
@@ -106,7 +107,7 @@ public class I_Measurements {
 
         // No Filter is being used
         if (sensorId <= DB_DO_NOT_USE_THIS_FILTER) {
-            return retrieveAll(conn, ps, rs);
+            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_Measurement.class));
         }
 
         // SQL Definition
@@ -149,39 +150,6 @@ public class I_Measurements {
         return arr;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_Measurement> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Measurement.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_Measurement> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_Measurements.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
 
     public static T_Measurement retrieveNewest(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
         Assurance.idCheck(sensorId);
@@ -319,7 +287,7 @@ public class I_Measurements {
 
 
     // Privates
-    private static T_Measurement FillEntity(ResultSet rs) throws SQLException {
+    public static T_Measurement FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_AccessPrivilegeJournal;
+import Model.Database.Tables.T_AccessPrivilegeJournal;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -115,42 +115,8 @@ public class I_AccessPrivilegeJournal {
         return t;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_AccessPrivilegeJournal> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_AccessPrivilegeJournal.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_AccessPrivilegeJournal> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_AccessPrivilegeJournal.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
-
     // Privates
-    private static T_AccessPrivilegeJournal FillEntity(ResultSet rs) throws SQLException {
+    public static T_AccessPrivilegeJournal FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

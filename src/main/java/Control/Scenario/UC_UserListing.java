@@ -2,7 +2,9 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_User;
-import Model.Database.Tables.Table.T_User;
+import Model.Database.Interaction.InteractionWithDatabase;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_User;
 import Model.Web.User;
 
 import javax.validation.constraints.NotNull;
@@ -25,7 +27,7 @@ public class UC_UserListing {
         List<User> temp = new ArrayList<User>();
 
         try {
-            List<T_User> arr = I_User.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            List<T_User> arr = InteractionWithDatabase.retrieveAll(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_User.class));
 
 
             for (T_User  t: arr) {

@@ -1,13 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_Measurements;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -35,29 +38,27 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_Measurement() {}
+    protected T_Measurement() {}
 
     // Creations
     public static T_Measurement CreateFromRetrieved(int pk, Dictionary dict) {
-        T_Measurement temp = new T_Measurement();
+        T_Measurement temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_Value = (int)dict.get(DBNAME_VALUE);
-        temp.a_RequestNo = (int)dict.get(DBNAME_REQUESTNO);
         temp.a_AccumulatedValue = (int)dict.get(DBNAME_ACCUMULATEDVALUE);
-        temp.a_MeasuredAt = (Date)dict.get(DBNAME_MEASUREDAT);
-        temp.a_SensorID = (int)dict.get(DBNAME_SENSOR_ID);
 
         return temp;
     }
 
     public static T_Measurement CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_Measurement CreateBase(Dictionary dict) {
         T_Measurement temp = new T_Measurement();
 
         temp.a_Value = (int)dict.get(DBNAME_VALUE);
         temp.a_RequestNo = (int)dict.get(DBNAME_REQUESTNO);
-        // This cant be known at this time
-        //temp.a_AccumulatedValue = (int)dict.get(DBNAME_ACCUMULATEDVALUE);
         temp.a_MeasuredAt = (Date)dict.get(DBNAME_MEASUREDAT);
         temp.a_SensorID = (int)dict.get(DBNAME_SENSOR_ID);
 
@@ -77,6 +78,17 @@ public class T_Measurement extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_Measurement FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_Measurements.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

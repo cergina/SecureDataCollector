@@ -1,13 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -35,23 +38,22 @@ public class T_ControllerUnit extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_ControllerUnit() {}
+    protected T_ControllerUnit() {}
 
     // Creations
     public static T_ControllerUnit CreateFromRetrieved(int pk, Dictionary dict) {
-        T_ControllerUnit temp = new T_ControllerUnit();
+        T_ControllerUnit temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_Uid = (int)dict.get(DBNAME_UID);
-        temp.a_DipAddress = (String)dict.get(DBNAME_DIPADDRESS);
-        temp.a_Zwave = (String)dict.get(DBNAME_ZWAVE);
-        temp.a_CentralUnitID = (int)dict.get(DBNAME_CENTRALUNIT_ID);
-        temp.a_FlatID = (int)dict.get(DBNAME_FLAT_ID);
 
         return temp;
     }
 
     public static T_ControllerUnit CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_ControllerUnit CreateBase(Dictionary dict) {
         T_ControllerUnit temp = new T_ControllerUnit();
 
         temp.a_Uid = (int)dict.get(DBNAME_UID);
@@ -76,6 +78,18 @@ public class T_ControllerUnit extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+
+    // From DbEntity
+    public T_ControllerUnit FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_ControllerUnit.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

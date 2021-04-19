@@ -1,14 +1,17 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_SessionStore;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
@@ -35,27 +38,32 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_SessionStore() {}
+    protected T_SessionStore() {}
 
     // Creations
     public static T_SessionStore CreateFromRetrieved(int pk, Dictionary dict) {
-        T_SessionStore temp = new T_SessionStore();
+        T_SessionStore temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_Session = (String)dict.get(DBNAME_SESSION);
-        temp.a_Data = (String)dict.get(DBNAME_DATA);
-        temp.a_CreatedAt = (Date)dict.get(DBNAME_CREATEDAT);
-        temp.a_DeletedAt = (Date)dict.get(DBNAME_DELETEDAT);
 
         return temp;
     }
 
     public static T_SessionStore CreateFromScratch(Dictionary dict) {
+        T_SessionStore temp = CreateBase(dict);
+
+        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
+
+        return temp;
+    }
+
+    private static T_SessionStore CreateBase(Dictionary dict) {
         T_SessionStore temp = new T_SessionStore();
 
         temp.a_Session = (String)dict.get(DBNAME_SESSION);
         temp.a_Data = (String)dict.get(DBNAME_DATA);
-        temp.a_CreatedAt = Date.valueOf(LocalDate.now());
+        temp.a_CreatedAt = (Date)dict.get(DBNAME_CREATEDAT);
+        temp.a_DeletedAt = (Date)dict.get(DBNAME_DELETEDAT);
 
         return temp;
     }
@@ -74,6 +82,17 @@ public class T_SessionStore extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_SessionStore FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_SessionStore.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

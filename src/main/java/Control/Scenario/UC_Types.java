@@ -3,9 +3,12 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_CommType;
 import Model.Database.Interaction.I_SensorType;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Enum.E_CommType;
-import Model.Database.Tables.Enum.E_SensorType;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.E_CommType;
+import Model.Database.Tables.E_SensorType;
+import Model.Database.Tables.T_Address;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
 import Model.Web.SensorType;
@@ -144,7 +147,7 @@ public class UC_Types {
         List<CommType> commTypeList = new ArrayList<>();
 
         try {
-            List<E_CommType> e_commTypeList = I_CommType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            List<E_CommType> e_commTypeList = InteractionWithDatabase.retrieveAll(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_CommType.class));
             for (E_CommType e_commType : e_commTypeList) {
                 CommType commType = new CommType(e_commType.getA_pk(), e_commType.getA_Name());
                 commTypeList.add(commType);
@@ -161,7 +164,7 @@ public class UC_Types {
 
         List<CommType> commTypeList = includeCommTypes ? getAll_CommType() : null;
         try {
-            List<E_SensorType> e_sensorTypeList = I_SensorType.retrieveAll(db.getConn(), db.getPs(), db.getRs());
+            List<E_SensorType> e_sensorTypeList = InteractionWithDatabase.retrieveAll(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class));
             for (E_SensorType e_sensorType : e_sensorTypeList) {
 
                 if (includeCommTypes) {

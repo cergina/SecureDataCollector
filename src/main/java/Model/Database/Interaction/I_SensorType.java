@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Enum.E_SensorType;
+import Model.Database.Tables.E_SensorType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_SensorType {
+public class I_SensorType extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, E_SensorType es) throws SQLException {
         if (es.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_SensorType is not ok for database enter");
@@ -111,42 +111,8 @@ public class I_SensorType {
         return st;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<E_SensorType> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + E_SensorType.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<E_SensorType> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_SensorType.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
-
     // Privates
-    private static E_SensorType FillEntity(ResultSet rs) throws SQLException {
+    public static E_SensorType FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

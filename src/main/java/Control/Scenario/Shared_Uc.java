@@ -4,7 +4,9 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Measurements;
 import Model.Database.Interaction.I_Sensor;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.*;
+import Model.Database.Tables.T_ControllerUnit;
+import Model.Database.Tables.T_Measurement;
+import Model.Database.Tables.T_Sensor;
 import Model.Web.Sensor;
 import Model.Web.thymeleaf.ControllerUnit;
 
