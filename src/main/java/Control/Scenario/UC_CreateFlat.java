@@ -60,7 +60,7 @@ public class UC_CreateFlat {
 
 
             I_Flat.insert(db.getConn(), db.getPs(), T_Flat.CreateFromScratch(dict));
-            int newlyInsertedFlatId = I_Flat.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
+            int newlyInsertedFlatId = InteractionWithDatabase.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
 
             /*  */
@@ -77,7 +77,7 @@ public class UC_CreateFlat {
 
             I_FlatOwner.insert(db.getConn(), db.getPs(), T_FlatOwner.CreateFromScratch(dict));
 
-            int newlyInsertedFlatOwner1 = I_FlatOwner.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
+            int newlyInsertedFlatOwner1 = InteractionWithDatabase.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
 
             dict = new Hashtable();
@@ -103,7 +103,7 @@ public class UC_CreateFlat {
 
                 I_FlatOwner.insert(db.getConn(), db.getPs(), T_FlatOwner.CreateFromScratch(dict));
 
-                newlyInsertedFlatOwner2 = I_FlatOwner.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
+                newlyInsertedFlatOwner2 = InteractionWithDatabase.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
                 dict = new Hashtable();
 

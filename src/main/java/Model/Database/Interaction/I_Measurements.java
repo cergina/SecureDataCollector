@@ -215,7 +215,7 @@ public class I_Measurements extends InteractionWithDatabase {
             /* nothing was returned */
         } else {
             while (rs.next()) {
-                sum = rs.getInt(1);
+                sum += rs.getInt(1);
             }
         }
 

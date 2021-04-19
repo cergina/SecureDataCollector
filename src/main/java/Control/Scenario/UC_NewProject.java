@@ -4,6 +4,7 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Interaction.I_User;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.T_Project;
 import Model.Database.Tables.T_Project_user;
@@ -89,7 +90,7 @@ public class UC_NewProject {
         // Insert new Project
         I_Project.insert(db.getConn(), db.getPs(), T_Project.CreateFromScratch(projectCreation.getProject_name()));
 
-        int latestId = I_Project.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
+        int latestId = InteractionWithDatabase.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
         // Insert new Connections between project and user
         for (T_User user:

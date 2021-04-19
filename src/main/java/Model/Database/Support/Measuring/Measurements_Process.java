@@ -1,7 +1,11 @@
 package Model.Database.Support.Measuring;
 
+import Model.Database.Interaction.I_CentralUnit;
+import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Interaction.I_Measurements;
 import Model.Database.Interaction.I_Sensor;
+import Model.Database.Tables.T_CentralUnit;
+import Model.Database.Tables.T_ControllerUnit;
 import Model.Database.Tables.T_Measurement;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,10 +49,14 @@ public class Measurements_Process {
         Dictionary dictMain = new Hashtable();
 
         dictMain.put(JSON_MESSAGE_TYPE, mode);
-        dictMain.put(JSON_CENTRAL_UNIT, json.getInt(JSON_CENTRAL_UNIT));
-        dictMain.put(JSON_REQUEST_NUM, json.getInt(JSON_REQUEST_NUM));
-        dictMain.put(CONSTANTS.TODAYS_DATE, Date.valueOf(LocalDate.now()));
+        dictMain.put(JSON_CENTRAL_UNIT_DIP, json.getString(JSON_CENTRAL_UNIT_DIP)); // dip address string
+        dictMain.put(JSON_REQUEST_NUM, json.getInt(JSON_REQUEST_NUM)); // request number
+        dictMain.put(CONSTANTS.TODAYS_DATE, Date.valueOf(LocalDate.now())); // todays date in case the measurements will not be tracked from sender
 
+
+        ResultSet rsCentral = null;
+        T_CentralUnit tcent = I_CentralUnit.retrieveByDip(conn, ps, rsCentral, json.getString(JSON_CENTRAL_UNIT_DIP));
+        int centralUnitId = (tcent == null) ? -1 : tcent.getA_pk();
 
         // get all controllers & loop through 'em
         JSONArray controllersArray = json.getJSONArray(JSON_ARRAY_CONTROLLERS);
@@ -56,8 +64,11 @@ public class Measurements_Process {
 
             JSONObject tmpCtrlJson = controllersArray.getJSONObject(i);
 
-            // identify Controller
-            tmpCtrlJson.getInt(JSON_CONTROLLER_UNIT);
+            // identify Controller by dip address
+            ResultSet rsCtrl = null;
+            T_ControllerUnit tctrl = I_ControllerUnit.retrieveByDipAndCentral(conn, ps, rsCtrl, tmpCtrlJson.getString(JSON_CONTROLLER_UNIT_DIP), centralUnitId);
+            int controllerId = (tctrl == null) ? -1 : tctrl.getA_pk();
+
 
             // get all measurements & loop throuh 'em
             JSONArray measurementsArray = tmpCtrlJson.getJSONArray(JSON_ARRAY_MEASUREMENTS);
@@ -67,7 +78,7 @@ public class Measurements_Process {
 
                 // find out sensor ID from sensor IO
                 ResultSet tmpRs = null;
-                int sensorId = I_Sensor.retrieve_ID_by_SensorIO(conn, ps, tmpRs, (String)tmpMsgJson.getString(JSON_MEASUREMENTS_SENSORIO));
+                int sensorId = I_Sensor.retrieve_ID_by_SensorIO_and_Controller(conn, ps, tmpRs, (String)tmpMsgJson.getString(JSON_MEASUREMENTS_SENSORIO), controllerId);
 
 
                 Dictionary msgDict = new Hashtable();
@@ -93,12 +104,12 @@ public class Measurements_Process {
 
 
     private static final String JSON_MESSAGE_TYPE = "messageType";
-    private static final String JSON_CENTRAL_UNIT = "centralUnit";
+    private static final String JSON_CENTRAL_UNIT_DIP = "centralUnit";
     private static final String JSON_REQUEST_NUM = "requestNumber";
 
     private static final String JSON_ARRAY_CONTROLLERS = "controllers";
 
-    private static final String JSON_CONTROLLER_UNIT = "controllerUnit";
+    private static final String JSON_CONTROLLER_UNIT_DIP = "controllerUnit";
 
     private static final String JSON_ARRAY_MEASUREMENTS = "measurements";
 

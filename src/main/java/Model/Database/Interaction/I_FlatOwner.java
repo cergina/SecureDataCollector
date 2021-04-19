@@ -114,31 +114,6 @@ public class I_FlatOwner extends InteractionWithDatabase {
         return t;
     }
 
-    /*
-     * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
-     */
-    public static int retrieveLatestPerConnectionInsertedID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        int latest  = -1;
-
-        ps = conn.prepareStatement(
-                "SELECT LAST_INSERT_ID();"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            latest = rs.getInt(1);
-        }
-
-        return latest;
-    }
-
 
     // Privates
     public static T_FlatOwner FillEntity(ResultSet rs) throws SQLException {

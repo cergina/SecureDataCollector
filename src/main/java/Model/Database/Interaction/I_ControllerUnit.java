@@ -4,6 +4,7 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_ControllerUnit;
+import com.mysql.cj.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -120,68 +121,39 @@ public class I_ControllerUnit extends InteractionWithDatabase {
         return tc;
     }
 
-    /****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @param flatId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
-     * @param centralUnitId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_ControllerUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int flatId, int centralUnitId) throws SQLException {
-
-        // No Filter is being used
-        if (flatId <= DB_DO_NOT_USE_THIS_FILTER && centralUnitId <= DB_DO_NOT_USE_THIS_FILTER) {
-            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_ControllerUnit.class));
-        }
+    public static T_ControllerUnit retrieveByDipAndCentral(Connection conn, PreparedStatement ps, ResultSet rs, String dip, int id) throws SQLException {
+        Assurance.idCheck(id);
 
         // SQL Definition
-        String usedSql = "SELECT " +
-                "* " +
-                "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
-                "WHERE ";
-
-
-        // add filter rules
-        boolean flatRule = flatId > 0;
-        boolean centralUnitRule = centralUnitId > 0;
-
-        usedSql = (flatRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".FlatID=? " : usedSql);
-        usedSql = (centralUnitRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".CentralUnitID=? " : usedSql);
-
-        usedSql += "ORDER BY ID asc";
-
-        // prepare SQL
         ps = conn.prepareStatement(
-                usedSql
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                        "WHERE " +
+                                T_ControllerUnit.DBNAME_DIPADDRESS + "=? AND " +
+                                T_ControllerUnit.DBNAME_CENTRALUNIT_ID + "=? "
         );
 
         int col = 0;
-        if (flatRule)
-            ps.setInt(++col, flatId);
-
-        if (centralUnitRule)
-            ps.setInt(++col, centralUnitId);
+        ps.setString(++col, dip);
+        ps.setInt(++col, id);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        List<T_ControllerUnit> arr = new ArrayList<>();
+        T_ControllerUnit tc = null;
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
         } else {
-            while (rs.next()) {
-                arr.add(I_ControllerUnit.FillEntity(rs));
-            }
+            rs.next();
+
+            tc = I_ControllerUnit.FillEntity(rs);
         }
 
-        return arr;
+        return tc;
     }
-
 
     /***
      *
@@ -208,7 +180,7 @@ public class I_ControllerUnit extends InteractionWithDatabase {
         // add filter rules
         boolean centralRule = centralUnitId > 0;
         boolean flatRule = flatId > 0;
-        boolean dipRule = dip.equals("") == false;
+        boolean dipRule = StringUtils.isNullOrEmpty(dip) == false;
 
         /* add first WHERE clause */
         usedSql = (centralRule ? usedSql + T_ControllerUnit.DBTABLE_NAME + ".CentralUnitID=? " : usedSql);

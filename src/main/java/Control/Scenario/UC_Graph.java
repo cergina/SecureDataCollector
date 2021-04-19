@@ -72,7 +72,7 @@ public class UC_Graph {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
-            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), flatId, DB_DO_NOT_USE_THIS_FILTER);
+            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, flatId, null);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }

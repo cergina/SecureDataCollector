@@ -124,7 +124,7 @@ public class I_Sensor extends InteractionWithDatabase {
     ////     Searches   ////
     ///////////////////////
 
-    public static int retrieve_ID_by_SensorIO(Connection conn, PreparedStatement ps, ResultSet rs, String sensorIO) throws SQLException {
+    public static int retrieve_ID_by_SensorIO_and_Controller(Connection conn, PreparedStatement ps, ResultSet rs, String sensorIO, int controllerUnitId) throws SQLException {
         Assurance.varcharCheck(sensorIO);
 
         // SQL Definition
@@ -132,11 +132,12 @@ public class I_Sensor extends InteractionWithDatabase {
                 "SELECT " +
                         "ID " +
                         "FROM " + T_Sensor.DBTABLE_NAME + " " +
-                        "WHERE Input=?"
+                        "WHERE Input=? AND ControllerUnitID=?"
         );
 
         int col = 0;
         ps.setString(++col, sensorIO);
+        ps.setInt(++col, controllerUnitId);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

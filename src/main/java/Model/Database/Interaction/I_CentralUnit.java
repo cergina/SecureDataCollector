@@ -159,6 +159,37 @@ public class I_CentralUnit extends InteractionWithDatabase {
         return arr;
     }
 
+    public static T_CentralUnit retrieveByDip(Connection conn, PreparedStatement ps, ResultSet rs, String dip) throws SQLException {
+        Assurance.varcharCheck(dip);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE " + T_CentralUnit.DBNAME_DIPADDRESS +"=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, dip);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_CentralUnit tc = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            tc = I_CentralUnit.FillEntity(rs);
+        }
+
+        return tc;
+    }
+
     public static T_CentralUnit retrieveByAddressId(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException {
         Assurance.idCheck(addressId);
 

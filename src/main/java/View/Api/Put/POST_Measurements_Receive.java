@@ -13,10 +13,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/****
+ * Important class made to receive updates via API from outside
+ */
 @WebServlet(name = "POST_Measurements_Receive", urlPatterns = POST_Measurements_Receive.SERVLET_URL)
 public class POST_Measurements_Receive extends POST_Database_Interaction {
     public static final String SERVLET_URL = "/api/measurements-add";
 
+
+    /***
+     * FROM CENTRAL UNIT or POSTMAN
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {

@@ -74,7 +74,7 @@ public class UC_Auth {
             I_User.insert(db.getConn(), db.getPs(), t_user);
             // modify User table END
 
-            int createdUserID = I_User.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
+            int createdUserID = InteractionWithDatabase.retrieveLatestPerConnectionInsertedID(db.getConn(), db.getPs(), db.getRs());
 
             // modify Hash table START
             Dictionary dict_hash = new Hashtable();

@@ -253,12 +253,11 @@ public class UC_FlatSummary {
     }
 
     /// PRIVATES
-
     private @NotNull List<T_ControllerUnit> getAll_TControllers_ForFlat(@NotNull final Integer flatId) {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
-            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), flatId, DB_DO_NOT_USE_THIS_FILTER);
+            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, flatId, null);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
@@ -270,7 +269,7 @@ public class UC_FlatSummary {
         List<T_ControllerUnit> arr = new ArrayList<>();
 
         try {
-            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, centralUnitId);
+            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), centralUnitId, DB_DO_NOT_USE_THIS_FILTER, null);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
