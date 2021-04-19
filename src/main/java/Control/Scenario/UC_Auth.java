@@ -93,7 +93,7 @@ public class UC_Auth {
                     T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN : T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_USER;
 
             Dictionary dict_journal = new Hashtable();
-            dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_AT, dateCreated); // TODO generate date within SQL
+            dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_AT, dateCreated);
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_USER_ID, createdUserID);
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_ACCESS_PRIVILEGE_ID, privilege);
             dict_journal.put(T_AccessPrivilegeJournal.DBNAME_CREATED_BY_USER_ID, adminID);

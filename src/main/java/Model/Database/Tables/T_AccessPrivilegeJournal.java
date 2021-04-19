@@ -1,7 +1,6 @@
 package Model.Database.Tables;
 
 import Model.Database.Interaction.I_AccessPrivilegeJournal;
-import Model.Database.Interaction.I_AccessPrivillege;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;

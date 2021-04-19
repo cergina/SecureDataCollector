@@ -1,11 +1,9 @@
 package View.Web.Old.Servlets.Debugging;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.DbEntity;
-import Model.Database.Tables.T_Address;
 import Model.Database.Tables.T_CentralUnit;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;

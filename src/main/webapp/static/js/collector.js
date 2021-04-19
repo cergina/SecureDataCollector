@@ -199,7 +199,6 @@ function registerUser() {
             data: JSON.stringify(buildAuth()),
             statusCode: {
                 200: function(response) {
-                    // TODO thank user for registration
                     $(':input').val('');
                     alert('Thank you for your registration\n' + response.message)
                 },

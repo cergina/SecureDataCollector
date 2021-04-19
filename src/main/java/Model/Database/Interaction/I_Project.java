@@ -11,10 +11,8 @@ import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_Project;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
 public class I_Project extends InteractionWithDatabase {
     /***

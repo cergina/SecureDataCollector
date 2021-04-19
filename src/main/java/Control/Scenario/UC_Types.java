@@ -8,7 +8,6 @@ import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.E_CommType;
 import Model.Database.Tables.E_SensorType;
-import Model.Database.Tables.T_Address;
 import Model.Web.CommType;
 import Model.Web.JsonResponse;
 import Model.Web.SensorType;

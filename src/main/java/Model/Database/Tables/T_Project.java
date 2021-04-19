@@ -6,7 +6,6 @@ SONET SLOVAKIA - Secure Data Collector
 
 package Model.Database.Tables;
 
-import Model.Database.Interaction.I_AccessPrivillege;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;

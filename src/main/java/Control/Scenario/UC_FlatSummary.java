@@ -215,7 +215,6 @@ public class UC_FlatSummary {
         List<Flat> list = new ArrayList<Flat>();
         for (T_Flat t: arr
              ) {
-            // TODO this is weird af
             Flat temp = new Flat(t);
 
             list.add(temp);

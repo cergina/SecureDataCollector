@@ -1,6 +1,5 @@
 package Model.Database.Tables;
 
-import Model.Database.Interaction.I_AccessPrivillege;
 import Model.Database.Interaction.I_SensorType;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBEnum;

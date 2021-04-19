@@ -1,7 +1,6 @@
 package Model.Database.Tables;
 
 
-import Model.Database.Interaction.I_AccessPrivillege;
 import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;

@@ -2,7 +2,6 @@ package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_NewProject;
-import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import Model.Web.Specific.ProjectCreation;

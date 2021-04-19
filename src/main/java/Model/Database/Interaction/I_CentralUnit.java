@@ -3,7 +3,6 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
-import Model.Database.Tables.T_Address;
 import Model.Database.Tables.T_CentralUnit;
 
 import java.sql.Connection;

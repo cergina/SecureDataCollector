@@ -3,7 +3,6 @@ package View.Web.Servlets.Public;
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Support.UserAccessHelper;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;

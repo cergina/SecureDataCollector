@@ -5,10 +5,8 @@ import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_AccessPrivilegeJournal;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
 public class I_AccessPrivilegeJournal {
     public static int insert(Connection conn, PreparedStatement ps, T_AccessPrivilegeJournal tapj) throws SQLException {
