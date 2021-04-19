@@ -4,18 +4,15 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.ComplexInteractions.GeneralAccessibility;
 import Model.Database.Interaction.*;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.*;
+import Model.Database.Tables.*;
 import Model.Web.Project;
-import Model.Web.Sensor;
 import Model.Web.thymeleaf.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Control.Scenario.Shared_Uc.*;
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 /**

@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Enum.E_AccessPrivilege;
+import Model.Database.Tables.E_AccessPrivilege;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -78,42 +78,7 @@ public class I_AccessPrivillege {
         return ct;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<E_AccessPrivilege> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + E_AccessPrivilege.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<E_AccessPrivilege> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_AccessPrivillege.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
-
-    // Privates
-    private static E_AccessPrivilege FillEntity(ResultSet rs) throws SQLException {
+    public static E_AccessPrivilege FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

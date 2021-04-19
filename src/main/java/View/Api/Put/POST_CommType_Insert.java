@@ -4,7 +4,7 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_CommType;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
-import Model.Database.Tables.Enum.E_CommType;
+import Model.Database.Tables.E_CommType;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;
 

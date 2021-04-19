@@ -1,83 +1,92 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_CommType;
 import Model.Database.Support.Assurance;
-import Model.Database.Support.DBTable;
+import Model.Database.Support.DBEnum;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
-public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
-    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "logs" : "logs";
+public class E_CommType extends DbEntity implements DBEnum, DBToHtml {
+    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "commType" : "commtype";
 
     // Atributes
     private int a_pk;
-    private String a_Event;
-    private String a_Body;
+    private String a_Name;
 
     public static final String DBNAME_ID = "ID";
-    public static final String DBNAME_EVENT = "Event";
-    public static final String DBNAME_BODY = "Body";
+    public static final String DBNAME_NAME = "Name";
 
-    public static T_TestLog REFERENCE = new T_TestLog();
+    public static E_CommType REFERENCE = new E_CommType();
     public static String[] TABLE_CODENAMES = {
-            "Event", "Body"
+            DBNAME_NAME
     };
 
     // Constructors
-    private T_TestLog() {}
+    protected E_CommType() {}
 
     // Creations
-    public static T_TestLog CreateFromRetrieved(int pk, Dictionary dict) {
-        T_TestLog temp = new T_TestLog();
+    public static E_CommType CreateFromRetrieved(int pk, Dictionary tmpDict) {
+        E_CommType temp = CreateBase(tmpDict);
 
         temp.a_pk = pk;
-        temp.a_Event = (String)dict.get(DBNAME_EVENT);
-        temp.a_Body = (String)dict.get(DBNAME_BODY);
 
         return temp;
     }
 
-    public static T_TestLog CreateFromScratch(Dictionary dict) {
-        T_TestLog temp = new T_TestLog();
+    public static E_CommType CreateFromScratch(Dictionary tmpDict) {
+        return CreateBase(tmpDict);
+    }
 
-        temp.a_Event = (String)dict.get(DBNAME_EVENT);
-        temp.a_Body = (String)dict.get(DBNAME_BODY);
+    private static E_CommType CreateBase(Dictionary dict) {
+        E_CommType temp = new E_CommType();
+
+        temp.a_Name = (String)dict.get(DBNAME_NAME);
 
         return temp;
     }
 
     // As JSON
-    public static JSONObject MakeJSONObjectFrom(T_TestLog tmp) {
+    public static JSONObject MakeJSONObjectFrom(E_CommType tmp) {
         JSONObject jo = new JSONObject();
 
         jo.put(DBNAME_ID, tmp.getA_pk());
-        jo.put(DBNAME_EVENT, tmp.getA_Event());
-        jo.put(DBNAME_BODY, tmp.getA_Body());
+        jo.put(DBNAME_NAME, tmp.getA_Name());
 
         return jo;
     }
 
+    // From DbEntity
+    public E_CommType FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_CommType.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
     // Interface specific
     @Override
-    public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.isVarcharOk(a_Event) &&
-                Assurance.isVarcharOk(a_Body);
+    public boolean IsEnumTableOkForDatabaseEnter() {
+        return Assurance.isVarcharOk(a_Name);
     }
 
     @Override
-    public boolean WasTableWithdrawedCorrectlyFromDatabase() {
+    public boolean WasEnumTableWithdrawedCorrectlyFromDatabase() {
         return Assurance.isFkOk(a_pk) &&
-                Assurance.isVarcharOk(a_Event) &&
-                Assurance.isVarcharOk(a_Body);
+                Assurance.isVarcharOk(a_Name);
     }
 
     @Override
-    public String InfoPrintAllColumns() {
+    public String PrintInfoAboutEnum() {
         throw new NotImplementedException();
     }
 
@@ -102,8 +111,7 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
     public List<String> GenerateHtmlTableRow_FromDbRow() {
         List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
-        str.add(this.a_Event);
-        str.add(this.a_Body);
+        str.add(this.a_Name);
 
         return str;
     }
@@ -121,19 +129,13 @@ public class T_TestLog extends DbEntity implements DBTable, DBToHtml {
         return str.toString();
     }
 
-
-
     // Getters
 
     public int getA_pk() {
         return a_pk;
     }
 
-    public String getA_Event() {
-        return a_Event;
-    }
-
-    public String getA_Body() {
-        return a_Body;
+    public String getA_Name() {
+        return a_Name;
     }
 }

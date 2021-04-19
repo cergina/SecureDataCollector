@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_Hash;
+import Model.Database.Tables.T_Hash;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_Hash {
+public class I_Hash extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_Hash th) throws SQLException {
         if (th.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Hash is not ok for database enter");
@@ -154,42 +154,9 @@ public class I_Hash {
         return numHashes;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_Hash> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Hash.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_Hash> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_Hash.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
 
     // Privates
-    private static T_Hash FillEntity(ResultSet rs) throws SQLException {
+    public static T_Hash FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

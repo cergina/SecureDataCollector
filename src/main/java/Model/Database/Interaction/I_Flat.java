@@ -2,8 +2,9 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_CentralUnit;
-import Model.Database.Tables.Table.T_Flat;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_ControllerUnit;
+import Model.Database.Tables.T_Flat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
-public class I_Flat {
+public class I_Flat extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_Flat tf) throws SQLException {
         if (tf.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_Flat is not ok for database enter");
@@ -111,7 +112,7 @@ public class I_Flat {
 
         // No Filter is being used
         if (addressId <= DB_DO_NOT_USE_THIS_FILTER) {
-            return retrieveAll(conn, ps, rs);
+            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_Flat.class));
         }
 
         // SQL Definition
@@ -154,42 +155,9 @@ public class I_Flat {
         return arr;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_Flat> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Flat.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_Flat> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_Flat.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
 
     // Privates
-    private static T_Flat FillEntity(ResultSet rs) throws SQLException {
+    public static T_Flat FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

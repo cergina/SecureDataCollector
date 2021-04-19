@@ -4,16 +4,19 @@ SONET SLOVAKIA - Secure Data Collector
 2020-2021
  */
 
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_Project;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
@@ -38,17 +41,17 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_Project() {}
+    protected T_Project() {}
 
     // Creations
 
-    public static T_Project CreateFromRetrieved(int pk, Dictionary tmpDict) {
+    public static T_Project CreateFromRetrieved(int pk, Dictionary dict) {
         T_Project temp = new T_Project();
 
         temp.a_pk = pk;
-        temp.a_Name = (String)tmpDict.get(DBNAME_NAME);
-        temp.a_CreatedAt = (Date)tmpDict.get(DBNAME_CreatedAt);
-        temp.a_DeletedAt = (Date)tmpDict.get(DBNAME_DeletedAt);
+        temp.a_Name = (String)dict.get(DBNAME_NAME);
+        temp.a_CreatedAt = (Date)dict.get(DBNAME_CreatedAt);
+        temp.a_DeletedAt = (Date)dict.get(DBNAME_DeletedAt);
 
         return temp;
     }
@@ -74,6 +77,16 @@ public class T_Project extends DbEntity implements DBTable, DBToHtml {
             jo.put(DBNAME_DeletedAt, tmp.getA_DeletedAt());
 
         return jo;
+    }
+
+    // From DbEntity
+    public T_Project FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_Project.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
     }
 
 

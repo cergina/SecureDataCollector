@@ -4,7 +4,7 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
-import Model.Database.Tables.Table.T_CentralUnit;
+import Model.Database.Tables.T_CentralUnit;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
 import org.json.JSONObject;

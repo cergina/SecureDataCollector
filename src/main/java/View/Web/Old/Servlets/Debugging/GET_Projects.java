@@ -2,8 +2,11 @@ package View.Web.Old.Servlets.Debugging;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_Project;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_Address;
+import Model.Database.Tables.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
 import View.Web.Old.Servlets.GET_Database_Interaction;
@@ -34,7 +37,7 @@ public class GET_Projects extends GET_Database_Interaction {
 
             // Tables
             DbProvider dbProvider = getDb();
-            List<T_Project> arr = I_Project.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            List<T_Project> arr = InteractionWithDatabase.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(T_Project.class));
             dbProvider.disconnect();
 
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_Project.REFERENCE);

@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_FlatOwner_flat;
+import Model.Database.Tables.T_FlatOwner_flat;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_FlatOwner_flat {
+public class I_FlatOwner_flat extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_FlatOwner_flat t) throws SQLException {
         if (t.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_FlatOwner_flat is not ok for database enter");
@@ -83,42 +83,9 @@ public class I_FlatOwner_flat {
         return t;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_FlatOwner_flat> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_FlatOwner_flat.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_FlatOwner_flat> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_FlatOwner_flat.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
 
     // Privates
-    private static T_FlatOwner_flat FillEntity(ResultSet rs) throws SQLException {
+    public static T_FlatOwner_flat FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

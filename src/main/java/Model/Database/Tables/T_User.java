@@ -1,13 +1,15 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_User;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -41,28 +43,23 @@ public class T_User extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_User() {
-
-    }
+    protected T_User() {}
 
     // Creations
     public static T_User CreateFromRetrieved(int pk, Dictionary dict) {
-        T_User temp = new T_User();
+        T_User temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_BeforeTitle = (String)dict.get(DBNAME_BEFORETITLE);
-        temp.a_FirstName = (String)dict.get(DBNAME_FIRSTNAME);
-        temp.a_MiddleName = (String)dict.get(DBNAME_MIDDLENAME);
-        temp.a_LastName = (String)dict.get(DBNAME_LASTNAME);
-        temp.a_Phone = (String)dict.get(DBNAME_PHONE);
-        temp.a_Email = (String)dict.get(DBNAME_EMAIL);
-        temp.a_PermanentResidence = (String)dict.get(DBNAME_PERMANENTRESIDENCE);
         temp.a_Blocked = ((int)dict.get(DBNAME_BLOCKED) == 1);
 
         return temp;
     }
 
     public static T_User CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_User CreateBase(Dictionary dict) {
         T_User temp = new T_User();
 
         temp.a_BeforeTitle = (String)dict.get(DBNAME_BEFORETITLE);
@@ -92,6 +89,17 @@ public class T_User extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_User FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_User.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

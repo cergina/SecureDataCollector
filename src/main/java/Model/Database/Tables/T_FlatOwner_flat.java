@@ -1,13 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_FlatOwner_flat;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
@@ -34,25 +37,30 @@ public class T_FlatOwner_flat extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_FlatOwner_flat() {}
+    protected T_FlatOwner_flat() {}
 
     // Creations
     public static T_FlatOwner_flat CreateFromRetrieved(int pk, Dictionary dict) {
-        T_FlatOwner_flat temp = new T_FlatOwner_flat();
+        T_FlatOwner_flat temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_CreatedAt = (Date)dict.get(DBNAME_CREATEDAT);
-        temp.a_ValidUntil = (Date)dict.get(DBNAME_VALIDUNTIL);
-        temp.a_FlatOwnerID = (int)dict.get(DBNAME_FLATOWNERID);
-        temp.a_FlatID = (int)dict.get(DBNAME_FLATID);
 
         return temp;
     }
 
     public static T_FlatOwner_flat CreateFromScratch(Dictionary dict) {
-        T_FlatOwner_flat temp = new T_FlatOwner_flat();
+        T_FlatOwner_flat temp = CreateBase(dict);
 
         temp.a_CreatedAt = Date.valueOf(LocalDate.now());
+
+        return temp;
+    }
+
+    private static T_FlatOwner_flat CreateBase(Dictionary dict) {
+        T_FlatOwner_flat temp = new T_FlatOwner_flat();
+
+        temp.a_CreatedAt = (Date)dict.get(DBNAME_CREATEDAT);
+        temp.a_ValidUntil = (Date)dict.get(DBNAME_VALIDUNTIL);
         temp.a_FlatOwnerID = (int)dict.get(DBNAME_FLATOWNERID);
         temp.a_FlatID = (int)dict.get(DBNAME_FLATID);
 
@@ -74,6 +82,18 @@ public class T_FlatOwner_flat extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+
+    // From DbEntity
+    public T_FlatOwner_flat FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_FlatOwner_flat.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

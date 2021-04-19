@@ -2,8 +2,8 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_ControllerUnit;
-import Model.Database.Tables.Table.T_Measurement;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_ControllerUnit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
-public class I_ControllerUnit {
+public class I_ControllerUnit extends InteractionWithDatabase {
 
     public static int insert(Connection conn, PreparedStatement ps, T_ControllerUnit tc) throws SQLException {
         if (tc.IsTableOkForDatabaseEnter() == false)
@@ -134,7 +134,7 @@ public class I_ControllerUnit {
 
         // No Filter is being used
         if (flatId <= DB_DO_NOT_USE_THIS_FILTER && centralUnitId <= DB_DO_NOT_USE_THIS_FILTER) {
-            return retrieveAll(conn, ps, rs);
+            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_ControllerUnit.class));
         }
 
         // SQL Definition
@@ -182,39 +182,6 @@ public class I_ControllerUnit {
         return arr;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_ControllerUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_ControllerUnit> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_ControllerUnit.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
 
     /***
      *
@@ -228,7 +195,7 @@ public class I_ControllerUnit {
 
         // No Filter is being used
         if (centralUnitId <= DB_DO_NOT_USE_THIS_FILTER && flatId  <= DB_DO_NOT_USE_THIS_FILTER) {
-            return retrieveAll(conn, ps, rs);
+            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_ControllerUnit.class));
         }
 
         // SQL Definition
@@ -287,7 +254,7 @@ public class I_ControllerUnit {
     }
 
     // Privates
-    private static T_ControllerUnit FillEntity(ResultSet rs) throws SQLException {
+    public static T_ControllerUnit FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

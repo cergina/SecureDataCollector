@@ -1,13 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_Sensor;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -33,22 +36,22 @@ public class T_Sensor extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_Sensor() {}
+    protected T_Sensor() {}
 
     // Creations
     public static T_Sensor CreateFromRetrieved(int pk, Dictionary dict) {
-        T_Sensor temp = new T_Sensor();
+        T_Sensor temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_Input = (String)dict.get(DBNAME_INPUT);
-        temp.a_Name = (String)dict.get(DBNAME_NAME);
-        temp.a_SensorTypeID = (int)dict.get(DBNAME_SENSORTYPE_ID);
-        temp.a_ControllerUnitID = (int)dict.get(DBNAME_CONTROLLERUNIT_ID);
 
         return temp;
     }
 
     public static T_Sensor CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_Sensor CreateBase(Dictionary dict) {
         T_Sensor temp = new T_Sensor();
 
         temp.a_Input = (String)dict.get(DBNAME_INPUT);
@@ -71,6 +74,17 @@ public class T_Sensor extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_Sensor FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_Sensor.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

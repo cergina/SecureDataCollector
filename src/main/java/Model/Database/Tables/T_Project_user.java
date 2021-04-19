@@ -1,13 +1,16 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
 
+import Model.Database.Interaction.I_AccessPrivillege;
+import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -29,21 +32,23 @@ public class T_Project_user extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_Project_user() {}
+    protected T_Project_user() {}
 
     // Creations
 
-    public static T_Project_user CreateFromRetrieved(int pk, Dictionary tmpDict) {
-        T_Project_user temp = new T_Project_user();
+    public static T_Project_user CreateFromRetrieved(int pk, Dictionary dict) {
+        T_Project_user temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_ProjectID = (int)tmpDict.get(DBNAME_PROJECTID);
-        temp.a_UserID = (int)tmpDict.get(DBNAME_USERID);
 
         return temp;
     }
 
     public static T_Project_user CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_Project_user CreateBase(Dictionary dict) {
         T_Project_user temp = new T_Project_user();
 
         temp.a_ProjectID = (int)dict.get(DBNAME_PROJECTID);
@@ -61,6 +66,17 @@ public class T_Project_user extends DbEntity implements DBTable, DBToHtml {
         jo.put(DBNAME_USERID, tmp.getA_UserID());
 
         return jo;
+    }
+
+
+    // From DbEntity
+    public T_Project_user FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_ProjectUser.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
     }
 
 

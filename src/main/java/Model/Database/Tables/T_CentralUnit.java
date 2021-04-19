@@ -1,13 +1,15 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -41,26 +43,22 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     };
 
     // Constructors
-    private T_CentralUnit() {}
+    protected T_CentralUnit() {}
 
     // Creations
     public static T_CentralUnit CreateFromRetrieved(int pk, Dictionary dict) {
-        T_CentralUnit temp = new T_CentralUnit();
+        T_CentralUnit temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_Uid = (int)dict.get(DBNAME_UID);
-        temp.a_DipAddress = (String)dict.get(DBNAME_DIPADDRESS);
-        temp.a_FriendlyName = (String)dict.get(DBNAME_FRIENDLYNAME);
-        temp.a_SimNO = (String)dict.get(DBNAME_SIMNO);
-        temp.a_Imei = (String)dict.get(DBNAME_IMEI);
-        temp.a_Zwave = (String)dict.get(DBNAME_ZWAVE);
-        temp.a_ProjectID = (int)dict.get(DBNAME_PROJECT_ID);
-        temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
 
         return temp;
     }
 
     public static T_CentralUnit CreateFromScratch(Dictionary dict) {
+        return CreateBase(dict);
+    }
+
+    private static T_CentralUnit CreateBase(Dictionary dict) {
         T_CentralUnit temp = new T_CentralUnit();
 
         temp.a_Uid = (int)dict.get(DBNAME_UID);
@@ -91,6 +89,17 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
 
         return jo;
     }
+
+    // From DbEntity
+    public T_CentralUnit FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_CentralUnit.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
+
 
     // Interface specific
     @Override

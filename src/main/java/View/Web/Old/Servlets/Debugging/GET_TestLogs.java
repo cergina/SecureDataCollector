@@ -2,8 +2,11 @@ package View.Web.Old.Servlets.Debugging;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_TestLogs;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_TestLog;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_Address;
+import Model.Database.Tables.T_TestLog;
 import View.Support.ServletHelper;
 import View.Web.Old.Html.CoreBuilder;
 import View.Web.Old.Servlets.GET_Database_Interaction;
@@ -34,7 +37,7 @@ public class GET_TestLogs extends GET_Database_Interaction {
 
             // Tables
             DbProvider dbProvider = getDb();
-            List<T_TestLog> arr = I_TestLogs.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs());
+            List<T_TestLog> arr = InteractionWithDatabase.retrieveAll(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(T_TestLog.class));
             dbProvider.disconnect();
 
             document = CoreBuilder.GenerateDataForPresentation(document, arr, T_TestLog.REFERENCE);

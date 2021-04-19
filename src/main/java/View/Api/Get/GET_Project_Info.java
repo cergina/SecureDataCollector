@@ -3,7 +3,7 @@ package View.Api.Get;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_Project;
+import Model.Database.Tables.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.GET_Database_Interaction;
 

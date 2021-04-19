@@ -3,7 +3,7 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.*;
 import Model.Database.Support.Assurance;
-import Model.Database.Tables.Table.*;
+import Model.Database.Tables.*;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import Model.Web.Specific.FlatOwner;

@@ -12,4 +12,5 @@ public interface DBTable {
     boolean WasTableWithdrawedCorrectlyFromDatabase();
 
     String InfoPrintAllColumns();
+
 }

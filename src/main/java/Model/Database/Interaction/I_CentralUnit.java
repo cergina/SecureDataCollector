@@ -2,8 +2,9 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_CentralUnit;
-import Model.Database.Tables.Table.T_ControllerUnit;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_Address;
+import Model.Database.Tables.T_CentralUnit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
-public class I_CentralUnit {
+public class I_CentralUnit extends InteractionWithDatabase {
     /****
      * Attempt to insert the parsed argument T_CentralUnit into the real database
      * @param conn
@@ -116,7 +117,7 @@ public class I_CentralUnit {
 
         // No Filter is being used
         if (projectId <= DB_DO_NOT_USE_THIS_FILTER) {
-            return retrieveAll(conn, ps, rs);
+            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_CentralUnit.class));
         }
 
         // SQL Definition
@@ -190,42 +191,8 @@ public class I_CentralUnit {
         return tc;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_CentralUnit> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_CentralUnit> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_CentralUnit.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
-
     // Privates
-    private static T_CentralUnit FillEntity(ResultSet rs) throws SQLException {
+    public static T_CentralUnit FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

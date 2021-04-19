@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_LoginLog;
+import Model.Database.Tables.T_LoginLog;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_LoginLog {
+public class I_LoginLog extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_LoginLog ec) throws SQLException {
         if (ec.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_LoginLog is not ok for database enter");
@@ -80,42 +80,8 @@ public class I_LoginLog {
         return ct;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_LoginLog> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_LoginLog.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_LoginLog> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_LoginLog.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
-
     // Privates
-    private static T_LoginLog FillEntity(ResultSet rs) throws SQLException {
+    public static T_LoginLog FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 

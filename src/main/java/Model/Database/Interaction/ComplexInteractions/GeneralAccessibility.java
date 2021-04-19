@@ -3,9 +3,9 @@ package Model.Database.Interaction.ComplexInteractions;
 import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_CentralUnit;
-import Model.Database.Tables.Table.T_Flat;
-import Model.Database.Tables.Table.T_Project_user;
+import Model.Database.Tables.T_CentralUnit;
+import Model.Database.Tables.T_Flat;
+import Model.Database.Tables.T_Project_user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -3,7 +3,7 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.Table.T_ControllerUnit;
+import Model.Database.Tables.T_ControllerUnit;
 import Model.Web.thymeleaf.ControllerUnit;
 
 import javax.validation.constraints.NotNull;

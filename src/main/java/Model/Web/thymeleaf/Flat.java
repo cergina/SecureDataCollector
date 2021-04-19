@@ -1,6 +1,6 @@
 package Model.Web.thymeleaf;
 
-import Model.Database.Tables.Table.T_Flat;
+import Model.Database.Tables.T_Flat;
 
 import java.util.List;
 

@@ -1,14 +1,17 @@
-package Model.Database.Tables.Table;
+package Model.Database.Tables;
 
+import Model.Database.Interaction.I_AccessPrivilegeJournal;
+import Model.Database.Interaction.I_AccessPrivillege;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
 import Model.Database.Support.DbConfig;
-import Model.Database.Tables.DbEntity;
 import org.json.JSONObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.List;
@@ -40,26 +43,30 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
     };
 
     // Constructors
-    private T_AccessPrivilegeJournal() {}
+    protected T_AccessPrivilegeJournal() {}
 
     // Creations
     public static T_AccessPrivilegeJournal CreateFromRetrieved(int pk, Dictionary dict) {
-        T_AccessPrivilegeJournal temp = new T_AccessPrivilegeJournal();
+        T_AccessPrivilegeJournal temp = CreateBase(dict);
 
         temp.a_pk = pk;
-        temp.a_CreatedAt = (java.sql.Date)dict.get(DBNAME_CREATED_AT);
-        temp.a_DeletedAt = (java.sql.Date)dict.get(DBNAME_DELETED_AT);
-        temp.a_UserID = (int)dict.get(DBNAME_USER_ID);
-        temp.a_AccessPrivilegeID = (int)dict.get(DBNAME_ACCESS_PRIVILEGE_ID);
-        temp.a_CreatedByUserID = (int)dict.get(DBNAME_CREATED_BY_USER_ID);
 
         return temp;
     }
 
     public static T_AccessPrivilegeJournal CreateFromScratch(Dictionary dict) {
-        T_AccessPrivilegeJournal temp = new T_AccessPrivilegeJournal();
+        T_AccessPrivilegeJournal temp = CreateBase(dict);
 
         temp.a_CreatedAt = Date.valueOf(LocalDate.now());
+
+        return temp;
+    }
+
+    private static T_AccessPrivilegeJournal CreateBase(Dictionary dict) {
+        T_AccessPrivilegeJournal temp = new T_AccessPrivilegeJournal();
+
+        temp.a_CreatedAt = (java.sql.Date)dict.get(DBNAME_CREATED_AT);
+        temp.a_DeletedAt = (java.sql.Date)dict.get(DBNAME_DELETED_AT);
         temp.a_UserID = (int)dict.get(DBNAME_USER_ID);
         temp.a_AccessPrivilegeID = (int)dict.get(DBNAME_ACCESS_PRIVILEGE_ID);
         temp.a_CreatedByUserID = (int)dict.get(DBNAME_CREATED_BY_USER_ID);
@@ -84,6 +91,15 @@ public class T_AccessPrivilegeJournal extends DbEntity implements DBTable, DBToH
         return jo;
     }
 
+    // From DbEntity
+    public T_AccessPrivilegeJournal FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_AccessPrivilegeJournal.FillEntity(rs);
+    }
+
+    @Override
+    public String GetDbTableName() {
+        return DBTABLE_NAME;
+    }
 
 
     // Interface specific

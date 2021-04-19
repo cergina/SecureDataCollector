@@ -2,7 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.Table.T_SessionStore;
+import Model.Database.Tables.T_SessionStore;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class I_SessionStore {
+public class I_SessionStore extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_SessionStore ec) throws SQLException {
         if (ec.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_SessionStore is not ok for database enter");
@@ -78,42 +78,8 @@ public class I_SessionStore {
         return ct;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @return
-     * @throws SQLException
-     */
-    public static List<T_SessionStore> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_SessionStore.DBTABLE_NAME + " " +
-                        "ORDER BY ID asc"
-        );
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        List<T_SessionStore> arr = new ArrayList<>();
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            while (rs.next()) {
-                arr.add(I_SessionStore.FillEntity(rs));
-            }
-        }
-
-        return arr;
-    }
-
     // Privates
-    private static T_SessionStore FillEntity(ResultSet rs) throws SQLException {
+    public static T_SessionStore FillEntity(ResultSet rs) throws SQLException {
 
         Dictionary dict = new Hashtable();
 
