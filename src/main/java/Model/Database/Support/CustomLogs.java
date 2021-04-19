@@ -31,6 +31,11 @@ public class CustomLogs {
         }
     }
 
+    /* these kind of logs should not be in production, but when testing deployment on glassfish its necessary */
+    public static void ForceServerLog(String msg) {
+        DoLog(DEBUG, msg, true);
+    }
+
     public static void Debug(String msg) {
         if (ConfigClass.DEBUG)
             DoLog(DEBUG, msg, true);

@@ -1,5 +1,6 @@
 package View.Web.Servlets.Privileged;
 
+import Control.Communication.MailUtil;
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
 import Model.Database.Support.CustomLogs;
@@ -75,5 +76,15 @@ public class Admin_UserCreateServlet extends AdminServlet {
 
         writer.println(jsonResponse.toString());
         writer.close();
+
+        // send confirmation mail
+        if (jsonResponse.getStatus() == HttpServletResponse.SC_CREATED && ConfigClass.PRODUCTION_EMAIL_SENDING) {
+
+            try {
+                MailUtil.sendRegistrationMail(auth.getUser().getEmail(),auth.getUser().getFirstname(), auth.getVerificationcode());
+            } catch (Exception e) {
+                CustomLogs.Error("Inform user about his verification code manually");
+            }
+        }
     }
 }
