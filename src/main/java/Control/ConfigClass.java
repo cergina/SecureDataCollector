@@ -8,6 +8,8 @@ public class ConfigClass {
 
     // changes db table names from lowercase to camelcase if true and some other things
     public final static boolean RUNNING_ON_SERVER = false;
+    // whether to send emails via gmail api
+    public final static boolean PRODUCTION_EMAIL_SENDING = true;
     // in TimakCommonFiles there is a setup File for creation database, the number should match
     public final static int CODE_SUPPOSED_TO_WORK_WITH_SQL_VERSION = 17;
 
