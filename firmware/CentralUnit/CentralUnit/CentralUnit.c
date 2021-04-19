@@ -26,7 +26,7 @@
 #include "util/delay.h"
 
 #define DEBUG_TEST
-//#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
+#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
 
 
 #define UART_BAUD_RATE 9600
@@ -144,7 +144,7 @@ int main(void)
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
-	uart_puts("CentralUnit  Build v0.4 \r\n");
+	uart_puts("CentralUnit  Build v0.7 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -161,7 +161,7 @@ int main(void)
 		unsigned int tick= 0;
 	#endif
 	
-	char checksum;
+	uint8_t checksum;
 	while (1)
 	{
 		c = uart1_getc();
@@ -191,12 +191,17 @@ int main(void)
 			if (current_flag == F_CRC) {
 				int len = message[1] << 8 |  message[0];
 				
-				checksum = crc8((uint8_t*)message, len);
-				if(c != checksum){
-					uart_puts("Wrong Checksum \r\n");
+				#ifdef DEBUG_TEST
+					for (int i = 0; i < len+2; i++)
+						uart_putc(message[i]);
+				#endif 
+				
+				checksum = crc8((uint8_t*)message, len+2); // Need to add 2 what is count bytes of length.
+				if((uint8_t)c != checksum){
+					uart_puts("NAK\r\n");
 				}
 				else{
-					uart_puts("ACK");
+					uart_puts("ACK\r\n");
 					//do stuff
 				}
 				current_flag = NULL;
