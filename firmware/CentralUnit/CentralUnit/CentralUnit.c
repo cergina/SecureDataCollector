@@ -69,11 +69,6 @@ uint8_t QUEC_STATE = 0;
  * 12 - deactivating
  */
 
-
-ISR(PCINT2_vect){
-	UART_Busy = 1;
-}
-
 uint8_t ProcessQMessage(char *msg)
 {
 	if (QUEC_STATE == 0 && 0 == strcmp("RDY", msg))
@@ -146,12 +141,6 @@ int main(void)
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	uart1_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 
-	//TODO pre 2 uarty
-	PCICR |= (1 << PCIE2);     // set PCIE2 to enable PCMSK2 scan
-	PCMSK2 |= (1 << PCINT16);   // set ?? trigger (RX)
-	PCMSK2 |= (1 << PCINT17);   // set ?? trigger (TX)
-
-
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
@@ -167,6 +156,10 @@ int main(void)
 	
 	uart_putc(current_proto);
 	uart_putc('\n');
+	
+	#ifdef DEBUG_TEST_TICK
+		unsigned int tick= 0;
+	#endif
 	
 	char checksum;
 	while (1)
@@ -260,27 +253,11 @@ int main(void)
 			uart_puts("\r\n");
 			_delay_ms(1000);
 		#endif
-		
-		//TODO
-		//IF Uart is active, we continue working
-		if (UART_Busy)
-		{
-			continue;
-		}
-		
-		//Nothing else to do we go sleep
-		set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
-		cli(); // deactivate interrupts
-		sleep_enable(); // sets the SE (sleep enable) bit
-		sleep_bod_disable();
-		sei(); //
-		sleep_cpu(); // sleep now!!
-		sleep_disable(); // deletes the SE bit
 	}
 }
 
 
-
+/** EXPERIMENTAL
 int uart_TX_busy(){
 	int check = strlen(UART_TxBuf);
 	if(check == 1){
@@ -300,3 +277,4 @@ int uart_RX_busy(){
 		return 0;
 	}
 }
+*/
