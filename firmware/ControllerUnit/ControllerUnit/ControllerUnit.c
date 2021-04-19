@@ -1,7 +1,7 @@
 /*
  * ControllerUnit.c
  * Project: DCS
- * Version: 0.50
+ * Version: 0.52
  * Processor: ATmega328P
  * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */ 
@@ -134,6 +134,17 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	}
 	free(cDataArr);
 	
+	//T - Time 
+	char time[] = "T210101235959";
+	for(int i = 0; i < strlen(time); i++){
+		//Message length check
+		if(mlen == CHUNK_LEN){
+			message = realloc(message, mlen+CHUNK_LEN * sizeof(message));
+		}
+		message[++mlen] = time[i];
+	}
+	free(time);
+	
 	//Add length
 	int packetLength = mlen - 1;
 	message[0] = packetLength & 0xFF;
@@ -176,7 +187,7 @@ int main(void)
 		
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.51 \r\n");
+	uart_puts("ControllerUnit  Build v0.52 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -195,6 +206,7 @@ int main(void)
 		uart_puts("ADC5 value is: ");
 		uart_puts(result);
 		uart_puts("\r\n");
+		SendMessageToCEU_uart(UID,1,1); // for test purpose
 		free(result);
 	#endif
 	ADC5_lastValue = 1; // We begin with logical 1 because on device its means idle state
