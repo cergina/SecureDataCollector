@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
-
+#include <avr/sleep.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
@@ -22,6 +22,12 @@
 #ifndef F_CPU
 #error "F_CPU undefined, please define CPU frequency in Hz in Makefile"
 #endif
+
+#include "util/delay.h"
+
+#define DEBUG_TEST
+//#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
+
 
 #define UART_BAUD_RATE 9600
 
@@ -43,6 +49,9 @@
 #define PROTO_CCE 1
 #define PROTO_CEQ 2
 
+// Busy flag (this flag indicate that program is busy and we cant go to sleep mode)
+uint8_t UART_Busy = 1;
+
 uint8_t QUEC_STATE = 0;
 /*
  * 0 - unknown
@@ -59,6 +68,11 @@ uint8_t QUEC_STATE = 0;
  * 11 - reading response 
  * 12 - deactivating
  */
+
+
+ISR(PCINT2_vect){
+	UART_Busy = 1;
+}
 
 uint8_t ProcessQMessage(char *msg)
 {
@@ -132,10 +146,16 @@ int main(void)
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	uart1_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 
+	//TODO pre 2 uarty
+	PCICR |= (1 << PCIE2);     // set PCIE2 to enable PCMSK2 scan
+	PCMSK2 |= (1 << PCINT16);   // set ?? trigger (RX)
+	PCMSK2 |= (1 << PCINT17);   // set ?? trigger (TX)
+
+
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
-	uart_puts("CentralUnit  Build v0.3 \r\n");
+	uart_puts("CentralUnit  Build v0.4 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -152,79 +172,48 @@ int main(void)
 	while (1)
 	{
 		c = uart1_getc();
-		if (c & UART_NO_DATA)
-		{
+		if (!(c & UART_NO_DATA)){
+			if (c == STX){
+				current_flag = F_DATA;
+				index = 0;
+				message = (char* )calloc(CHUNK_LEN, sizeof(char));
+				continue;
+			}
+			
+			if (c == ETX){
+				current_flag = F_CRC;
+				continue;
+			}
+			
+			if (current_flag == F_DATA)
+			{
+				message[index] = (char)c;
+				index++;
+				if(index == CHUNK_LEN){
+					int len = sizeof message / sizeof *message;
+					message = realloc(message, len+CHUNK_LEN * sizeof(message));
+				}
+			}
+			
+			if (current_flag == F_CRC) {
+				int len = message[1] << 8 |  message[0];
+				
+				checksum = crc8((uint8_t*)message, len);
+				if(c != checksum){
+					uart_puts("Wrong Checksum \r\n");
+				}
+				else{
+					uart_puts("ACK");
+					//do stuff
+				}
+				current_flag = NULL;
+				free(message);
+			}
 			continue;
 		}
 		
 		// remove flags
 		c = c & 0xFF;
-
-		if (current_proto == PROTO_CCE)
-		{
-			//uart_putc(c);
-			if (c == STX)
-			{
-				current_flag = F_DATA;
-				index = 0;
-				message = (char *)calloc(CHUNK_LEN, sizeof(char));
-				continue;
-			}
-
-			if (c == ETX)
-			{
-				current_flag = F_CRC;
-				continue;
-			}
-
-			if (current_flag == F_DATA)
-			{
-				message[index] = (char)c;
-				index++;
-				if (index == CHUNK_LEN)
-				{
-					int len = sizeof message / sizeof *message;
-					message = realloc(message, len + CHUNK_LEN * sizeof(message));
-				}
-			}
-
-			if (current_flag == F_CRC)
-			{
-				int len = message[1] << 8 | message[0];
-
-				checksum = crc8((uint8_t *)message, len + 2);
-				
-				//int y = len;
-				//index = 0;
-				//while (y-- > 0)
-				//{
-				//	uart_putc(message[index++]);
-				//}
-				
-				int l = message[1] << 8 | message[0];
-				for (int i = 0; i < l + 2; i++)
-				{
-					uart_putc(message[i]);
-				}
-
-				if (c != checksum)
-				{
-					uart_puts("Wrong Checksum \r\n");
-					uart_putc(c);
-					uart_putc(checksum);
-					checksum = 0; // vynulujeme
-				}
-				else
-				{
-					uart_puts("ACK");
-					checksum = 0; // vynulujeme
-								  //ParsePacket(message);
-				}
-
-				current_flag = NULL;
-			}
-		}
-
 		if (current_proto == PROTO_CEQ)
 		{
 			// irelevantne
@@ -260,7 +249,54 @@ int main(void)
 			if (index % CHUNK_LEN == 0)
 			{
 				message = realloc(message, index + CHUNK_LEN * sizeof(message));
-			}			
+			}
+			continue;			
 		}
+		
+		#ifdef DEBUG_TEST_TICK
+			char result1[50];
+			sprintf(result1, "%d", ++tick);
+			uart_puts(result1);
+			uart_puts("\r\n");
+			_delay_ms(1000);
+		#endif
+		
+		//TODO
+		//IF Uart is active, we continue working
+		if (UART_Busy)
+		{
+			continue;
+		}
+		
+		//Nothing else to do we go sleep
+		set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
+		cli(); // deactivate interrupts
+		sleep_enable(); // sets the SE (sleep enable) bit
+		sleep_bod_disable();
+		sei(); //
+		sleep_cpu(); // sleep now!!
+		sleep_disable(); // deletes the SE bit
+	}
+}
+
+
+
+int uart_TX_busy(){
+	int check = strlen(UART_TxBuf);
+	if(check == 1){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+int uart_RX_busy(){
+	int check = strlen(UART_RxBuf);
+	if(check == 1){
+		return 1;
+	}
+	else{
+		return 0;
 	}
 }
