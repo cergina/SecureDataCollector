@@ -24,6 +24,11 @@ public class Sensor extends PrettyObject {
     private List<Measurement> measurements;
     @Expose
     private List<Integer> dataArray;
+    @Expose
+    private String unitType;
+    @Expose
+    private Integer unitAmount;
+
 
 
     // empty constructor for Gson
@@ -37,12 +42,14 @@ public class Sensor extends PrettyObject {
         this.measuredTotal = measuredTotal;
     }
 
-    public Sensor(String input, String name, Integer controllerUnitID, List<Measurement> measurements, List<Integer> dataArray) {
+    public Sensor(String input, String name, Integer controllerUnitID, List<Measurement> measurements, List<Integer> dataArray, String unitType, Integer unitAmount) {
         this.input = input;
         this.name = name;
         this.controllerUnitId = controllerUnitID;
         this.measurements = measurements;
         this.dataArray = dataArray;
+        this.unitType = unitType;
+        this.unitAmount = unitAmount;
     }
 
     public String getInput() {
@@ -107,5 +114,21 @@ public class Sensor extends PrettyObject {
 
     public void setDataArray(List<Integer> dataArray) {
         this.dataArray = dataArray;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
+    }
+
+    public Integer getUnitAmount() {
+        return unitAmount;
+    }
+
+    public void setUnitAmount(Integer unitAmount) {
+        this.unitAmount = unitAmount;
     }
 }
