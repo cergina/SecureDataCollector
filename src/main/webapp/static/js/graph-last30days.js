@@ -15,7 +15,6 @@ function graphFUNC() {
             201: function(response) {
                 DATES = response.data.dates;
                 SENSORS = response.data.sensors;
-                alert(SENSORS[0]);
             },
         },
     });
@@ -114,9 +113,4 @@ var LineChartConfig = {
 window.onload = function () {
     var ctx = document.getElementById("graph-last30days").getContext("2d");
     window.myLine = new Chart(ctx, LineChartConfig);
-    console.log(SENSORS[0]);
-    console.log(SENSORS[1]);
-    console.log(SENSORS[2]);
-    console.log(SENSORS[3]);
-    console.log(SENSORS[4]);
 };
