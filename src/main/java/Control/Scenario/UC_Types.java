@@ -13,6 +13,7 @@ import Model.Web.JsonResponse;
 import Model.Web.SensorType;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.InvalidOperationException;
+import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -38,7 +39,7 @@ public class UC_Types {
         try {
             db.beforeSqlExecution(true);
 
-            if (commType.getName().equals("")) {
+            if (StringUtils.isNullOrEmpty(commType.getName())) {
                 jsonResponse.setMessage("Communication type name cannot be empty.");
                 throw new InvalidOperationException("Communication type name cannot be empty.");
             }
@@ -89,7 +90,7 @@ public class UC_Types {
         try {
             db.beforeSqlExecution(true);
 
-            if (sensorType.getName().equals("")) {
+            if (StringUtils.isNullOrEmpty(sensorType.getName())) {
                 jsonResponse.setMessage("Sensor type name cannot be empty.");
                 throw new InvalidOperationException("Sensor type name cannot be empty.");
             }

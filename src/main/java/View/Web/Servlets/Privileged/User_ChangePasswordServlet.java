@@ -51,7 +51,7 @@ public class User_ChangePasswordServlet extends SessionServlet {
 
         // Check validity of user requested password to be used
         if (auth.isSuchPasswordOkay() == false) {
-            CustomLogs.Error("Attempted password does not match one of our conditions");
+            CustomLogs.Debug("Attempted password does not match one of our conditions");
 
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setMessage("Attempted password does not match one of our conditions");

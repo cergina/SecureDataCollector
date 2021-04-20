@@ -18,12 +18,10 @@ public class SendTestMailServlet extends PublicServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response);
 
-        CustomLogs.ForceServerLog("SendTestMailServlet.doGet");
         PrintWriter writer = response.getWriter();
 
         if (ConfigClass.PRODUCTION_EMAIL_SENDING) {
             try {
-                CustomLogs.ForceServerLog("Attempting to send mail");
                 MailUtil.sendDefaultMail("mcerget@gmail.com");
                 writer.println("Mail sent successfully.");
             } catch (Exception e) {
@@ -33,8 +31,6 @@ public class SendTestMailServlet extends PublicServlet {
         } else {
             writer.println("Mail functionality not turned on.");
         }
-
-        CustomLogs.ForceServerLog("SendTestMailServlet.doGet END");
 
         writer.close();
     }

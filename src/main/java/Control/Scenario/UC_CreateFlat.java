@@ -8,6 +8,7 @@ import Model.Web.JsonResponse;
 import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import Model.Web.Specific.FlatOwner;
 import View.Support.CustomExceptions.CreationException;
+import com.mysql.cj.util.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +39,7 @@ public class UC_CreateFlat {
             }
 
             // insert both?
-            boolean onlyOneOwner = firstTimeCreation.getOwner2().getFirstName().equals("");
+            boolean onlyOneOwner = StringUtils.isNullOrEmpty(firstTimeCreation.getOwner2().getFirstName());
 
             db.beforeSqlExecution(true);
 
@@ -160,7 +161,7 @@ public class UC_CreateFlat {
         }
 
         // if second user is provided for enter check him as well
-        if (firstTimeCreation.getOwner2().getFirstName().equals("") == false) {
+        if (StringUtils.isNullOrEmpty(firstTimeCreation.getOwner2().getFirstName()) == false) {
             if (isFlatOwnerOk(firstTimeCreation.getOwner2()) == false) {
                 return false;
             }
@@ -178,11 +179,11 @@ public class UC_CreateFlat {
 
 
         // apartment no cant be empty
-        if (firstTimeCreation.getApartmentNo().equals("")) {
+        if (StringUtils.isNullOrEmpty(firstTimeCreation.getApartmentNo())) {
             return false;
         }
 
-        if (firstTimeCreation.getZwave().equals("")) {
+        if (StringUtils.isNullOrEmpty(firstTimeCreation.getZwave())) {
             return false;
         }
 
@@ -199,7 +200,8 @@ public class UC_CreateFlat {
             return false;
         };
 
-        if (fo.getFirstName().equals("") || fo.getLastName().equals("") || fo.getPhone().matches("^(\\+)?[0-9 ]+$") == false) {
+        if (StringUtils.isNullOrEmpty(fo.getFirstName()) || StringUtils.isNullOrEmpty(fo.getLastName()) ||
+                StringUtils.isNullOrEmpty(fo.getPhone()) || fo.getPhone().matches("^(\\+)?[0-9 ]+$") == false) {
             return false;
         }
 

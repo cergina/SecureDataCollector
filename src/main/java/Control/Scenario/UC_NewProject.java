@@ -13,6 +13,7 @@ import Model.Web.JsonResponse;
 import Model.Web.Specific.ProjectCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.CreationException;
+import com.mysql.cj.util.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.servlet.http.HttpServletResponse;
@@ -138,8 +139,11 @@ public class UC_NewProject {
      */
     private boolean isProjectNameAndEmailsValid(@NotNull final ProjectCreation projectCreation) {
 
+        if (projectCreation == null)
+            return false;
+
         // Valid project name
-        if (projectCreation == null || projectCreation.getProject_name().equals(""))
+        if (StringUtils.isNullOrEmpty(projectCreation.getProject_name()))
             return false;
 
         // All emails are valid
@@ -157,7 +161,7 @@ public class UC_NewProject {
     }
 
     private void removeEmptyElements(@NotNull final ProjectCreation projectCreation) {
-        projectCreation.getAdditional_emails().removeIf(em -> (em == null || em.equals("")));
+        projectCreation.getAdditional_emails().removeIf(em -> ( StringUtils.isNullOrEmpty(em)));
     }
 
     private T_Project get_TProject_ByName(@NotNull final String name) {

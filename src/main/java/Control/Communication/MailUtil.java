@@ -15,15 +15,11 @@ public class MailUtil {
     public static void sendRegistrationMail(String recepient, String username, String verCode) throws Exception {
         Properties properties = new Properties();
 
-        CustomLogs.ForceServerLog("MailUtil.sendMail");
-
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", 587);
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-
-        CustomLogs.ForceServerLog("MailUtil properties set");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
@@ -32,36 +28,25 @@ public class MailUtil {
             }
         });
 
-        CustomLogs.ForceServerLog("MailUtil.sendMail authentication get");
-
         Message msg = prepareRegistrationMessage(session, SYSTEM_MAIL, recepient, username, verCode);
-
-        CustomLogs.ForceServerLog("MailUtil.sendMail message prepared");
 
         try {
             Transport.send(msg);
         } catch (Exception m) {
-            CustomLogs.ForceServerLog("Transport in catch error");
-            CustomLogs.ForceServerLog("Transport in catch error" + m.getMessage());
             CustomLogs.Error(m.getMessage());
         }
 
-
-        CustomLogs.ForceServerLog("Transport.send() ok");
     }
 
     public static void sendDefaultMail(String recepient) throws Exception {
         Properties properties = new Properties();
 
-        CustomLogs.ForceServerLog("MailUtil.sendMail");
-
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", 587);
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
-        CustomLogs.ForceServerLog("MailUtil properties set");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
@@ -70,22 +55,15 @@ public class MailUtil {
             }
         });
 
-        CustomLogs.ForceServerLog("MailUtil.sendMail authentication get");
 
         Message msg = prepareMessage(session, SYSTEM_MAIL, recepient);
-
-        CustomLogs.ForceServerLog("MailUtil.sendMail message prepared");
 
         try {
             Transport.send(msg);
         } catch (Exception m) {
-            CustomLogs.ForceServerLog("Transport in catch error");
-            CustomLogs.ForceServerLog("Transport in catch error" + m.getMessage());
             CustomLogs.Error(m.getMessage());
         }
 
-
-        CustomLogs.ForceServerLog("Transport.send() ok");
     }
 
     private static Message prepareRegistrationMessage(Session session, String projectEmail, String targetEmail, String username, String verCode) {

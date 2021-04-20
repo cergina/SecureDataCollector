@@ -49,7 +49,6 @@ public class ServletHelper {
         String bodyString = null;
         try {
             bodyString = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-            CustomLogs.Error(bodyString);
         } catch (IOException e) {
             CustomLogs.Error(e.getMessage());
         }

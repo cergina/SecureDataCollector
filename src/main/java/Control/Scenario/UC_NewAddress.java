@@ -8,6 +8,7 @@ import Model.Web.JsonResponse;
 import Model.Web.Specific.AddressCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.CreationException;
+import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -59,8 +60,15 @@ public class UC_NewAddress {
 
     private boolean isDataValid(@NotNull final AddressCreation addressCreation) {
 
-        if (addressCreation == null || addressCreation.getStreet().equals("") || addressCreation.getHouseNo().equals("")
-                || addressCreation.getCity().equals("") || addressCreation.getZIP().equals("") || addressCreation.getCountry().equals(""))
+        if (addressCreation == null)
+            return false;
+
+
+        if (StringUtils.isNullOrEmpty(addressCreation.getStreet()) ||
+                StringUtils.isNullOrEmpty(addressCreation.getHouseNo()) ||
+                StringUtils.isNullOrEmpty(addressCreation.getCity()) ||
+                StringUtils.isNullOrEmpty(addressCreation.getZIP()) ||
+                StringUtils.isNullOrEmpty(addressCreation.getCountry()))
             return false;
 
         return true;

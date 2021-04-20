@@ -132,14 +132,14 @@ public class DbProvider {
                 CustomLogs.Error("Set autocommit true failed." + e.getMessage());
             }
 
-            disconnect(); //- probably will not be needed here
+            disconnect();
         }
     }
 
     private void checkAndRestartConnectionIfRequired() {
         try {
             if (ctx == null || ds == null || conn == null || conn.isClosed()) {
-                CustomLogs.Error("It's required to restart connection.");
+                CustomLogs.Debug("It's required to restart connection.");
                 disconnect();
                 initEverything();
             }
@@ -165,7 +165,7 @@ public class DbProvider {
 
             return true;
         } catch (SQLException sqle) {
-            CustomLogs.Error("Validation of connection by SQL execution failed attempting. Attempting reestablishment.");
+            CustomLogs.Debug("Validation of connection by SQL execution failed attempting. Attempting reestablishment.");
             return false;
         }
     }

@@ -13,6 +13,7 @@ import Model.Web.JsonResponse;
 import Model.Web.Specific.ControllerCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.CreationException;
+import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -81,8 +82,8 @@ public class UC_Controller {
             return false;
 
         // other fields cannot be empty
-        if (creation == null || creation.getZwave().equals("") ||
-                creation.getDipAddress().equals("") || Assurance.isFkOk(creation.getFlatId()) == false)
+        if (creation == null || StringUtils.isNullOrEmpty(creation.getZwave()) ||
+                StringUtils.isNullOrEmpty(creation.getDipAddress()) || Assurance.isFkOk(creation.getFlatId()) == false)
             return false;
 
         return true;

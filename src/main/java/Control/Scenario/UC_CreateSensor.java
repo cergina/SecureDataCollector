@@ -10,6 +10,7 @@ import Model.Web.JsonResponse;
 import Model.Web.Sensor;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.InvalidOperationException;
+import com.mysql.cj.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -30,7 +31,7 @@ public class UC_CreateSensor {
         try {
             db.beforeSqlExecution(true);
 
-            if (sensor.getName().equals("")) {
+            if (StringUtils.isNullOrEmpty(sensor.getName())) {
                 jsonResponse.setMessage("Sensor name cannot be empty.");
                 throw new InvalidOperationException("Sensor name cannot be empty.");
             }

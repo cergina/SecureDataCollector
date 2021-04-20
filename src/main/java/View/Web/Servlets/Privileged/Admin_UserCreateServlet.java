@@ -54,7 +54,6 @@ public class Admin_UserCreateServlet extends AdminServlet {
         // Check validity of user inserted data
         // TODO remake somehow better, it should not be here - this is test if it will work on server
         if (auth.isModelOkayForCreation() == false) {
-            CustomLogs.Error("You cant expect me to create a user with some required fields empty.");
 
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setMessage("You cant expect me to create a user with some required fields empty.");

@@ -2,6 +2,7 @@ package Model.Web;
 
 
 import com.google.gson.annotations.Expose;
+import com.mysql.cj.util.StringUtils;
 
 /**
  * Api model - authentication
@@ -30,16 +31,17 @@ public class Auth extends PrettyObject {
      * @return
      */
     public boolean isModelOkayForCreation() {
-        if (user == null ||
-                user.getEmail().equals("") ||
-                user.getFirstname().equals("") ||
-                user.getLastname().equals("") ||
-                user.getResidence().equals("") ||
-                user.getPhone().equals("") ||
-                (user.getPhone().matches("^(\\+)?[0-9 ]+$") == false))
+        if (user == null)
             return false;
 
-        return true;
+        if (StringUtils.isNullOrEmpty(user.getEmail()) ||
+                StringUtils.isNullOrEmpty(user.getFirstname()) ||
+                StringUtils.isNullOrEmpty(user.getLastname()) ||
+                StringUtils.isNullOrEmpty(user.getResidence()) ||
+                StringUtils.isNullOrEmpty(user.getPhone()))
+            return false;
+
+        return user.getPhone().matches("^(\\+)?[0-9 ]+$");
     }
 
     /***
