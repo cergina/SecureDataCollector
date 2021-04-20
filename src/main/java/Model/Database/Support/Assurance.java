@@ -14,10 +14,7 @@ public class Assurance {
 
     // base types
     public static boolean isDateOk(Date value) {
-        if (null == value)
-            return false;
-
-        return true;
+        return (null != value);
     }
 
     public static boolean isIntOk(int value) {
@@ -25,26 +22,20 @@ public class Assurance {
     }
 
     public static boolean isFkOk(int value) {
-        if (value <= 0)
-            return false;
-
-        return true;
+        return (value > 0);
     }
 
     public static boolean isVarcharOk(String value) {
-        if (null == value)
-            return false;
-
-        return true;
+        return (null != value);
     }
 
     public static void varcharCheck(String value) throws SQLException {
-        if (Assurance.isVarcharOk(value) == false)
+        if (isVarcharOk(value) == false)
             throw new SQLException("Value is not valid for use in database.");
     }
 
     public static void idCheck(int idToBeChecked) throws SQLException {
-        if (idToBeChecked <= 0)
+        if (isFkOk(idToBeChecked) == false)
             throw new SQLException("ID is less or equal to 0, which is an invalid Database id.");
     }
 }
