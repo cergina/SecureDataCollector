@@ -26,6 +26,7 @@ var GraphTotalDatasets = SENSORS.length;
 
 var maxValue = 0;
 
+// from all measurements values a maximum is chosen, for the y scale amplitude to be chosen
 for (i=0; i < GraphTotalDatasets; i++)
 {
     if(Math.max(...SENSORS[i].dataArray) > maxValue){
