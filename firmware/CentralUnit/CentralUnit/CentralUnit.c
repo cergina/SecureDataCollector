@@ -121,7 +121,7 @@ uint8_t readDipAddress()
 	return address;
 }
 
-//Parse Datov� ?as? paketu a vytiahne z nej d�ta pre spracovanie
+//Parse Datova cast paketu a vytiahne z nej data pre spracovanie
 void ParsePacket(char *message)
 {
 	int len = message[1] << 8 | message[0];
@@ -167,7 +167,10 @@ int main(void)
 	while (1)
 	{
 		c = uart1_getc();
+		
 		if (!(c & UART_NO_DATA)){
+			
+			//#region STXETX 
 			if (c == STX){
 				current_flag = F_DATA;
 				index = 0;
@@ -209,49 +212,53 @@ int main(void)
 				current_flag = NULL;
 				free(message);
 			}
+			//#endregion
+		
+			//#region Quectel
+			if (current_proto == PROTO_CEQ)
+			{
+				// irelevantne
+				if (c == 0x00 || c == 0x0D)
+				{
+					continue;
+				}
+
+				//uart_putc(c);
+				//continue;
+
+				// message end
+				if (c == 0x0A)
+				{
+					uint8_t ret = ProcessQMessage(message);
+					if (ret == 0){
+						uart_puts(message);
+						uart_putc('\n');
+					}
+					
+					// clear buffer
+					free(message);
+					index = 0;
+					message = (char *)calloc(CHUNK_LEN, sizeof(char));
+					continue;
+				}
+				
+				// store to buffer
+				message[index] = (char)c;
+				index++;
+
+				// extend message buffer if needed
+				if (index % CHUNK_LEN == 0)
+				{
+					message = realloc(message, index + CHUNK_LEN * sizeof(message));
+				}
+			}	
+			//#endregion
+			
 			continue;
 		}
 		
 		// remove flags
 		c = c & 0xFF;
-		if (current_proto == PROTO_CEQ)
-		{
-			// irelevantne
-			if (c == 0x00 || c == 0x0D)
-			{
-				continue;
-			}
-
-			//uart_putc(c);
-			//continue;
-
-			// message end
-			if (c == 0x0A)
-			{	
-				uint8_t ret = ProcessQMessage(message);
-				if (ret == 0){
-					uart_puts(message);
-					uart_putc('\n');
-				}
-				
-				// clear buffer
-				free(message);
-				index = 0;
-				message = (char *)calloc(CHUNK_LEN, sizeof(char));
-				continue;
-			}
-			
-			// store to buffer		
-			message[index] = (char)c;
-			index++;
-
-			// extend message buffer if needed
-			if (index % CHUNK_LEN == 0)
-			{
-				message = realloc(message, index + CHUNK_LEN * sizeof(message));
-			}
-			continue;			
-		}
 		
 		#ifdef DEBUG_TEST_TICK
 			char result1[50];
