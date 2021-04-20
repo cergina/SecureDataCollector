@@ -21,12 +21,23 @@ function graphFUNC() {
 }
 graphFUNC();
 
+
 var GraphTotalDatasets = SENSORS.length;
+
+var maxValue = 0;
+
+// from all measurements values a maximum is chosen, for the y scale amplitude to be chosen
+for (i=0; i < GraphTotalDatasets; i++)
+{
+    if(Math.max(...SENSORS[i].dataArray) > maxValue){
+        maxValue = Math.max(...SENSORS[i].dataArray);
+    }
+}
 
 var GraphLabelArray = []
 for (i=0; i < GraphTotalDatasets; i++)
 {
-    GraphLabelArray[i] = "Controller #" + SENSORS[i].controllerUnitId + " Sensor: " + SENSORS[i].name;
+    GraphLabelArray[i] = "Controller #" + SENSORS[i].controllerUnitId + " " + SENSORS[i].name + " (" + SENSORS[i].unitType + ")";
 }
 
 
@@ -90,7 +101,7 @@ var LineChartConfig = {
                     },
                     ticks: {
                         min: 0,
-                        max: 200,
+                        max: maxValue,
                         // forces step size to be 5 units
                         stepSize: 5,
                     },

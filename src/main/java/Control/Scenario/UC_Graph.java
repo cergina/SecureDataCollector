@@ -4,13 +4,16 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Interaction.I_Measurements;
 import Model.Database.Interaction.I_Sensor;
+import Model.Database.Interaction.I_SensorType;
 import Model.Database.Support.CustomLogs;
+import Model.Database.Tables.E_SensorType;
 import Model.Database.Tables.T_ControllerUnit;
 import Model.Database.Tables.T_Measurement;
 import Model.Database.Tables.T_Sensor;
 import Model.Web.JsonResponse;
 import Model.Web.Measurement;
 import Model.Web.Sensor;
+import Model.Web.SensorType;
 import Model.Web.Specific.GraphSingleFlat;
 
 import javax.servlet.http.HttpServletResponse;
@@ -109,8 +112,12 @@ public class UC_Graph {
                     }
 
                     List<Integer> dataArray = getMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
+                    E_SensorType sensorType = I_SensorType.retrieve(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_SensorTypeID());
+                    String unitType = getUnitTypeOfSensor(sensorType);
+                    Integer unitAmount = getUnitAmountOfSensor(sensorType);
+                    getRealMeasurementValues(dataArray, unitAmount);
+                    Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray, unitType, unitAmount);
 
-                    Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray);
                     sensors.add(sensor);
                 } catch (SQLException sqle) {
                     CustomLogs.Error(sqle.getMessage());
@@ -157,4 +164,22 @@ public class UC_Graph {
         return null;
     }
 
+    public Integer getUnitAmountOfSensor(E_SensorType sensorType) {
+        String measuredIn = sensorType.getA_MeasuredIn();
+        String[] splitMeasuredIn = measuredIn.split("_");
+        return Integer.parseInt(splitMeasuredIn[0]);
+    }
+
+    public String getUnitTypeOfSensor(E_SensorType sensorType) {
+        String measuredIn = sensorType.getA_MeasuredIn();
+        String[] splitMeasuredIn = measuredIn.split("_");
+        return splitMeasuredIn[1];
+    }
+
+    public void getRealMeasurementValues(List<Integer> dataArray, Integer unitAmount){
+        for (int i = 0; i < dataArray.size(); i++) {
+            int value = dataArray.get(i) * unitAmount;
+            dataArray.set(i, value);
+        }
+    }
 }
