@@ -3,7 +3,7 @@ package Model.Web.Specific;
 import Model.Web.PrettyObject;
 import com.google.gson.annotations.Expose;
 
-public class ControllerCreation  extends PrettyObject {
+public class ControllerCreation  extends PrettyObject { // TODO zjednotit sa triedou ControllerUnit
     // PARAMETERS
     @Expose
     private int uid;

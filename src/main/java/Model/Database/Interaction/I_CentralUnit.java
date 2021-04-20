@@ -37,8 +37,7 @@ public class I_CentralUnit extends InteractionWithDatabase {
                 T_CentralUnit.DBNAME_SIMNO,
                 T_CentralUnit.DBNAME_IMEI,
                 T_CentralUnit.DBNAME_ZWAVE,
-                T_CentralUnit.DBNAME_PROJECT_ID,
-                T_CentralUnit.DBNAME_ADDRESS_ID
+                T_CentralUnit.DBNAME_BUILDING_ID
                 );
 
         // SQL Definition
@@ -59,8 +58,7 @@ public class I_CentralUnit extends InteractionWithDatabase {
         ps.setString(++col, tcu.getA_SimNO());
         ps.setString(++col, tcu.getA_Imei());
         ps.setString(++col, tcu.getA_Zwave());
-        ps.setInt(++col, tcu.getA_ProjectID());
-        ps.setInt(++col, tcu.getA_AddressID());
+        ps.setInt(++col, tcu.getA_BuildingID());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -112,10 +110,10 @@ public class I_CentralUnit extends InteractionWithDatabase {
         return tc;
     }
 
-    public static List<T_CentralUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int projectId) throws SQLException {
+    public static List<T_CentralUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingID) throws SQLException {
 
         // No Filter is being used
-        if (projectId <= DB_DO_NOT_USE_THIS_FILTER) {
+        if (buildingID <= DB_DO_NOT_USE_THIS_FILTER) {
             return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_CentralUnit.class));
         }
 
@@ -127,9 +125,9 @@ public class I_CentralUnit extends InteractionWithDatabase {
 
 
         // add filter rules
-        boolean projectRule = projectId > 0;
+        boolean rule = buildingID > 0;
 
-        usedSql = (projectRule ? usedSql + T_CentralUnit.DBTABLE_NAME + ".ProjectID=? " : usedSql);
+        usedSql = (rule ? usedSql + T_CentralUnit.DBTABLE_NAME + ".BuildingID=? " : usedSql);
 
         usedSql += "ORDER BY ID asc";
 
@@ -139,8 +137,8 @@ public class I_CentralUnit extends InteractionWithDatabase {
         );
 
         int col = 0;
-        if (projectRule)
-            ps.setInt(++col, projectId);
+        if (rule)
+            ps.setInt(++col, buildingID);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -190,19 +188,19 @@ public class I_CentralUnit extends InteractionWithDatabase {
         return tc;
     }
 
-    public static T_CentralUnit retrieveByAddressId(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException {
-        Assurance.idCheck(addressId);
+    public static T_CentralUnit retrieveByBuildingId(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
+        Assurance.idCheck(buildingId);
 
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
                         "* " +
                         "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
-                        "WHERE " + T_CentralUnit.DBNAME_ADDRESS_ID +"=?"
+                        "WHERE " + T_CentralUnit.DBNAME_BUILDING_ID +"=?"
         );
 
         int col = 0;
-        ps.setInt(++col, addressId);
+        ps.setInt(++col, buildingId);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -232,8 +230,7 @@ public class I_CentralUnit extends InteractionWithDatabase {
         dict.put(T_CentralUnit.DBNAME_SIMNO, rs.getString(T_CentralUnit.DBNAME_SIMNO));
         dict.put(T_CentralUnit.DBNAME_IMEI, rs.getString(T_CentralUnit.DBNAME_IMEI));
         dict.put(T_CentralUnit.DBNAME_ZWAVE, rs.getString(T_CentralUnit.DBNAME_ZWAVE));
-        dict.put(T_CentralUnit.DBNAME_PROJECT_ID, rs.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
-        dict.put(T_CentralUnit.DBNAME_ADDRESS_ID, rs.getInt(T_CentralUnit.DBNAME_ADDRESS_ID));
+        dict.put(T_CentralUnit.DBNAME_BUILDING_ID, rs.getInt(T_CentralUnit.DBNAME_BUILDING_ID));
 
         return T_CentralUnit.CreateFromRetrieved(rs.getInt(T_CentralUnit.DBNAME_ID), dict);
     }

@@ -5,7 +5,7 @@ import Model.Database.Interaction.I_Address;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.T_Address;
 import Model.Web.JsonResponse;
-import Model.Web.Specific.AddressCreation;
+import Model.Web.Address;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.CreationException;
 import com.mysql.cj.util.StringUtils;
@@ -24,21 +24,21 @@ public class UC_NewAddress {
         this.db = dbProvider;
     }
 
-    public final @NotNull JsonResponse createNewAddress(@NotNull final AddressCreation addressCreation){
+    public final @NotNull JsonResponse createNewAddress(@NotNull final Address address){
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            if (isDataValid(addressCreation) == false) {
+            if (isDataValid(address) == false) {
                 jsonResponse.setMessage("Some required fields are missing.");
                 throw new CreationException("Some required fields are missing.");
             }
 
-            if(checkIfAddressExists(addressCreation.getStreet(), addressCreation.getHouseNo(), addressCreation.getCity(), addressCreation.getZIP(), addressCreation.getCountry())){
+            if(checkIfAddressExists(address.getStreet(), address.getHouseno(), address.getCity(), address.getZip(), address.getCountry())){
                 throw new AlreadyExistsException("Address already exists.");
             }
 
             db.beforeSqlExecution(true);
-            insertAddressIntoDatabase(addressCreation);
+            insertAddressIntoDatabase(address);
 
             db.afterOkSqlExecution();
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
@@ -58,30 +58,30 @@ public class UC_NewAddress {
         return jsonResponse;
     }
 
-    private boolean isDataValid(@NotNull final AddressCreation addressCreation) {
+    private boolean isDataValid(@NotNull final Address address) {
 
-        if (addressCreation == null)
+        if (address == null)
             return false;
 
 
-        if (StringUtils.isNullOrEmpty(addressCreation.getStreet()) ||
-                StringUtils.isNullOrEmpty(addressCreation.getHouseNo()) ||
-                StringUtils.isNullOrEmpty(addressCreation.getCity()) ||
-                StringUtils.isNullOrEmpty(addressCreation.getZIP()) ||
-                StringUtils.isNullOrEmpty(addressCreation.getCountry()))
+        if (StringUtils.isNullOrEmpty(address.getStreet()) ||
+                StringUtils.isNullOrEmpty(address.getHouseno()) ||
+                StringUtils.isNullOrEmpty(address.getCity()) ||
+                StringUtils.isNullOrEmpty(address.getZip()) ||
+                StringUtils.isNullOrEmpty(address.getCountry()))
             return false;
 
         return true;
     }
 
-    private void insertAddressIntoDatabase(@NotNull final AddressCreation addressCreation) throws SQLException{
+    private void insertAddressIntoDatabase(@NotNull final Address address) throws SQLException{
         Dictionary dict = new Hashtable();
 
-        dict.put(T_Address.DBNAME_CITY, addressCreation.getCity());
-        dict.put(T_Address.DBNAME_COUNTRY, addressCreation.getCountry());
-        dict.put(T_Address.DBNAME_HOUSENO, addressCreation.getHouseNo());
-        dict.put(T_Address.DBNAME_STREET, addressCreation.getStreet());
-        dict.put(T_Address.DBNAME_ZIP, addressCreation.getZIP());
+        dict.put(T_Address.DBNAME_CITY, address.getCity());
+        dict.put(T_Address.DBNAME_COUNTRY, address.getCountry());
+        dict.put(T_Address.DBNAME_HOUSENO, address.getHouseno());
+        dict.put(T_Address.DBNAME_STREET, address.getStreet());
+        dict.put(T_Address.DBNAME_ZIP, address.getZip());
 
         I_Address.insert(db.getConn(), db.getPs(), T_Address.CreateFromScratch(dict));
     }

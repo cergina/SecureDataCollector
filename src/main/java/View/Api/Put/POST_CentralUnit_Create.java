@@ -32,8 +32,7 @@ public class POST_CentralUnit_Create extends POST_Database_Interaction {
             tmpDict.put(T_CentralUnit.DBNAME_SIMNO, json.getString(T_CentralUnit.DBNAME_SIMNO));
             tmpDict.put(T_CentralUnit.DBNAME_IMEI, json.getString(T_CentralUnit.DBNAME_IMEI));
             tmpDict.put(T_CentralUnit.DBNAME_ZWAVE, json.getString(T_CentralUnit.DBNAME_ZWAVE));
-            tmpDict.put(T_CentralUnit.DBNAME_PROJECT_ID, json.getInt(T_CentralUnit.DBNAME_PROJECT_ID));
-            tmpDict.put(T_CentralUnit.DBNAME_ADDRESS_ID, json.getInt(T_CentralUnit.DBNAME_ADDRESS_ID));
+            tmpDict.put(T_CentralUnit.DBNAME_BUILDING_ID, json.getInt(T_CentralUnit.DBNAME_BUILDING_ID));
 
             T_CentralUnit tcu = T_CentralUnit.CreateFromScratch(tmpDict);
 

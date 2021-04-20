@@ -7,7 +7,7 @@ import java.sql.Date;
 public class Project extends PrettyObject{
     // PARAMETERS
     @Expose
-    private int id;
+    private Integer id;
     @Expose
     private String name;
     @Expose
@@ -19,7 +19,7 @@ public class Project extends PrettyObject{
     public Project() {}
 
     // GETTERS
-    public int getId() { return id; }
+    public Integer getId() { return id; }
 
     public String getName() { return name; }
 
@@ -32,7 +32,7 @@ public class Project extends PrettyObject{
     }
 
     // SETTERS
-    public void setId(int id) { this.id = id; }
+    public void setId(Integer id) { this.id = id; }
 
     public void setName(String name) {
         this.name = name;

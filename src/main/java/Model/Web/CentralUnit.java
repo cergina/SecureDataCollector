@@ -9,9 +9,9 @@ public class CentralUnit extends PrettyObject {
 
     // PARAMETERS
     @Expose
-    private int id;
+    private Integer id;
     @Expose
-    private int uid;
+    private Integer uid;
     @Expose
     private String dip;
     @Expose
@@ -23,9 +23,7 @@ public class CentralUnit extends PrettyObject {
     @Expose
     private String zwave;
     @Expose
-    private int projectId;
-    @Expose
-    private int addressId;
+    private Integer buildingId;
 
     @Expose
     public List<Flat> flats;
@@ -35,19 +33,19 @@ public class CentralUnit extends PrettyObject {
 
 
     // GETTERS and SETTERS
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public int getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setUid(int uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 
@@ -91,20 +89,12 @@ public class CentralUnit extends PrettyObject {
         this.zwave = zwave;
     }
 
-    public int getProjectId() {
-        return projectId;
+    public Integer getBuildingId() {
+        return buildingId;
     }
 
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
-    }
-
-    public int getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(int addressId) {
-        this.addressId = addressId;
+    public void setBuildingId(Integer buildingId) {
+        this.buildingId = buildingId;
     }
 
     public List<Flat> getFlats() {

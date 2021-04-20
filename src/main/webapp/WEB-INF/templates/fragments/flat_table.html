@@ -13,8 +13,8 @@
     </header>
     <div class="st_table" data-table_id="controller">
         <div class="st_row">
-            <div class="st_column _uid" th:text="${flat.apartmentNO}"></div>
-            <div class="st_column _dip" th:text="${flat.addressId}"></div>
+            <div class="st_column _uid" th:text="${flat.apartmentNO}"></div> // TODO tu je nejaka chyba tie class s _ nesedia neviem co to ma robit
+            <div class="st_column _dip" th:text="${flat.buildingId}"></div>
             <div class="st_column _link flat_link" th:text="${flat.id}" th:if="${isAdmin}"></div>
             <div></div>
         </div>

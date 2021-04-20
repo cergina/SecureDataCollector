@@ -125,11 +125,10 @@ public class UC_Controller {
             // get precise flat
             T_Flat flat = I_Flat.retrieve(db.getConn(), db.getPs(), db.getRs(), flatId);
 
-            // get address id from flat
-            int addressId = (flat != null ? flat.getA_AddressID() : -1);
+            int buildingId = (flat != null ? flat.getA_BuildingID() : -1);
 
             // get centralUnit that has addressId same
-            t = I_CentralUnit.retrieveByAddressId(db.getConn(), db.getPs(), db.getRs(), addressId);
+            t = I_CentralUnit.retrieveByBuildingId(db.getConn(), db.getPs(), db.getRs(), buildingId);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }

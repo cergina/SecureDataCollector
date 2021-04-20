@@ -28,7 +28,7 @@ public class POST_Flat_Create extends POST_Database_Interaction {
             Dictionary tmpDict = new Hashtable();
 
             tmpDict.put(T_Flat.DBNAME_APARTMENTNO, json.getString(T_Flat.DBNAME_APARTMENTNO));
-            tmpDict.put(T_Flat.DBNAME_ADDRESS_ID, json.getInt(T_Flat.DBNAME_ADDRESS_ID));
+            tmpDict.put(T_Flat.DBNAME_BUILDING_ID, json.getInt(T_Flat.DBNAME_BUILDING_ID));
 
             T_Flat tf = T_Flat.CreateFromScratch(tmpDict);
 
