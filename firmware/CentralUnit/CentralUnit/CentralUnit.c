@@ -1,7 +1,7 @@
 /*
  * CentralUnit.c
  * Project: DCS
- * Version: 0.5
+ * Version: 0.8
  * Controller: ATmega128
  * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */
@@ -78,17 +78,17 @@ uint8_t qSend(char *cmd){
 	
 	qOpPending = 1;
 	uart1_puts(cmd);
-	uart1_puts("\r\n");
-	
-	uart_puts(cmd);
+	uart1_putc('\n');
 	return 1;
 }
 
 void qConnect(){
+	uart_puts("Q :: Connecting\n");
 	qSend("AT+QICSGP=1,\"internet\"");
 }
 
 void qDisconnect(){
+	uart_puts("Q :: Disconnecting\n");
 	qState = QS_DEACTIVATING;
 	qSend("AT+QIDEACT");
 }
@@ -140,38 +140,33 @@ uint8_t ProcessQMessage(char *msg)
 				qState = QS_APSET;	
 				uart_puts("Q -> QS_APSET\n");
 				qSend("AT+QIREGAPP");
-				return 1;
+				break;
 			}
 			case QS_APSET: {
-				qState = QS_REGISTERED;				
+				qState = QS_REGISTERED;	
 				uart_puts("Q -> QS_REGISTERED\n");
+				_delay_ms(2000); // QUECTEL important
 				qSend("AT+QIACT");
-				return 1;
+				break;
 			}
 			case QS_REGISTERED: {
 				qState = QS_ACTIVATED;				
 				uart_puts("Q -> QS_ACTIVATED\n");
 				qSend("AT+QIFGCNT=1");
-				return 1;
-			}
-			case QS_ACTIVATED: {
-				qState = QS_CTXSET;				
-				uart_puts("Q -> QS_CTXSET\n");
-				qSend("AT+QIFGCNT=1");
-				return 1;
+				break;
 			}
 			
 			// post reakcia
-			
-			case QS_DEACTIVATING: {
-				qState = QS_IDLE;
-				uart_puts("Q -> QS_IDLE\n");
-				return 1;
-			}
 		}
+		return 1;
 	}
 	
-	return 0;
+	if (qState == QS_DEACTIVATING && 0 == strcmp("DEACT OK", msg))
+	{
+		qState = QS_IDLE;
+		uart_puts("Q -> IDLE\n");
+		return 1;
+	}
 }
 
 uint8_t readDipAddress()
@@ -216,7 +211,7 @@ int main(void)
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
-	uart_puts("CentralUnit  Build v0.7 \r\n");
+	uart_puts("CentralUnit  Build v0.8 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -293,7 +288,7 @@ int main(void)
 					continue;
 				}
 
-				uart_putc(c);
+				//uart_putc(c);
 				//continue;
 
 				// message end
@@ -335,7 +330,7 @@ int main(void)
 			continue;
 		}
 		
-		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_CTXSET){
+		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_ACTIVATED){
 			qDisconnect();
 			continue;
 		}
