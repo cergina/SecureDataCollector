@@ -38,7 +38,6 @@ function buildSensor() {
     };
 }
 
-
 // build JSON object by Api spec: ProjectCreation
 function buildProjectCreation() {
     return {
@@ -51,14 +50,14 @@ function buildProjectCreation() {
     };
 }
 
-
-function buildAddressCreation() {
+// build JSON object by Api spec: Address
+function buildAddress() {
     return {
+        country: $("#country").val(),
+        city: $("#city").val(),
         street: $("#street").val(),
         houseno: $("#houseno").val(),
-        city: $("#city").val(),
-        zip: $("#zip").val(),
-        country: $("#country").val(),
+        zip: $("#zip").val()
     };
 }
 
@@ -383,7 +382,7 @@ function createAddress() {
         url: $SCRIPT_ROOT + "/admin/addresses/create",
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
-        data: JSON.stringify(buildAddressCreation()),
+        data: JSON.stringify(buildAddress()),
         statusCode: {
             201: function(response) {
                 $(':input').val('');

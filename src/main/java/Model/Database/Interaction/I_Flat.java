@@ -23,7 +23,7 @@ public class I_Flat extends InteractionWithDatabase {
 
         // Fill SQL db table names
         String tableNames = String.join(", ",
-                    T_Flat.DBNAME_APARTMENTNO, T_Flat.DBNAME_ADDRESS_ID
+                    T_Flat.DBNAME_APARTMENTNO, T_Flat.DBNAME_BUILDING_ID
                 );
 
         // SQL Definition
@@ -39,7 +39,7 @@ public class I_Flat extends InteractionWithDatabase {
 
         int col = 0;
         ps.setString(++col, tf.getA_ApartmentNO());
-        ps.setInt(++col, tf.getA_AddressID());
+        ps.setInt(++col, tf.getA_BuildingID());
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -83,10 +83,10 @@ public class I_Flat extends InteractionWithDatabase {
     }
 
 
-    public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException {
+    public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
 
         // No Filter is being used
-        if (addressId <= DB_DO_NOT_USE_THIS_FILTER) {
+        if (buildingId <= DB_DO_NOT_USE_THIS_FILTER) {
             return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_Flat.class));
         }
 
@@ -98,9 +98,9 @@ public class I_Flat extends InteractionWithDatabase {
 
 
         // add filter rules
-        boolean projectRule = addressId > 0;
+        boolean buildingRule = buildingId > 0;
 
-        usedSql = (projectRule ? usedSql + T_Flat.DBTABLE_NAME + ".AddressID=? " : usedSql);
+        usedSql = (buildingRule ? usedSql + T_Flat.DBTABLE_NAME + ".BuildingID=? " : usedSql);
 
         usedSql += "ORDER BY ID asc";
 
@@ -110,8 +110,8 @@ public class I_Flat extends InteractionWithDatabase {
         );
 
         int col = 0;
-        if (projectRule)
-            ps.setInt(++col, addressId);
+        if (buildingRule)
+            ps.setInt(++col, buildingId);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -137,7 +137,7 @@ public class I_Flat extends InteractionWithDatabase {
         Dictionary dict = new Hashtable();
 
         dict.put(T_Flat.DBNAME_APARTMENTNO, rs.getString(T_Flat.DBNAME_APARTMENTNO));
-        dict.put(T_Flat.DBNAME_ADDRESS_ID, rs.getInt(T_Flat.DBNAME_ADDRESS_ID));
+        dict.put(T_Flat.DBNAME_BUILDING_ID, rs.getInt(T_Flat.DBNAME_BUILDING_ID));
 
         return T_Flat.CreateFromRetrieved(rs.getInt(T_Flat.DBNAME_ID), dict);
     }

@@ -4,7 +4,7 @@ import Control.ConfigClass;
 import Control.Scenario.UC_NewAddress;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import Model.Web.Specific.AddressCreation;
+import Model.Web.Address;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
@@ -44,9 +44,9 @@ public class Admin_AddressCreateServlet extends AdminServlet {
         PrintWriter writer = response.getWriter();
 
         // parse JSON from Body object
-        AddressCreation addressCreation = (AddressCreation) PrettyObject.parse(ServletHelper.RequestBody(request), AddressCreation.class);
+        Address address = (Address) PrettyObject.parse(ServletHelper.RequestBody(request), Address.class);
 
-        final JsonResponse jsonResponse = (new UC_NewAddress(getDb()).createNewAddress(addressCreation));
+        final JsonResponse jsonResponse = (new UC_NewAddress(getDb()).createNewAddress(address));
 
         response.setStatus(jsonResponse.getStatus());
 

@@ -1,6 +1,6 @@
 package Model.Database.Tables;
 
-import Model.Database.Interaction.I_Flat;
+import Model.Database.Interaction.I_Building;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.DBTable;
 import Model.Database.Support.DBToHtml;
@@ -13,62 +13,62 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.List;
 
-public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
-    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "flat" : "flat";
+public class T_Building extends DbEntity implements DBTable, DBToHtml {
+    public static final String DBTABLE_NAME = DbConfig.DB_USE_CAMELCASE ? "building" : "building";
 
     // Atributes
     private int a_pk;
-    private String a_ApartmentNO;
-    private int a_BuildingID;
+    private int a_ProjectID;
+    private int a_AddressID;
 
     public static final String DBNAME_ID = "ID";
-    public static final String DBNAME_APARTMENTNO = "ApartmentNO";
-    public static final String DBNAME_BUILDING_ID = "BuildingID";
+    public static final String DBNAME_PROJECT_ID = "ProjectID";
+    public static final String DBNAME_ADDRESS_ID = "AddressID";
 
-    public static T_Flat REFERENCE = new T_Flat();
+    public static T_Building REFERENCE = new T_Building();
     public static String[] TABLE_CODENAMES = {
-            "Aparment Number", "Building ID"
+            "Project ID", "Address ID"
     };
 
     // Constructors
-    protected T_Flat() {}
+    protected T_Building() {}
 
     // Creations
-    public static T_Flat CreateFromRetrieved(int pk, Dictionary dict) {
-        T_Flat temp = CreateBase(dict);
+    public static T_Building CreateFromRetrieved(int pk, Dictionary dict) {
+        T_Building temp = CreateBase(dict);
 
         temp.a_pk = pk;
 
         return temp;
     }
 
-    public static T_Flat CreateFromScratch(Dictionary dict) {
+    public static T_Building CreateFromScratch(Dictionary dict) {
         return CreateBase(dict);
     }
 
-    private static T_Flat CreateBase(Dictionary dict) {
-        T_Flat temp = new T_Flat();
+    private static T_Building CreateBase(Dictionary dict) {
+        T_Building temp = new T_Building();
 
-        temp.a_ApartmentNO = (String)dict.get(DBNAME_APARTMENTNO);
-        temp.a_BuildingID = (int)dict.get(DBNAME_BUILDING_ID);
+        temp.a_ProjectID = (int)dict.get(DBNAME_PROJECT_ID);
+        temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
 
         return temp;
     }
 
     // As JSON
-    public static JSONObject MakeJSONObjectFrom(T_Flat tmp) {
+    public static JSONObject MakeJSONObjectFrom(T_Building tmp) {
         JSONObject jo = new JSONObject();
 
         jo.put(DBNAME_ID, tmp.getA_pk());
-        jo.put(DBNAME_APARTMENTNO, tmp.getA_ApartmentNO());
-        jo.put(DBNAME_BUILDING_ID, tmp.getA_BuildingID());
+        jo.put(DBNAME_PROJECT_ID, tmp.getA_ProjectID());
+        jo.put(DBNAME_ADDRESS_ID, tmp.getA_AddressID());
 
         return jo;
     }
 
     // From DbEntity
-    public T_Flat FillEntityFromResultSet(ResultSet rs) throws SQLException {
-        return I_Flat.FillEntity(rs);
+    public T_Building FillEntityFromResultSet(ResultSet rs) throws SQLException {
+        return I_Building.FillEntity(rs);
     }
 
     @Override
@@ -80,15 +80,15 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
     // Interface specific
     @Override
     public boolean IsTableOkForDatabaseEnter() {
-        return Assurance.isVarcharOk(a_ApartmentNO) &&
-                Assurance.isFkOk(a_BuildingID);
+        return Assurance.isFkOk(a_ProjectID) &&
+                Assurance.isFkOk(a_AddressID);
     }
 
     @Override
     public boolean WasTableWithdrawedCorrectlyFromDatabase() {
         return Assurance.isFkOk(a_pk) &&
-                Assurance.isVarcharOk(a_ApartmentNO) &&
-                Assurance.isFkOk(a_BuildingID);
+                Assurance.isFkOk(a_ProjectID) &&
+                Assurance.isFkOk(a_AddressID);
     }
 
     @Override
@@ -117,8 +117,8 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
     public List<String> GenerateHtmlTableRow_FromDbRow() {
         List<String> str = super.GenerateHtmlTableRow_FromDbRow();
 
-        str.add(this.a_ApartmentNO);
-        str.add(Integer.toString(a_BuildingID));
+        str.add(Integer.toString(a_ProjectID));
+        str.add(Integer.toString(a_AddressID));
 
         return str;
     }
@@ -147,11 +147,11 @@ public class T_Flat  extends DbEntity implements DBTable, DBToHtml {
         return a_pk;
     }
 
-    public String getA_ApartmentNO() {
-        return a_ApartmentNO;
+    public int getA_ProjectID() {
+        return a_ProjectID;
     }
 
-    public int getA_BuildingID() {
-        return a_BuildingID;
+    public int getA_AddressID() {
+        return a_AddressID;
     }
 }

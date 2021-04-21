@@ -57,7 +57,7 @@ public class UC_CreateFlat {
             Dictionary dict = new Hashtable();
 
             dict.put(T_Flat.DBNAME_APARTMENTNO, firstTimeCreation.getApartmentNo());
-            dict.put(T_Flat.DBNAME_ADDRESS_ID, t_centralUnit.getA_AddressID());
+            dict.put(T_Flat.DBNAME_BUILDING_ID, t_centralUnit.getA_BuildingID());
 
 
             I_Flat.insert(db.getConn(), db.getPs(), T_Flat.CreateFromScratch(dict));

@@ -3,6 +3,7 @@ package View.Web.Servlets.Privileged.UserSpecific;
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
 import Model.Database.Support.CustomLogs;
+import Model.Web.CentralUnit;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
@@ -85,7 +86,7 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        Model.Web.CentralUnit centralUnit = (new UC_FlatSummary(getDb())).get_CentralUnitWithFlats(requestedCentralUnitId);
+        CentralUnit centralUnit = (new UC_FlatSummary(getDb())).get_CentralUnitWithFlats(requestedCentralUnitId);
         if (centralUnit == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -113,7 +114,7 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        Model.Web.CentralUnit centralUnit = (new UC_FlatSummary(getDb())).get_CentralUnit(requestedCentralUnitId);
+        CentralUnit centralUnit = (new UC_FlatSummary(getDb())).get_CentralUnit(requestedCentralUnitId);
         if (centralUnit == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;

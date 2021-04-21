@@ -3,6 +3,7 @@ package Model.Database.Interaction.ComplexInteractions;
 import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
+import Model.Database.Tables.T_Building;
 import Model.Database.Tables.T_CentralUnit;
 import Model.Database.Tables.T_Flat;
 import Model.Database.Tables.T_Project_user;
@@ -27,7 +28,13 @@ public class GeneralAccessibility {
         Assurance.idCheck(userId);
         Assurance.idCheck(flatId);
 
-        // SELECT * FROM dcs.project_user WHERE dcs.project_user.ProjectID=(SELECT dcs.centralunit.ProjectID FROM dcs.centralunit WHERE dcs.centralunit.AddressID=(SELECT dcs.flat.AddressID FROM dcs.flat WHERE dcs.flat.ID=1)) AND dcs.project_user.UserID=1;
+        /**
+         SELECT * FROM dcs.project_user WHERE dcs.project_user.ProjectID=(
+            SELECT dcs.building.ProjectID FROM dcs.building WHERE dcs.building.ID=(
+                SELECT dcs.flat.BuildingID FROM dcs.flat WHERE dcs.flat.ID=?
+            )
+         ) AND dcs.project_user.UserID=?;
+         */
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
@@ -35,11 +42,11 @@ public class GeneralAccessibility {
                         "FROM " + T_Project_user.DBTABLE_NAME + " " +
                         "WHERE " + T_Project_user.DBTABLE_NAME + ".ProjectID=" +
                             "(SELECT "
-                                + T_CentralUnit.DBTABLE_NAME + ".ProjectID " +
-                                "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
-                                "WHERE " + T_CentralUnit.DBTABLE_NAME + ".AddressID=(" +
+                                + T_Building.DBTABLE_NAME + ".ProjectID " +
+                                "FROM " + T_Building.DBTABLE_NAME + " " +
+                                "WHERE " + T_Building.DBTABLE_NAME + ".ID=(" +
                                     "SELECT " +
-                                        T_Flat.DBTABLE_NAME + ".AddressID " +
+                                        T_Flat.DBTABLE_NAME + ".BuildingID " +
                                         "FROM " + T_Flat.DBTABLE_NAME + " " +
                                         "WHERE " + T_Flat.DBTABLE_NAME + ".ID=?)) " +
                         "AND " + T_Project_user.DBTABLE_NAME + ".UserID=?;"

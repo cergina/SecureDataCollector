@@ -12,7 +12,7 @@ public class Flat_FlatOwners_Controller_Creation extends PrettyObject {
     @Expose
     FlatOwner owner2;
 
-    //ControllerUnit
+    //ControllerUnit // TODO pouzit controller model
     @Expose
     Integer uid;
     @Expose

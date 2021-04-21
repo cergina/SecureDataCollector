@@ -7,9 +7,9 @@ import java.util.Date;
 public class Measurement extends PrettyObject {
     // PARAMETERS
     @Expose
-    private int value;
+    private Integer value;
     @Expose
-    private int sensorID;
+    private Integer sensorID;
     @Expose
     private Date measuredAt;
 
@@ -17,7 +17,7 @@ public class Measurement extends PrettyObject {
     public Measurement() {
     }
 
-    public Measurement(int value, int sensorID, Date measuredAt) {
+    public Measurement(Integer value, Integer sensorID, Date measuredAt) {
         this.value = value;
         this.sensorID = sensorID;
         this.measuredAt = measuredAt;
@@ -25,19 +25,19 @@ public class Measurement extends PrettyObject {
 
     // GETTERS and SETTERS
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
-    public int getSensorID() {
+    public Integer getSensorID() {
         return sensorID;
     }
 
-    public void setSensorID(int sensorID) {
+    public void setSensorID(Integer sensorID) {
         this.sensorID = sensorID;
     }
 

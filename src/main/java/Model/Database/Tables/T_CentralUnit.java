@@ -24,8 +24,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     private String a_SimNO;
     private String a_Imei;
     private String a_Zwave;
-    private int a_ProjectID;
-    private int a_AddressID;
+    private int a_BuildingID;
 
     public static final String DBNAME_ID = "ID";
     public static final String DBNAME_UID = "Uid";
@@ -34,12 +33,11 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
     public static final String DBNAME_SIMNO = "SimNO";
     public static final String DBNAME_IMEI = "Imei";
     public static final String DBNAME_ZWAVE = "Zwave";
-    public static final String DBNAME_PROJECT_ID = "ProjectID";
-    public static final String DBNAME_ADDRESS_ID = "AddressID";
+    public static final String DBNAME_BUILDING_ID = "BuildingID";
 
     public static T_CentralUnit REFERENCE = new T_CentralUnit();
     public static String[] TABLE_CODENAMES = {
-            "UID", "Dip Address", "Friendly Name", "SIM Number", "IMEI code", "Zwave number", "Project ID", "Address ID"
+            "UID", "Dip Address", "Friendly Name", "SIM Number", "IMEI code", "Zwave number", "Building ID"
     };
 
     // Constructors
@@ -67,8 +65,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
         temp.a_SimNO = (String)dict.get(DBNAME_SIMNO);
         temp.a_Imei = (String)dict.get(DBNAME_IMEI);
         temp.a_Zwave = (String)dict.get(DBNAME_ZWAVE);
-        temp.a_ProjectID = (int)dict.get(DBNAME_PROJECT_ID);
-        temp.a_AddressID = (int)dict.get(DBNAME_ADDRESS_ID);
+        temp.a_BuildingID = (int)dict.get(DBNAME_BUILDING_ID);
 
         return temp;
     }
@@ -84,8 +81,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
         jo.put(DBNAME_SIMNO, tmp.getA_SimNO());
         jo.put(DBNAME_IMEI, tmp.getA_Imei());
         jo.put(DBNAME_ZWAVE, tmp.getA_Zwave());
-        jo.put(DBNAME_PROJECT_ID, tmp.getA_ProjectID());
-        jo.put(DBNAME_ADDRESS_ID, tmp.getA_AddressID());
+        jo.put(DBNAME_BUILDING_ID, tmp.getA_BuildingID());
 
         return jo;
     }
@@ -110,8 +106,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
                 Assurance.isVarcharOk(a_SimNO) &&
                 Assurance.isVarcharOk(a_Imei) &&
                 Assurance.isVarcharOk(a_Zwave) &&
-                Assurance.isFkOk(a_ProjectID) &&
-                Assurance.isFkOk(a_AddressID);
+                Assurance.isFkOk(a_BuildingID);
     }
 
     @Override
@@ -123,8 +118,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
                 Assurance.isVarcharOk(a_SimNO) &&
                 Assurance.isVarcharOk(a_Imei) &&
                 Assurance.isVarcharOk(a_Zwave) &&
-                Assurance.isFkOk(a_ProjectID) &&
-                Assurance.isFkOk(a_AddressID);
+                Assurance.isFkOk(a_BuildingID);
     }
 
     @Override
@@ -159,8 +153,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
         str.add(this.a_SimNO);
         str.add(this.a_Imei);
         str.add(this.a_Zwave);
-        str.add(Integer.toString(a_ProjectID));
-        str.add(Integer.toString(a_AddressID));
+        str.add(Integer.toString(a_BuildingID));
 
         return str;
     }
@@ -208,11 +201,7 @@ public class T_CentralUnit extends DbEntity implements DBTable, DBToHtml {
         return a_Zwave;
     }
 
-    public int getA_ProjectID() {
-        return a_ProjectID;
-    }
-
-    public int getA_AddressID() {
-        return a_AddressID;
+    public int getA_BuildingID() {
+        return a_BuildingID;
     }
 }
