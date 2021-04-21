@@ -37,7 +37,7 @@
 
 #define STX 0x02
 #define ETX 0x03
-#define FS 0x34
+#define FS 0x1C
 #define ACK 0x06
 #define NAK 0x15
 
@@ -108,7 +108,7 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	message[++mlen] = 0;
 	
 	//DATA PART (in ascii)	
-	//Identifik�tor kontroleru
+	//Identifikátor kontroleru
 	char temp[4];
 	sprintf(temp,"%x",UID);
 	message[++mlen] = temp[0];
@@ -118,6 +118,10 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 		message[++mlen] = 0x49; // I - input
 		message[++mlen] = input_NO  + '0'; // We want charcode
 	}
+	
+	//FILE SEPARATOR
+	message[++mlen] = FS;
+	
 	//Data message (M only, ...)
 	///Type
 	message[++mlen] = 0x4D; // M - Measument
@@ -134,6 +138,9 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 	}
 	free(cDataArr);
 	
+	//FILE SEPARATOR
+	message[++mlen] = FS;
+		
 	//T - Time 
 	char time[] = "T210101235959";
 	for(int i = 0; i < strlen(time); i++){
@@ -183,11 +190,9 @@ int main(void)
 	PCMSK2 |= (1 << PCINT16);   // set PCINT16 trigger (RX)
 	PCMSK2 |= (1 << PCINT17);   // set PCINT17 trigger (TX)
 
-
-		
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.52 \r\n");
+	uart_puts("ControllerUnit  Build v0.53 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -236,7 +241,7 @@ int main(void)
 				#ifdef DEBUG_TEST
 					uart_puts("Falling edge\r\n");
 				#endif
-				//We send 1 as measured value because for now its trigger every time
+				//We send 1 as measured value because for now its trigger every time, also we consider PIN ADC5 as input 1
 				SendMessageToCEU_uart(UID,1,1); // for test purpose
 			}
 			
@@ -244,8 +249,6 @@ int main(void)
 			ADC5_readFlag = 0;
 			continue;
 		}
-		
-
 		
 		if (!(c & UART_NO_DATA)){		
 			if (c == STX){
@@ -309,18 +312,6 @@ int main(void)
 		sei(); //
 		sleep_cpu(); // sleep now!!
 		sleep_disable(); // deletes the SE bit
-		
-		/*
-		if(Standing_by){
-			set_sleep_mode(SLEEP_MODE_PWR_DOWN); // choose power down mode
-			cli(); // deactivate interrupts
-			sleep_enable(); // sets the SE (sleep enable) bit
-			sleep_bod_disable();  
-			sei(); //
-			sleep_cpu(); // sleep now!!
-			sleep_disable(); // deletes the SE bit
-		}
-		*/
 	}
 }
 		
