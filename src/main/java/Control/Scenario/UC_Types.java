@@ -12,6 +12,7 @@ import Model.Web.CommType;
 import Model.Web.JsonResponse;
 import Model.Web.SensorType;
 import View.Support.CustomExceptions.AlreadyExistsException;
+import View.Support.CustomExceptions.CreationException;
 import View.Support.CustomExceptions.InvalidOperationException;
 import com.mysql.cj.util.StringUtils;
 
@@ -92,7 +93,12 @@ public class UC_Types {
 
             if (StringUtils.isNullOrEmpty(sensorType.getName())) {
                 jsonResponse.setMessage("Sensor type name cannot be empty.");
-                throw new InvalidOperationException("Sensor type name cannot be empty.");
+                throw new CreationException("Sensor type name cannot be empty.");
+            }
+
+            if (StringUtils.isNullOrEmpty(sensorType.getMeasuredin()) || sensorType.getMeasuredin().matches("^[1-9]{1}[0-9]*\\_.+$") == false) {
+                jsonResponse.setMessage("Measured IN has to be in format HOWMUCHPERTICK_UNIT example 10_L represents that 1 tick is sent for 10 measured liters");
+                throw new CreationException("Measured IN has to be in format HOWMUCHPERTICK_UNIT example 10_L represents that 1 tick is sent for 10 measured liters");
             }
 
             if (I_SensorType.retrieveByName(db.getConn(), db.getPs(), db.getRs(), sensorType.getName()) != null) {
@@ -103,7 +109,7 @@ public class UC_Types {
             E_CommType e_commType = I_CommType.retrieveByName(db.getConn(), db.getPs(), db.getRs(), sensorType.getCommType().getName());
             if (e_commType == null) {
                 jsonResponse.setMessage("Communication type with this name does not exist.");
-                throw new InvalidOperationException("Communication type with this name does not exist.");
+                throw new CreationException("Communication type with this name does not exist.");
             }
 
             // modify Sensortype table START
@@ -115,7 +121,7 @@ public class UC_Types {
             E_SensorType e_sensorType = E_SensorType.CreateFromScratch(dict_sensortype);
             if (!e_sensorType.IsEnumTableOkForDatabaseEnter()) {
                 jsonResponse.setMessage("Data does not match database scheme.");
-                throw new InvalidOperationException("Data does not match database scheme.");
+                throw new CreationException("Data does not match database scheme.");
             }
 
             I_SensorType.insert(db.getConn(), db.getPs(), e_sensorType);
@@ -126,7 +132,7 @@ public class UC_Types {
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("Sensor type created.");
             jsonResponse.setData(sensorType);
-        } catch (InvalidOperationException e) {
+        } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
 
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);

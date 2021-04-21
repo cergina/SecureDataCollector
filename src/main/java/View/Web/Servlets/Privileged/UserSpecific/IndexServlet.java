@@ -26,7 +26,8 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         super.doGet(request, response); // call always parent method first
         if (checkPrivilege(request, response) == false) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            //response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendRedirect(ConfigClass.DEPLOYED_ON_BASE_URL + "/login");
             return;
         }
 

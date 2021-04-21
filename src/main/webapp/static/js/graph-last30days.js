@@ -115,3 +115,4 @@ window.onload = function () {
     var ctx = document.getElementById("graph-last30days").getContext("2d");
     window.myLine = new Chart(ctx, LineChartConfig);
 };
+

@@ -200,6 +200,7 @@ function registerUser() {
                 200: function(response) {
                     $(':input').val('');
                     alert('Thank you for your registration\n' + response.message)
+                    $(location).attr('href', $SCRIPT_ROOT + "/login");
                 },
                 400: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
@@ -270,7 +271,7 @@ function loginUser() {
         data: JSON.stringify(buildAuth()),
         statusCode: {
             200: function(response) {
-                alert(response.message)
+                //alert(response.message)
                 $(location).attr('href', $SCRIPT_ROOT + "/index");
             },
             401: function(jqXHR) {
@@ -483,20 +484,35 @@ function goToSeeYourProjects() {
 // used in index to visit flat with id in the box
 function accessFlatWithId() {
     var idToVisit = idToVisit = $("#access-flatId").val();
-    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
+
+    if (Number.isInteger(+idToVisit)) {
+        $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
+    } else {
+        alert('Please provide a valid integer id as input to request FLAT VIEW.');
+    }
 }
 
 
 // used in index to visit flat with id in the box
 function accessCentralWithId() {
     var idToVisit = idToVisit = $("#access-centralId").val();
-    $(location).attr('href', $SCRIPT_ROOT + '/action/centralUnits?id=' + idToVisit);
+
+    if (Number.isInteger(+idToVisit)) {
+        $(location).attr('href', $SCRIPT_ROOT + '/action/centralUnits?id=' + idToVisit);
+    } else {
+        alert('Please provide a valid integer id as input to request Central Unit VIEW.');
+    }
 }
 
 // used in public request for consumption to visit by uid
 function requestViewConsumption() {
     var uidToVisit = uidToVisit = $("#request-uid").val();
-    $(location).attr('href', $SCRIPT_ROOT + '/consumption-view?uid=' + uidToVisit);
+
+    if (Number.isInteger(+uidToVisit)) {
+        $(location).attr('href', $SCRIPT_ROOT + '/consumption-view?uid=' + uidToVisit);
+    } else {
+        alert('Please provide a valid identification as provided in your contract with us.');
+    }
 }
 
 function showVisibilityOfAdditionElement() {
