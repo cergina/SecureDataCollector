@@ -93,6 +93,11 @@ void qDisconnect(){
 	qSend("AT+QIDEACT");
 }
 
+void qMeasurementSend(int cuAddress, int input, int measurement){
+	char *uri = "https://team14-20.studenti.fiit.stuba.sk/dcs/api/measurements-add";
+	char *json = "{\"messageType\": \"measurements\", \"centralUnit\": 1, \"requestNumber\": 3, \"controllers\": [{\"controllerUnit\": 1, \"measurements\": [{\"sensorIO\": \"1\", \"count\": 20}, {\"sensorIO\": \"2\",\"count\": 10} ]}]}";
+}
+
 uint8_t ProcessQMessage(char *msg)
 {
 	if (qState == QS_UNKNOWN && 0 == strcmp("RDY", msg))
