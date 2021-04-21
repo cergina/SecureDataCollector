@@ -53,6 +53,12 @@ if(maxValue > 100){
     maxValue = round(maxValue, 10);
 }
 
+if(maxValue == 0)
+{
+    stepRounded = 5;
+    maxValue = 5;
+}
+
 var GraphLabelArray = []
 for (i=0; i < GraphTotalDatasets; i++)
 {
@@ -121,7 +127,6 @@ var LineChartConfig = {
                     ticks: {
                         min: 0,
                         max: maxValue,
-                        // forces step size to be 5 units
                         stepSize: stepRounded,
                     },
                 },
