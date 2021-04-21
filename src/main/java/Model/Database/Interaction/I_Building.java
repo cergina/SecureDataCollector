@@ -16,7 +16,7 @@ import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 public class I_Building extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_Building tf) throws SQLException {
         if (tf.IsTableOkForDatabaseEnter() == false)
-            throw new SQLException("Given attribute I_Building is not ok for database enter");
+            throw new SQLException("Given attribute T_Building is not ok for database enter");
 
         // Fill SQL db table names
         String tableNames = String.join(", ",

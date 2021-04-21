@@ -98,9 +98,9 @@ public class I_Flat extends InteractionWithDatabase {
 
 
         // add filter rules
-        boolean rule = buildingId > 0;
+        boolean buildingRule = buildingId > 0;
 
-        usedSql = (rule ? usedSql + T_Flat.DBTABLE_NAME + ".BuildingID=? " : usedSql);
+        usedSql = (buildingRule ? usedSql + T_Flat.DBTABLE_NAME + ".BuildingID=? " : usedSql);
 
         usedSql += "ORDER BY ID asc";
 
@@ -110,7 +110,7 @@ public class I_Flat extends InteractionWithDatabase {
         );
 
         int col = 0;
-        if (rule)
+        if (buildingRule)
             ps.setInt(++col, buildingId);
 
         // SQL Execution
