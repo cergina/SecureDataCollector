@@ -1,7 +1,7 @@
 /*
  * CentralUnit.c
  * Project: DCS
- * Version: 0.3
+ * Version: 0.8
  * Controller: ATmega128
  * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */
@@ -28,7 +28,7 @@
 #include "util/delay.h"
 
 #define DEBUG_TEST
-#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
+//#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
 
 
 #define UART_BAUD_RATE 9600
@@ -54,54 +54,119 @@
 // Busy flag (this flag indicate that program is busy and we cant go to sleep mode)
 uint8_t UART_Busy = 1;
 
-uint8_t QUEC_STATE = 0;
-/*
- * 0 - unknown
- * 1 - RDY module ready
- * 2 - +CFUN: 1 (full functionality)
- * 3 - +CPIN: READY (pin OK)
- * 4 - idle
- * 5 - setting AP
- * 6 - registering APP
- * 7 - activating
- * 8 - setting context
- * 9 - setting URL
- * 10 - POSTing
- * 11 - reading response 
- * 12 - deactivating
- */
+#define QS_UNKNOWN		0	// unknown						
+#define QS_READY		1	// RDY module ready
+#define QS_CFUN			2	// +CFUN: 1 (full functionality)
+#define QS_CPIN			3	// +CPIN: READY (pin OK)
+#define QS_IDLE			4	// idle
+#define QS_APSET		5	// setting AP
+#define QS_REGISTERED	6	// registering APP
+#define QS_ACTIVATED	7	// activating
+#define QS_CTXSET		8	// setting context
+#define QS_URLSET		9	// setting URL
+#define QS_POSTED		10	// POSTing
+#define QS_READING		11	// reading response 
+#define QS_DEACTIVATING	12  // deactivating -> going to IDLE
+uint8_t qState = QS_UNKNOWN;
+uint8_t qOpPending = 0;
+
+uint8_t qSend(char *cmd){
+	if (qOpPending){
+		uart_puts("AT failed\n");
+		return 0;
+	}
+	
+	qOpPending = 1;
+	uart1_puts(cmd);
+	uart1_putc('\n');
+	return 1;
+}
+
+void qConnect(){
+	uart_puts("Q :: Connecting\n");
+	qSend("AT+QICSGP=1,\"internet\"");
+}
+
+void qDisconnect(){
+	uart_puts("Q :: Disconnecting\n");
+	qState = QS_DEACTIVATING;
+	qSend("AT+QIDEACT");
+}
 
 uint8_t ProcessQMessage(char *msg)
 {
-	if (QUEC_STATE == 0 && 0 == strcmp("RDY", msg))
+	if (qState == QS_UNKNOWN && 0 == strcmp("RDY", msg))
 	{
-		QUEC_STATE = 1;
+		qState = QS_READY;
 		uart_puts("Q -> RDY\n");
 		return 1;
 	}
 
-	if (QUEC_STATE == 1 && 0 == strcmp("+CFUN: 1", msg))
+	if (qState == QS_READY && 0 == strcmp("+CFUN: 1", msg))
 	{
-		QUEC_STATE = 2;
+		qState = QS_CPIN;
 		uart_puts("Q -> FULL FUNC\n");
 		return 1;
 	}
 	
-	if (QUEC_STATE == 2 && 0 == strcmp("+CPIN: READY", msg))
+	if (qState == QS_CPIN && 0 == strcmp("+CPIN: READY", msg))
 	{
-		QUEC_STATE = 3;
+		qState = QS_CFUN;
 		uart_puts("Q -> PIN OK\n");
 		return 1;
 	}
 	
-	if (QUEC_STATE == 3 && 0 == strcmp("Call Ready", msg))
+	if (qState == QS_CFUN && 0 == strcmp("Call Ready", msg))
 	{
-		QUEC_STATE = 4;
+		qState = QS_IDLE;
 		uart_puts("Q -> IDLE\n");
 		return 1;
 	}
 	
-	return 0;
+	if (qState == QS_CFUN && 0 == strcmp("Call Ready", msg))
+	{
+		qState = QS_IDLE;
+		uart_puts("Q -> IDLE\n");
+		return 1;
+	}
+	
+	// react to response
+	if (qOpPending && 0 == strcmp("OK", msg)){
+		
+		qOpPending = 0; // disable pending Q state
+		
+		switch (qState) {
+			case QS_IDLE: {
+				qState = QS_APSET;	
+				uart_puts("Q -> QS_APSET\n");
+				qSend("AT+QIREGAPP");
+				break;
+			}
+			case QS_APSET: {
+				qState = QS_REGISTERED;	
+				uart_puts("Q -> QS_REGISTERED\n");
+				_delay_ms(2000); // QUECTEL important
+				qSend("AT+QIACT");
+				break;
+			}
+			case QS_REGISTERED: {
+				qState = QS_ACTIVATED;				
+				uart_puts("Q -> QS_ACTIVATED\n");
+				qSend("AT+QIFGCNT=1");
+				break;
+			}
+			
+			// post reakcia
+		}
+		return 1;
+	}
+	
+	if (qState == QS_DEACTIVATING && 0 == strcmp("DEACT OK", msg))
+	{
+		qState = QS_IDLE;
+		uart_puts("Q -> IDLE\n");
+		return 1;
+	}
 }
 
 uint8_t readDipAddress()
@@ -146,7 +211,7 @@ int main(void)
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
-	uart_puts("CentralUnit  Build v0.7 \r\n");
+	uart_puts("CentralUnit  Build v0.8 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -254,11 +319,21 @@ int main(void)
 			}	
 			//#endregion
 			
+			// remove flags
+			c = c & 0xFF;
+		}	
+		
+		
+		
+		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_IDLE){
+			qConnect();
 			continue;
 		}
 		
-		// remove flags
-		c = c & 0xFF;
+		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_ACTIVATED){
+			qDisconnect();
+			continue;
+		}
 		
 		#ifdef DEBUG_TEST_TICK
 			char result1[50];
