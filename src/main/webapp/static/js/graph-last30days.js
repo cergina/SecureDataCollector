@@ -4,6 +4,10 @@ var DATA_TYPE = "json";
 var DATES;
 var SENSORS = [{id:5}];
 
+function round(num, multipleOf) {
+    return Math.floor((num/multipleOf+1))*multipleOf;
+}
+
 function graphFUNC() {
     $.ajax({
         method: "POST",
@@ -21,7 +25,6 @@ function graphFUNC() {
 }
 graphFUNC();
 
-
 var GraphTotalDatasets = SENSORS.length;
 
 var maxValue = 0;
@@ -32,6 +35,22 @@ for (i=0; i < GraphTotalDatasets; i++)
     if(Math.max(...SENSORS[i].dataArray) > maxValue){
         maxValue = Math.max(...SENSORS[i].dataArray);
     }
+}
+
+var stepRounded = (maxValue/20);
+
+if(maxValue <= 20){
+    stepRounded = 1;
+}
+
+if(maxValue > 20 && maxValue<=100){
+    stepRounded = round(stepRounded, 5);
+    maxValue = round(maxValue, 5);
+}
+
+if(maxValue > 100){
+    stepRounded = round(stepRounded, 10);
+    maxValue = round(maxValue, 10);
 }
 
 var GraphLabelArray = []
@@ -103,7 +122,7 @@ var LineChartConfig = {
                         min: 0,
                         max: maxValue,
                         // forces step size to be 5 units
-                        stepSize: 5,
+                        stepSize: stepRounded,
                     },
                 },
             ],
@@ -115,4 +134,3 @@ window.onload = function () {
     var ctx = document.getElementById("graph-last30days").getContext("2d");
     window.myLine = new Chart(ctx, LineChartConfig);
 };
-
