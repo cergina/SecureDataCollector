@@ -40,6 +40,7 @@
                 <div>
                     <h2>View this user's projects</h2>
                     <!-- WAITING FOR IMPLEMENTATION OF ALL PROJECT'S FOR THIS USER -->
+                    <div th:replace="fragments/projects_table.html :: projects_table(projects=${projects})"></div>
                 </div>
             </div>
 

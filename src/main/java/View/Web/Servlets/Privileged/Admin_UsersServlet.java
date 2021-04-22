@@ -1,8 +1,10 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
+import Control.Scenario.UC_ProjectListing;
 import Control.Scenario.UC_UserListing;
 import Model.Database.Support.CustomLogs;
+import Model.Web.Project;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -26,6 +28,7 @@ public class Admin_UsersServlet extends AdminServlet {
     private static final String VARIABLE_USERS = "users";
     private static final String VARIABLE_USER = "user";
     private static final String REQUEST_PARAM_ID = "id";
+    private static final String VARIABLE_PROJECTS = "projects";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,6 +59,12 @@ public class Admin_UsersServlet extends AdminServlet {
     }
 
 
+    /****
+     * See list of all users in the system
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     private void processAllUsers(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
@@ -70,6 +79,13 @@ public class Admin_UsersServlet extends AdminServlet {
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
+    /***
+     * See info about single user + his projects
+     * @param request
+     * @param response
+     * @param requestedUserId
+     * @throws IOException
+     */
     private void processSingleUser(HttpServletRequest request, HttpServletResponse response, int requestedUserId) throws IOException {
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
@@ -84,6 +100,10 @@ public class Admin_UsersServlet extends AdminServlet {
 
         context.setVariable(VARIABLE_ISADMIN, true);
         context.setVariable(VARIABLE_USER, user);
+
+        // show his projects
+        List<Project> projects = (new UC_ProjectListing(getDb())).allProjectsForUser(user.getUserID());
+        context.setVariable(VARIABLE_PROJECTS, projects);
 
         engine.process(SINGLEUSER_TEMPLATENAME, context, response.getWriter());
     }

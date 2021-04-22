@@ -18,27 +18,8 @@
                     </div>
                 </div>
 
-                <!-- MAIN PANEL -->
-                <div class="ibox-content forum-container">
-                    <div class="st_wrap_table">
-                        <header class="st_table_header">
-                            <div class="st_row">
-                                <div class="st_column _index-general-longer">Name</div>
-                                <div class="st_column _index-short">Created at</div>
-                                <div class="st_column _index-short">Deleted at</div>
-                                <div class="st_column _link">Link</div>
-                            </div>
-                        </header>
-                        <div class="st_table">
-                            <div class="st_row" th:each="project: ${projects}">
-                                <div class="st_column _index-general-longer" th:text="${project.name}"></div>
-                                <div class="st_column _index-short" th:text="${project.createdat}"></div>
-                                <div class="st_column _index-short" th:text="${project.deletedat}"></div>
-                                <div class="st_column _link project_link" th:text="${project.id}"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- MAIN PANEL - projects in the system -->
+                <div th:replace="fragments/projects_table.html :: projects_table(projects=${projects})"></div>
             </div>
         </div>
     </div>

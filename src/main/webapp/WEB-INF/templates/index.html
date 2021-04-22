@@ -226,7 +226,8 @@
                                 <div class="forum-icon">
                                     <i class="fa fa-bolt"></i>
                                 </div>
-                                <a onclick="goToSeeYourProjects()" class="forum-item-title">See your projects</a>
+                                <a th:if="${isAdmin}" onclick="goToSeeYourProjects()" class="forum-item-title">See all projects</a>
+                                <a th:if="${isAdmin==false}" onclick="goToSeeYourProjects()" class="forum-item-title">See your projects</a>
                                 <div class="forum-sub-title">Look at all projects that you have priviliges to see.</div>
                             </div>
                         </div>
