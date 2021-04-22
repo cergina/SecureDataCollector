@@ -27,39 +27,6 @@ public class UC_FlatSummary {
         this.db = dbProvider;
     }
 
-    public final List<Project> allProjectsForUser(int userID) { // TODO move to different UC
-        List<Project> temp = new ArrayList<>();
-
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
-        db.beforeSqlExecution(false);
-
-        try {
-            List<T_Project_user> arr = I_ProjectUser.retrieveAllForUser(db.getConn(), db.getPs(), db.getRs(), userID);
-
-
-            for (T_Project_user  tpu: arr) {
-                Project project = new Project();
-
-                T_Project tp = I_Project.retrieve(db.getConn(), db.getPs(), db.getRs(), tpu.getA_ProjectID());
-
-                project.setId(tp.getA_pk());
-                project.setName(tp.getA_Name());
-                project.setCreatedat(tp.getA_CreatedAt());
-                project.setDeletedat(tp.getA_DeletedAt());
-
-                temp.add(project);
-            }
-
-
-            db.afterOkSqlExecution();
-
-        } catch (SQLException sqle) {
-            db.afterExceptionInSqlExecution(sqle);
-        }
-
-        return temp;
-    }
-
     public int countNumberOfControllersForCentralUnit(@NotNull final Integer centralUnitId) {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
