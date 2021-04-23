@@ -7,16 +7,23 @@ import java.sql.Date;
 public class Project extends PrettyObject{
     // PARAMETERS
     @Expose
-    private Integer id;
+    public Integer id;
     @Expose
-    private String name;
+    public String name;
     @Expose
-    private Date createdat;
+    public Date createdat;
     @Expose
-    private Date deletedat;
+    public Date deletedat;
 
     // empty constructor for Gson
     public Project() {}
+
+    public Project(Integer id, String name, Date createdat, Date deletedat) {
+        this.id = id;
+        this.name = name;
+        this.createdat = createdat;
+        this.deletedat = deletedat;
+    }
 
     // GETTERS
     public Integer getId() { return id; }

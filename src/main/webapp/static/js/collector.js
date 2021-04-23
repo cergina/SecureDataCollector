@@ -588,9 +588,9 @@ function getUrlParameter(sParam) { // https://stackoverflow.com/a/21903119/51482
 $(function() {
     // add link to single controller page
     $(".controllerUnit_link").each(function(index, value){
-        var controllerUnitId = $(value).text();
+        var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + controllerUnitId + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + id + '">link</a>'
         );
     });
     // add link to create sensor type page
@@ -605,22 +605,25 @@ $(function() {
             '<a href="' + $SCRIPT_ROOT + '/admin/comm-type/create">Create new communication type</a>'
         );
     });
-});
-
-$(function() {
-    // add link to single controller page
+    // add link to single user page
     $(".user_link").each(function(index, value){
-        var userId = $(value).text();
+        var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/admin/users?id=' + userId + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/admin/users?id=' + id + '">link</a>'
         );
     });
-
+    // add link to single project page
+    $(".project_link").each(function(index, value){
+        var id = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/action/projects?id=' + id + '">link</a>'
+        );
+    });
     // add link to single flat page
     $(".flat_link").each(function(index, value){
-        var flatId = $(value).text();
+        var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + flatId + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + id + '">link</a>'
         );
     });
 });

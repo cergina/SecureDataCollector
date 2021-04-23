@@ -2,11 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
-<div class="container-fluid">
-    <div class="container">
-        <h1>Welcome <span th:text="${Email}"></span></h1>
+<div class="container">
+    <div class="row">
+        <div class="col-xl-">
+            <div class="wrapper wrapper-content animated fadeInRight">
 
-        <p>Mate tolkoto projektov: <span th:text="${ProjectsCount}"></span></p>
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is panel that provides list of projects in system.<br></span>
+                    </div>
+                </div>
+
+                <!-- MAIN PANEL - projects in the system -->
+                <div th:replace="fragments/projects_table.html :: projects_table(projects=${projects})"></div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

@@ -31,10 +31,7 @@ public class UC_UserListing {
 
 
             for (T_User  t: arr) {
-                User usr = new User();
-
-                FillEntityFromTable(usr, t);
-
+                User usr = FillEntityFromTable(t);
                 temp.add(usr);
             }
 
@@ -59,8 +56,7 @@ public class UC_UserListing {
             T_User t = I_User.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
 
             if (t != null) {
-                usr = new User();
-                FillEntityFromTable(usr, t);
+                usr = FillEntityFromTable(t);
             }
 
             db.afterOkSqlExecution();
@@ -73,7 +69,8 @@ public class UC_UserListing {
     }
 
 
-    private void FillEntityFromTable(User usr, T_User t) {
+    private User FillEntityFromTable(T_User t) {
+        User usr = new User();
         usr.setEmail(t.getA_Email());
         usr.setBeforetitle(t.getA_BeforeTitle());
         usr.setFirstname(t.getA_FirstName());
@@ -82,5 +79,6 @@ public class UC_UserListing {
         usr.setPhone(t.getA_Phone());
         usr.setResidence(t.getA_PermanentResidence());
         usr.setUserID(t.getA_pk());
+        return usr;
     }
 }
