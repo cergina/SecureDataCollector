@@ -82,20 +82,21 @@ public class I_ProjectUser extends InteractionWithDatabase {
         return arr;
     }
 
-    /* useless ? */
-    public static T_Project_user retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
+    public static T_Project_user retrieveByProjectIdAndUserId(Connection conn, PreparedStatement ps, ResultSet rs, int projectID, int userID) throws SQLException {
+        Assurance.idCheck(projectID);
+        Assurance.idCheck(userID);
 
         // SQL Definition
         ps = conn.prepareStatement(
                 "SELECT " +
                         "* " +
                         "FROM " + T_Project_user.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
+                        "WHERE ProjectID=? AND UserID=?"
         );
 
         int col = 0;
-        ps.setInt(++col, id);
+        ps.setInt(++col, projectID);
+        ps.setInt(++col, userID);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

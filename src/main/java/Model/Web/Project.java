@@ -3,6 +3,7 @@ package Model.Web;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Project extends PrettyObject{
     // PARAMETERS
@@ -14,6 +15,7 @@ public class Project extends PrettyObject{
     public Date createdat;
     @Expose
     public Date deletedat;
+    public List<Building> buildings;
 
     // empty constructor for Gson
     public Project() {}
@@ -53,4 +55,11 @@ public class Project extends PrettyObject{
         this.deletedat = deletedat;
     }
 
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
+    public void setBuildings(List<Building> buildings) {
+        this.buildings = buildings;
+    }
 }

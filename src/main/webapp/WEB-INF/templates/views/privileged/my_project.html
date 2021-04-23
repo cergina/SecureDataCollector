@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xl-">
+            <div class="wrapper wrapper-content animated fadeInRight">
+
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is panel that provides list of buildings for project.<br></span>
+                    </div>
+                </div>
+
+                <!-- MAIN PANEL - projects in the system -->
+                <div th:replace="fragments/project_table.html :: project_table(project=${project})"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

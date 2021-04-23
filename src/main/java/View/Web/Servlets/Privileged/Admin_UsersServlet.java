@@ -22,7 +22,7 @@ import java.util.List;
 public class Admin_UsersServlet extends AdminServlet {
     public static final String SERVLET_URL =  "/admin/users";
     public static final String TEMPLATE_NAME = "views/adminOnly/admin-users.html";
-    public static final String SINGLEUSER_TEMPLATENAME = "views/adminOnly/admin-user.html";
+    public static final String TEMPLATE_NAME_SINGLE = "views/adminOnly/admin-user.html";
 
     private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_USERS = "users";
@@ -105,6 +105,6 @@ public class Admin_UsersServlet extends AdminServlet {
         List<Project> projects = (new UC_ProjectListing(getDb())).allProjectsForUser(user.getUserID());
         context.setVariable(VARIABLE_PROJECTS, projects);
 
-        engine.process(SINGLEUSER_TEMPLATENAME, context, response.getWriter());
+        engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
 }
