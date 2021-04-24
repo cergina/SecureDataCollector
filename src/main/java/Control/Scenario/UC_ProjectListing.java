@@ -42,7 +42,6 @@ public class UC_ProjectListing {
         return projects;
     }
 
-
     public @NotNull final List<Project> allProjects() {
         List<Project> projects = new ArrayList<>();
 
@@ -76,28 +75,30 @@ public class UC_ProjectListing {
     }
 
     public final Project specificProject(@NotNull final Integer projectID) {
+        Project project = null;
+
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {
             T_Project tp = I_Project.retrieve(db.getConn(), db.getPs(), db.getRs(), projectID);
-            Project project = FillEntityFromTable(tp);
-            List<Building> buldings = new ArrayList<>();
-            for (T_Building tb : I_Building.retrieveByProjectId(db.getConn(), db.getPs(), db.getRs(), projectID)) {
-                T_Address ta = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), tb.getA_AddressID());
-                Address address = new Address(ta.getA_Country(), ta.getA_City(), ta.getA_Street(), ta.getA_HouseNO(), ta.getA_ZIP());
-                Building building = new Building(tb.getA_pk(), address);
-                buldings.add(building);
+            if (tp != null) {
+                project = FillEntityFromTable(tp);
+                List<Building> buldings = new ArrayList<>();
+                for (T_Building tb : I_Building.retrieveByProjectId(db.getConn(), db.getPs(), db.getRs(), projectID)) {
+                    T_Address ta = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), tb.getA_AddressID());
+                    Address address = new Address(ta.getA_Country(), ta.getA_City(), ta.getA_Street(), ta.getA_HouseNO(), ta.getA_ZIP());
+                    Building building = new Building(tb.getA_pk(), address);
+                    buldings.add(building);
+                }
+                project.setBuildings(buldings);
             }
-            project.setBuildings(buldings);
 
             db.afterOkSqlExecution();
-
-            return project;
         } catch (SQLException sqle) {
             db.afterExceptionInSqlExecution(sqle);
         }
-        return null;
+        return project;
     }
 
     private Project FillEntityFromTable(T_Project t) {

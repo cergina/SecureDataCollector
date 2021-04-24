@@ -27,8 +27,11 @@ public class ProjectsInformationServlet extends SessionServlet {
     public static final String TEMPLATE_NAME = "views/privileged/my_projects.html";
     public static final String TEMPLATE_NAME_SINGLE = "views/privileged/my_project.html";
 
+    private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_PROJECTS = "projects";
     private static final String VARIABLE_PROJECT = "project";
+    private static final String VARIABLE_USERS = "users";
+
     private static final String REQUEST_PARAM_ID = "id";
 
     @Override
@@ -64,6 +67,7 @@ public class ProjectsInformationServlet extends SessionServlet {
         }
 
         context.setVariable(VARIABLE_PROJECTS, projects);
+        context.setVariable(VARIABLE_ISADMIN, false);
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
@@ -76,7 +80,7 @@ public class ProjectsInformationServlet extends SessionServlet {
         int requestedProjectId;
         try {
             requestedProjectId = Integer.parseInt(request.getParameter(REQUEST_PARAM_ID));
-            CustomLogs.Development("V requeste prisiel user id: " + requestedProjectId);
+            CustomLogs.Development("V requeste prisiel id: " + requestedProjectId);
         } catch (NumberFormatException nfe) {
             CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -93,8 +97,14 @@ public class ProjectsInformationServlet extends SessionServlet {
             }
         }
         Project project = uc.specificProject(requestedProjectId);
+        if (project == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        List<User> users = (new UC_UserListing(getDb())).allUsersForProject(requestedProjectId);
 
         context.setVariable(VARIABLE_PROJECT, project);
+        context.setVariable(VARIABLE_USERS, users);
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
 }

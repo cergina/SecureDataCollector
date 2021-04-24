@@ -27,8 +27,9 @@ public class Admin_UsersServlet extends AdminServlet {
     private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_USERS = "users";
     private static final String VARIABLE_USER = "user";
-    private static final String REQUEST_PARAM_ID = "id";
     private static final String VARIABLE_PROJECTS = "projects";
+
+    private static final String REQUEST_PARAM_ID = "id";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -37,24 +38,10 @@ public class Admin_UsersServlet extends AdminServlet {
             return;
         }
 
-        // if exception is thrown
-        boolean displaySingleUser = request.getParameterNames().hasMoreElements();
-
-        if (displaySingleUser == false) {
-            processAllUsers(request, response);
-            return;
-        }
-
-
-        int requestedUserId;
-        try {
-            requestedUserId = Integer.parseInt(request.getParameter(REQUEST_PARAM_ID));
-            CustomLogs.Development("V requeste prisiel user id: " + requestedUserId);
-
-            processSingleUser(request, response, requestedUserId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        if (request.getParameterNames().hasMoreElements()) {
+            processSingle(request, response);
+        } else {
+            processAll(request, response);
         }
     }
 
@@ -65,7 +52,7 @@ public class Admin_UsersServlet extends AdminServlet {
      * @param response
      * @throws IOException
      */
-    private void processAllUsers(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void processAll(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
@@ -83,13 +70,22 @@ public class Admin_UsersServlet extends AdminServlet {
      * See info about single user + his projects
      * @param request
      * @param response
-     * @param requestedUserId
      * @throws IOException
      */
-    private void processSingleUser(HttpServletRequest request, HttpServletResponse response, int requestedUserId) throws IOException {
+    private void processSingle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
+
+        int requestedUserId;
+        try {
+            requestedUserId = Integer.parseInt(request.getParameter(REQUEST_PARAM_ID));
+            CustomLogs.Development("V requeste prisiel id: " + requestedUserId);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
 
         UC_UserListing uc = new UC_UserListing(getDb());
         User user = uc.specificUser(requestedUserId);

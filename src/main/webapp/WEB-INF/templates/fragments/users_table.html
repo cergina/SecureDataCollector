@@ -1,24 +1,25 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="users_table(user)" class="st_wrap_table">
-    <!-- controller -->
-    <header class="st_table_header">
-        <div class="st_row">
-            <div class="st_column _index-general-longer">E-mail</div>
-            <div class="st_column _index-general-longer">Name</div>
-            <div class="st_column _index-short">Phone</div>
-            <div class="st_column _index-general">Permanent residence</div>
-            <div class="st_column _link" th:if="${isAdmin}">Link</div>
-        </div>
-    </header>
-    <div class="st_table">
-        <div class="st_row">
-            <div class="st_column _index-general-longer" th:text="${user.email}"></div>
-            <div class="st_column _index-general-longer" th:text="${user.beforetitle + ' ' + user.firstname + ' ' + user.middlename + ' ' + user.lastname}"></div>
-            <div class="st_column _index-short" th:text="${user.phone}"></div>
-            <div class="st_column _index-general" th:text="${user.residence}"></div>
-            <div class="st_column _link user_link" th:text="${user.userID}" th:if="${isAdmin}"></div>
+<div th:fragment="users_table(users)" class="ibox-content forum-container">
+    <div class="st_wrap_table">
+        <header class="st_table_header">
+            <div class="st_row">
+                <div class="st_column _index-general-longer">E-mail</div>
+                <div class="st_column _index-general-longer">Name</div>
+                <div class="st_column _index-short">Phone</div>
+                <div class="st_column _index-general">Permanent residence</div>
+                <div class="st_column _link" th:if="${isAdmin}">Link</div>
+            </div>
+        </header>
+        <div class="st_table">
+            <div class="st_row" th:each="user: ${users}">
+                <div class="st_column _index-general-longer" th:text="${user.email}"></div>
+                <div class="st_column _index-general-longer" th:text="${user.beforetitle + ' ' + user.firstname + ' ' + user.middlename + ' ' + user.lastname}"></div>
+                <div class="st_column _index-short" th:text="${user.phone}"></div>
+                <div class="st_column _index-general" th:text="${user.residence}"></div>
+                <div class="st_column _link user_link" th:text="${user.userID}" th:if="${isAdmin}"></div>
+            </div>
         </div>
     </div>
 </div>

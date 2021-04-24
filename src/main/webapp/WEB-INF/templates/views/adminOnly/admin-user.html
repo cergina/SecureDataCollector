@@ -6,8 +6,6 @@
 <div class="container">
     <div class="row">
         <div class="col-xl-">
-
-
             <div class="wrapper wrapper-content animated fadeInRight">
 
                 <!-- UPPER PANEL -->
@@ -21,7 +19,6 @@
                     </div>
                 </div>
 
-
                 <!-- MAIN PANEL -->
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
@@ -31,19 +28,16 @@
                         </div>
                         <h4>GENERAL</h4>
                     </div>
-                    <!-- LIST -->
-                    <div th:replace="fragments/users_table.html :: users_table(user=${user})"></div>
-                    <!-- END LIST -->
+                    <div th:with="users = ${ {user} }">
+                        <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
+                    </div>
                 </div>
-
 
                 <div>
                     <h2>View this user's projects</h2>
-                    <!-- WAITING FOR IMPLEMENTATION OF ALL PROJECT'S FOR THIS USER -->
                     <div th:replace="fragments/projects_table.html :: projects_table(projects=${projects})"></div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
