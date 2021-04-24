@@ -62,36 +62,6 @@ public class I_Measurements extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    public static T_Measurement retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Measurement.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Measurement tm = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tm = I_Measurements.FillEntity(rs);
-        }
-
-        return tm;
-    }
 
     /***
      *

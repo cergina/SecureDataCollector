@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UC_UserListing {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_UserListing(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -75,7 +75,7 @@ public class UC_UserListing {
         db.beforeSqlExecution(false);
 
         try {
-            T_User t = I_User.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+            T_User t = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_User.class), id);
 
             if (t != null) {
                 usr = FillEntityFromTable(t);

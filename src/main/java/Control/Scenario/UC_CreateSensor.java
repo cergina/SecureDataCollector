@@ -1,10 +1,12 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Interaction.I_Sensor;
 import Model.Database.Interaction.I_SensorType;
+import Model.Database.Interaction.InteractionWithDatabase;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.E_SensorType;
+import Model.Database.Tables.T_ControllerUnit;
 import Model.Database.Tables.T_Sensor;
 import Model.Web.JsonResponse;
 import Model.Web.Sensor;
@@ -19,7 +21,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class UC_CreateSensor {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_CreateSensor(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -47,7 +49,7 @@ public class UC_CreateSensor {
                 throw new InvalidOperationException("Sensor type with this name does not exist.");
             }
 
-            if (I_ControllerUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), sensor.getControllerUnitId()) == null) {
+            if (InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_ControllerUnit.class), sensor.getControllerUnitId()) == null) {
                 jsonResponse.setMessage("Controller unit with this id does not exist.");
                 throw new InvalidOperationException("Controller unit with this id does not exist.");
             }

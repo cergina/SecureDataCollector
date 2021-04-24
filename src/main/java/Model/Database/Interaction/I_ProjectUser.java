@@ -148,7 +148,6 @@ public class I_ProjectUser extends InteractionWithDatabase {
         return t;
     }
 
-
     public static T_Project_user FillEntityFromExternal(ResultSet rs) throws SQLException {
         return FillEntity(rs);
     }

@@ -3,9 +3,10 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_CentralUnit;
 import Model.Database.Interaction.I_ControllerUnit;
-import Model.Database.Interaction.I_Flat;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.CustomLogs;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_CentralUnit;
 import Model.Database.Tables.T_ControllerUnit;
 import Model.Database.Tables.T_Flat;
@@ -22,7 +23,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class UC_Controller {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_Controller(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -82,11 +83,8 @@ public class UC_Controller {
             return false;
 
         // other fields cannot be empty
-        if (creation == null || StringUtils.isNullOrEmpty(creation.getZwave()) ||
-                StringUtils.isNullOrEmpty(creation.getDipAddress()) || Assurance.isFkOk(creation.getFlatId()) == false)
-            return false;
-
-        return true;
+        return creation != null && !StringUtils.isNullOrEmpty(creation.getZwave()) &&
+                !StringUtils.isNullOrEmpty(creation.getDipAddress()) && Assurance.isFkOk(creation.getFlatId()) != false;
     }
 
     private void insertIntoDatabase(@NotNull final ControllerCreation creation) throws SQLException{
@@ -123,7 +121,7 @@ public class UC_Controller {
 
         try {
             // get precise flat
-            T_Flat flat = I_Flat.retrieve(db.getConn(), db.getPs(), db.getRs(), flatId);
+            T_Flat flat = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Flat.class), flatId);
 
             int buildingId = (flat != null ? flat.getA_BuildingID() : -1);
 

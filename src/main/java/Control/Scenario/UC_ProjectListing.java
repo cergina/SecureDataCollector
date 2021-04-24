@@ -5,6 +5,12 @@ import Model.Database.Interaction.*;
 import Model.Database.Tables.*;
 import Model.Web.Address;
 import Model.Web.Building;
+import Model.Database.Interaction.I_Project;
+import Model.Database.Interaction.I_ProjectUser;
+import Model.Database.Interaction.InteractionWithDatabase;
+import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_Project;
+import Model.Database.Tables.T_Project_user;
 import Model.Web.Project;
 
 import javax.validation.constraints.NotNull;
@@ -13,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UC_ProjectListing {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_ProjectListing(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -28,7 +34,7 @@ public class UC_ProjectListing {
         try {
             for (T_Project_user tpu : I_ProjectUser.retrieveAllForUser(db.getConn(), db.getPs(), db.getRs(), userID)) {
 
-                T_Project tp = I_Project.retrieve(db.getConn(), db.getPs(), db.getRs(), tpu.getA_ProjectID());
+                T_Project tp = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Project.class), tpu.getA_ProjectID());
                 Project project = FillEntityFromTable(tp);
                 projects.add(project);
             }

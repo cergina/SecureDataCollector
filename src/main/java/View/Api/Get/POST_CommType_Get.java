@@ -1,9 +1,10 @@
 package View.Api.Get;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_CommType;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.E_CommType;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
@@ -26,7 +27,7 @@ public class POST_CommType_Get extends POST_Database_Interaction {
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             DbProvider dbProvider = getDb();
-            E_CommType ret_ect = I_CommType.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(E_CommType.DBNAME_ID));
+            E_CommType ret_ect = InteractionWithDatabase.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(E_CommType.class), json.getInt(E_CommType.DBNAME_ID));
             dbProvider.disconnect();
 
             // return

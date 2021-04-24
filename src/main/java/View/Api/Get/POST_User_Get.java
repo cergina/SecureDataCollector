@@ -1,9 +1,10 @@
 package View.Api.Get;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_User;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_User;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
@@ -26,7 +27,7 @@ public class POST_User_Get extends POST_Database_Interaction {
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             DbProvider dbProvider = getDb();
-            T_User ret_ect = I_User.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(T_User.DBNAME_ID));
+            T_User ret_ect = InteractionWithDatabase.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(T_User.class), json.getInt(T_User.DBNAME_ID));
             dbProvider.disconnect();
 
             // return

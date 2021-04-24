@@ -47,37 +47,6 @@ public class I_Hash extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    public static T_Hash retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Hash.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Hash t = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            t = I_Hash.FillEntity(rs);
-        }
-
-        return t;
-    }
-
     public static T_Hash retrieveCode(Connection conn, PreparedStatement ps, ResultSet rs, int userID) throws SQLException {
         Assurance.idCheck(userID);
 

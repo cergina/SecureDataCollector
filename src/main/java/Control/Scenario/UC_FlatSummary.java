@@ -2,13 +2,15 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.ComplexInteractions.GeneralAccessibility;
-import Model.Database.Interaction.*;
+import Model.Database.Interaction.I_ControllerUnit;
+import Model.Database.Interaction.I_Flat;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.*;
 import Model.Web.Address;
 import Model.Web.CentralUnit;
-import Model.Web.Project;
-import Model.Web.thymeleaf.*;
+import Model.Web.thymeleaf.ControllerUnit;
+import Model.Web.thymeleaf.Flat;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -21,7 +23,7 @@ import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
  * Use Case class for FlatSummaryView
  */
 public class UC_FlatSummary {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_FlatSummary(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -234,8 +236,8 @@ public class UC_FlatSummary {
         T_Address t = null;
 
         try {
-            T_Building b = I_Building.retrieve(db.getConn(), db.getPs(), db.getRs(), buildingId);
-            t = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), b.getA_AddressID());
+            T_Building b = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Building.class), buildingId);
+            t = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Address.class), b.getA_AddressID());
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
@@ -247,7 +249,7 @@ public class UC_FlatSummary {
         T_CentralUnit t = null;
 
         try {
-            t = I_CentralUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+            t = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_CentralUnit.class), id);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
@@ -259,7 +261,7 @@ public class UC_FlatSummary {
         T_ControllerUnit t = null;
 
         try {
-            t = I_ControllerUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+            t = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_ControllerUnit.class), id);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }
@@ -273,7 +275,7 @@ public class UC_FlatSummary {
         T_Flat t = null;
 
         try {
-            t = I_Flat.retrieve(db.getConn(), db.getPs(), db.getRs(), id);
+            t = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Flat.class), id);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }

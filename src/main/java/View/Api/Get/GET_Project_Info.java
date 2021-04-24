@@ -1,8 +1,9 @@
 package View.Api.Get;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_Project;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_Project;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.GET_Database_Interaction;
@@ -29,7 +30,7 @@ public class GET_Project_Info extends GET_Database_Interaction {
             writer.println("<html><body>");
 
             DbProvider dbProvider = getDb();
-            T_Project ret_tp = I_Project.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), Integer.parseInt(req.getParameter("id")));
+            T_Project ret_tp = InteractionWithDatabase.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(T_Project.class), Integer.parseInt(req.getParameter("id")));
             dbProvider.disconnect();
 
             if (null == ret_tp) {

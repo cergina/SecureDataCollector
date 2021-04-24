@@ -1,6 +1,5 @@
 package Model.Database.Interaction;
 
-import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_Flat;
@@ -50,38 +49,6 @@ public class I_Flat extends InteractionWithDatabase {
 
         return affectedRows;
     }
-
-    public static T_Flat retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Flat.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Flat tf = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tf = I_Flat.FillEntity(rs);
-        }
-
-        return tf;
-    }
-
 
     public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
 

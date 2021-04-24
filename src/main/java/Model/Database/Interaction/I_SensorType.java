@@ -47,37 +47,6 @@ public class I_SensorType extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    public static E_SensorType retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + E_SensorType.DBTABLE_NAME + " " +
-                        "WHERE " + E_SensorType.DBNAME_ID + "=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        E_SensorType st = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            st = I_SensorType.FillEntity(rs);
-        }
-
-        return st;
-    }
-
     public static E_SensorType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
         Assurance.varcharCheck(name);
 

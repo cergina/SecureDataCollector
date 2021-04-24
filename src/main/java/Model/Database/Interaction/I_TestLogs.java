@@ -1,6 +1,5 @@
 package Model.Database.Interaction;
 
-import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_TestLog;
 
@@ -47,36 +46,7 @@ public class I_TestLogs extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    public static T_TestLog retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
 
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_TestLog.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_TestLog tt = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tt = I_TestLogs.FillEntity(rs);
-        }
-
-        return tt;
-    }
 
     // Privates
     public static T_TestLog FillEntity(ResultSet rs) throws SQLException {

@@ -1,6 +1,5 @@
 package Model.Database.Interaction;
 
-import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.E_AccessPrivilege;
 
@@ -45,36 +44,6 @@ public class I_AccessPrivillege {
         return affectedRows;
     }
 
-    public static E_AccessPrivilege retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + E_AccessPrivilege.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        E_AccessPrivilege ct = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            ct = I_AccessPrivillege.FillEntity(rs);
-        }
-
-        return ct;
-    }
 
     public static E_AccessPrivilege FillEntity(ResultSet rs) throws SQLException {
 

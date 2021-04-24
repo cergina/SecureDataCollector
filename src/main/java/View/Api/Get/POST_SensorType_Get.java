@@ -1,9 +1,10 @@
 package View.Api.Get;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_SensorType;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.JSONHelper;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.E_SensorType;
 import View.Support.ServletHelper;
 import View.Web.Old.Servlets.POST_Database_Interaction;
@@ -26,7 +27,7 @@ public class POST_SensorType_Get extends POST_Database_Interaction {
             JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 
             DbProvider dbProvider = getDb();
-            E_SensorType ret_ect = I_SensorType.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), json.getInt(E_SensorType.DBNAME_ID));
+            E_SensorType ret_ect = InteractionWithDatabase.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), json.getInt(E_SensorType.DBNAME_ID));
             dbProvider.disconnect();
 
             // return

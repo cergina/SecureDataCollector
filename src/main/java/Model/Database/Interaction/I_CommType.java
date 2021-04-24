@@ -42,36 +42,6 @@ public class I_CommType extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    public static E_CommType retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + E_CommType.DBTABLE_NAME + " " +
-                        "WHERE " + E_CommType.DBNAME_ID + "=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        E_CommType ct = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            ct = I_CommType.FillEntity(rs);
-        }
-
-        return ct;
-    }
 
     public static E_CommType retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String name) throws SQLException {
         Assurance.varcharCheck(name);

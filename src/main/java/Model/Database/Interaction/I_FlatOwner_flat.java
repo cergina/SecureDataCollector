@@ -1,6 +1,5 @@
 package Model.Database.Interaction;
 
-import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_FlatOwner_flat;
 
@@ -46,41 +45,6 @@ public class I_FlatOwner_flat extends InteractionWithDatabase {
 
         return affectedRows;
     }
-
-    /*
-        by specific Id, probably will not be used
-    */
-    public static T_FlatOwner_flat retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_FlatOwner_flat.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_FlatOwner_flat t = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            t = I_FlatOwner_flat.FillEntity(rs);
-        }
-
-        return t;
-    }
-
 
     // Privates
     public static T_FlatOwner_flat FillEntity(ResultSet rs) throws SQLException {
