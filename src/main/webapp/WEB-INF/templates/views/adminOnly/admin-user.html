@@ -26,15 +26,19 @@
                         <div class="pull-right forum-desc">
                             <samll>Only admin has right to view this</samll>
                         </div>
-                        <h4>GENERAL</h4>
+                        <h4>USER DETAILS</h4>
                     </div>
                     <div th:with="users = ${ {user} }">
                         <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
                     </div>
                 </div>
 
-                <div>
-                    <h2>View this user's projects</h2>
+
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>USER'S PROJECTS</h4>
+                    </div>
                     <div th:replace="fragments/projects_table.html :: projects_table(projects=${projects})"></div>
                 </div>
             </div>

@@ -22,15 +22,20 @@
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
                     <div class="forum-title">
-                        <h4>GENERAL</h4>
+                        <h4>PROJECT USERS</h4>
+                    </div>
+                    <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
+                </div>
+
+                <!-- TODO ADD A NEW BUILDING TO THIS PROJECT -->
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>PROJECT BUILDINGS</h4>
                     </div>
                     <div th:replace="fragments/project_table.html :: project_table(project=${project})"></div>
                 </div>
 
-                <div>
-                    <h2>View this project's users</h2>
-                    <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
-                </div>
             </div>
         </div>
     </div>
