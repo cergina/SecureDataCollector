@@ -82,39 +82,6 @@ public class I_ProjectUser extends InteractionWithDatabase {
         return arr;
     }
 
-    /* useless ? */
-    public static T_Project_user retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Project_user.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Project_user t = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            t = FillEntity(rs);
-        }
-
-        return t;
-    }
-
-
     public static T_Project_user FillEntityFromExternal(ResultSet rs) throws SQLException {
         return FillEntity(rs);
     }

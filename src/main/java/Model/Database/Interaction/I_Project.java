@@ -54,43 +54,6 @@ public class I_Project extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    /****
-     *
-     * @param conn
-     * @param id
-     * @return
-     * @throws SQLException
-     */
-    public static T_Project retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "ID, Name, CreatedAt, DeletedAt " +
-                        "FROM " + T_Project.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Project tp = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tp = I_Project.FillEntity(rs);
-        }
-
-        return tp;
-    }
 
     public static T_Project retrieveByName(Connection conn, PreparedStatement ps, ResultSet rs, String projectName) throws SQLException {
         Assurance.varcharCheck(projectName);

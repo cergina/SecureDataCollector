@@ -5,8 +5,8 @@ import Model.Database.Interaction.*;
 import Model.Database.Support.Assurance;
 import Model.Database.Tables.*;
 import Model.Web.JsonResponse;
-import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import Model.Web.Specific.FlatOwner;
+import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import View.Support.CustomExceptions.CreationException;
 import com.mysql.cj.util.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -21,7 +21,7 @@ import java.util.List;
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class UC_CreateFlat {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_CreateFlat(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -50,7 +50,7 @@ public class UC_CreateFlat {
             }
 
             // get central unit
-            T_CentralUnit t_centralUnit = I_CentralUnit.retrieve(db.getConn(), db.getPs(), db.getRs(), firstTimeCreation.getCentralUnitId());
+            T_CentralUnit t_centralUnit = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_CentralUnit.class), firstTimeCreation.getCentralUnitId());
 
             /*  */
             // Create flat
@@ -187,24 +187,16 @@ public class UC_CreateFlat {
             return false;
         }
 
-        if (Assurance.isFkOk(firstTimeCreation.getCentralUnitId()) == false) {
-            return false;
-        }
-
-        return true;
+        return Assurance.isFkOk(firstTimeCreation.getCentralUnitId()) != false;
     }
 
     private boolean isFlatOwnerOk(FlatOwner fo) {
         // emails are valid
         if (EmailValidator.getInstance().isValid(fo.getEmail()) == false) {
             return false;
-        };
-
-        if (StringUtils.isNullOrEmpty(fo.getFirstName()) || StringUtils.isNullOrEmpty(fo.getLastName()) ||
-                StringUtils.isNullOrEmpty(fo.getPhone()) || fo.getPhone().matches("^(\\+)?[0-9 ]+$") == false) {
-            return false;
         }
 
-        return true;
+        return !StringUtils.isNullOrEmpty(fo.getFirstName()) && !StringUtils.isNullOrEmpty(fo.getLastName()) &&
+                !StringUtils.isNullOrEmpty(fo.getPhone()) && fo.getPhone().matches("^(\\+)?[0-9 ]+$") != false;
     }
 }

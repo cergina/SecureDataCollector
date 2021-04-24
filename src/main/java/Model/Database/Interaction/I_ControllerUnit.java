@@ -58,37 +58,6 @@ public class I_ControllerUnit extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    public static T_ControllerUnit retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_ControllerUnit tc = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tc = I_ControllerUnit.FillEntity(rs);
-        }
-
-        return tc;
-    }
-
 
     public static T_ControllerUnit retrieveByUid(Connection conn, PreparedStatement ps, ResultSet rs, int uid) throws SQLException {
         Assurance.idCheck(uid);
@@ -258,11 +227,7 @@ public class I_ControllerUnit extends InteractionWithDatabase {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        if (!rs.isBeforeFirst()) {
-            return false;
-        }
-
-        return true;
+        return rs.isBeforeFirst();
     }
 
 }

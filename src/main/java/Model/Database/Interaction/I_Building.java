@@ -1,6 +1,5 @@
 package Model.Database.Interaction;
 
-import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_Building;
 
@@ -10,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-
-import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class I_Building extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_Building tf) throws SQLException {
@@ -46,37 +43,6 @@ public class I_Building extends InteractionWithDatabase {
             throw new SQLException("Something happened. Insertion of Building into db failed.");
 
         return affectedRows;
-    }
-
-    public static T_Building retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_Building.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Building tf = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tf = I_Building.FillEntity(rs);
-        }
-
-        return tf;
     }
 
     // Privates

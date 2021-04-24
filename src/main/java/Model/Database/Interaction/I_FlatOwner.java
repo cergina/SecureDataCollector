@@ -83,37 +83,6 @@ public class I_FlatOwner extends InteractionWithDatabase {
         return t;
     }
 
-    public static T_FlatOwner retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_FlatOwner.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_FlatOwner t = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            t = FillEntity(rs);
-        }
-
-        return t;
-    }
-
 
     // Privates
     public static T_FlatOwner FillEntity(ResultSet rs) throws SQLException {

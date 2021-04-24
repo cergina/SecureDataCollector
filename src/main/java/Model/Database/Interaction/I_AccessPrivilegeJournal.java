@@ -79,39 +79,6 @@ public class I_AccessPrivilegeJournal {
         return t;
     }
 
-    /*
-        by specific Id, probably will not be used
-    */
-    public static T_AccessPrivilegeJournal retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_AccessPrivilegeJournal.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_AccessPrivilegeJournal t = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            t = I_AccessPrivilegeJournal.FillEntity(rs);
-        }
-
-        return t;
-    }
 
     // Privates
     public static T_AccessPrivilegeJournal FillEntity(ResultSet rs) throws SQLException {

@@ -1,5 +1,6 @@
 package Model.Database.Interaction;
 
+import Model.Database.Support.Assurance;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
@@ -12,6 +13,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class InteractionWithDatabase {
+    public static <T extends DbEntity> T retrieve(Connection conn, PreparedStatement ps, ResultSet rs, T specificTypeObj, int id) throws SQLException {
+        CustomLogs.Debug("Entering retrieve");
+
+        Assurance.idCheck(id);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + specificTypeObj.GetDbTableName() + " " +
+                        "WHERE ID=?"
+        );
+
+        ps.setInt(1, id);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+            return null;
+        }
+
+        rs.next();
+
+        return (T) specificTypeObj.FillEntityFromResultSet(rs);
+    }
+
     public static <T extends DbEntity> List<T> retrieveAll(Connection conn, PreparedStatement ps, ResultSet rs, T specificTypeObj) throws SQLException {
         CustomLogs.Debug("Entering retrieveAll");
 
@@ -31,16 +61,14 @@ public abstract class InteractionWithDatabase {
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
-            CustomLogs.Debug("Nothing was returned");
-        } else {
-            while (rs.next()) {
-                CustomLogs.Debug("Filling entity");
-                arr.add((T)specificTypeObj.FillEntityFromResultSet(rs));
-                //arr.add(I_Address.FillEntity(rs));
-            }
+            return arr;
         }
 
-        CustomLogs.Debug("Exiting retrieveAll");
+        // Fill and return filled array
+        while (rs.next()) {
+            arr.add((T) specificTypeObj.FillEntityFromResultSet(rs));
+        }
+
         return arr;
     }
 
@@ -49,8 +77,6 @@ public abstract class InteractionWithDatabase {
      * This will get you back the PRIMARY KEY value of the last row that you inserted, because it's per connection !
      */
     public static int retrieveLatestPerConnectionInsertedID(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
-        int latest  = -1;
-
         ps = conn.prepareStatement(
                 "SELECT LAST_INSERT_ID();"
         );
@@ -61,13 +87,13 @@ public abstract class InteractionWithDatabase {
 
         if (!rs.isBeforeFirst()) {
             /* nothing was returned */
-        } else {
-            rs.next();
-
-            latest = rs.getInt(1);
+            return -1;
         }
 
-        return latest;
+        // get id and return it
+        rs.next();
+
+        return rs.getInt(1);
     }
 
 }

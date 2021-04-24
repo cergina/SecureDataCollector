@@ -4,16 +4,12 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Interaction.I_Measurements;
 import Model.Database.Interaction.I_Sensor;
-import Model.Database.Interaction.I_SensorType;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.E_SensorType;
-import Model.Database.Tables.T_ControllerUnit;
-import Model.Database.Tables.T_Measurement;
-import Model.Database.Tables.T_Sensor;
+import Model.Database.Tables.*;
 import Model.Web.JsonResponse;
 import Model.Web.Measurement;
 import Model.Web.Sensor;
-import Model.Web.SensorType;
 import Model.Web.Specific.GraphSingleFlat;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +21,7 @@ import java.util.*;
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class UC_Graph {
-    private DbProvider db;
+    private final DbProvider db;
 
     public UC_Graph(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
@@ -112,7 +108,7 @@ public class UC_Graph {
                     }
 
                     List<Integer> dataArray = getMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
-                    E_SensorType sensorType = I_SensorType.retrieve(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_SensorTypeID());
+                    E_SensorType sensorType = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), t_sensor.getA_SensorTypeID());
                     String unitType = getUnitTypeOfSensor(sensorType);
                     Integer unitAmount = getUnitAmountOfSensor(sensorType);
                     getRealMeasurementValues(dataArray, unitAmount);

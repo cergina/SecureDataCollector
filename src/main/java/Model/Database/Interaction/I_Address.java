@@ -57,46 +57,6 @@ public class I_Address extends InteractionWithDatabase {
         return affectedRows;
     }
 
-    /*****
-     *
-     * @param conn
-     * @param ps
-     * @param rs
-     * @param id
-     * @return
-     * @throws SQLException
-     */
-    public static T_Address retrieve(Connection conn, PreparedStatement ps, ResultSet rs, int id) throws SQLException {
-        Assurance.idCheck(id);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "ID, Country, City, Street, HouseNO, Zip " +
-                        "FROM " + T_Address.DBTABLE_NAME + " " +
-                        "WHERE ID=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, id);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_Address ta = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            ta = I_Address.FillEntity(rs);
-        }
-
-        return ta;
-    }
-
     // Privates
     public static T_Address FillEntity(ResultSet rs) throws SQLException {
 
@@ -138,11 +98,7 @@ public class I_Address extends InteractionWithDatabase {
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        if (!rs.isBeforeFirst()) {
-            return false;
-        }
-
-        return true;
+        return rs.isBeforeFirst();
     }
 
 }
