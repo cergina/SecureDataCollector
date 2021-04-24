@@ -1,16 +1,13 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.*;
-import Model.Database.Tables.*;
-import Model.Web.Address;
-import Model.Web.Building;
+import Model.Database.Interaction.I_Building;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Interaction.InteractionWithDatabase;
-import Model.Database.Tables.DbEntity;
-import Model.Database.Tables.T_Project;
-import Model.Database.Tables.T_Project_user;
+import Model.Database.Tables.*;
+import Model.Web.Address;
+import Model.Web.Building;
 import Model.Web.Project;
 
 import javax.validation.constraints.NotNull;
@@ -73,7 +70,11 @@ public class UC_ProjectListing {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
         try {
-            return null != I_ProjectUser.retrieveByProjectIdAndUserId(db.getConn(), db.getPs(), db.getRs(), projectID, userID);
+            boolean toReturn = null != I_ProjectUser.retrieveByProjectIdAndUserId(db.getConn(), db.getPs(), db.getRs(), projectID, userID);
+
+            db.afterOkSqlExecution();
+
+            return toReturn;
         } catch (SQLException sqle) {
             db.afterExceptionInSqlExecution(sqle);
         }
@@ -87,12 +88,12 @@ public class UC_ProjectListing {
         db.beforeSqlExecution(false);
 
         try {
-            T_Project tp = I_Project.retrieve(db.getConn(), db.getPs(), db.getRs(), projectID);
+            T_Project tp = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Project.class), projectID);
             if (tp != null) {
                 project = FillEntityFromTable(tp);
                 List<Building> buldings = new ArrayList<>();
                 for (T_Building tb : I_Building.retrieveByProjectId(db.getConn(), db.getPs(), db.getRs(), projectID)) {
-                    T_Address ta = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), tb.getA_AddressID());
+                    T_Address ta = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Address.class), tb.getA_AddressID());
                     Address address = new Address(ta.getA_Country(), ta.getA_City(), ta.getA_Street(), ta.getA_HouseNO(), ta.getA_ZIP());
                     Building building = new Building(tb.getA_pk(), address);
                     buldings.add(building);

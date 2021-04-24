@@ -1,8 +1,8 @@
 package Model.Database.Interaction;
 
+import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_Building;
-import Model.Database.Tables.T_Flat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

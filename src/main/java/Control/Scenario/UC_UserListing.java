@@ -2,7 +2,6 @@ package Control.Scenario;
 
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_ProjectUser;
-import Model.Database.Interaction.I_User;
 import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_Project_user;
@@ -30,7 +29,7 @@ public class UC_UserListing {
         try {
             for (T_Project_user tpu : I_ProjectUser.retrieveAllForProject(db.getConn(), db.getPs(), db.getRs(), projectID)) {
 
-                T_User tu = I_User.retrieve(db.getConn(), db.getPs(), db.getRs(), tpu.getA_UserID());
+                T_User tu = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_User.class), tpu.getA_UserID());
                 User user = FillEntityFromTable(tu);
                 users.add(user);
             }
