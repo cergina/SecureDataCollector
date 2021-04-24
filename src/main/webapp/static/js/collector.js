@@ -619,6 +619,13 @@ $(function() {
             '<a href="' + $SCRIPT_ROOT + '/action/projects?id=' + id + '">link</a>'
         );
     });
+    // add link to single building page
+    $(".building_link").each(function(index, value){
+        var id = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/action/buildings?id=' + id + '">link</a>'
+        );
+    });
     // add link to single flat page
     $(".flat_link").each(function(index, value){
         var id = $(value).text();

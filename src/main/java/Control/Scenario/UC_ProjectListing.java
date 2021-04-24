@@ -1,6 +1,10 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
+import Model.Database.Interaction.*;
+import Model.Database.Tables.*;
+import Model.Web.Address;
+import Model.Web.Building;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Interaction.InteractionWithDatabase;
@@ -44,7 +48,6 @@ public class UC_ProjectListing {
         return projects;
     }
 
-
     public @NotNull final List<Project> allProjects() {
         List<Project> projects = new ArrayList<>();
 
@@ -64,6 +67,44 @@ public class UC_ProjectListing {
         }
 
         return projects;
+    }
+
+    public final boolean isUserInProject(@NotNull final Integer projectID, @NotNull final Integer userID) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+        try {
+            return null != I_ProjectUser.retrieveByProjectIdAndUserId(db.getConn(), db.getPs(), db.getRs(), projectID, userID);
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+        return false;
+    }
+
+    public final Project specificProject(@NotNull final Integer projectID) {
+        Project project = null;
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        try {
+            T_Project tp = I_Project.retrieve(db.getConn(), db.getPs(), db.getRs(), projectID);
+            if (tp != null) {
+                project = FillEntityFromTable(tp);
+                List<Building> buldings = new ArrayList<>();
+                for (T_Building tb : I_Building.retrieveByProjectId(db.getConn(), db.getPs(), db.getRs(), projectID)) {
+                    T_Address ta = I_Address.retrieve(db.getConn(), db.getPs(), db.getRs(), tb.getA_AddressID());
+                    Address address = new Address(ta.getA_Country(), ta.getA_City(), ta.getA_Street(), ta.getA_HouseNO(), ta.getA_ZIP());
+                    Building building = new Building(tb.getA_pk(), address);
+                    buldings.add(building);
+                }
+                project.setBuildings(buldings);
+            }
+
+            db.afterOkSqlExecution();
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+        return project;
     }
 
     private Project FillEntityFromTable(T_Project t) {

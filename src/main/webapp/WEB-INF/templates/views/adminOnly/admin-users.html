@@ -6,8 +6,6 @@
 <div class="container">
     <div class="row">
         <div class="col-xl-">
-
-
             <div class="wrapper wrapper-content animated fadeInRight">
 
                 <!-- UPPER PANEL -->
@@ -21,7 +19,6 @@
                     </div>
                 </div>
 
-
                 <!-- MAIN PANEL -->
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
@@ -29,16 +26,11 @@
                         <div class="pull-right forum-desc">
                             <samll>Only admin has right to view this</samll>
                         </div>
-                        <h4>GENERAL</h4>
+                        <h4>ALL USERS IN SYSTEM</h4>
                     </div>
-                    <!-- LIST -->
-                    <div th:each="user: ${users}">
-                        <div th:replace="fragments/users_table.html :: users_table(user=${user})"></div>
-                    </div>
-                    <!-- END LIST -->
+                    <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

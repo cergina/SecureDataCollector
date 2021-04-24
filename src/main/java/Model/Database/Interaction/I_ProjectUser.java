@@ -82,6 +82,72 @@ public class I_ProjectUser extends InteractionWithDatabase {
         return arr;
     }
 
+    public static List<T_Project_user> retrieveAllForProject(Connection conn, PreparedStatement ps, ResultSet rs, int projectId) throws SQLException {
+        Assurance.idCheck(projectId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Project_user.DBTABLE_NAME + " " +
+                        "WHERE ProjectID=? ORDER BY ID asc"
+        );
+
+        int col = 0;
+        ps.setInt(++col, projectId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_Project_user> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+
+            while (rs.next()) {
+                arr.add(FillEntity(rs));
+            }
+
+        }
+
+        return arr;
+    }
+
+    public static T_Project_user retrieveByProjectIdAndUserId(Connection conn, PreparedStatement ps, ResultSet rs, int projectID, int userID) throws SQLException {
+        Assurance.idCheck(projectID);
+        Assurance.idCheck(userID);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Project_user.DBTABLE_NAME + " " +
+                        "WHERE ProjectID=? AND UserID=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, projectID);
+        ps.setInt(++col, userID);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        T_Project_user t = null;
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            rs.next();
+
+            t = FillEntity(rs);
+        }
+
+        return t;
+    }
+
     public static T_Project_user FillEntityFromExternal(ResultSet rs) throws SQLException {
         return FillEntity(rs);
     }

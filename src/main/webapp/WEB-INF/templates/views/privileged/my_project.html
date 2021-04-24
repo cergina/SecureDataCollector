@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container">
     <div class="row">
         <div class="col-xl-">
@@ -15,7 +14,7 @@
                             <i class="fa fa-globe text-navy mid-icon"></i>
                         </div>
                         <h2>Secure Data Collector - 2021</h2>
-                        <span>This is panel that provides list of users in system.<br></span>
+                        <span>This is panel that provides list of buildings for project.<br></span>
                     </div>
                 </div>
 
@@ -23,24 +22,20 @@
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
                     <div class="forum-title">
-                        <div class="pull-right forum-desc">
-                            <samll>Only admin has right to view this</samll>
-                        </div>
-                        <h4>USER DETAILS</h4>
+                        <h4>PROJECT USERS</h4>
                     </div>
-                    <div th:with="users = ${ {user} }">
-                        <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
-                    </div>
+                    <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
                 </div>
 
-
+                <!-- TODO ADD A NEW BUILDING TO THIS PROJECT -->
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
                     <div class="forum-title">
-                        <h4>USER'S PROJECTS</h4>
+                        <h4>PROJECT BUILDINGS</h4>
                     </div>
-                    <div th:replace="fragments/projects_table.html :: projects_table(projects=${projects})"></div>
+                    <div th:replace="fragments/project_table.html :: project_table(project=${project})"></div>
                 </div>
+
             </div>
         </div>
     </div>

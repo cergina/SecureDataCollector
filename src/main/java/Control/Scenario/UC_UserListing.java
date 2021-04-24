@@ -1,8 +1,11 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
+import Model.Database.Interaction.I_ProjectUser;
+import Model.Database.Interaction.I_User;
 import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_Project_user;
 import Model.Database.Tables.T_User;
 import Model.Web.User;
 
@@ -18,6 +21,28 @@ public class UC_UserListing {
         this.db = dbProvider;
     }
 
+    public @NotNull final List<User> allUsersForProject(@NotNull final Integer projectID) {
+        List<User> users = new ArrayList<>();
+
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
+        db.beforeSqlExecution(false);
+
+        try {
+            for (T_Project_user tpu : I_ProjectUser.retrieveAllForProject(db.getConn(), db.getPs(), db.getRs(), projectID)) {
+
+                T_User tu = I_User.retrieve(db.getConn(), db.getPs(), db.getRs(), tpu.getA_UserID());
+                User user = FillEntityFromTable(tu);
+                users.add(user);
+            }
+
+            db.afterOkSqlExecution();
+
+        } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
+        }
+
+        return users;
+    }
 
     public final List<User> allUsers() {
         // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
@@ -33,8 +58,6 @@ public class UC_UserListing {
                 User usr = FillEntityFromTable(t);
                 temp.add(usr);
             }
-
-            // dont forget to set data that was inserted into json
 
             db.afterOkSqlExecution();
 
@@ -66,7 +89,6 @@ public class UC_UserListing {
 
         return usr;
     }
-
 
     private User FillEntityFromTable(T_User t) {
         User usr = new User();
