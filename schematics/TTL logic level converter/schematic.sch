@@ -5085,28 +5085,27 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 </net>
 <net name="5V" class="0">
 <segment>
-<pinref part="JP1" gate="A" pin="1"/>
-<wire x1="25.4" y1="119.38" x2="17.78" y2="119.38" width="0.1524" layer="91"/>
-<label x="30.48" y="119.38" size="1.778" layer="95"/>
-<label x="30.48" y="119.38" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="R1" gate="G$1" pin="1"/>
 <wire x1="40.64" y1="81.28" x2="17.78" y2="81.28" width="0.1524" layer="91"/>
 <label x="25.4" y="78.74" size="1.778" layer="95"/>
 </segment>
-</net>
-<net name="3V3" class="0">
 <segment>
 <pinref part="JP1" gate="A" pin="2"/>
-<wire x1="25.4" y1="116.84" x2="17.78" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="17.78" y1="116.84" x2="25.4" y2="116.84" width="0.1524" layer="91"/>
 <label x="30.48" y="116.84" size="1.778" layer="95"/>
 </segment>
+</net>
+<net name="3V3" class="0">
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
 <wire x1="81.28" y1="93.98" x2="81.28" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="17.78" y1="96.52" x2="81.28" y2="96.52" width="0.1524" layer="91"/>
 <label x="25.4" y="93.98" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="A" pin="1"/>
+<wire x1="17.78" y1="119.38" x2="25.4" y2="119.38" width="0.1524" layer="91"/>
+<label x="30.48" y="119.38" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="RX" class="0">
