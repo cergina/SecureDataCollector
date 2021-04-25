@@ -35,7 +35,7 @@
 
 #define STX 0x02
 #define ETX 0x03
-#define FS 0x34
+#define FS 0x1C
 #define ACK 0x06
 #define NAK 0x15
 
@@ -91,6 +91,11 @@ void qDisconnect(){
 	uart_puts("Q :: Disconnecting\n");
 	qState = QS_DEACTIVATING;
 	qSend("AT+QIDEACT");
+}
+
+void qMeasurementSend(int cuAddress, int input, int measurement){
+	char *uri = "https://team14-20.studenti.fiit.stuba.sk/dcs/api/measurements-add";
+	char *json = "{\"messageType\": \"measurements\", \"centralUnit\": 1, \"requestNumber\": 3, \"controllers\": [{\"controllerUnit\": 1, \"measurements\": [{\"sensorIO\": \"1\", \"count\": 20}, {\"sensorIO\": \"2\",\"count\": 10} ]}]}";
 }
 
 uint8_t ProcessQMessage(char *msg)
@@ -188,12 +193,29 @@ uint8_t readDipAddress()
 
 //Parse Datova cast paketu a vytiahne z nej data pre spracovanie
 void ParsePacket(char *message)
-{
+{	
 	int len = message[1] << 8 | message[0];
+	unsigned char parsedMessage[len];
+	
 	for (int i = 2; i < len + 2; i++)
-	{
-		uart_putc(message[i]);
+	{	
+		//#ifdef DEBUG_TEST
+		//	uart_putc(message[i]);
+		//#endif
+		
+		// parsedMessage je string d�t ktor� pri�li, prv� 2 znaky s� UID CE a dalej nasleduj� spr�vy rozdelen� FS
+		// kde v�dy prv� znak spr�vy je typ spr�vy
+		parsedMessage[i-2] = message[i];
+	
+		//QUEC Send functions goes ->
+		//here
 	}
+	
+	#ifdef DEBUG_TEST
+		uart_puts("Parsed String:\r\n");
+		for (int j = 0; j < len; j++)
+			uart_putc(parsedMessage[j]);
+	#endif
 }
 
 int main(void)
@@ -201,7 +223,7 @@ int main(void)
 	unsigned int c;
 	char *message = NULL;
 	unsigned short current_flag = NULL;
-	uint8_t current_proto = PROTO_CEQ;
+	uint8_t current_proto = PROTO_CCE;
 	unsigned int index = 0;
 	unsigned char UID = readDipAddress(); // only at startup!
 
@@ -261,10 +283,10 @@ int main(void)
 			if (current_flag == F_CRC) {
 				int len = message[1] << 8 |  message[0];
 				
-				#ifdef DEBUG_TEST
-					for (int i = 0; i < len+2; i++)
-						uart_putc(message[i]);
-				#endif 
+				//#ifdef DEBUG_TEST
+				//	for (int i = 0; i < len+2; i++)
+				//		uart_putc(message[i]);
+				//#endif 
 				
 				checksum = crc8((uint8_t*)message, len+2); // Need to add 2 what is count bytes of length.
 				if((uint8_t)c != checksum){
@@ -273,6 +295,7 @@ int main(void)
 				else{
 					uart_puts("ACK\r\n");
 					//do stuff
+					ParsePacket(message);
 				}
 				current_flag = NULL;
 				free(message);
