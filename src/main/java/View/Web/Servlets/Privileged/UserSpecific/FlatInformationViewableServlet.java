@@ -7,7 +7,7 @@ import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.GraphSingleFlat;
 import Model.Web.User;
-import Model.Web.thymeleaf.Flat;
+import Model.Web.Flat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;

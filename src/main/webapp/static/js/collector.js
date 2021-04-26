@@ -586,21 +586,14 @@ function getUrlParameter(sParam) { // https://stackoverflow.com/a/21903119/51482
 }
 
 $(function() {
-    // add link to single controller page
-    $(".controllerUnit_link").each(function(index, value){
-        var id = $(value).text();
-        $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + id + '">link</a>'
-        );
-    });
     // add link to create sensor type page
-    $("._sensortype_createnewlink").each(function(index, value){
+    $(".sensortype_linkCreate").each(function(index, value){
         $(this).html(
             '<a href="' + $SCRIPT_ROOT + '/admin/sensor-type/create">Create new sensor type</a>'
         );
     });
     // add link to create communication type page
-    $("._commtype_createnewlink").each(function(index, value){
+    $(".commtype_linkCreate").each(function(index, value){
         $(this).html(
             '<a href="' + $SCRIPT_ROOT + '/admin/comm-type/create">Create new communication type</a>'
         );
@@ -631,6 +624,20 @@ $(function() {
         var id = $(value).text();
         $(this).html(
             '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + id + '">link</a>'
+        );
+    });
+    // add link to single controller unit page
+    $(".controllerUnit_link").each(function(index, value){
+        var id = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + id + '">link</a>'
+        );
+    });
+    // add link to single central unit page
+    $(".centralUnit_link").each(function(index, value){
+        var id = $(value).text();
+        $(this).html(
+            '<a href="' + $SCRIPT_ROOT + '/action/centralUnits?id=' + id + '">link</a>'
         );
     });
 });

@@ -4,7 +4,7 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.T_ControllerUnit;
-import Model.Web.thymeleaf.ControllerUnit;
+import Model.Web.ControllerUnit;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -21,7 +21,6 @@ public class UC_OutsiderConsumption {
 
 
     public ControllerUnit get_ControllerUnit_ByUid(@NotNull final Integer controllerUnitUid) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         T_ControllerUnit t_controllerUnit = get_TControllerUnit_ByUid(controllerUnitUid);
@@ -31,7 +30,6 @@ public class UC_OutsiderConsumption {
 
         ControllerUnit controllerUnit = Shared_Uc.buildControllerUnit(t_controllerUnit, db);
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return controllerUnit;

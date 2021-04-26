@@ -8,7 +8,7 @@ import Model.Database.Tables.T_ControllerUnit;
 import Model.Database.Tables.T_Measurement;
 import Model.Database.Tables.T_Sensor;
 import Model.Web.Sensor;
-import Model.Web.thymeleaf.ControllerUnit;
+import Model.Web.ControllerUnit;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;

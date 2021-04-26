@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="project_table(project)" class="ibox-content forum-container">
+<div th:fragment="buildings_table(buildings)" class="ibox-content forum-container">
     <div class="st_wrap_table">
         <header class="st_table_header">
             <div class="st_row">
@@ -14,7 +14,7 @@
             </div>
         </header>
         <div class="st_table">
-            <div class="st_row" th:each="building: ${project.buildings}">
+            <div class="st_row" th:each="building: ${buildings}">
                 <div class="st_column _index-short" th:text="${building.address.country}"></div>
                 <div class="st_column _index-short" th:text="${building.address.city}"></div>
                 <div class="st_column _index-short" th:text="${building.address.street}"></div>

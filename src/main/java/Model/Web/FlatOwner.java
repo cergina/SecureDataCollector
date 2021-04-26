@@ -1,4 +1,4 @@
-package Model.Web.Specific;
+package Model.Web;
 
 import Model.Web.PrettyObject;
 import com.google.gson.annotations.Expose;

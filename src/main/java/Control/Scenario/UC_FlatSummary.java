@@ -9,8 +9,8 @@ import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.*;
 import Model.Web.Address;
 import Model.Web.CentralUnit;
-import Model.Web.thymeleaf.ControllerUnit;
-import Model.Web.thymeleaf.Flat;
+import Model.Web.ControllerUnit;
+import Model.Web.Flat;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -30,12 +30,10 @@ public class UC_FlatSummary {
     }
 
     public int countNumberOfControllersForCentralUnit(@NotNull final Integer centralUnitId) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForCentralUnit(centralUnitId);
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return t_controllerUnits.size();
@@ -46,7 +44,6 @@ public class UC_FlatSummary {
      * @return {@link Flat}, null if it does not exist
      */
     public Flat getFlatSummary(@NotNull final Integer flatId) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         T_Flat t_flat = get_TFlat_ById(flatId);
@@ -83,14 +80,12 @@ public class UC_FlatSummary {
                 controllerUnits
         );
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return flat;
     }
 
     public ControllerUnit get_ControllerUnit(@NotNull final Integer controllerUnitId) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         T_ControllerUnit t_controllerUnit = get_TControllerUnit_ById(controllerUnitId);
@@ -100,14 +95,12 @@ public class UC_FlatSummary {
 
         ControllerUnit controllerUnit = Shared_Uc.buildControllerUnit(t_controllerUnit, db);
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return controllerUnit;
     }
 
     public CentralUnit get_CentralUnit(@NotNull final Integer centralUnitId) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         T_CentralUnit t = get_TCentralUnit_ById(centralUnitId);
@@ -128,15 +121,12 @@ public class UC_FlatSummary {
         centralUnit.setZwave(t.getA_Zwave());
         centralUnit.setBuildingId(t.getA_BuildingID());
 
-
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return centralUnit;
     }
 
     public CentralUnit get_CentralUnitWithFlats(@NotNull final Integer centralUnitId) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         T_CentralUnit t_centralUnit = get_TCentralUnit_ById(centralUnitId);
@@ -176,8 +166,6 @@ public class UC_FlatSummary {
 
         centralUnit.setFlats(list);
 
-
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.afterOkSqlExecution();
 
         return centralUnit;
@@ -192,7 +180,6 @@ public class UC_FlatSummary {
     public boolean doesUserHaveRightToSeeProjectBelongingToFlat(@NotNull Integer userId, @NotNull Integer flatId) {
         boolean hasRight = false;
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {
