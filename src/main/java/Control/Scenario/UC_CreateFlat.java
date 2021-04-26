@@ -5,7 +5,7 @@ import Model.Database.Interaction.*;
 import Model.Database.Support.Assurance;
 import Model.Database.Tables.*;
 import Model.Web.JsonResponse;
-import Model.Web.Specific.FlatOwner;
+import Model.Web.FlatOwner;
 import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import View.Support.CustomExceptions.CreationException;
 import com.mysql.cj.util.StringUtils;

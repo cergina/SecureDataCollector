@@ -5,7 +5,7 @@ import Control.Scenario.UC_Types;
 import Control.Scenario.UC_FlatSummary;
 import Model.Database.Support.CustomLogs;
 import Model.Web.SensorType;
-import Model.Web.thymeleaf.ControllerUnit;
+import Model.Web.ControllerUnit;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;

@@ -25,7 +25,6 @@ public class UC_ProjectListing {
     public @NotNull final List<Project> allProjectsForUser(@NotNull final Integer userID) {
         List<Project> projects = new ArrayList<>();
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {
@@ -48,7 +47,6 @@ public class UC_ProjectListing {
     public @NotNull final List<Project> allProjects() {
         List<Project> projects = new ArrayList<>();
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {
@@ -67,7 +65,6 @@ public class UC_ProjectListing {
     }
 
     public final boolean isUserInProject(@NotNull final Integer projectID, @NotNull final Integer userID) {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
         try {
             boolean toReturn = null != I_ProjectUser.retrieveByProjectIdAndUserId(db.getConn(), db.getPs(), db.getRs(), projectID, userID);
@@ -84,7 +81,6 @@ public class UC_ProjectListing {
     public final Project specificProject(@NotNull final Integer projectID) {
         Project project = null;
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {

@@ -1,5 +1,6 @@
 package Model.Web.Specific;
 
+import Model.Web.FlatOwner;
 import Model.Web.PrettyObject;
 import com.google.gson.annotations.Expose;
 

@@ -269,7 +269,6 @@ public class UC_Auth {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
             db.beforeSqlExecution(false);
 
             Auth authDb = retrieveAuthByEmail(auth.getUser().getEmail());
@@ -294,8 +293,6 @@ public class UC_Auth {
             T_AccessPrivilegeJournal t_accessPrivilegeJournal = I_AccessPrivilegeJournal.retrieveValidForUser(db.getConn(), db.getPs(), db.getRs(), authDb.getUser().getUserID());
             authDb.setIsadmin(t_accessPrivilegeJournal.getA_AccessPrivilegeID() == T_AccessPrivilegeJournal.ACCESS_PRIVILEGE_ID_ADMIN);
 
-
-            // After SQL execution - ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
             db.afterOkSqlExecution();
 
             jsonResponse.setStatus(HttpServletResponse.SC_OK);

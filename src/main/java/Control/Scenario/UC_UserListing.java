@@ -23,7 +23,6 @@ public class UC_UserListing {
     public @NotNull final List<User> allUsersForProject(@NotNull final Integer projectID) {
         List<User> users = new ArrayList<>();
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {
@@ -44,7 +43,6 @@ public class UC_UserListing {
     }
 
     public final List<User> allUsers() {
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         List<User> temp = new ArrayList<User>();
@@ -70,7 +68,6 @@ public class UC_UserListing {
     public final User specificUser(int id) {
         User usr = null;
 
-        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         db.beforeSqlExecution(false);
 
         try {

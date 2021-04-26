@@ -1,7 +1,9 @@
 package Model.Database.Interaction;
 
+import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
+import Model.Database.Tables.T_Building;
 import Model.Database.Tables.T_Flat;
 
 import java.sql.Connection;
@@ -48,6 +50,37 @@ public class I_Flat extends InteractionWithDatabase {
             throw new SQLException("Something happened. Insertion of Flat into db failed.");
 
         return affectedRows;
+    }
+
+    public static List<T_Flat> retrieveByBuildingId(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
+        Assurance.idCheck(buildingId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Flat.DBTABLE_NAME + " " +
+                        "WHERE " + T_Flat.DBNAME_BUILDING_ID + "=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, buildingId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_Flat> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Flat.FillEntity(rs));
+            }
+        }
+
+        return arr;
     }
 
     public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {

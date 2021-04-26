@@ -5,6 +5,9 @@ import com.google.gson.annotations.Expose;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * Api model - project
+ */
 public class Project extends PrettyObject{
     // PARAMETERS
     @Expose

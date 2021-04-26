@@ -1,11 +1,11 @@
-package Model.Web.thymeleaf;
+package Model.Web;
 
 import Model.Web.Sensor;
 
 import java.util.List;
 
 /**
- * Thymeleaf model
+ * Api model - controller unit
  */
 public class ControllerUnit {
 

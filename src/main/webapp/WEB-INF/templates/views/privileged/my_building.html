@@ -1,0 +1,92 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xl-">
+            <div class="wrapper wrapper-content animated fadeInRight">
+
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is panel that provides list of flats and central units for building.<br></span>
+                    </div>
+                </div>
+
+                <!-- MAIN PANEL -->
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>BUILDING ADDRESS</h4>
+                    </div>
+                    <div th:with="buildings = ${ {building} }">
+                        <div th:replace="fragments/buildings_table.html :: buildings_table(buildings=${buildings})"></div>
+                    </div>
+                </div>
+
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>FLATS</h4>
+                    </div>
+                    <div class="ibox-content forum-container">
+                        <div class="st_wrap_table">
+                            <header class="st_table_header">
+                                <div class="st_row">
+                                    <div class="st_column _index-long">Apartment No</div>
+                                    <div class="st_column _link">Link</div>
+                                </div>
+                            </header>
+                            <div class="st_table">
+                                <div class="st_row" th:each="flat: ${building.flats}">
+                                    <div class="st_column _index-long" th:text="${flat.apartmentNO}"></div>
+                                    <div class="st_column _link flat_link" th:text="${flat.id}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>CENTRAL UNITS</h4>
+                    </div>
+                    <div class="ibox-content forum-container">
+                        <div class="st_wrap_table">
+                            <header class="st_table_header">
+                                <div class="st_row">
+                                    <div class="st_column _index-short">UID</div>
+                                    <div class="st_column _index-short">DIP address</div>
+                                    <div class="st_column _index-short">Friendly name</div>
+                                    <div class="st_column _index-short">SIM NO</div>
+                                    <div class="st_column _index-short">IMEI</div>
+                                    <div class="st_column _index-short">ZWave</div>
+                                    <div class="st_column _link">Link</div>
+                                </div>
+                            </header>
+                            <div class="st_table">
+                                <div class="st_row" th:each="centralUnit: ${building.centralUnits}">
+                                    <div class="st_column _index-short" th:text="${centralUnit.uid}"></div>
+                                    <div class="st_column _index-short" th:text="${centralUnit.dip}"></div>
+                                    <div class="st_column _index-short" th:text="${centralUnit.friendlyName}"></div>
+                                    <div class="st_column _index-short" th:text="${centralUnit.simNo}"></div>
+                                    <div class="st_column _index-short" th:text="${centralUnit.imei}"></div>
+                                    <div class="st_column _index-short" th:text="${centralUnit.zwave}"></div>
+                                    <div class="st_column _link centralUnit_link" th:text="${centralUnit.id}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

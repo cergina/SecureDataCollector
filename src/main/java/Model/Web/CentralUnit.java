@@ -1,36 +1,47 @@
 package Model.Web;
 
-import Model.Web.thymeleaf.Flat;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
+/**
+ * Api model - central unit
+ */
 public class CentralUnit extends PrettyObject {
 
     // PARAMETERS
     @Expose
-    private Integer id;
+    public Integer id;
     @Expose
-    private Integer uid;
+    public Integer uid;
     @Expose
-    private String dip;
+    public String dip;
     @Expose
-    private String friendlyName;
+    public String friendlyName;
     @Expose
-    private String simNo;
+    public String simNo;
     @Expose
-    private String imei;
+    public String imei;
     @Expose
-    private String zwave;
+    public String zwave;
+
     @Expose
     private Integer buildingId;
-
     @Expose
     public List<Flat> flats;
 
     // empty constructor for Gson
     public CentralUnit() {}
 
+    public CentralUnit(Integer id, Integer uid, String dip, String friendlyName, String simNo, String imei, String zwave) {
+        this.id = id;
+        this.uid = uid;
+        this.dip = dip;
+        this.friendlyName = friendlyName;
+        this.simNo = simNo;
+        this.imei = imei;
+        this.zwave = zwave;
+    }
 
     // GETTERS and SETTERS
     public Integer getId() {

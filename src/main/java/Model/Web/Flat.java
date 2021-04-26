@@ -1,21 +1,24 @@
-package Model.Web.thymeleaf;
-
-import Model.Web.Address;
+package Model.Web;
 
 import java.util.List;
 
 /**
- * Thymeleaf model
+ * Api model - flat
  */
 public class Flat {
 
     public Integer id;
     public String apartmentNO;
-    public Address address;
+    public Address address; // TODO toto este doladim lebo teraz sa zmenila logika a adresa patri budove
     public List<ControllerUnit> controllerUnits;
 
     // temp
     public Integer buildingId;
+
+    public Flat(Integer id, String apartmentNO) {
+        this.id = id;
+        this.apartmentNO = apartmentNO;
+    }
 
     public Flat(Integer id, String apartmentNO, Address address, List<ControllerUnit> controllerUnits) {
         this.id = id;

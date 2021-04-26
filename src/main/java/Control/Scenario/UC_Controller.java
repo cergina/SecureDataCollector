@@ -120,13 +120,12 @@ public class UC_Controller {
         T_CentralUnit t = null;
 
         try {
-            // get precise flat
             T_Flat flat = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Flat.class), flatId);
 
             int buildingId = (flat != null ? flat.getA_BuildingID() : -1);
 
-            // get centralUnit that has addressId same
-            t = I_CentralUnit.retrieveByBuildingId(db.getConn(), db.getPs(), db.getRs(), buildingId);
+            // there is no more than 1 central unit per flat
+            t = I_CentralUnit.retrieveByBuildingId(db.getConn(), db.getPs(), db.getRs(), buildingId).get(0);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }

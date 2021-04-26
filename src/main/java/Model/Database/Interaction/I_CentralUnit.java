@@ -4,6 +4,7 @@ import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_CentralUnit;
+import Model.Database.Tables.T_Flat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,36 +71,19 @@ public class I_CentralUnit extends InteractionWithDatabase {
         return affectedRows;
     }
 
-
-    public static List<T_CentralUnit> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingID) throws SQLException {
-
-        // No Filter is being used
-        if (buildingID <= DB_DO_NOT_USE_THIS_FILTER) {
-            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_CentralUnit.class));
-        }
+    public static List<T_CentralUnit> retrieveByBuildingId(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
+        Assurance.idCheck(buildingId);
 
         // SQL Definition
-        String usedSql = "SELECT " +
-                "* " +
-                "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
-                "WHERE ";
-
-
-        // add filter rules
-        boolean buildingRule = buildingID > 0;
-
-        usedSql = (buildingRule ? usedSql + T_CentralUnit.DBTABLE_NAME + ".BuildingID=? " : usedSql);
-
-        usedSql += "ORDER BY ID asc";
-
-        // prepare SQL
         ps = conn.prepareStatement(
-                usedSql
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE " + T_CentralUnit.DBNAME_BUILDING_ID + "=?"
         );
 
         int col = 0;
-        if (buildingRule)
-            ps.setInt(++col, buildingID);
+        ps.setInt(++col, buildingId);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
@@ -131,37 +115,6 @@ public class I_CentralUnit extends InteractionWithDatabase {
 
         int col = 0;
         ps.setString(++col, dip);
-
-        // SQL Execution
-        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
-        rs = scotr.TryQueryFirstTime(conn, ps, rs);
-
-        T_CentralUnit tc = null;
-
-        if (!rs.isBeforeFirst()) {
-            /* nothing was returned */
-        } else {
-            rs.next();
-
-            tc = I_CentralUnit.FillEntity(rs);
-        }
-
-        return tc;
-    }
-
-    public static T_CentralUnit retrieveByBuildingId(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
-        Assurance.idCheck(buildingId);
-
-        // SQL Definition
-        ps = conn.prepareStatement(
-                "SELECT " +
-                        "* " +
-                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
-                        "WHERE " + T_CentralUnit.DBNAME_BUILDING_ID +"=?"
-        );
-
-        int col = 0;
-        ps.setInt(++col, buildingId);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

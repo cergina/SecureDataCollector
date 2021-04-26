@@ -38,6 +38,7 @@ public class DbProvider {
      * @param willItBeTransaction if the sql is transaction (using inserts) put true here
      */
     public void beforeSqlExecution(boolean willItBeTransaction) {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         checkAndRestartConnectionIfRequired();
 
         try {
@@ -53,6 +54,7 @@ public class DbProvider {
     }
 
     public void afterOkSqlExecution() {
+        // ATTEMPT to eliminate WEBSERVLET only falling asleep of connections
         afterSqlExecution(true);
     }
 
