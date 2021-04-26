@@ -19,6 +19,8 @@
 #include "lib/crc8.h"
 //Source https://github.com/jvalrog/atmega-adc
 #include "lib/atmega-adc.h"
+//Source https://github.com/clnhlzmn/eeprom-circular-buffer
+#include "lib/eeprom_circular_buffer.h"
 
 #define F_CPU 16000000UL
 //define F_CPU 7372800UL
@@ -54,6 +56,34 @@
 #define LOW_UP 164
 #define HIGH_DOWN 410
 #define HIGH_UP 1023
+
+/************************************************************************/
+/*                            EEPROM stuff                              */
+/************************************************************************/
+struct measurement_t {
+	uint8_t dip;
+	uint8_t input;
+	uint8_t timestamp[6]; //YYMMDDhhmmss
+	uint8_t count;
+	uint8_t synchronized;
+	uint8_t deleted;
+} ref_measurement;
+
+#define CB_DATA_SIZE sizeof(ref_measurement)
+#define CB_BUFFER_SIZE 10
+#define CB_MEM_SIZE ((CB_DATA_SIZE) + 1) * CB_BUFFER_SIZE
+
+/************************************************************************/
+/*                     EEPROM CIRCULAR BUFFER 1                         */
+/************************************************************************/
+struct ee_cb cb1;
+static uint8_t cb1_mem[CB_MEM_SIZE];
+int cb1_read(uint8_t *data) {
+	return ee_cb_read(&cb1, data);
+}
+int cb1_write(const uint8_t *data) {
+	return ee_cb_write(&cb1, data);
+}
 
 // Control flags for ADC5 (PCINT13)
 uint16_t ADC5_lastValue;
@@ -192,6 +222,11 @@ int main(void)
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
 	uart_puts("ControllerUnit  Build v0.53 \r\n");
+	
+	int cb1_int = ee_cb_init(&cb1, cb1_mem, CB_DATA_SIZE, CB_BUFFER_SIZE, cb1_write, &cb1_read);
+	uart_puts("EECB1 init: ");
+	uart_putc('0' + cb1_int);
+	uart_puts("\r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
