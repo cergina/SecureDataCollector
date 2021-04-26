@@ -150,7 +150,6 @@ void SendMessageToCEU_uart(unsigned char UID, short input_NO, int value){
 		}
 		message[++mlen] = time[i];
 	}
-	free(time);
 	
 	//Add length
 	int packetLength = mlen - 1;
@@ -212,7 +211,6 @@ int main(void)
 		uart_puts(result);
 		uart_puts("\r\n");
 		SendMessageToCEU_uart(UID,1,1); // for test purpose
-		free(result);
 	#endif
 	ADC5_lastValue = 1; // We begin with logical 1 because on device its means idle state
 	
@@ -284,7 +282,7 @@ int main(void)
 					uart_puts("ACK");
 					//do stuff
 				}
-				current_flag = NULL;
+				current_flag = F_STX;
 				free(message);
 			}
 			continue;
