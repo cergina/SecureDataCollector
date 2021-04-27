@@ -1,14 +1,14 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_ProjectListing;
-import Control.Scenario.UC_UserListing;
-import Model.Database.Support.CustomLogs;
+import Control.Scenario.UC_ListProject;
+import Control.Scenario.UC_ListUser;
 import Model.Web.Project;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
+import View.Support.ServletHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -28,8 +28,6 @@ public class Admin_UsersServlet extends AdminServlet {
     private static final String VARIABLE_USERS = "users";
     private static final String VARIABLE_USER = "user";
     private static final String VARIABLE_PROJECTS = "projects";
-
-    private static final String REQUEST_PARAM_ID = "id";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -57,7 +55,7 @@ public class Admin_UsersServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        UC_UserListing uc = new UC_UserListing(getDb());
+        UC_ListUser uc = new UC_ListUser(getDb());
         List<User> users = uc.allUsers();
 
         context.setVariable(VARIABLE_ISADMIN, true);
@@ -77,18 +75,14 @@ public class Admin_UsersServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        int requestedUserId;
-        try {
-            requestedUserId = Integer.parseInt(request.getParameter(REQUEST_PARAM_ID));
-            CustomLogs.Development("V requeste prisiel id: " + requestedUserId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+        Integer requestedId = ServletHelper.getRequestParamId(request);
+        if (requestedId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        UC_UserListing uc = new UC_UserListing(getDb());
-        User user = uc.specificUser(requestedUserId);
+        UC_ListUser uc = new UC_ListUser(getDb());
+        User user = uc.specificUser(requestedId);
         if (user == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -98,7 +92,7 @@ public class Admin_UsersServlet extends AdminServlet {
         context.setVariable(VARIABLE_USER, user);
 
         // show his projects
-        List<Project> projects = (new UC_ProjectListing(getDb())).allProjectsForUser(user.getUserID());
+        List<Project> projects = (new UC_ListProject(getDb())).allProjectsForUser(user.getUserID());
         context.setVariable(VARIABLE_PROJECTS, projects);
 
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());

@@ -12,7 +12,7 @@ function graphFUNC() {
     $.ajax({
         method: "POST",
         async: false,
-        url: $SCRIPT_ROOT + "/action/projects/flats?fid=" + $("#flat-id").val(),
+        url: $SCRIPT_ROOT + "/action/projects/flats?id=" + $("#flat-id").val(),
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
         statusCode: {

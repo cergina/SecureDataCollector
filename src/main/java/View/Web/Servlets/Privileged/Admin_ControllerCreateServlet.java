@@ -1,10 +1,10 @@
 package View.Web.Servlets.Privileged;
 
-import Control.Scenario.UC_Controller;
+import Control.Scenario.UC_NewController;
 import Model.Database.Support.CustomLogs;
+import Model.Web.ControllerUnit;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import Model.Web.Specific.ControllerCreation;
 import View.Support.ServletAbstracts.AdminServlet;
 import View.Support.ServletHelper;
 
@@ -30,10 +30,10 @@ public class Admin_ControllerCreateServlet extends AdminServlet {
 
         try {
             // exception during parsing occured when UID wasnt a number
-            ControllerCreation controllerCreation = (ControllerCreation) PrettyObject.parse(ServletHelper.RequestBody(request), ControllerCreation.class);
+            ControllerUnit controllerUnit = (ControllerUnit) PrettyObject.parse(ServletHelper.RequestBody(request), ControllerUnit.class);
 
             // Execute creation
-            jsonResponse = (new UC_Controller(getDb()).createControllerUnit(controllerCreation));
+            jsonResponse = (new UC_NewController(getDb()).createControllerUnit(controllerUnit));
 
             // Confirm to user
             response.setStatus(jsonResponse.getStatus());

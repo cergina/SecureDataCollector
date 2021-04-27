@@ -21,6 +21,7 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
     public static final String TEMPLATE_NAME = "index.html";
 
     private static final String VARIABLE_ISADMIN = "isAdmin";
+    private static final String VARIABLE_USER = "user";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -41,7 +42,8 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
         // example accessing session attributes
         User user = SessionUtil.getUser(request.getSession(false));
 
-        context.setVariable("Email", user.getEmail());
+//        context.setVariable(VARIABLE_USER, user);
+        context.setVariable("Email", user.getEmail()); // TODO tu normalne setVariable user, a potom v template user.phone a pod.
 
         context.setVariable("BeforeTitle", user.getBeforetitle());
         context.setVariable("Phone", user.getPhone());
