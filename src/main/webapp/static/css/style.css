@@ -12,6 +12,25 @@ body, html{
     background-size: cover;
 }
 
+input[type=button] {
+    background-color: #62529c;
+    border: none;
+    color: #fff;
+    padding: 7px 30px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    vertical-align:middle;
+}
+
+.clickable-text {
+    cursor: pointer;
+}
+
+.clickable-text:hover {
+    text-decoration: underline !important;
+}
+
 .columnleft{
     border-top-left-radius: 9px;
     border-bottom-left-radius: 9px;
@@ -83,6 +102,10 @@ body, html{
     border-radius: 20px;
 }
 
+.roundedbutton:hover {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+}
+
 .regfields {
     margin-bottom: 0;
     /*border-bottom: 3px solid #3496cb;*/
@@ -135,6 +158,11 @@ body, html{
     min-width: 300px;
 }
 
+.rounded-input {
+    border-radius:8px;
+    height: 130%;
+}
+
 .padding-right-5{
     padding-right: 5px;
 }
@@ -171,6 +199,10 @@ body, html{
 
 ._index-general {
     min-width: 250px;
+}
+
+._index-general-shorter {
+    min-width: 220px;
 }
 
 ._index-general-longer {

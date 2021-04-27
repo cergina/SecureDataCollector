@@ -65,6 +65,7 @@ public class UC_FlatSummary {
         // prepare info about address
         T_Address t_address = get_TAddress_ByBuildingId(t_flat.getA_BuildingID());
         Address address = new Address(
+                t_address.getA_pk(),
                 t_address.getA_Country(),
                 t_address.getA_City(),
                 t_address.getA_Street(),

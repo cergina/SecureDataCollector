@@ -3,13 +3,16 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_Address;
+import Model.Database.Tables.T_Building;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_Address extends InteractionWithDatabase {
 
@@ -56,20 +59,37 @@ public class I_Address extends InteractionWithDatabase {
 
         return affectedRows;
     }
+    public static List<T_Address> retrieveUnusedAddresses(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
 
-    // Privates
-    public static T_Address FillEntity(ResultSet rs) throws SQLException {
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "t1.* " +
+                "FROM " + T_Address.DBTABLE_NAME + " t1 " +
+                "LEFT JOIN " + T_Building.DBTABLE_NAME + " t2 ON t1.ID=t2.AddressID " +
+                "WHERE t2.AddressID IS NULL";
 
-        Dictionary dict = new Hashtable();
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
 
-        dict.put(T_Address.DBNAME_COUNTRY, rs.getString(T_Address.DBNAME_COUNTRY));
-        dict.put(T_Address.DBNAME_CITY, rs.getString(T_Address.DBNAME_CITY));
-        dict.put(T_Address.DBNAME_STREET, rs.getString(T_Address.DBNAME_STREET));
-        dict.put(T_Address.DBNAME_HOUSENO, rs.getString(T_Address.DBNAME_HOUSENO));
-        dict.put(T_Address.DBNAME_ZIP, rs.getString(T_Address.DBNAME_ZIP));
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
-        return T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
+        List<T_Address> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_Address.FillEntity(rs));
+            }
+        }
+
+        return arr;
     }
+
 
     public static boolean checkIfExists(Connection conn, PreparedStatement ps, ResultSet rs, String street, String houseno, String city, String zip, String country) throws SQLException {
         Assurance.varcharCheck(street);
@@ -99,6 +119,20 @@ public class I_Address extends InteractionWithDatabase {
         rs = scotr.TryQueryFirstTime(conn, ps, rs);
 
         return rs.isBeforeFirst();
+    }
+
+    // Privates
+    public static T_Address FillEntity(ResultSet rs) throws SQLException {
+
+        Dictionary dict = new Hashtable();
+
+        dict.put(T_Address.DBNAME_COUNTRY, rs.getString(T_Address.DBNAME_COUNTRY));
+        dict.put(T_Address.DBNAME_CITY, rs.getString(T_Address.DBNAME_CITY));
+        dict.put(T_Address.DBNAME_STREET, rs.getString(T_Address.DBNAME_STREET));
+        dict.put(T_Address.DBNAME_HOUSENO, rs.getString(T_Address.DBNAME_HOUSENO));
+        dict.put(T_Address.DBNAME_ZIP, rs.getString(T_Address.DBNAME_ZIP));
+
+        return T_Address.CreateFromRetrieved(rs.getInt(T_Address.DBNAME_ID), dict);
     }
 
 }

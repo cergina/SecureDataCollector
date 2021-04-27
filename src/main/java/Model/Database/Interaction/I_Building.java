@@ -79,6 +79,26 @@ public class I_Building extends InteractionWithDatabase {
         return arr;
     }
 
+    public static boolean checkIfExists(Connection conn, PreparedStatement ps, ResultSet rs, int addressId) throws SQLException{
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_Building.DBTABLE_NAME + " " +
+                        "WHERE addressId=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, addressId);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        return rs.isBeforeFirst();
+    }
+
     // Privates
     public static T_Building FillEntity(ResultSet rs) throws SQLException {
 

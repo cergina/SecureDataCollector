@@ -27,7 +27,17 @@
                     <div th:replace="fragments/users_table.html :: users_table(users=${users})"></div>
                 </div>
 
-                <!-- TODO ADD A NEW BUILDING TO THIS PROJECT -->
+                <!-- ADD NEW BUILDING -->
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>NEW BUILDING FOR THIS PROJECT</h4>
+                    </div>
+
+                    <div th:replace="fragments/add-new_building_for_project.html"></div>
+                </div>
+
+                <!-- VIEW PROJECT BUILDINGS -->
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
                     <div class="forum-title">

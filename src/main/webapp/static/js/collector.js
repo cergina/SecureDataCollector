@@ -61,6 +61,13 @@ function buildAddress() {
     };
 }
 
+function buildBuilding() {
+    return {
+        addressId: $("#address").val(),
+        projectId: $("#project-id").val()
+    };
+}
+
 // build JSON object by Api spec: CommType
 function buildCommType() {
     return {
@@ -319,6 +326,35 @@ function createControllerUnitForThisFlat() {
     });
 }
 
+// Create new Building
+function createNewBuildingForProject() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/buildings/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildBuilding()),
+        statusCode: {
+            201: function(response) {
+                alert('Vytvorená nová budova.');
+                window.location.reload();
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
 // Create new sensor
 function createSensor() {
     $.ajax({
@@ -386,7 +422,6 @@ function createAddress() {
         data: JSON.stringify(buildAddress()),
         statusCode: {
             201: function(response) {
-                $(':input').val('');
                 alert('Úspešne sa podarilo vytvoriť novú adresu.');
             },
             409: function(jqXHR) {

@@ -1,5 +1,7 @@
 package Model.Web;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.List;
 
 /**
@@ -11,10 +13,19 @@ public class Building extends PrettyObject { // TODO tento model Expose pre prid
     public Address address;
     public List<Flat> flats;
     public List<CentralUnit> centralUnits;
+
+    @Expose
+    private Integer addressId;
+    @Expose
     private Integer projectId;
 
     // empty constructor for Gson
     public Building() {
+    }
+
+    public Building(Integer addressId, Integer projectId) {
+        this.projectId = projectId;
+        this.addressId = addressId;
     }
 
     public Building(Integer id, Address address) {
@@ -68,5 +79,13 @@ public class Building extends PrettyObject { // TODO tento model Expose pre prid
 
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
+    }
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
     }
 }

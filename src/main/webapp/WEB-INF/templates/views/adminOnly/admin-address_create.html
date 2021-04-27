@@ -17,27 +17,31 @@
                         <div class="row justify-content-center">
                             <div class="regpaddingtopbottom padding-right-5">
                                 <label for="street">Street:</label>
-                                <div><input type="email" id="street" placeholder="Street" required=""></div>
+                                <div><input class="rounded-input" type="email" id="street" placeholder="Street" required=""></div>
                             </div>
                             <div class="regpaddingtopbottom padding-left-5">
                                 <label for="houseno">House number:</label>
-                                <div><input type="email" id="houseno" placeholder="House number" required=""></div>
+                                <div><input class="rounded-input rounded-input" type="email" id="houseno" placeholder="House number" required=""></div>
                             </div>
                         </div>
                         <div class="row justify-content-center">
                             <div class="regpaddingtopbottom padding-right-5">
                                 <label for="city">City:</label>
-                                <div><input type="email" id="city" placeholder="City" required=""></div>
+                                <div><input class="rounded-input" type="email" id="city" placeholder="City" required=""></div>
                             </div>
                             <div class="regpaddingtopbottom padding-left-5">
                                 <label for="zip">ZIP:</label>
-                                <div><input type="email" id="zip" placeholder="ZIP" required=""></div>
+                                <div><input class="rounded-input" type="email" id="zip" placeholder="ZIP" required=""></div>
                             </div>
                         </div>
                         <div class="row justify-content-center">
                             <div class="regpaddingtopbottom">
+
                                 <label for="country">Country:</label>
-                                <div><input class="min-width-300" type="text" id="country" placeholder="Country" required=""></div>
+                                <select class="min-width-300" id="country">
+                                    <option value="" selected disabled hidden>Choose a country</option>
+                                    <option th:each="country : ${countriesList}" th:value="${country}" th:text="${country}"></option>
+                                </select>
                             </div>
                         </div>
                     </div>
