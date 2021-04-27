@@ -3,6 +3,8 @@ package View.Web.Servlets.Privileged.UserSpecific;
 import Control.ConfigClass;
 import Control.Scenario.UC_ListProject;
 import Control.Scenario.UC_ListUser;
+import Control.Scenario.UC_Addresses;
+import Model.Web.Address;
 import Model.Web.Project;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
@@ -30,6 +32,7 @@ public class ProjectsInformationServlet extends SessionServlet {
     private static final String VARIABLE_PROJECTS = "projects";
     private static final String VARIABLE_PROJECT = "project";
     private static final String VARIABLE_USERS = "users";
+    private static final String VARIABLE_ADDRESS_TYPES = "addresses";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -96,8 +99,12 @@ public class ProjectsInformationServlet extends SessionServlet {
         }
         List<User> users = (new UC_ListUser(getDb())).allUsersForProject(requestedId);
 
+        final List<Address> addressList = (new UC_Addresses(getDb()).getAll_UnusedAddress());
+
         context.setVariable(VARIABLE_PROJECT, project);
         context.setVariable(VARIABLE_USERS, users);
+        context.setVariable(VARIABLE_ADDRESS_TYPES, addressList);
+
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
 }

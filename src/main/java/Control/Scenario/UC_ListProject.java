@@ -90,7 +90,7 @@ public class UC_ListProject {
                 List<Building> buldings = new ArrayList<>();
                 for (T_Building tb : I_Building.retrieveByProjectId(db.getConn(), db.getPs(), db.getRs(), projectID)) {
                     T_Address ta = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_Address.class), tb.getA_AddressID());
-                    Address address = new Address(ta.getA_Country(), ta.getA_City(), ta.getA_Street(), ta.getA_HouseNO(), ta.getA_ZIP());
+                    Address address = new Address(ta.getA_pk(), ta.getA_Country(), ta.getA_City(), ta.getA_Street(), ta.getA_HouseNO(), ta.getA_ZIP());
                     Building building = new Building(tb.getA_pk(), address);
                     buldings.add(building);
                 }
