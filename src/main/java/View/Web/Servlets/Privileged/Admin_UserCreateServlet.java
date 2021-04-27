@@ -52,14 +52,13 @@ public class Admin_UserCreateServlet extends AdminServlet {
         Auth auth = (Auth) PrettyObject.parse(ServletHelper.RequestBody(request), Auth.class);
 
         // Check validity of user inserted data
-        // TODO remake somehow better, it should not be here - this is test if it will work on server
         if (auth.isModelOkayForCreation() == false) {
 
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setMessage("You cant expect me to create a user with some required fields empty.");
             response.setStatus(400);
 
-            writer.println(jsonResponse.toString());
+            writer.println(jsonResponse);
             writer.close();
 
             return;
@@ -73,7 +72,7 @@ public class Admin_UserCreateServlet extends AdminServlet {
         final JsonResponse jsonResponse = (new UC_Auth(getDb()).createUser(auth, adminID)); // create new user
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
 
         // send confirmation mail

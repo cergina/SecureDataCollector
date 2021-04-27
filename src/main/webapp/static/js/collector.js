@@ -422,7 +422,6 @@ function createAddress() {
         data: JSON.stringify(buildAddress()),
         statusCode: {
             201: function(response) {
-                $(':input').val('');
                 alert('Úspešne sa podarilo vytvoriť novú adresu.');
             },
             409: function(jqXHR) {

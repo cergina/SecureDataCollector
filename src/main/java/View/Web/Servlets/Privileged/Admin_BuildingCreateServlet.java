@@ -2,9 +2,9 @@ package View.Web.Servlets.Privileged;
 
 import Control.Scenario.UC_BuildingListing;
 import Model.Database.Support.CustomLogs;
+import Model.Web.Building;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import Model.Web.Specific.BuildingCreation;
 import View.Support.ServletAbstracts.AdminServlet;
 import View.Support.ServletHelper;
 
@@ -26,7 +26,7 @@ public class Admin_BuildingCreateServlet extends AdminServlet {
 
         JsonResponse jsonResponse = new JsonResponse();
         try {
-            BuildingCreation buildingCreation = (BuildingCreation) PrettyObject.parse(ServletHelper.RequestBody(request), BuildingCreation.class);
+            Building buildingCreation = (Building) PrettyObject.parse(ServletHelper.RequestBody(request), Building.class);
 
             // Execute creation and confirm to user
             jsonResponse = (new UC_BuildingListing(getDb()).createNewBuilding(buildingCreation));

@@ -8,7 +8,6 @@ import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.Assurance;
 import Model.Database.Tables.*;
 import Model.Web.*;
-import Model.Web.Specific.BuildingCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;
 
 import javax.servlet.http.HttpServletResponse;
@@ -60,7 +59,7 @@ public class UC_BuildingListing {
         return building;
     }
 
-    public JsonResponse createNewBuilding(BuildingCreation buildingCreation) {
+    public JsonResponse createNewBuilding(Building buildingCreation) {
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
@@ -96,11 +95,11 @@ public class UC_BuildingListing {
         return jsonResponse;
     }
 
-    private boolean checkExistsInDatabase(BuildingCreation buildingCreation) throws SQLException {
+    private boolean checkExistsInDatabase(Building buildingCreation) throws SQLException {
         return I_Building.checkIfExists(db.getConn(), db.getPs(), db.getRs(), buildingCreation.getAddressId());
     }
 
-    private void insertIntoDatabase(@NotNull final BuildingCreation buildingCreation) throws SQLException{
+    private void insertIntoDatabase(@NotNull final Building buildingCreation) throws SQLException{
         Dictionary dict = new Hashtable();
 
         dict.put(T_Building.DBNAME_ADDRESS_ID, buildingCreation.getAddressId());

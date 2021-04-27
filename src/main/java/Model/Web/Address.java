@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 public class Address extends PrettyObject {
 
     @Expose
-    public int id;
+    public Integer id;
     @Expose
     public String country;
     @Expose
@@ -24,7 +24,7 @@ public class Address extends PrettyObject {
     public Address() {
     }
 
-    public Address(int id, String country, String city, String street, String houseno, String zip) {
+    public Address(Integer id, String country, String city, String street, String houseno, String zip) {
         this.id = id;
         this.country = country;
         this.city = city;
@@ -33,11 +33,11 @@ public class Address extends PrettyObject {
         this.zip = zip;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
