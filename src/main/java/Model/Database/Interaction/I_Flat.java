@@ -3,8 +3,8 @@ package Model.Database.Interaction;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.DbEntity;
-import Model.Database.Tables.T_Building;
 import Model.Database.Tables.T_Flat;
+import com.mysql.cj.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -83,10 +83,10 @@ public class I_Flat extends InteractionWithDatabase {
         return arr;
     }
 
-    public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId) throws SQLException {
+    public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId, String apartmentNo) throws SQLException {
 
         // No Filter is being used
-        if (buildingId <= DB_DO_NOT_USE_THIS_FILTER) {
+        if (buildingId <= DB_DO_NOT_USE_THIS_FILTER || StringUtils.isNullOrEmpty(apartmentNo)) {
             return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_Flat.class));
         }
 
@@ -99,8 +99,13 @@ public class I_Flat extends InteractionWithDatabase {
 
         // add filter rules
         boolean buildingRule = buildingId > 0;
+        boolean apartmentRule = StringUtils.isNullOrEmpty(apartmentNo) == false;
 
         usedSql = (buildingRule ? usedSql + T_Flat.DBTABLE_NAME + ".BuildingID=? " : usedSql);
+
+        /* add second WHERE clause - watch out for possibility of AND requirement if first line rule was added */
+        usedSql = (apartmentRule && (buildingRule == false) ? usedSql + T_Flat.DBTABLE_NAME + ".ApartmentNO=? " : usedSql);
+        usedSql = (apartmentRule && buildingRule ? usedSql + " AND " + T_Flat.DBTABLE_NAME + ".ApartmentNO=? " : usedSql);
 
         usedSql += "ORDER BY ID asc";
 
@@ -112,6 +117,8 @@ public class I_Flat extends InteractionWithDatabase {
         int col = 0;
         if (buildingRule)
             ps.setInt(++col, buildingId);
+        if (apartmentRule)
+            ps.setString(++col, apartmentNo);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

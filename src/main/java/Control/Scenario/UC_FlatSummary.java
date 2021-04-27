@@ -150,7 +150,7 @@ public class UC_FlatSummary {
         // fill with flats of setting address Id
         List<T_Flat> arr;
         try {
-            arr = I_Flat.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), centralUnit.getBuildingId());
+            arr = I_Flat.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), centralUnit.getBuildingId(), null);
         } catch (SQLException e) {
             db.afterFailedSqlExecution();
             return null;
