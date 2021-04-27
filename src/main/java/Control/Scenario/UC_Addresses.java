@@ -4,8 +4,8 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Address;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.T_Address;
-import Model.Web.JsonResponse;
 import Model.Web.Address;
+import Model.Web.JsonResponse;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.CreationException;
 import com.mysql.cj.util.StringUtils;
@@ -13,14 +13,16 @@ import com.mysql.cj.util.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 
-public class UC_NewAddress {
-    private DbProvider db;
+public class UC_Addresses {
+    private final DbProvider db;
 
-    public UC_NewAddress(@NotNull DbProvider dbProvider) {
+    public UC_Addresses(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
@@ -64,14 +66,11 @@ public class UC_NewAddress {
             return false;
 
 
-        if (StringUtils.isNullOrEmpty(address.getStreet()) ||
-                StringUtils.isNullOrEmpty(address.getHouseno()) ||
-                StringUtils.isNullOrEmpty(address.getCity()) ||
-                StringUtils.isNullOrEmpty(address.getZip()) ||
-                StringUtils.isNullOrEmpty(address.getCountry()))
-            return false;
-
-        return true;
+        return !StringUtils.isNullOrEmpty(address.getStreet()) &&
+                !StringUtils.isNullOrEmpty(address.getHouseno()) &&
+                !StringUtils.isNullOrEmpty(address.getCity()) &&
+                !StringUtils.isNullOrEmpty(address.getZip()) &&
+                !StringUtils.isNullOrEmpty(address.getCountry());
     }
 
     private void insertAddressIntoDatabase(@NotNull final Address address) throws SQLException{
@@ -99,4 +98,19 @@ public class UC_NewAddress {
         return true;
     }
 
+    public List<Address> getAll_UnusedAddress() {
+        List<Address> addressList = new ArrayList<>();
+
+        try {
+            List<T_Address> t_addressList = I_Address.retrieveUnusedAddresses(db.getConn(), db.getPs(), db.getRs());
+            for (T_Address t : t_addressList) {
+                Address address = new Address(t.getA_pk(), t.getA_Country(), t.getA_City(), t.getA_Street(), t.getA_HouseNO(), t.getA_ZIP());
+                addressList.add(address);
+            }
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return addressList;
+    }
 }

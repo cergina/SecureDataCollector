@@ -1,10 +1,10 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_NewAddress;
+import Control.Scenario.UC_Addresses;
+import Model.Web.Address;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
-import Model.Web.Address;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
@@ -46,11 +46,11 @@ public class Admin_AddressCreateServlet extends AdminServlet {
         // parse JSON from Body object
         Address address = (Address) PrettyObject.parse(ServletHelper.RequestBody(request), Address.class);
 
-        final JsonResponse jsonResponse = (new UC_NewAddress(getDb()).createNewAddress(address));
+        final JsonResponse jsonResponse = (new UC_Addresses(getDb()).createNewAddress(address));
 
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
     }
 

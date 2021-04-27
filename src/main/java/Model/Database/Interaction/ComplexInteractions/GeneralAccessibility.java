@@ -4,7 +4,6 @@ import Model.Database.Interaction.I_ProjectUser;
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
 import Model.Database.Tables.T_Building;
-import Model.Database.Tables.T_CentralUnit;
 import Model.Database.Tables.T_Flat;
 import Model.Database.Tables.T_Project_user;
 
@@ -71,6 +70,5 @@ public class GeneralAccessibility {
 
         return t;
     }
-
 
 }

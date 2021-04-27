@@ -1,0 +1,10 @@
+<div>
+    <!-- VIEW FORM FOR BUILDING INFO ADDITION -->
+    <div class="st_column">
+        <select class="min-width-300" id="address">
+            <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.country + ', ' + address.city + ', ' + address.street + ', ' + address.houseno + ', ' + address.zip}"></option>
+        </select>
+        <div class="st_column _link"><input type="hidden" th:value="${project.id}" size="15" id="project-id"></div>
+        <button type="submit" class="roundedbutton min-width-300" onclick="createNewBuildingForProject()">Create</button>
+    </div>
+</div>
