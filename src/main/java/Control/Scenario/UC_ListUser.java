@@ -13,10 +13,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UC_UserListing {
+public class UC_ListUser {
     private final DbProvider db;
 
-    public UC_UserListing(@NotNull DbProvider dbProvider) {
+    public UC_ListUser(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 

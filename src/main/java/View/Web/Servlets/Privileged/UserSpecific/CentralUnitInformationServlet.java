@@ -7,6 +7,7 @@ import Model.Web.CentralUnit;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
+import View.Support.ServletHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -24,7 +25,6 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
     private static final String VARIABLE_CENTRALUNIT = "centralUnit";
     private static final String VARIABLE_FLATS_LIST = "flatsList";
     private static final String VARIABLE_ISADMIN = "isAdmin";
-    private static final String REQUEST_PARAM_CENTRAL_UNIT_ID = "id";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -49,25 +49,20 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
      * @throws IOException
      */
     private void processSingleCentralUnit(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // has to have some request for controller unit id
-        int requestedCentralUnitId;
-        try {
-            requestedCentralUnitId = Integer.parseInt(request.getParameter(REQUEST_PARAM_CENTRAL_UNIT_ID));
-            CustomLogs.Development("V requeste prisiel central unit id: " + requestedCentralUnitId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+        Integer requestedId = ServletHelper.getRequestParamId(request);
+        if (requestedId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         // if no controllers do one time view insert of
-        int count = (new UC_FlatSummary(getDb())).countNumberOfControllersForCentralUnit(requestedCentralUnitId);
+        int count = (new UC_FlatSummary(getDb())).countNumberOfControllersForCentralUnit(requestedId);
 
         if (count == 0) {
-            processYetSingleEmptyCentralUnit(request, response, requestedCentralUnitId);
+            processYetSingleEmptyCentralUnit(request, response, requestedId);
             return;
         } else {
-            processSingleCentralUnit(request, response, requestedCentralUnitId);
+            processSingleCentralUnit(request, response, requestedId);
             return;
         }
     }

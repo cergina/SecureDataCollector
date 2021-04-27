@@ -12,10 +12,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UC_BuildingListing {
+public class UC_ListBuilding {
     private final DbProvider db;
 
-    public UC_BuildingListing(@NotNull DbProvider dbProvider) {
+    public UC_ListBuilding(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 

@@ -77,8 +77,8 @@ function buildSensorType() {
     };
 }
 
-// build JSON object by Api spec: ControllerCreation
-function buildControllerCreation() {
+// build JSON object by Api spec: ControllerUnit
+function buildControllerUnit() {
     return {
         uid: $("#controller-uid").val(),
         dipAddress: $("#controller-dip_address").val(),
@@ -294,7 +294,7 @@ function createControllerUnitForThisFlat() {
         url: $SCRIPT_ROOT + "/admin/controllers/create",
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
-        data: JSON.stringify(buildControllerCreation()),
+        data: JSON.stringify(buildControllerUnit()),
         statusCode: {
             201: function(response) {
                 $("#controller-uid").val('');
@@ -473,7 +473,7 @@ function goHome() {
 
 // TEST ONLY
 function goToFlatId1() {
-    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=1');
+    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?id=1');
 }
 
 // Login user
@@ -486,7 +486,7 @@ function accessFlatWithId() {
     var idToVisit = idToVisit = $("#access-flatId").val().replace(/\s+/g, '');
 
     if (isInputIdUsable(idToVisit)) {
-        $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
+        $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?id=' + idToVisit);
     } else {
         alert('Please provide a valid integer id as input to request FLAT VIEW.');
     }
@@ -623,7 +623,7 @@ $(function() {
     $(".flat_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?id=' + id + '">link</a>'
         );
     });
     // add link to single controller unit page

@@ -10,8 +10,8 @@ import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_CentralUnit;
 import Model.Database.Tables.T_ControllerUnit;
 import Model.Database.Tables.T_Flat;
+import Model.Web.ControllerUnit;
 import Model.Web.JsonResponse;
-import Model.Web.Specific.ControllerCreation;
 import View.Support.CustomExceptions.AlreadyExistsException;
 import View.Support.CustomExceptions.CreationException;
 import com.mysql.cj.util.StringUtils;
@@ -22,29 +22,29 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class UC_Controller {
+public class UC_NewController {
     private final DbProvider db;
 
-    public UC_Controller(@NotNull DbProvider dbProvider) {
+    public UC_NewController(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
 
-    public final @NotNull JsonResponse createControllerUnit(@NotNull final ControllerCreation creation){
+    public final @NotNull JsonResponse createControllerUnit(@NotNull final ControllerUnit controllerUnit){
         JsonResponse jsonResponse = new JsonResponse();
 
         try {
-            if (isDataValid(creation) == false) {
+            if (isDataValid(controllerUnit) == false) {
                 jsonResponse.setMessage("Some required fields are missing or incorrect.");
                 throw new CreationException("Some required fields are missing or incorrect.");
             }
 
-            if(checkIfAlreadyExists(creation.getUid(), creation.getDipAddress(), creation.getFlatId())){
+            if(checkIfAlreadyExists(controllerUnit.getUid(), controllerUnit.getDipAddress(), controllerUnit.getFlatId())){
                 throw new AlreadyExistsException("Controller Unit already exists.");
             }
 
             db.beforeSqlExecution(true);
-            insertIntoDatabase(creation);
+            insertIntoDatabase(controllerUnit);
 
             db.afterOkSqlExecution();
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
@@ -71,7 +71,7 @@ public class UC_Controller {
     }
 
 
-    private boolean isDataValid(@NotNull final ControllerCreation creation) throws NumberFormatException{
+    private boolean isDataValid(@NotNull final ControllerUnit creation) throws NumberFormatException{
         // dip address can only be between min 1 and max 255
         int temp = Integer.parseInt(creation.getDipAddress());
         if (temp < 1 || temp > 255)
@@ -87,18 +87,18 @@ public class UC_Controller {
                 !StringUtils.isNullOrEmpty(creation.getDipAddress()) && Assurance.isFkOk(creation.getFlatId()) != false;
     }
 
-    private void insertIntoDatabase(@NotNull final ControllerCreation creation) throws SQLException{
+    private void insertIntoDatabase(@NotNull final ControllerUnit controllerUnit) throws SQLException{
         Dictionary dict = new Hashtable();
 
-        dict.put(T_ControllerUnit.DBNAME_UID, creation.getUid());
-        dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, creation.getDipAddress());
-        dict.put(T_ControllerUnit.DBNAME_ZWAVE, creation.getZwave());
+        dict.put(T_ControllerUnit.DBNAME_UID, controllerUnit.getUid());
+        dict.put(T_ControllerUnit.DBNAME_DIPADDRESS, controllerUnit.getDipAddress());
+        dict.put(T_ControllerUnit.DBNAME_ZWAVE, controllerUnit.getZwave());
 
-        T_CentralUnit tc = get_TCentralUnit_ByFlatId(creation.getFlatId());
+        T_CentralUnit tc = get_TCentralUnit_ByFlatId(controllerUnit.getFlatId());
         int centralUnitId = (tc != null ? tc.getA_pk() : -1);
 
         dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, centralUnitId);
-        dict.put(T_ControllerUnit.DBNAME_FLAT_ID, creation.getFlatId());
+        dict.put(T_ControllerUnit.DBNAME_FLAT_ID, controllerUnit.getFlatId());
 
         I_ControllerUnit.insert(db.getConn(), db.getPs(), T_ControllerUnit.CreateFromScratch(dict));
     }
