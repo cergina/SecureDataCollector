@@ -57,6 +57,10 @@ public class ServletHelper {
         return bodyString;
     }
 
+    /**
+     * Extract ID from
+     * <URL>?id=<int:ID>
+     */
     public static Integer getRequestParamId(HttpServletRequest request) throws IOException {
         Integer requestedId = null;
         try {
