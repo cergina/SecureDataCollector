@@ -126,7 +126,10 @@ function buildFlat() {
 
 function buildFlatForBuilding() {
     return {
-        apartmentNo: $("#apartment-No").val(),
+        flat: {
+            apartmentNO: $("#apartment-No").val(),
+            buildingId: $("#building-id").val()
+        },
         owner1: {
             title: $("#owner1-title").val(),
             firstName: $("#owner1-name").val(),
@@ -144,8 +147,7 @@ function buildFlatForBuilding() {
             phone: $("#owner2-phone").val(),
             email: $("#owner2-email").val(),
             address: $("#owner2-address").val()
-        },
-        buildingId: $("#building-id").val()
+        }
     };
 }
 
@@ -160,7 +162,7 @@ function createNewFlat() {
         data: JSON.stringify(buildFlatForBuilding()),
         statusCode: {
             201: function(response) {
-                $(':input').val('');
+                $(".rounded-input").val('');
                 $(":checkbox").prop("checked", false).removeAttr("checked");
                 alert('Flat and owners successfully created.');
                 window.location.reload();

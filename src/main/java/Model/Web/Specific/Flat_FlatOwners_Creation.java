@@ -1,33 +1,23 @@
 package Model.Web.Specific;
 
+import Model.Web.Flat;
 import Model.Web.FlatOwner;
 import Model.Web.PrettyObject;
 import com.google.gson.annotations.Expose;
 
 public class Flat_FlatOwners_Creation extends PrettyObject {
-    @Expose
-    String apartmentNo;
     // Flatowner flat
     @Expose
     FlatOwner owner1;
     @Expose
     FlatOwner owner2;
 
-    // Info about centralUnit
+    // Info about flat
     @Expose
-    Integer buildingId;
+    Flat flat;
 
 
     // GETTERS & SETTERS
-
-    public String getApartmentNo() {
-        return apartmentNo;
-    }
-
-    public void setApartmentNo(String apartmentNo) {
-        this.apartmentNo = apartmentNo;
-    }
-
     public FlatOwner getOwner1() {
         return owner1;
     }
@@ -44,11 +34,11 @@ public class Flat_FlatOwners_Creation extends PrettyObject {
         this.owner2 = owner2;
     }
 
-    public Integer getBuildingId() {
-        return buildingId;
+    public Flat getFlat() {
+        return flat;
     }
 
-    public void setBuildingId(Integer buildingId) {
-        this.buildingId = buildingId;
+    public void setFlat(Flat flat) {
+        this.flat = flat;
     }
 }

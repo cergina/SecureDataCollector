@@ -52,8 +52,8 @@ public class UC_CreateFlat {
             // Create flat
             Dictionary dict = new Hashtable();
 
-            dict.put(T_Flat.DBNAME_APARTMENTNO, creation.getApartmentNo());
-            dict.put(T_Flat.DBNAME_BUILDING_ID, creation.getBuildingId());
+            dict.put(T_Flat.DBNAME_APARTMENTNO, creation.getFlat().getApartmentNO());
+            dict.put(T_Flat.DBNAME_BUILDING_ID, creation.getFlat().getBuildingId());
 
 
             I_Flat.insert(db.getConn(), db.getPs(), T_Flat.CreateFromScratch(dict));
@@ -331,16 +331,16 @@ public class UC_CreateFlat {
         }
 
         // apartment no cant be empty
-        if (StringUtils.isNullOrEmpty(creation.getApartmentNo())) {
+        if (StringUtils.isNullOrEmpty(creation.getFlat().getApartmentNO())) {
             return false;
         }
 
         // is building id and appartmentNo unique?
-        if (doesBuildingAlreadyContainSuchApartmentNo(creation.getBuildingId(), creation.getApartmentNo())) {
+        if (doesBuildingAlreadyContainSuchApartmentNo(creation.getFlat().getBuildingId(), creation.getFlat().getApartmentNO())) {
             return false;
         }
 
-        return Assurance.isFkOk(creation.getBuildingId()) != false;
+        return Assurance.isFkOk(creation.getFlat().getBuildingId()) != false;
     }
 
     private boolean isFlatOwnerOk(FlatOwner fo) {
