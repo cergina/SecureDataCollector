@@ -41,9 +41,10 @@ public class Admin_ControllerCreateServlet extends AdminServlet {
             CustomLogs.Error(e.getMessage());
 
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(jsonResponse.getStatus());
             jsonResponse.setMessage("UID can be only a number.");
         } finally {
-            writer.println(jsonResponse.toString());
+            writer.println(jsonResponse);
             writer.close();
         }
     }

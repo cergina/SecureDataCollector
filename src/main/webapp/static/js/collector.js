@@ -296,34 +296,40 @@ function loginUser() {
 // CREATING STUFF
 // Create new controller unit
 function createControllerUnitForThisFlat() {
-    $.ajax({
-        method: "POST",
-        url: $SCRIPT_ROOT + "/admin/controllers/create",
-        contentType: CONTENT_TYPE,
-        dataType: DATA_TYPE,
-        data: JSON.stringify(buildControllerUnit()),
-        statusCode: {
-            201: function(response) {
-                $("#controller-uid").val('');
-                $("#controller-dip_address").val('');
-                $("#controller-zwave").val('');
-                alert('Vytvorený nový controller unit.');
-                window.location.reload();
-            },
-            409: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            400: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+    if ($("#controller-uid").val() == "" ||
+        $("#controller-dip_address").val() == "" ||
+        $("#controller-zwave").val() == "") {
+        alert("All fields have to be filled.");
+    } else {
+        $.ajax({
+            method: "POST",
+            url: $SCRIPT_ROOT + "/admin/controllers/create",
+            contentType: CONTENT_TYPE,
+            dataType: DATA_TYPE,
+            data: JSON.stringify(buildControllerUnit()),
+            statusCode: {
+                201: function(response) {
+                    $("#controller-uid").val('');
+                    $("#controller-dip_address").val('');
+                    $("#controller-zwave").val('');
+                    alert('Vytvorený nový controller unit.');
+                    window.location.reload();
+                },
+                409: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                400: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                500: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 // Create new Building

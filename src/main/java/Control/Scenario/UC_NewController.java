@@ -21,8 +21,10 @@ import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class UC_NewController {
+    public static final String BUILDING_REQUIRES_CENTRALUNIT = "BuildingRequiresCentralUnit";
     private final DbProvider db;
 
     public UC_NewController(@NotNull DbProvider dbProvider) {
@@ -57,7 +59,7 @@ public class UC_NewController {
         } catch (SQLException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            jsonResponse.setMessage("Internal server error.");
+            jsonResponse.setMessage(e.getMessage().equals(BUILDING_REQUIRES_CENTRALUNIT) ? "You have to first create a central unit for the building, this flat is in." : "Internal server error.");
         } catch (CreationException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -95,6 +97,9 @@ public class UC_NewController {
         dict.put(T_ControllerUnit.DBNAME_ZWAVE, controllerUnit.getZwave());
 
         T_CentralUnit tc = get_TCentralUnit_ByFlatId(controllerUnit.getFlatId());
+        if (tc == null)
+            throw new SQLException(BUILDING_REQUIRES_CENTRALUNIT);
+
         int centralUnitId = (tc != null ? tc.getA_pk() : -1);
 
         dict.put(T_ControllerUnit.DBNAME_CENTRALUNIT_ID, centralUnitId);
@@ -125,7 +130,10 @@ public class UC_NewController {
             int buildingId = (flat != null ? flat.getA_BuildingID() : -1);
 
             // there is no more than 1 central unit per flat
-            t = I_CentralUnit.retrieveByBuildingId(db.getConn(), db.getPs(), db.getRs(), buildingId).get(0);
+            List<T_CentralUnit> listToCheck = I_CentralUnit.retrieveByBuildingId(db.getConn(), db.getPs(), db.getRs(), buildingId);
+            if (listToCheck.isEmpty() == false) {
+                t = listToCheck.get(0);
+            }
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }

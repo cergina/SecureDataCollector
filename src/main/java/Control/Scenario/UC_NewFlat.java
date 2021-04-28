@@ -4,8 +4,8 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.*;
 import Model.Database.Support.Assurance;
 import Model.Database.Tables.*;
-import Model.Web.JsonResponse;
 import Model.Web.FlatOwner;
+import Model.Web.JsonResponse;
 import Model.Web.Specific.Flat_FlatOwners_Controller_Creation;
 import View.Support.CustomExceptions.CreationException;
 import com.mysql.cj.util.StringUtils;
@@ -20,10 +20,10 @@ import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
-public class UC_CreateFlat {
+public class UC_NewFlat {
     private final DbProvider db;
 
-    public UC_CreateFlat(@NotNull DbProvider dbProvider) {
+    public UC_NewFlat(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
