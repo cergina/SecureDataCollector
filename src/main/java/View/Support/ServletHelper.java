@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class ServletHelper {
 
+    private static final String REQUEST_PARAM_ID = "id";
+
     public static String ReturnBodyIfValid(HttpServletRequest req, String typeOfRequest, String url) throws ServletException, IOException {
         // get body of request
         String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -53,5 +55,20 @@ public class ServletHelper {
             CustomLogs.Error(e.getMessage());
         }
         return bodyString;
+    }
+
+    /**
+     * Extract ID from
+     * <URL>?id=<int:ID>
+     */
+    public static Integer getRequestParamId(HttpServletRequest request) throws IOException {
+        Integer requestedId = null;
+        try {
+            requestedId = Integer.parseInt(request.getParameter(REQUEST_PARAM_ID));
+            CustomLogs.Development("V requeste prisiel id: " + requestedId);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+        }
+        return requestedId;
     }
 }

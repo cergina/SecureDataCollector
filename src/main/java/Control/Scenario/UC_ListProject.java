@@ -15,10 +15,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UC_ProjectListing {
+public class UC_ListProject {
     private final DbProvider db;
 
-    public UC_ProjectListing(@NotNull DbProvider dbProvider) {
+    public UC_ListProject(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 

@@ -1,6 +1,6 @@
 package View.Web.Servlets.Privileged;
 
-import Control.Scenario.UC_BuildingListing;
+import Control.Scenario.UC_ListBuilding;
 import Model.Database.Support.CustomLogs;
 import Model.Web.Building;
 import Model.Web.JsonResponse;
@@ -29,7 +29,7 @@ public class Admin_BuildingCreateServlet extends AdminServlet {
             Building buildingCreation = (Building) PrettyObject.parse(ServletHelper.RequestBody(request), Building.class);
 
             // Execute creation and confirm to user
-            jsonResponse = (new UC_BuildingListing(getDb()).createNewBuilding(buildingCreation));
+            jsonResponse = (new UC_ListBuilding(getDb()).createNewBuilding(buildingCreation));
             response.setStatus(jsonResponse.getStatus());
         } catch (Exception e) {
             CustomLogs.Error(e.getMessage() + "Someone is tampering with our API and sending forged requests and invalid id's.");

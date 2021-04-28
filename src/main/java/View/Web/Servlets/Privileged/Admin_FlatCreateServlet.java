@@ -1,6 +1,6 @@
 package View.Web.Servlets.Privileged;
 
-import Control.Scenario.UC_CreateFlat;
+import Control.Scenario.UC_NewFlat;
 import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
@@ -33,7 +33,7 @@ public class Admin_FlatCreateServlet extends AdminServlet {
             Flat_FlatOwners_Controller_Creation flatFlatOwnersControllerCreation = (Flat_FlatOwners_Controller_Creation) PrettyObject.parse(ServletHelper.RequestBody(request), Flat_FlatOwners_Controller_Creation.class);
 
             // Execute creation
-            jsonResponse = (new UC_CreateFlat(getDb()).createNewFlat_Owner_Controller(flatFlatOwnersControllerCreation)); // create new flat, owner and controller
+            jsonResponse = (new UC_NewFlat(getDb()).createNewFlat_Owner_Controller(flatFlatOwnersControllerCreation)); // create new flat, owner and controller
 
             // Confirm to user
             response.setStatus(jsonResponse.getStatus());
@@ -43,7 +43,7 @@ public class Admin_FlatCreateServlet extends AdminServlet {
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             jsonResponse.setMessage("Make sure you are inserting fields in ok format.");
         } finally {
-            writer.println(jsonResponse.toString());
+            writer.println(jsonResponse);
             writer.close();
         }
     }

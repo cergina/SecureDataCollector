@@ -20,10 +20,10 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class UC_CreateSensor {
+public class UC_NewSensor {
     private final DbProvider db;
 
-    public UC_CreateSensor(@NotNull DbProvider dbProvider) {
+    public UC_NewSensor(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 

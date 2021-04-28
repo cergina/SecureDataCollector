@@ -11,6 +11,7 @@ import Model.Web.Flat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
+import View.Support.ServletHelper;
 import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -29,7 +30,6 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
 
     private static final String VARIABLE_FLAT = "flat";
     private static final String VARIABLE_ISADMIN = "isAdmin";
-    private static final String REQUEST_PARAM_FLAT_ID = "fid";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -46,13 +46,8 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
 
         CustomLogs.Development("Sme vo doGet");
 
-        // has to have some request for flat id
-        int requestedFlatId;
-        try {
-            requestedFlatId = Integer.parseInt(request.getParameter(REQUEST_PARAM_FLAT_ID));
-            CustomLogs.Development("V requeste prisiel flat id: " + requestedFlatId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
+        Integer requestedId = ServletHelper.getRequestParamId(request);
+        if (requestedId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -65,7 +60,7 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         /* find out if he has access to the project */
         User user = SessionUtil.getUser(request.getSession(false));
         UC_FlatSummary uc = new UC_FlatSummary(getDb());
-        if (uc.doesUserHaveRightToSeeProjectBelongingToFlat(user.getUserID(), requestedFlatId) == false) {
+        if (uc.doesUserHaveRightToSeeProjectBelongingToFlat(user.getUserID(), requestedId) == false) {
             if (isAdmin == false) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
@@ -73,7 +68,7 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         }
 
         /* this will not happen - then why is it here */
-        Flat flat = uc.getFlatSummary(requestedFlatId);
+        Flat flat = uc.getFlatSummary(requestedId);
         if (flat == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -90,19 +85,13 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
-        // has to have some request for flat id
-        int requestedFlatId;
-        try {
-            requestedFlatId = Integer.parseInt(request.getParameter(REQUEST_PARAM_FLAT_ID));
-            CustomLogs.Development("V POST requeste prisiel flat id: " + requestedFlatId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
+        Integer requestedId = ServletHelper.getRequestParamId(request);
+        if (requestedId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-
-        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(requestedFlatId));
+        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(requestedId));
 
         final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraph(graph));
 

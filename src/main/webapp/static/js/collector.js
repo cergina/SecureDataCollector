@@ -84,8 +84,8 @@ function buildSensorType() {
     };
 }
 
-// build JSON object by Api spec: ControllerCreation
-function buildControllerCreation() {
+// build JSON object by Api spec: ControllerUnit
+function buildControllerUnit() {
     return {
         uid: $("#controller-uid").val(),
         dipAddress: $("#controller-dip_address").val(),
@@ -357,34 +357,40 @@ function loginUser() {
 // CREATING STUFF
 // Create new controller unit
 function createControllerUnitForThisFlat() {
-    $.ajax({
-        method: "POST",
-        url: $SCRIPT_ROOT + "/admin/controllers/create",
-        contentType: CONTENT_TYPE,
-        dataType: DATA_TYPE,
-        data: JSON.stringify(buildControllerCreation()),
-        statusCode: {
-            201: function(response) {
-                $("#controller-uid").val('');
-                $("#controller-dip_address").val('');
-                $("#controller-zwave").val('');
-                alert('Vytvorený nový controller unit.');
-                window.location.reload();
-            },
-            409: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            400: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+    if ($("#controller-uid").val() == "" ||
+        $("#controller-dip_address").val() == "" ||
+        $("#controller-zwave").val() == "") {
+        alert("All fields have to be filled.");
+    } else {
+        $.ajax({
+            method: "POST",
+            url: $SCRIPT_ROOT + "/admin/controllers/create",
+            contentType: CONTENT_TYPE,
+            dataType: DATA_TYPE,
+            data: JSON.stringify(buildControllerUnit()),
+            statusCode: {
+                201: function(response) {
+                    $("#controller-uid").val('');
+                    $("#controller-dip_address").val('');
+                    $("#controller-zwave").val('');
+                    alert('Vytvorený nový controller unit.');
+                    window.location.reload();
+                },
+                409: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                400: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                },
+                500: function(jqXHR) {
+                    var response = JSON.parse(jqXHR.responseText);
+                    alert(response.message); // TODO impact layout
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 // Create new Building
@@ -570,7 +576,7 @@ function goHome() {
 
 // TEST ONLY
 function goToFlatId1() {
-    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=1');
+    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?id=1');
 }
 
 // Login user
@@ -583,7 +589,7 @@ function accessFlatWithId() {
     var idToVisit = idToVisit = $("#access-flatId").val().replace(/\s+/g, '');
 
     if (isInputIdUsable(idToVisit)) {
-        $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?fid=' + idToVisit);
+        $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?id=' + idToVisit);
     } else {
         alert('Please provide a valid integer id as input to request FLAT VIEW.');
     }
@@ -744,7 +750,7 @@ $(function() {
     $(".flat_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?fid=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?id=' + id + '">link</a>'
         );
     });
     // add link to single controller unit page

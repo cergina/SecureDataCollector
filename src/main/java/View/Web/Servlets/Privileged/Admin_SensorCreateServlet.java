@@ -1,6 +1,6 @@
 package View.Web.Servlets.Privileged;
 
-import Control.Scenario.UC_CreateSensor;
+import Control.Scenario.UC_NewSensor;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
 import Model.Web.Sensor;
@@ -25,7 +25,7 @@ public class Admin_SensorCreateServlet extends AdminServlet {
         PrintWriter writer = response.getWriter();
 
         Sensor sensor = (Sensor) PrettyObject.parse(ServletHelper.RequestBody(request), Sensor.class);
-        JsonResponse jsonResponse = (new UC_CreateSensor(getDb()).createSensor(sensor));
+        JsonResponse jsonResponse = (new UC_NewSensor(getDb()).createSensor(sensor));
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());

@@ -21,10 +21,10 @@ import java.util.List;
 
 import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
-public class UC_CreateFlat {
+public class UC_NewFlat {
     private final DbProvider db;
 
-    public UC_CreateFlat(@NotNull DbProvider dbProvider) {
+    public UC_NewFlat(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 

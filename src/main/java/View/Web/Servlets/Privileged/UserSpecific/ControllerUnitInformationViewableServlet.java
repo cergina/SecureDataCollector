@@ -9,6 +9,7 @@ import Model.Web.ControllerUnit;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
+import View.Support.ServletHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -26,7 +27,6 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
     private static final String VARIABLE_CONTROLLER_UNIT = "controllerUnit";
     private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_SENSOR_TYPES = "sensorTypes";
-    private static final String REQUEST_PARAM_CONTROLLER_UNIT_ID = "id";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -38,13 +38,8 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
         }
         boolean isAdmin = super.checkIfPrivilegeIsAdmin(request);
 
-        // has to have some request for controller unit id
-        int requestedControllerUnitId;
-        try {
-            requestedControllerUnitId = Integer.parseInt(request.getParameter(REQUEST_PARAM_CONTROLLER_UNIT_ID));
-            CustomLogs.Development("V requeste prisiel controller unit id: " + requestedControllerUnitId);
-        } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+        Integer requestedId = ServletHelper.getRequestParamId(request);
+        if (requestedId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -54,7 +49,7 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        ControllerUnit controllerUnit = (new UC_FlatSummary(getDb())).get_ControllerUnit(requestedControllerUnitId);
+        ControllerUnit controllerUnit = (new UC_FlatSummary(getDb())).get_ControllerUnit(requestedId);
         if (controllerUnit == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
