@@ -1,6 +1,6 @@
 package View.Web.Servlets.Privileged;
 
-import Control.Scenario.UC_CreateFlat;
+import Control.Scenario.UC_NewFlat;
 import Model.Database.Support.CustomLogs;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
@@ -32,7 +32,7 @@ public class Admin_FlatForBuildingCreateServlet extends AdminServlet {
             Flat_FlatOwners_Creation flatFlatOwnersCreation = (Flat_FlatOwners_Creation) PrettyObject.parse(ServletHelper.RequestBody(request), Flat_FlatOwners_Creation.class);
 
             // Execute creation
-            jsonResponse = (new UC_CreateFlat(getDb()).createNewFlat_FlatOwner(flatFlatOwnersCreation)); // create new flat, owner(s)
+            jsonResponse = (new UC_NewFlat(getDb()).createNewFlat_FlatOwner(flatFlatOwnersCreation)); // create new flat, owner(s)
 
             // Confirm to user
             response.setStatus(jsonResponse.getStatus());
