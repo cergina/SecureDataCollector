@@ -124,7 +124,68 @@ function buildFlat() {
     };
 }
 
+function buildFlatForBuilding() {
+    return {
+        flat: {
+            apartmentNO: $("#apartment-No").val(),
+            buildingId: $("#building-id").val()
+        },
+        owner1: {
+            title: $("#owner1-title").val(),
+            firstName: $("#owner1-name").val(),
+            middleName: $("#owner1-middlename").val(),
+            lastName: $("#owner1-lastname").val(),
+            phone: $("#owner1-phone").val(),
+            email: $("#owner1-email").val(),
+            address: $("#owner1-address").val()
+        },
+        owner2: {
+            title: $("#owner2-title").val(),
+            firstName: $("#owner2-name").val(),
+            middleName: $("#owner2-middlename").val(),
+            lastName: $("#owner2-lastname").val(),
+            phone: $("#owner2-phone").val(),
+            email: $("#owner2-email").val(),
+            address: $("#owner2-address").val()
+        }
+    };
+}
+
 // POST calls
+
+function createNewFlat() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/flat/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildFlatForBuilding()),
+        statusCode: {
+            201: function(response) {
+                $(".rounded-input").val('');
+                $(":checkbox").prop("checked", false).removeAttr("checked");
+                alert('Flat and owners successfully created.');
+                window.location.reload();
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            401: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        },
+        complete: function(jqXHR) { // keep for DEBUG only
+            console.log("---DEBUG---");
+            console.log(jqXHR);
+        }
+    });
+}
 
 function createFlat() {
     $.ajax({
@@ -413,6 +474,7 @@ function createProject() {
     });
 }
 
+
 function createAddress() {
     $.ajax({
         method: "POST",
@@ -568,6 +630,30 @@ function hideVisibilityOfAdditionElement() {
     switchVisibilityOfAdditionElement();
 
     switchToggles();
+}
+
+
+function handleAddressOwnerClick(cb) {
+    var x;
+    if (cb.id == "owner1-sameaddress") {
+        x = document.getElementById("owner1-address");
+    }
+
+    if (cb.id == "owner2-sameaddress") {
+        x = document.getElementById("owner2-address");
+    }
+
+    if (cb.checked) {
+        x.value = document.getElementById("building-country").textContent + ", " +
+            document.getElementById("building-city").textContent + ", " +
+            document.getElementById("building-street").textContent + " " +
+            document.getElementById("building-houseno").textContent + ", " +
+            document.getElementById("building-zip").textContent;
+        x.disabled = true;
+    } else {
+        x.value = "";
+        x.disabled = false;
+    }
 }
 
 function switchVisibilityOfAdditionElement() {

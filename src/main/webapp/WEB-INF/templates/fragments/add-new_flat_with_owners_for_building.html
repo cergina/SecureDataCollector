@@ -1,0 +1,112 @@
+<!-- tlacidlo prepinac -->
+<div class="regpaddingbottom padding-top-10">
+    <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Flat Creation</button>
+</div>
+<div class="regpaddingbottom padding-top-10">
+    <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Flat Creation</button>
+</div>
+<!-- HIDEABLE -->
+<div id="addition-toggle">
+    <!-- INFO ABOUT ADDITION -->
+    <form>
+        <!-- FLAT INFO -->
+        <span><b>Flat details</b></span>
+        <div class="regpaddingtopbottom padding-left-5">
+            <label for="apartment-No">Apartment NO:</label>
+            <input class="rounded-input" type="text" id="apartment-No">
+        </div>
+        <!-- MUST BE ONE OWNER -->
+        <div>
+            <span><b>Required flat-owner</b></span>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label for="owner1-title">Title:</label>
+                    <input class="rounded-input" type="text" id="owner1-title">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner1-name">Name:</label>
+                    <input class="rounded-input" type="text" id="owner1-name">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner1-middlename">Middlename:</label>
+                    <input class="rounded-input" type="text" id="owner1-middlename">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner1-lastname">Surname:</label>
+                    <input class="rounded-input" type="text" id="owner1-lastname">
+                </div>
+            </div>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label for="owner1-phone">Phone:</label>
+                    <input class="rounded-input" type="text" id="owner1-phone">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner1-email">E-mail:</label>
+                    <input class="rounded-input" type="text" id="owner1-email">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner1-address">Address:</label>
+                    <input class="rounded-input" type="text" id="owner1-address">
+                </div>
+                <div class="st_column _index-short">
+                    <input type="checkbox" onclick="handleAddressOwnerClick(this)" id="owner1-sameaddress"/>
+                    <label for="owner1-sameaddress">Permanents residence at this flat</label>
+                </div>
+            </div>
+        </div>
+        <!-- SECOND OWNER IS OPTIONAL -->
+        <div style="display: none" id="toggle-optional-flatowner">
+            <span><b>Optional flat-owner</b></span>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label for="owner2-title">Title:</label>
+                    <input class="rounded-input" type="text" id="owner2-title">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner2-name">Name:</label>
+                    <input class="rounded-input" type="text" id="owner2-name">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner2-middlename">Middlename:</label>
+                    <input class="rounded-input" type="text" id="owner2-middlename">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner2-lastname">Surname:</label>
+                    <input class="rounded-input" type="text" id="owner2-lastname">
+                </div>
+            </div>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label for="owner2-phone">Phone:</label>
+                    <input class="rounded-input" type="text" id="owner2-phone">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner2-email">E-mail:</label>
+                    <input class="rounded-input" type="text" id="owner2-email">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="owner2-address">Address:</label>
+                    <input class="rounded-input" type="text" id="owner2-address">
+                </div>
+                <div class="st_column _index-short">
+                    <input type="checkbox" onclick="handleAddressOwnerClick(this)" id="owner2-sameaddress"/>
+                    <label for="owner2-sameaddress">Permanents residence at this flat</label>
+                </div>
+            </div>
+        </div>
+        <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
+        <input type="hidden" th:value="${building.id}" id="building-id">
+    </form>
+    <!-- BUTTONS FOR ADDITION -->
+    <div class="row justify-content-center rowinrightcol">
+        <div class="regpaddingbottom padding-top-10">
+            <button type="submit" class="roundedbutton min-width-300" onclick="switchBetweenAdditionOfOptUser()">Switch between addition of 2nd user</button>
+        </div>
+    </div>
+    <div class="row justify-content-center rowinrightcol">
+        <div class="regpaddingbottom padding-top-10">
+            <button type="submit" class="roundedbutton min-width-300" onclick="createNewFlat()">Create</button>
+        </div>
+    </div>
+</div>
