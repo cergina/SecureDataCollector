@@ -94,36 +94,6 @@ function buildControllerUnit() {
     };
 }
 
-// build JSON object by Api spec: Flat, FlatOwners and First Controller Unit for FlatFirstTimeCreation
-function buildFlat() {
-    return {
-        apartmentNo: $("#apartment-No").val(),
-        owner1: {
-            title: $("#owner1-title").val(),
-            firstName: $("#owner1-name").val(),
-            middleName: $("#owner1-middlename").val(),
-            lastName: $("#owner1-lastname").val(),
-            phone: $("#owner1-phone").val(),
-            email: $("#owner1-email").val(),
-            address: $("#owner1-address").val()
-        },
-        owner2: {
-            title: $("#owner2-title").val(),
-            firstName: $("#owner2-name").val(),
-            middleName: $("#owner2-middlename").val(),
-            lastName: $("#owner2-lastname").val(),
-            phone: $("#owner2-phone").val(),
-            email: $("#owner2-email").val(),
-            address: $("#owner2-address").val()
-        },
-        uid: $("#controller-uid").val(),
-        dip: $("#controller-dip_address").val(),
-        zwave: $("#controller-zwave").val(),
-
-        centralUnitId: $("#controller-central-id").val()
-    };
-}
-
 function buildFlatForBuilding() {
     return {
         flat: {
@@ -165,39 +135,6 @@ function createNewFlat() {
                 $(".rounded-input").val('');
                 $(":checkbox").prop("checked", false).removeAttr("checked");
                 alert('Flat and owners successfully created.');
-                window.location.reload();
-            },
-            400: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            }
-        },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
-        }
-    });
-}
-
-function createFlat() {
-    $.ajax({
-        method: "POST",
-        url: $SCRIPT_ROOT + "/admin/flats/create",
-        contentType: CONTENT_TYPE,
-        dataType: DATA_TYPE,
-        data: JSON.stringify(buildFlat()),
-        statusCode: {
-            201: function(response) {
-                $(':input').val('');
-                alert('Flat, owners and controller successfully created.');
                 window.location.reload();
             },
             400: function(jqXHR) {

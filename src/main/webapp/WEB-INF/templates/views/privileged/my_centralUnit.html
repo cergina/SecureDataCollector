@@ -14,7 +14,7 @@
                             <i class="fa fa-globe text-navy mid-icon"></i>
                         </div>
                         <h2>Secure Data Collector - 2021</h2>
-                        <span>This is panel that provides list of flats and central units for building.<br></span>
+                        <span>This is panel that provides list of controllers for central unit.<br></span>
                     </div>
                 </div>
 
@@ -22,22 +22,11 @@
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
                     <div class="forum-title">
-                        <h4>BUILDING ADDRESS</h4>
+                        <h4>CENTRAL UNIT</h4>
                     </div>
-                    <div th:with="buildings = ${ {building} }">
-                        <div th:replace="fragments/buildings_table.html :: buildings_table(buildings=${buildings})"></div>
+                    <div th:with="centralUnits = ${ {centralUnit} }">
+                        <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${centralUnits})"></div>
                     </div>
-                </div>
-
-
-                <!-- ADD NEW BUILDING -->
-                <div class="ibox-content forum-container">
-                    <!-- GENERAL Panel  -->
-                    <div class="forum-title">
-                        <h4>NEW FLAT FOR THIS BUILDING</h4>
-                    </div>
-
-                    <div th:replace="fragments/add-new_flat_with_owners_for_building.html"></div>
                 </div>
 
                 <div class="ibox-content forum-container">
@@ -45,17 +34,16 @@
                     <div class="forum-title">
                         <h4>FLATS</h4>
                     </div>
-                    <div th:replace="fragments/flats_table.html :: flats_table(flats=${building.flats})"></div>
-                </div>
-
-                <div class="ibox-content forum-container">
-                    <!-- GENERAL Panel  -->
-                    <div class="forum-title">
-                        <h4>CENTRAL UNITS</h4>
-                    </div>
-                    <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${building.centralUnits})"></div>
+                    <div th:replace="fragments/flats_table.html :: flats_table(flats=${centralUnit.flats})"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- BUTTONS FOR NAVIGATION -->
+    <div class="row justify-content-center rowinrightcol">
+        <div class="regpaddingbottom">
+            <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
         </div>
     </div>
 </div>
