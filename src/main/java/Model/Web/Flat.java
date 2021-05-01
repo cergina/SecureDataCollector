@@ -14,28 +14,21 @@ public class Flat extends PrettyObject {
     @Expose
     public String apartmentNO;
     @Expose
-    public Address address; // TODO toto este doladim lebo teraz sa zmenila logika a adresa patri budove
-
-    @Expose
     public List<ControllerUnit> controllerUnits;
-
     @Expose
     public Integer buildingId;
 
     // empty constructor for Gson
-    public Flat() {
-
-    }
+    public Flat() {}
 
     public Flat(Integer id, String apartmentNO) {
         this.id = id;
         this.apartmentNO = apartmentNO;
     }
 
-    public Flat(Integer id, String apartmentNO, Address address, List<ControllerUnit> controllerUnits) {
+    public Flat(Integer id, String apartmentNO, List<ControllerUnit> controllerUnits) {
         this.id = id;
         this.apartmentNO = apartmentNO;
-        this.address = address;
         this.controllerUnits = controllerUnits;
     }
 
@@ -69,14 +62,6 @@ public class Flat extends PrettyObject {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public List<ControllerUnit> getControllerUnits() {

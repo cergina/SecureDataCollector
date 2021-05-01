@@ -8,11 +8,28 @@ function round(num, multipleOf) {
     return Math.floor((num/multipleOf+1))*multipleOf;
 }
 
+// DUPLICATE from collector.js
+function getUrlParameter(sParam) { // https://stackoverflow.com/a/21903119/5148218
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+}
+
 function graphFUNC() {
     $.ajax({
         method: "POST",
         async: false,
-        url: $SCRIPT_ROOT + "/action/projects/flats?id=" + $("#flat-id").val(),
+        url: $SCRIPT_ROOT + "/action/projects/flats?id=" + getUrlParameter('id'),
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
         statusCode: {

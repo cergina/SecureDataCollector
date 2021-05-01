@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="flatOwners_table(flatOwners)" class="ibox-content forum-container">
+    <div class="st_wrap_table">
+        <header class="st_table_header">
+            <div class="st_row">
+                <div class="st_column _index-general-longer">E-mail</div>
+                <div class="st_column _index-general-longer">Name</div>
+                <div class="st_column _index-short">Phone</div>
+            </div>
+        </header>
+        <div class="st_table">
+            <div class="st_row" th:each="flatOwner: ${flatOwners}">
+                <div class="st_column _index-general-longer" th:text="${flatOwner.email}"></div>
+                <div class="st_column _index-general-longer" th:text="${flatOwner.title + ' ' + flatOwner.firstName + ' ' + flatOwner.middleName + ' ' + flatOwner.lastName}"></div>
+                <div class="st_column _index-short" th:text="${flatOwner.phone}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body>
+</body>
+</html>

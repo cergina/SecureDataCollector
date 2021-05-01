@@ -160,7 +160,6 @@ input[type=button] {
 
 .rounded-input {
     border-radius:8px;
-    height: 100%;
 }
 
 .padding-right-5{
@@ -327,6 +326,7 @@ h4 {
 .forum-container,
 .forum-post-container {
     padding: 30px !important;
+    min-width: 1350px;
 }
 .forum-item small {
     color: #999;

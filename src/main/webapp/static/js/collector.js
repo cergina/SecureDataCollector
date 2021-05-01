@@ -729,42 +729,42 @@ $(function() {
     $(".user_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/admin/users?id=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/admin/users?id=' + id + '">open</a>'
         );
     });
     // add link to single project page
     $(".project_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/projects?id=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/projects?id=' + id + '">open</a>'
         );
     });
     // add link to single building page
     $(".building_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/buildings?id=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/buildings?id=' + id + '">open</a>'
         );
     });
     // add link to single flat page
     $(".flat_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?id=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/projects/flats?id=' + id + '">open</a>'
         );
     });
     // add link to single controller unit page
     $(".controllerUnit_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/controllerUnit?id=' + id + '">open</a>'
         );
     });
     // add link to single central unit page
     $(".centralUnit_link").each(function(index, value){
         var id = $(value).text();
         $(this).html(
-            '<a href="' + $SCRIPT_ROOT + '/action/centralUnits?id=' + id + '">link</a>'
+            '<a href="' + $SCRIPT_ROOT + '/action/centralUnits?id=' + id + '">open</a>'
         );
     });
 });

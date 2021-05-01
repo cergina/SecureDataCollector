@@ -2,96 +2,122 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
+<div class="container">
+    <div class="row">
+        <div class="col-xl-">
+            <div class="wrapper wrapper-content animated fadeInRight">
 
-    <div class="container-fluid">
-        <div class="container">
-            <div class="row">
-            <div class="col-sm-2">
-                <input type="hidden" th:value="${flat.id}" id="flat-id">
-                    <p th:text="${'Flat ID: ' + flat.id}"></p>
-                    <p th:text="${'Flat detail: ' + flat.apartmentNO}"></p>
-                    <p th:text="${'Country: ' + flat.address.country}"></p>
-                    <p th:text="${'City: ' + flat.address.city}"></p>
-                    <p th:text="${'Address: ' + flat.address.street + ' ' + flat.address.houseno}"></p>
-                    <p th:text="${'ZIP code: ' + flat.address.zip}"></p>
-            </div>
-            <div class="col-sm-10">
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is panel that provides a summary for a single flat.<br></span>
+                    </div>
+                </div>
 
+                <!-- GRAPH -->
+                <div class="ibox-content forum-container">
+                    <div class="forum-title">
+                        <h4>LAST 30 DAYS</h4>
+                    </div>
                     <script th:src="@{${base_url} + '/static/js/Chart.js'}" type="text/javascript"></script>
                     <div style="width: 100%">
                         <canvas id="graph-last30days" style="background-color: #ffffff"></canvas>
                     </div>
                     <script th:src="@{${base_url} + '/static/js/graph-last30days.js'}" type="text/javascript"></script>
+                </div>
 
-            </div>
-            </div>
-
-
-
-            <!-- TODO testoval som tuto situaciu ale nikdy nenestala lebo zrejme hadzes v takom pripade uz vo doesUserHaveRightToSeeProjectBelongingToFlat 404. Musis ju prestat hadzat aby som to vedel zobrazit ako si chcel -->
-            <p th:if="${flat.controllerUnits.isEmpty()}">This flat does not have any controller units yet.</p>
-
-            <!-- Zobrazenie len ak si admin -->
-            <div th:if="${isAdmin}">
-                <!-- Formular na pridavanie nového controllerUnit -->
-                <!-- tlacidlo prepinac -->
-                <div class="row justify-content-center rowinrightcol">
-                    <div class="regpaddingbottom padding-top-10">
-                        <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Controller Unition Creation</button>
+                <!-- MAIN PANEL -->
+                <div class="ibox-content forum-container">
+                    <div class="forum-title">
+                        <h4>FLAT ADDRESS</h4>
                     </div>
-                    <div class="regpaddingbottom padding-top-10">
-                        <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Controller Unition Creation</button>
+                    <div th:with="buildings = ${ {building} }">
+                        <div th:replace="fragments/buildings_table.html :: buildings_table(buildings=${buildings})"></div>
                     </div>
                 </div>
-                <!-- samotny formular co sa skryva -->
-                <div class="grid col-sm-12 " id="addition-toggle">
-                    <div class="row justify-content-center regpadding rowinrightcol createuser">
-                        <h1 class="reglogheader">Create new Controller Unit for this flat</h1>
+
+                <div class="ibox-content forum-container">
+                    <div class="forum-title">
+                        <h4>FLAT</h4>
                     </div>
+                    <div th:replace="fragments/flats_table.html :: flats_table(flats=${building.flats})"></div>
+                </div>
 
-
-                    <div class="grid regpadding">
-                        <div class="row justify-content-center">
-                            <div class="regpaddingtopbottom padding-right-5">
-                                <label for="controller-uid">UID:</label>
-                                <div><input class="rounded-input" type="text" id="controller-uid" placeholder="should be generated" required=""></div>
-                            </div>
-                            <div class="regpaddingtopbottom padding-left-5">
-                                <label for="controller-dip_address">DIP Address:</label>
-                                <div><input class="rounded-input" type="text" id="controller-dip_address" placeholder="1-255" required=""></div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="regpaddingtopbottom">
-                                <label for="controller-zwave">Zwave identifier:</label>
-                                <div><input class="min-width-300 rounded-input" type="text" id="controller-zwave" placeholder="ZW-XXX" required=""></div>
-                            </div>
-                        </div>
-                        <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
-                        <input type="hidden" th:value="${flat.id}" id="controller-flat-id">
-                        <!-- BUTTONS FOR ADDITION -->
-                        <div class="row justify-content-center rowinrightcol">
-                            <div class="regpaddingbottom padding-top-10">
-                                <button type="submit" class="roundedbutton min-width-300" onclick="createControllerUnitForThisFlat()">Create</button>
-                            </div>
-                        </div>
+                <div class="ibox-content forum-container">
+                    <div class="forum-title">
+                        <h4>FLAT OWNERS</h4>
                     </div>
-
-
+                    <div th:replace="fragments/flatOwners_table.html :: flatOwners_table(flatOwners=${flatOwners})"></div>
                 </div>
             </div>
-
-            <div th:unless="${flat.controllerUnits.isEmpty()}">
-                <!-- test only -->
-                <main class="st_viewport">
-                    <div th:each="controllerUnit: ${flat.controllerUnits}">
-                        <div th:replace="fragments/controllerUnit_table.html :: controllerUnit_table(controllerUnit=${controllerUnit})"></div>
-                    </div>
-                </main>
-                <!-- test only -->
-            </div>
-
         </div>
     </div>
+
+    <div th:with="flat = ${ building.flats.get(0) }">
+        <!-- Zobrazenie len ak si admin -->
+        <div th:if="${isAdmin}">
+            <!-- Formular na pridavanie nového controllerUnit -->
+            <!-- tlacidlo prepinac -->
+            <div class="row justify-content-center rowinrightcol">
+                <div class="regpaddingbottom padding-top-10">
+                    <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Controller Unition Creation</button>
+                </div>
+                <div class="regpaddingbottom padding-top-10">
+                    <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Controller Unition Creation</button>
+                </div>
+            </div>
+            <!-- samotny formular co sa skryva -->
+            <div class="grid col-sm-12 " id="addition-toggle">
+                <div class="row justify-content-center regpadding rowinrightcol createuser">
+                    <h1 class="reglogheader">Create new Controller Unit for this flat</h1>
+                </div>
+
+
+                <div class="grid regpadding">
+                    <div class="row justify-content-center">
+                        <div class="regpaddingtopbottom padding-right-5">
+                            <label for="controller-uid">UID:</label>
+                            <div><input class="rounded-input" type="text" id="controller-uid" placeholder="should be generated" required=""></div>
+                        </div>
+                        <div class="regpaddingtopbottom padding-left-5">
+                            <label for="controller-dip_address">DIP Address:</label>
+                            <div><input class="rounded-input" type="text" id="controller-dip_address" placeholder="1-255" required=""></div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="regpaddingtopbottom">
+                            <label for="controller-zwave">Zwave identifier:</label>
+                            <div><input class="min-width-300 rounded-input" type="text" id="controller-zwave" placeholder="ZW-XXX" required=""></div>
+                        </div>
+                    </div>
+                    <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
+                    <input type="hidden" th:value="${flat.id}" id="controller-flat-id">
+                    <!-- BUTTONS FOR ADDITION -->
+                    <div class="row justify-content-center rowinrightcol">
+                        <div class="regpaddingbottom padding-top-10">
+                            <button type="submit" class="roundedbutton min-width-300" onclick="createControllerUnitForThisFlat()">Create</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div th:unless="${flat.controllerUnits.isEmpty()}">
+            <!-- test only -->
+            <main class="st_viewport">
+                <div th:each="controllerUnit: ${flat.controllerUnits}">
+                    <div th:replace="fragments/controllerUnit_table.html :: controllerUnit_table(controllerUnit=${controllerUnit})"></div>
+                </div>
+            </main>
+            <!-- test only -->
+        </div>
+    </div>
+</div>
 </body>
 </html>
