@@ -12,7 +12,7 @@ function graphFUNC() {
     $.ajax({
         method: "POST",
         async: false,
-        url: $SCRIPT_ROOT + "/action/projects/flats?fid=" + $("#flat-id").val(),
+        url: $SCRIPT_ROOT + "/consumption-view?uid=" + $("#controller-uid").val(),
         contentType: CONTENT_TYPE,
         dataType: DATA_TYPE,
         statusCode: {
@@ -62,7 +62,7 @@ if(maxValue == 0)
 var GraphLabelArray = []
 for (i=0; i < GraphTotalDatasets; i++)
 {
-    GraphLabelArray[i] = "Controller #" + SENSORS[i].controllerUnitId + " " + SENSORS[i].name + " (" + SENSORS[i].unitType + ")";
+    GraphLabelArray[i] = SENSORS[i].name + " (" + SENSORS[i].unitType + ")";
 }
 
 

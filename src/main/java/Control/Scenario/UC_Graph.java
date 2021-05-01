@@ -127,6 +127,40 @@ public class UC_Graph {
         return sensors;
     }
 
+    public List<Sensor> getSensorsForController(Integer controllerUID) {
+        List<Sensor> sensors = new ArrayList<>();
+
+        try {
+            T_ControllerUnit t_controllerUnit = I_ControllerUnit.retrieveByUid(db.getConn(), db.getPs(), db.getRs(), controllerUID);
+
+            List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
+            for (T_Sensor t_sensor : t_sensors) {
+                try {
+                    List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
+                    List<Measurement> measurements = new ArrayList<>();
+                    for (T_Measurement t_measurement : t_measurements) {
+                        Measurement measurement = new Measurement(t_measurement.getA_AccumulatedValue(), t_measurement.getA_SensorID(), t_measurement.getA_MeasuredAt());
+                        measurements.add(measurement);
+                    }
+
+                    List<Integer> dataArray = getMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
+                    E_SensorType sensorType = I_SensorType.retrieve(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_SensorTypeID());
+                    String unitType = getUnitTypeOfSensor(sensorType);
+                    Integer unitAmount = getUnitAmountOfSensor(sensorType);
+                    getRealMeasurementValues(dataArray, unitAmount);
+                    Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray, unitType, unitAmount);
+
+                    sensors.add(sensor);
+                } catch (SQLException sqle) {
+                    CustomLogs.Error(sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+        return sensors;
+    }
+
     public List<Integer> getMeasurementArrayForSensor(int sensorID, List<Measurement> measurements) {
         try {
             List<Integer> dataArray = new ArrayList<>();

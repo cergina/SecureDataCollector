@@ -369,7 +369,7 @@ a.forum-item-title:hover {
     margin-bottom: 10px;
 }
 
-graph-last30days {
+#graph {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
