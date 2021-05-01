@@ -5,21 +5,21 @@
     <div class="st_wrap_table">
         <header class="st_table_header">
             <div class="st_row">
-                <div class="st_column _index-veryshort">Country</div>
-                <div class="st_column _index-veryshort">City</div>
-                <div class="st_column _index-veryshort">Street</div>
-                <div class="st_column _index-veryshort">House No</div>
-                <div class="st_column _index-veryshort">ZIP</div>
+                <div class="st_column _index-short">Country</div>
+                <div class="st_column _index-short">City</div>
+                <div class="st_column _index-short">Street</div>
+                <div class="st_column _index-short">House No</div>
+                <div class="st_column _index-short">ZIP</div>
                 <div class="st_column _link">Link</div>
             </div>
         </header>
         <div class="st_table">
             <div class="st_row" th:each="building: ${buildings}">
-                <div class="st_column _index-veryshort" id="building-country" th:text="${building.address.country}"></div>
-                <div class="st_column _index-veryshort" id="building-city" th:text="${building.address.city}"></div>
-                <div class="st_column _index-veryshort" id="building-street" th:text="${building.address.street}"></div>
-                <div class="st_column _index-veryshort" id="building-houseno" th:text="${building.address.houseno}"></div>
-                <div class="st_column _index-veryshort" id="building-zip" th:text="${building.address.zip}"></div>
+                <div class="st_column _index-short" id="building-country" th:text="${building.address.country}"></div>
+                <div class="st_column _index-short" id="building-city" th:text="${building.address.city}"></div>
+                <div class="st_column _index-short" id="building-street" th:text="${building.address.street}"></div>
+                <div class="st_column _index-short" id="building-houseno" th:text="${building.address.houseno}"></div>
+                <div class="st_column _index-short" id="building-zip" th:text="${building.address.zip}"></div>
                 <div class="st_column _link building_link" th:text="${building.id}"></div>
             </div>
         </div>

@@ -208,10 +208,6 @@ input[type=button] {
     min-width: 340px;
 }
 
-._index-veryshort {
-    min-width: 120px;
-}
-
 ._index-short {
     min-width: 190px;
 }
@@ -330,6 +326,7 @@ h4 {
 .forum-container,
 .forum-post-container {
     padding: 30px !important;
+    min-width: 1350px;
 }
 .forum-item small {
     color: #999;
