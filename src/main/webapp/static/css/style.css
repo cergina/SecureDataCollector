@@ -196,6 +196,14 @@ input[type=button] {
     color: rgb(220,220,220);
 }
 
+.flatowner-col-classic {
+    min-width: 60px;
+}
+
+.flatowner-col-long {
+    min-width: 105px;
+}
+
 ._index-general {
     min-width: 250px;
 }
@@ -206,6 +214,10 @@ input[type=button] {
 
 ._index-general-longer {
     min-width: 340px;
+}
+
+._index-general-longest {
+    min-width: 410px;
 }
 
 ._index-short {
