@@ -1,11 +1,15 @@
 package Model.Database.Interaction;
 
+import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
+import Model.Database.Tables.T_Building;
 import Model.Database.Tables.T_FlatOwner_flat;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_FlatOwner_flat extends InteractionWithDatabase {
     public static int insert(Connection conn, PreparedStatement ps, T_FlatOwner_flat t) throws SQLException {
@@ -44,6 +48,37 @@ public class I_FlatOwner_flat extends InteractionWithDatabase {
             throw new SQLException("Something happened. Insertion of FlatOwner_flat entry into db failed.");
 
         return affectedRows;
+    }
+
+    public static List<T_FlatOwner_flat> retrieveByFlatId(Connection conn, PreparedStatement ps, ResultSet rs, int flatId) throws SQLException {
+        Assurance.idCheck(flatId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_FlatOwner_flat.DBTABLE_NAME + " " +
+                        "WHERE " + T_FlatOwner_flat.DBNAME_FLATID + "=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, flatId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_FlatOwner_flat> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_FlatOwner_flat.FillEntity(rs));
+            }
+        }
+
+        return arr;
     }
 
     // Privates

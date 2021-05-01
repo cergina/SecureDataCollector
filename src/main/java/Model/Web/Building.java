@@ -33,6 +33,12 @@ public class Building extends PrettyObject { // TODO tento model Expose pre prid
         this.address = address;
     }
 
+    public Building(Integer id, Address address, List<Flat> flats) {
+        this.id = id;
+        this.address = address;
+        this.flats = flats;
+    }
+
     public Building(Integer id, Address address, List<Flat> flats, List<CentralUnit> centralUnits, Integer projectId) {
         this.id = id;
         this.address = address;

@@ -6,19 +6,32 @@ import com.google.gson.annotations.Expose;
 public class FlatOwner extends PrettyObject {
     // PARAMETERS
     @Expose
-    private String title;
+    public String title;
     @Expose
-    private String firstName;
+    public String firstName;
     @Expose
-    private String middleName;
+    public String middleName;
     @Expose
-    private String lastName;
+    public String lastName;
     @Expose
-    private String phone;
+    public String phone;
     @Expose
-    private String email;
+    public String email;
     @Expose
-    private String address;
+    public String address;
+
+    // empty constructor for Gson
+    public FlatOwner() {}
+
+    public FlatOwner(String title, String firstName, String middleName, String lastName, String phone, String email, String address) {
+        this.title = title;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+    }
 
     // GETTERS and SETTERS
     public String getTitle() {

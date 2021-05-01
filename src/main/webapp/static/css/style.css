@@ -160,7 +160,6 @@ input[type=button] {
 
 .rounded-input {
     border-radius:8px;
-    height: 100%;
 }
 
 .padding-right-5{
@@ -207,6 +206,10 @@ input[type=button] {
 
 ._index-general-longer {
     min-width: 340px;
+}
+
+._index-veryshort {
+    min-width: 120px;
 }
 
 ._index-short {

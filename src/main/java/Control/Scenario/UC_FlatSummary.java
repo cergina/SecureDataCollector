@@ -4,13 +4,11 @@ import Control.Connect.DbProvider;
 import Model.Database.Interaction.ComplexInteractions.GeneralAccessibility;
 import Model.Database.Interaction.I_ControllerUnit;
 import Model.Database.Interaction.I_Flat;
+import Model.Database.Interaction.I_FlatOwner_flat;
 import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.*;
-import Model.Web.Address;
-import Model.Web.CentralUnit;
-import Model.Web.ControllerUnit;
-import Model.Web.Flat;
+import Model.Web.*;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
@@ -41,9 +39,9 @@ public class UC_FlatSummary {
 
     /***
      * @param flatId from request
-     * @return {@link Flat}, null if it does not exist
+     * @return {@link Building} with single flat, null if it does not exist
      */
-    public Flat getFlatSummary(@NotNull final Integer flatId) {
+    public Building getFlatSummary(@NotNull final Integer flatId) {
         db.beforeSqlExecution(false);
 
         T_Flat t_flat = get_TFlat_ById(flatId);
@@ -62,6 +60,13 @@ public class UC_FlatSummary {
             }
         }
 
+        List<Flat> flats = new ArrayList<>();
+        flats.add(new Flat(
+                t_flat.getA_pk(),
+                t_flat.getA_ApartmentNO(),
+                controllerUnits
+        ));
+
         // prepare info about address
         T_Address t_address = get_TAddress_ByBuildingId(t_flat.getA_BuildingID());
         Address address = new Address(
@@ -73,17 +78,37 @@ public class UC_FlatSummary {
                 t_address.getA_ZIP()
         );
 
-        // put all together
-        Flat flat = new Flat(
-                t_flat.getA_pk(),
-                t_flat.getA_ApartmentNO(),
-                address,
-                controllerUnits
-        );
+        Building building = new Building(t_flat.getA_BuildingID(), address, flats);
 
         db.afterOkSqlExecution();
 
-        return flat;
+        return building;
+    }
+
+    public List<FlatOwner> getFlatOwnersForFlat(@NotNull final Integer flatId) {
+        List<FlatOwner> flatOwners = new ArrayList<>();
+
+        db.beforeSqlExecution(false);
+        try {
+            for (T_FlatOwner_flat tfof : I_FlatOwner_flat.retrieveByFlatId(db.getConn(), db.getPs(), db.getRs(), flatId)) {
+                T_FlatOwner tfo = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_FlatOwner.class), tfof.getA_FlatOwnerID());
+                FlatOwner flatOwner = new FlatOwner(
+                        tfo.getA_BeforeTitle(), // TODO intelij varuje ze moze nullpointer
+                        tfo.getA_FirstName(),
+                        tfo.getA_MiddleName(),
+                        tfo.getA_LastName(),
+                        tfo.getA_Phone(),
+                        tfo.getA_Email(),
+                        tfo.getA_Address());
+                flatOwners.add(flatOwner);
+            }
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        db.afterOkSqlExecution();
+
+        return flatOwners;
     }
 
     public ControllerUnit get_ControllerUnit(@NotNull final Integer controllerUnitId) {
@@ -158,8 +183,8 @@ public class UC_FlatSummary {
 
         // convert T_Flats into Flats
         List<Flat> list = new ArrayList<>();
-        for (T_Flat t: arr
-             ) {
+        for (T_Flat t : arr
+        ) {
             Flat temp = new Flat(t.getA_pk(), t.getA_ApartmentNO(), t.getA_BuildingID());
 
             list.add(temp);
@@ -174,7 +199,7 @@ public class UC_FlatSummary {
 
     /***
      * Verifies rights for user's right to view flat (that belongs to certain project)
-      * @param userId from session
+     * @param userId from session
      * @param flatId flat that is attempting to see
      * @return
      */
@@ -256,7 +281,6 @@ public class UC_FlatSummary {
 
         return t;
     }
-
 
 
     private T_Flat get_TFlat_ById(@NotNull final Integer id) {

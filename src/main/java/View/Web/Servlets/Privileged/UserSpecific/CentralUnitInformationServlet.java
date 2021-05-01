@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// TODO cize totok prec?
 @WebServlet(name = "CentralUnitInformationServlet", urlPatterns = CentralUnitInformationServlet.SERVLET_URL)
 public class CentralUnitInformationServlet extends AdminEditableUserViewableServlet {
     public static final String SERVLET_URL =  "/action/centralUnits";
