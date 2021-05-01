@@ -1,12 +1,16 @@
 package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
+import Control.Scenario.UC_BuildingSummary;
 import Control.Scenario.UC_FlatSummary;
 import Control.Scenario.UC_Graph;
 import Model.Database.Support.CustomLogs;
+import Model.Web.CentralUnit;
 import Model.Web.JsonResponse;
+import Model.Web.Specific.GraphSingleBuilding;
 import Model.Web.Specific.GraphSingleFlat;
 import Model.Web.User;
+import Model.Web.thymeleaf.Building;
 import Model.Web.thymeleaf.Flat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -22,37 +26,34 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "FlatInformationServlet", urlPatterns = FlatInformationViewableServlet.SERVLET_URL)
-public class FlatInformationViewableServlet extends AdminEditableUserViewableServlet {
-    public static final String SERVLET_URL =  "/action/projects/flats";
-    public static final String TEMPLATE_NAME = "views/privileged/my_flat.html";
+@WebServlet(name = "BuildingInformationServlet", urlPatterns = BuildingInformationServlet.SERVLET_URL)
+public class BuildingInformationServlet extends AdminEditableUserViewableServlet {
+    public static final String SERVLET_URL = "/action/projects/buildings";
+    public static final String TEMPLATE_NAME = "views/privileged/my_building.html";
 
-    private static final String VARIABLE_FLAT = "flat";
+    private static final String VARIABLE_BUILDING = "building";
     private static final String VARIABLE_ISADMIN = "isAdmin";
-    private static final String REQUEST_PARAM_FLAT_ID = "fid";
+    private static final String REQUEST_PARAM_BUILDING_ID = "id";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // AUTHENTICATION
-
         super.doGet(request, response); // call always parent method first
         if (checkPrivilege(request, response) == false) {
-            //response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            response.sendRedirect(ConfigClass.DEPLOYED_ON_BASE_URL + "/login");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-
         boolean isAdmin = super.checkIfPrivilegeIsAdmin(request);
 
         CustomLogs.Development("Sme vo doGet");
 
-        // has to have some request for flat id
-        int requestedFlatId;
+        // has to have some request for building id
+        int requestedBuildingId;
         try {
-            requestedFlatId = Integer.parseInt(request.getParameter(REQUEST_PARAM_FLAT_ID));
-            CustomLogs.Development("V requeste prisiel flat id: " + requestedFlatId);
+            requestedBuildingId = Integer.parseInt(request.getParameter(REQUEST_PARAM_BUILDING_ID));
+            CustomLogs.Development("V requeste prisiel building id: " + requestedBuildingId);
         } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -62,23 +63,12 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        /* find out if he has access to the project */
-        User user = SessionUtil.getUser(request.getSession(false));
-        UC_FlatSummary uc = new UC_FlatSummary(getDb());
-        if (uc.doesUserHaveRightToSeeProjectBelongingToFlat(user.getUserID(), requestedFlatId) == false) {
-            if (isAdmin == false) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
-            }
-        }
+        UC_BuildingSummary uc = new UC_BuildingSummary(getDb());
+        Building building = uc.getBuildingSummary(requestedBuildingId);
 
-        /* this will not happen - then why is it here */
-        Flat flat = uc.getFlatSummary(requestedFlatId);
-        if (flat == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        context.setVariable(VARIABLE_FLAT, flat);
+        //TODO Overit ci ma pouzivatel pristup k budove - treba dokodit
+
+        context.setVariable(VARIABLE_BUILDING, building);
         context.setVariable(VARIABLE_ISADMIN, isAdmin);
 
         // Generate html and return it
@@ -91,25 +81,24 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         PrintWriter writer = response.getWriter();
 
         // has to have some request for flat id
-        int requestedFlatId;
+        int requestedBuildingId;
         try {
-            requestedFlatId = Integer.parseInt(request.getParameter(REQUEST_PARAM_FLAT_ID));
-            CustomLogs.Development("V POST requeste prisiel flat id: " + requestedFlatId);
+            requestedBuildingId = Integer.parseInt(request.getParameter(REQUEST_PARAM_BUILDING_ID));
+            CustomLogs.Development("V requeste prisiel building id: " + requestedBuildingId);
         } catch (NumberFormatException nfe) {
-            CustomLogs.Error("Bad request or nothing came into server as ?fid=[number should be here]");
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
+        GraphSingleBuilding graph = new GraphSingleBuilding(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getFlatsForBuilding(requestedBuildingId));
 
-        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(requestedFlatId));
-
-        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraphFlat(graph));
+        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraphBuilding(graph));
 
         response.setStatus(jsonResponse.getStatus());
 
         writer.println(jsonResponse.toString());
         writer.close();
-    }
 
+    }
 }

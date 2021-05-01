@@ -1,0 +1,19 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <p th:text="${building.address.street + ' ' + building.address.houseno + ', ' + building.address.zip + ' ' + building.address.city + ', ' + building.address.country}"></p>
+            <input type="hidden" th:value="${building.id}" id="building-id">
+            <script th:src="@{${base_url} + '/static/js/Chart.js'}" type="text/javascript"></script>
+            <div style="width: 100%">
+                <canvas id="graph" style="background-color: #ffffff"></canvas>
+            </div>
+            <script th:src="@{${base_url} + '/static/js/graph-building.js'}" type="text/javascript"></script>
+        </div>
+    </div>
+</body>
+</html>

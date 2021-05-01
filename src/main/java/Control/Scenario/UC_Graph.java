@@ -1,20 +1,16 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.I_ControllerUnit;
-import Model.Database.Interaction.I_Measurements;
-import Model.Database.Interaction.I_Sensor;
-import Model.Database.Interaction.I_SensorType;
+import Model.Database.Interaction.*;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.E_SensorType;
-import Model.Database.Tables.T_ControllerUnit;
-import Model.Database.Tables.T_Measurement;
-import Model.Database.Tables.T_Sensor;
+import Model.Database.Tables.*;
 import Model.Web.JsonResponse;
 import Model.Web.Measurement;
 import Model.Web.Sensor;
 import Model.Web.SensorType;
+import Model.Web.Specific.GraphSingleBuilding;
 import Model.Web.Specific.GraphSingleFlat;
+import Model.Web.thymeleaf.Flat;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -31,7 +27,15 @@ public class UC_Graph {
         this.db = dbProvider;
     }
 
-    public final @NotNull JsonResponse dataForGraph(@NotNull final GraphSingleFlat graph) {
+    public final @NotNull JsonResponse dataForGraphFlat(@NotNull final GraphSingleFlat graph) {
+        JsonResponse jsonResponse = new JsonResponse();
+        jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
+        jsonResponse.setMessage("Graph data sent");
+        jsonResponse.setData(graph);
+        return jsonResponse;
+    }
+
+    public final @NotNull JsonResponse dataForGraphBuilding(@NotNull final GraphSingleBuilding graph) {
         JsonResponse jsonResponse = new JsonResponse();
         jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
         jsonResponse.setMessage("Graph data sent");
@@ -159,6 +163,82 @@ public class UC_Graph {
             CustomLogs.Error(sqle.getMessage());
         }
         return sensors;
+    }
+
+    public List<Flat> getFlatsForBuilding(Integer buildingId) {
+        List<Flat> flats = new ArrayList<>();
+
+        try {
+            List<T_Flat> t_flats = I_Flat.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), buildingId);
+            for (T_Flat t_flat : t_flats) {
+                try {
+                    List<Integer> amounts = new ArrayList<>();
+                    for (int i = 0; i < 30; i++) {
+                        amounts.add(0);
+                    }
+
+                    List<T_ControllerUnit> t_controllerUnits = I_ControllerUnit.retrieveByFlatId(db.getConn(), db.getPs(), db.getRs(), t_flat.getA_pk());
+                    for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
+                        List<T_Sensor> t_sensors = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), 0, t_controllerUnit.getA_pk());
+                        for (T_Sensor t_sensor : t_sensors) {
+                            List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
+
+                            List<Measurement> measurements = new ArrayList<>();
+                            for (T_Measurement t_measurement : t_measurements) {
+                                Measurement measurement = new Measurement(t_measurement.getA_AccumulatedValue(), t_measurement.getA_SensorID(), t_measurement.getA_MeasuredAt());
+                                measurements.add(measurement);
+                            }
+
+                            List<Integer> toAdd = getAmountMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
+                            for(int i=0; i < 30; i++){
+                                Integer value = amounts.get(i);
+                                value = value + toAdd.get(i);
+                                amounts.set(i, value);
+                            }
+                        }
+                    }
+                    Flat flat = new Flat(t_flat.getA_pk(), t_flat.getA_ApartmentNO(), amounts);
+
+                    flats.add(flat);
+                } catch (SQLException sqle) {
+                    CustomLogs.Error(sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+        return flats;
+    }
+
+    public List<Integer> getAmountMeasurementArrayForSensor(int sensorID, List<Measurement> measurements) {
+
+        List<Integer> dataArray = new ArrayList<>();
+
+        Map<Date, Integer> hashMap = new HashMap<>();
+
+        for (Measurement measurement : measurements) {
+            Integer count = hashMap.get(measurement.getMeasuredAt());
+            if(count == null){
+                hashMap.put(measurement.getMeasuredAt(), 1);
+            }
+            else {
+                hashMap.put(measurement.getMeasuredAt(), count+1);
+            }
+        }
+
+        int fillerValue = 0;
+
+        List<Date> dates = getDatesOfLast30Days();
+        for(Date date : dates){
+            if(hashMap.containsKey(date)){
+                fillerValue = hashMap.get(date);
+            }
+            else{
+                hashMap.put(date, fillerValue);
+            }
+            dataArray.add(fillerValue);
+        }
+        return dataArray;
     }
 
     public List<Integer> getMeasurementArrayForSensor(int sensorID, List<Measurement> measurements) {

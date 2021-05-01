@@ -91,7 +91,7 @@ public class ConsumptionViewServlet extends PublicServlet {
 
         GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForController(requestedControllerUnitUid));
 
-        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraph(graph));
+        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraphFlat(graph));
 
         response.setStatus(jsonResponse.getStatus());
 

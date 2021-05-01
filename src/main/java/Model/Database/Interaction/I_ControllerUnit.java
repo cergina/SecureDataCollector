@@ -155,6 +155,38 @@ public class I_ControllerUnit extends InteractionWithDatabase {
         return tc;
     }
 
+    public static List<T_ControllerUnit> retrieveByFlatId(Connection conn, PreparedStatement ps, ResultSet rs, int flatId) throws SQLException {
+        Assurance.idCheck(flatId);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_ControllerUnit.DBTABLE_NAME + " " +
+                        "WHERE " +
+                        T_ControllerUnit.DBNAME_FLAT_ID + "=?"
+        );
+
+        int col = 0;
+        ps.setInt(++col, flatId);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_ControllerUnit> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_ControllerUnit.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
+
     /***
      *
      * @param conn
