@@ -6,7 +6,7 @@
         <header class="st_table_header">
             <div class="st_row">
                 <div class="st_column _index-general-longer">E-mail</div>
-                <div class="st_column _index-general-longer">Name</div>
+                <div class="st_column _index-general-longest">Name</div>
                 <div class="st_column _index-short">Phone</div>
                 <div class="st_column _index-general">Permanent residence</div>
                 <div class="st_column _link" th:if="${isAdmin}">Link</div>
@@ -15,7 +15,7 @@
         <div class="st_table">
             <div class="st_row" th:each="user: ${users}">
                 <div class="st_column _index-general-longer" th:text="${user.email}"></div>
-                <div class="st_column _index-general-longer" th:text="${user.beforetitle + ' ' + user.firstname + ' ' + user.middlename + ' ' + user.lastname}"></div>
+                <div class="st_column _index-general-longest" th:text="${user.beforetitle + ' ' + user.firstname + ' ' + user.middlename + ' ' + user.lastname}"></div>
                 <div class="st_column _index-short" th:text="${user.phone}"></div>
                 <div class="st_column _index-general" th:text="${user.residence}"></div>
                 <div class="st_column _link user_link" th:text="${user.userID}" th:if="${isAdmin}"></div>
