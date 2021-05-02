@@ -1,21 +1,26 @@
 package View.Web.Servlets.Public;
 
 import Control.ConfigClass;
+import Control.Scenario.UC_Graph;
 import Control.Scenario.UC_OutsiderConsumption;
 import Control.Scenario.UC_Types;
 import Model.Database.Support.CustomLogs;
+import Model.Web.JsonResponse;
 import Model.Web.SensorType;
 import Model.Web.ControllerUnit;
+import Model.Web.Specific.GraphSingleFlat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.PublicServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name = "ConsumptionViewServlet", urlPatterns = ConsumptionViewServlet.SERVLET_URL)
@@ -67,4 +72,31 @@ public class ConsumptionViewServlet extends PublicServlet {
         // Generate html and return it
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
+        PrintWriter writer = response.getWriter();
+
+        // has to have some request for controller uid
+        int requestedControllerUnitUid;
+        try {
+            requestedControllerUnitUid = Integer.parseInt(request.getParameter(REQUEST_PARAM_CONTROLLER_UNIT_UID));
+            CustomLogs.Development("V POST requeste prisiel controller uid: " + requestedControllerUnitUid);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?uid=[number should be here]");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForController(requestedControllerUnitUid));
+
+        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraph(graph));
+
+        response.setStatus(jsonResponse.getStatus());
+
+        writer.println(jsonResponse.toString());
+        writer.close();
+    }
+
 }
