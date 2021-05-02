@@ -15,7 +15,7 @@ public class CentralUnit extends PrettyObject {
     @Expose
     public Integer uid;
     @Expose
-    public String dip;
+    public String dipAddress;
     @Expose
     public String friendlyName;
     @Expose
@@ -24,19 +24,19 @@ public class CentralUnit extends PrettyObject {
     public String imei;
     @Expose
     public String zwave;
-
     @Expose
     private Integer buildingId;
+
     @Expose
     public List<Flat> flats;
 
     // empty constructor for Gson
     public CentralUnit() {}
 
-    public CentralUnit(Integer id, Integer uid, String dip, String friendlyName, String simNo, String imei, String zwave) {
+    public CentralUnit(Integer id, Integer uid, String dipAddress, String friendlyName, String simNo, String imei, String zwave) {
         this.id = id;
         this.uid = uid;
-        this.dip = dip;
+        this.dipAddress = dipAddress;
         this.friendlyName = friendlyName;
         this.simNo = simNo;
         this.imei = imei;
@@ -60,12 +60,12 @@ public class CentralUnit extends PrettyObject {
         this.uid = uid;
     }
 
-    public String getDip() {
-        return dip;
+    public String getDipAddress() {
+        return dipAddress;
     }
 
-    public void setDip(String dip) {
-        this.dip = dip;
+    public void setDipAddress(String dipAddress) {
+        this.dipAddress = dipAddress;
     }
 
     public String getFriendlyName() {
