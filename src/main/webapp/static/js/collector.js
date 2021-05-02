@@ -61,6 +61,13 @@ function buildAddress() {
     };
 }
 
+function buildCentralUnitFromList() {
+    return {
+        id: $("#central").val(),
+        buildingId: $("#building-id").val()
+    }
+}
+
 function buildBuilding() {
     return {
         addressId: $("#address").val(),
@@ -181,7 +188,7 @@ function createUser() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Verifikacny kod je: ' + response.data.verificationcode);
+                alert('Verification code is: ' + response.data.verificationcode);
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -324,7 +331,7 @@ function createControllerUnitForThisFlat() {
                     $("#controller-uid").val('');
                     $("#controller-dip_address").val('');
                     $("#controller-zwave").val('');
-                    alert('Vytvorený nový controller unit.');
+                    alert('New controller unit succesfully created.');
                     window.location.reload();
                 },
                 409: function(jqXHR) {
@@ -354,7 +361,7 @@ function createCentralUnit() {
         data: JSON.stringify(buildCentralUnit()),
         statusCode: {
             201: function(response) {
-                alert('Vytvorený nový central unit.');
+                alert('New central unit succesfully created..');
                 window.location.reload();
             },
             409: function(jqXHR) {
@@ -373,6 +380,36 @@ function createCentralUnit() {
     });
 }
 
+// Create CentralUnit that already exists to building
+function assignCreatedCentralUnitToBuilding() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/centralUnits/assign",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildCentralUnitFromList()),
+        statusCode: {
+            201: function(response) {
+                alert('Central unit successfully assigned to this building.');
+                window.location.reload();
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
+
 // Create new Building
 function createNewBuildingForProject() {
     $.ajax({
@@ -383,7 +420,7 @@ function createNewBuildingForProject() {
         data: JSON.stringify(buildBuilding()),
         statusCode: {
             201: function(response) {
-                alert('Vytvorená nová budova.');
+                alert('New building succesfully created.');
                 window.location.reload();
             },
             409: function(jqXHR) {
@@ -412,7 +449,7 @@ function createSensor() {
         data: JSON.stringify(buildSensor()),
         statusCode: {
             201: function(response) {
-                alert('Vytvorený nový sensor.');
+                alert('New sensor successfully created.');
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -442,7 +479,7 @@ function createProject() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Vytvorený nový projekt.');
+                alert('New project succesfully created.');
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -470,7 +507,7 @@ function createAddress() {
         data: JSON.stringify(buildAddress()),
         statusCode: {
             201: function(response) {
-                alert('Úspešne sa podarilo vytvoriť novú adresu.');
+                alert('New address succesfully created.');
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -499,7 +536,7 @@ function createCommType() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Vytvorený nový typ komunikácie: ' + response.data.name);
+                alert('New communication type succesfully created: ' + response.data.name);
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -529,7 +566,7 @@ function createSensorType() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Vytvorený nový typ sensora: ' + response.data.name);
+                alert('New sensor type succesfully created: ' + response.data.name);
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -674,6 +711,27 @@ function switchToggles() {
     } else {
         x.style.display = "none";
     }
+}
+
+function openBuildingTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
 }
 
 function getUrlParameter(sParam) { // https://stackoverflow.com/a/21903119/5148218

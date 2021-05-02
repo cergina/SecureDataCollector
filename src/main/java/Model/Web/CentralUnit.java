@@ -1,5 +1,6 @@
 package Model.Web;
 
+import Model.Database.Tables.T_CentralUnit;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -26,12 +27,25 @@ public class CentralUnit extends PrettyObject {
     public String zwave;
     @Expose
     private Integer buildingId;
+    @Expose
+    private String description;
 
     @Expose
     public List<Flat> flats;
 
     // empty constructor for Gson
     public CentralUnit() {}
+
+    public CentralUnit(T_CentralUnit t, String description) {
+        this.id = t.getA_pk();
+        this.uid = t.getA_Uid();
+        this.dipAddress = t.getA_DipAddress();
+        this.friendlyName = t.getA_FriendlyName();
+        this.simNo = t.getA_SimNO();
+        this.imei = t.getA_Imei();
+        this.zwave = t.getA_Zwave();
+        this.description = description;
+    }
 
     public CentralUnit(Integer id, Integer uid, String dipAddress, String friendlyName, String simNo, String imei, String zwave) {
         this.id = id;
@@ -114,5 +128,13 @@ public class CentralUnit extends PrettyObject {
 
     public void setFlats(List<Flat> flats) {
         this.flats = flats;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

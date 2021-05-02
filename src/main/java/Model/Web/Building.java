@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class Building extends PrettyObject { // TODO tento model Expose pre pridavanie budov, nevytvarat novy
 
+    @Expose
     public Integer id;
     public Address address;
     public List<Flat> flats;

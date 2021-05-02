@@ -65,6 +65,25 @@ public class UC_NewCentralUnit {
         return jsonResponse;
     }
 
+    public final @NotNull JsonResponse assignCentralUnitToBuilding(@NotNull final CentralUnit centralUnit, @NotNull Integer buildingId) {
+        JsonResponse jsonResponse = new JsonResponse();
+
+        try {
+            db.beforeSqlExecution(true);
+
+            // currently impossible due to database restrictions (only 1 to 1 maping of central unit and building)
+
+            db.afterOkSqlExecution();
+            jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
+            jsonResponse.setMessage("Central Unit assigned.");
+        } catch (Exception e) {
+            db.afterExceptionInSqlExecution(e);
+            jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            jsonResponse.setMessage("Central Unit already exists.");
+        }
+
+        return jsonResponse;
+    }
 
     private boolean isDataValid(@NotNull final CentralUnit centralUnit) throws NumberFormatException{
         // dip address can only be between min 1 and max 255
