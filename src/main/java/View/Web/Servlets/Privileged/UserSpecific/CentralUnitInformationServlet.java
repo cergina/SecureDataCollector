@@ -16,15 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// TODO cize totok prec?
 @WebServlet(name = "CentralUnitInformationServlet", urlPatterns = CentralUnitInformationServlet.SERVLET_URL)
 public class CentralUnitInformationServlet extends AdminEditableUserViewableServlet {
     public static final String SERVLET_URL =  "/action/centralUnits";
-    public static final String TEMPLATE_NAME = "views/privileged/my_centralunit.html";
+    public static final String TEMPLATE_NAME_SINGLE = "views/privileged/my_centralUnit.html";
     public static final String ONETIME_TEMPLATE_NAME = "views/adminOnly/admin-centralunit-when_no_controllers.html";
 
     private static final String VARIABLE_CENTRALUNIT = "centralUnit";
-    private static final String VARIABLE_FLATS_LIST = "flatsList";
     private static final String VARIABLE_ISADMIN = "isAdmin";
 
     @Override
@@ -37,19 +35,16 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         }
 
         if (request.getParameterNames().hasMoreElements()) {
-            processSingleCentralUnit(request, response);
+            processSingle(request, response);
         } else {
-            processForAllCentralUnits(request, response);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
-    /****
+    /**
      * Decider between empty and already initialized central unit
-     * @param request
-     * @param response
-     * @throws IOException
      */
-    private void processSingleCentralUnit(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void processSingle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Integer requestedId = ServletHelper.getRequestParamId(request);
         if (requestedId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -68,12 +63,8 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         }
     }
 
-    /***
+    /**
      * specific central unit view
-     * @param request
-     * @param response
-     * @param requestedCentralUnitId
-     * @throws IOException
      */
     private void processSingleCentralUnit(HttpServletRequest request, HttpServletResponse response, int requestedCentralUnitId) throws IOException {
         // only continue this way when there is something to show
@@ -89,20 +80,15 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         }
 
         // Variables settings
-        context.setVariable(VARIABLE_FLATS_LIST, centralUnit.flats);
         context.setVariable(VARIABLE_CENTRALUNIT, centralUnit);
         context.setVariable(VARIABLE_ISADMIN, super.checkIfPrivilegeIsAdmin(request));
 
         // Generate html and return it
-        engine.process(TEMPLATE_NAME, context, response.getWriter());
+        engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
 
-    /***+
+    /**
      * specific but empty central unit
-     * @param request
-     * @param response
-     * @param requestedCentralUnitId
-     * @throws IOException
      */
     private void processYetSingleEmptyCentralUnit(HttpServletRequest request, HttpServletResponse response, int requestedCentralUnitId) throws IOException {
         // TEMPLATE PREPARATION
@@ -122,20 +108,5 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
 
         // Generate html and return it
         engine.process(ONETIME_TEMPLATE_NAME, context, response.getWriter());
-    }
-
-    /***
-     * See inside comments
-     * @param request
-     * @param response
-     * @throws IOException
-     */
-    private void processForAllCentralUnits(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // TODO
-        // admin sees  every central unit
-        // eg.: list of central units of project 1, list of central units of project 2, ...
-
-        // user sees only his central units within his projects
-        // eg.: list of central units of project 2, list of central units of project 13, ...
     }
 }

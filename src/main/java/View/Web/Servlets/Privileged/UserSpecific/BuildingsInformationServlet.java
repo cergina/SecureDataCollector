@@ -2,8 +2,10 @@ package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_ListBuilding;
+import Control.Scenario.UC_ListCentralUnit;
 import Control.Scenario.UC_ListProject;
 import Model.Web.Building;
+import Model.Web.CentralUnit;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "BuildingsInformationServlet", urlPatterns = BuildingsInformationServlet.SERVLET_URL)
 public class BuildingsInformationServlet extends SessionServlet {
@@ -25,6 +28,7 @@ public class BuildingsInformationServlet extends SessionServlet {
     public static final String TEMPLATE_NAME_SINGLE = "views/privileged/my_building.html";
 
     private static final String VARIABLE_BUILDING = "building";
+    private static final String VARIABLE_CENTRAL_AT_SAME_ADDRESS = "centralsAtSameAddress";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -69,7 +73,12 @@ public class BuildingsInformationServlet extends SessionServlet {
             }
         }
 
+        // find all central units at the same address as is the building
+        List<CentralUnit> centralsAtSameAddress = (new UC_ListCentralUnit(getDb())).centralUnitsOnTheSameAddressNameAsBuilding(building.getId());
+
         context.setVariable(VARIABLE_BUILDING, building);
+        context.setVariable(VARIABLE_CENTRAL_AT_SAME_ADDRESS, centralsAtSameAddress);
+
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
 }

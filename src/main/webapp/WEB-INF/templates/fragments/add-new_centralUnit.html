@@ -1,0 +1,60 @@
+<div style="display: none" id="addition-centralUnit-exists">
+    <h5>Assignment of already created central unit to this building</h5>
+    <div class="st_column">
+        <select class="min-width-300" id="central">
+            <option value="" selected disabled hidden>Select already created central unit (same city and address)</option>
+            <!-- House no can be different -->
+            <option th:each="central : ${centralsAtSameAddress}" th:value="${central.id}" th:text="${central.friendlyname + ' at [' + central.description + ']'}"></option>
+        </select>
+        <div class="st_column _link"><input type="hidden" th:value="${building.id}" size="15" id="building-id"></div>
+
+        <div class="row justify-content-center rowinrightcol">
+            <div class="regpaddingbottom padding-top-10">
+                <button type="submit" class="roundedbutton min-width-300" onclick="assignCreatedCentralUnitToBuilding()">Assign</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addition-centralUnit-not-exist">
+    <h5>Addition of new central unit to this building</h5>
+    <!-- INFO ABOUT ADDITION -->
+    <form>
+        <div>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label class="flatowner-col-long" for="central-uid">UID:</label>
+                    <input class="rounded-input" type="text" id="central-uid">
+                </div>
+                <div class="st_column _index-short">
+                    <label class="flatowner-col-long" for="central-dip_address">DIP address:</label>
+                    <input class="rounded-input" type="text" id="central-dip_address">
+                </div>
+                <div class="st_column _index-short">
+                    <label class="flatowner-col-long" for="central-friendly_name">Friendly name:</label>
+                    <input class="rounded-input" type="text" id="central-friendly_name">
+                </div>
+            </div>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label class="flatowner-col-long" for="central-sim_no">SIM No:</label>
+                    <input class="rounded-input" type="text" id="central-sim_no">
+                </div>
+                <div class="st_column _index-short">
+                    <label class="flatowner-col-long"for="central-imei">IMEI:</label>
+                    <input class="rounded-input" type="text" id="central-imei">
+                </div>
+                <div class="st_column _index-short">
+                    <label class="flatowner-col-long" for="central-zwave">ZWave:</label>
+                    <input class="rounded-input" type="text" id="central-zwave">
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- BUTTONS FOR ADDITION -->
+    <div class="row justify-content-center rowinrightcol">
+        <div class="regpaddingbottom padding-top-10">
+            <button class="roundedbutton min-width-300" onclick="createCentralUnit()">Create</button>
+        </div>
+    </div>
+</div>

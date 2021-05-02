@@ -1,5 +1,6 @@
 package Model.Web;
 
+import Model.Database.Tables.T_CentralUnit;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class CentralUnit extends PrettyObject {
     @Expose
     public Integer uid;
     @Expose
-    public String dip;
+    public String dipAddress;
     @Expose
     public String friendlyName;
     @Expose
@@ -24,19 +25,32 @@ public class CentralUnit extends PrettyObject {
     public String imei;
     @Expose
     public String zwave;
-
     @Expose
     private Integer buildingId;
+    @Expose
+    private String description;
+
     @Expose
     public List<Flat> flats;
 
     // empty constructor for Gson
     public CentralUnit() {}
 
-    public CentralUnit(Integer id, Integer uid, String dip, String friendlyName, String simNo, String imei, String zwave) {
+    public CentralUnit(T_CentralUnit t, String description) {
+        this.id = t.getA_pk();
+        this.uid = t.getA_Uid();
+        this.dipAddress = t.getA_DipAddress();
+        this.friendlyName = t.getA_FriendlyName();
+        this.simNo = t.getA_SimNO();
+        this.imei = t.getA_Imei();
+        this.zwave = t.getA_Zwave();
+        this.description = description;
+    }
+
+    public CentralUnit(Integer id, Integer uid, String dipAddress, String friendlyName, String simNo, String imei, String zwave) {
         this.id = id;
         this.uid = uid;
-        this.dip = dip;
+        this.dipAddress = dipAddress;
         this.friendlyName = friendlyName;
         this.simNo = simNo;
         this.imei = imei;
@@ -60,12 +74,12 @@ public class CentralUnit extends PrettyObject {
         this.uid = uid;
     }
 
-    public String getDip() {
-        return dip;
+    public String getDipAddress() {
+        return dipAddress;
     }
 
-    public void setDip(String dip) {
-        this.dip = dip;
+    public void setDipAddress(String dipAddress) {
+        this.dipAddress = dipAddress;
     }
 
     public String getFriendlyName() {
@@ -114,5 +128,13 @@ public class CentralUnit extends PrettyObject {
 
     public void setFlats(List<Flat> flats) {
         this.flats = flats;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

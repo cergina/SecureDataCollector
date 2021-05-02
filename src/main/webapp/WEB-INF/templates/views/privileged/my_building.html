@@ -19,67 +19,62 @@
                 </div>
 
                 <!-- MAIN PANEL -->
-                <div class="ibox-content forum-container">
-                    <!-- GENERAL Panel  -->
-                    <div class="forum-title">
-                        <h4>BUILDING ADDRESS</h4>
-                    </div>
-                    <div th:with="buildings = ${ {building} }">
-                        <div th:replace="fragments/buildings_table.html :: buildings_table(buildings=${buildings})"></div>
-                    </div>
+
+
+                <!-- Tab links -->
+                <div class="tab">
+                    <button class="tablinks" onclick="openBuildingTab(event, 'Physical')">Building</button>
+                    <button class="tablinks" onclick="openBuildingTab(event, 'Logical')">Central Unit</button>
                 </div>
 
+                <!-- building options-->
+                <div style="display: block" id="Physical" class="ibox-content forum-container tabcontent">
+                    <h3>Building</h3>
 
-                <!-- ADD NEW BUILDING -->
-                <div class="ibox-content forum-container">
-                    <!-- GENERAL Panel  -->
-                    <div class="forum-title">
-                        <h4>NEW FLAT FOR THIS BUILDING</h4>
-                    </div>
-
-                    <div th:replace="fragments/add-new_flat_with_owners_for_building.html"></div>
-                </div>
-
-                <div class="ibox-content forum-container">
-                    <!-- GENERAL Panel  -->
-                    <div class="forum-title">
-                        <h4>FLATS</h4>
-                    </div>
-                    <div th:replace="fragments/flats_table.html :: flats_table(flats=${building.flats})"></div>
-                </div>
-
-                <div class="ibox-content forum-container">
-                    <!-- GENERAL Panel  -->
-                    <div class="forum-title">
-                        <h4>CENTRAL UNITS</h4>
-                    </div>
                     <div class="ibox-content forum-container">
-                        <div class="st_wrap_table">
-                            <header class="st_table_header">
-                                <div class="st_row">
-                                    <div class="st_column _index-short">UID</div>
-                                    <div class="st_column _index-short">DIP address</div>
-                                    <div class="st_column _index-general">Friendly name</div>
-                                    <div class="st_column _index-general">SIM NO</div>
-                                    <div class="st_column _index-general">IMEI</div>
-                                    <div class="st_column _index-short">ZWave</div>
-                                    <div class="st_column _link">Link</div>
-                                </div>
-                            </header>
-                            <div class="st_table">
-                                <div class="st_row" th:each="centralUnit: ${building.centralUnits}">
-                                    <div class="st_column _index-short" th:text="${centralUnit.uid}"></div>
-                                    <div class="st_column _index-short" th:text="${centralUnit.dip}"></div>
-                                    <div class="st_column _index-general" th:text="${centralUnit.friendlyName}"></div>
-                                    <div class="st_column _index-general" th:text="${centralUnit.simNo}"></div>
-                                    <div class="st_column _index-general" th:text="${centralUnit.imei}"></div>
-                                    <div class="st_column _index-short" th:text="${centralUnit.zwave}"></div>
-                                    <div class="st_column _link centralUnit_link" th:text="${centralUnit.id}"></div>
-                                </div>
-                            </div>
+                        <!-- GENERAL Panel  -->
+                        <div class="forum-title">
+                            <h4>BUILDING ADDRESS</h4>
+                        </div>
+                        <div th:with="buildings = ${ {building} }">
+                            <div th:replace="fragments/buildings_table.html :: buildings_table(buildings=${buildings})"></div>
                         </div>
                     </div>
+
+                    <!-- ADD NEW FLAT -->
+                    <div class="ibox-content forum-container">
+                        <!-- GENERAL -->
+                        <div class="forum-title">
+                            <h4>NEW FLAT FOR THIS BUILDING</h4>
+                        </div>
+
+                        <div th:replace="fragments/add-new_flat_with_owners_for_building.html"></div>
+                    </div>
+
+                    <div class="ibox-content forum-container">
+                        <!-- GENERAL Panel  -->
+                        <div class="forum-title">
+                            <h4>FLATS</h4>
+                        </div>
+                        <div th:replace="fragments/flats_table.html :: flats_table(flats=${building.flats})"></div>
+                    </div>
                 </div>
+
+                <!-- central options-->
+                <div id="Logical" class="ibox-content forum-container tabcontent">
+                    <h3>Central unit</h3>
+
+                    <div class="ibox-content forum-container">
+                        <div th:if="${building.centralUnits.isEmpty()}">
+                            <div  th:replace="fragments/add-new_centralUnit.html"></div>
+                        </div>
+
+                        <h5>List</h5>
+                        <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${building.centralUnits})"></div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>

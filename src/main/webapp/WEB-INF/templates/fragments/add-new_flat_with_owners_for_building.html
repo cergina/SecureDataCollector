@@ -50,7 +50,12 @@
                     <input class="rounded-input" type="text" id="owner1-address">
                 </div>
                 <div class="st_column _index-short">
-                    <input type="checkbox" onclick="handleAddressOwnerClick(this)" id="owner1-sameaddress"/>
+
+                    <label class="switch">
+                        <input type="checkbox" onclick="handleAddressOwnerClick(this)" id="owner1-sameaddress"/>
+                        <span class="slider"></span>
+                    </label>
+
                     <label for="owner1-sameaddress">Permanent residence at this flat</label>
                 </div>
             </div>
@@ -90,13 +95,16 @@
                     <input class="rounded-input" type="text" id="owner2-address">
                 </div>
                 <div class="st_column _index-short">
-                    <input type="checkbox" onclick="handleAddressOwnerClick(this)" id="owner2-sameaddress"/>
+
+                    <label class="switch">
+                        <input type="checkbox" onclick="handleAddressOwnerClick(this)" id="owner2-sameaddress"/>
+                        <span class="slider"></span>
+                    </label>
+
                     <label for="owner2-sameaddress">Permanent residence at this flat</label>
                 </div>
             </div>
         </div>
-        <!-- HIDE THIS BUT KEEP THIS ITS IMPORTANT-->
-        <input type="hidden" th:value="${building.id}" id="building-id">
     </form>
     <!-- BUTTONS FOR ADDITION -->
     <div class="row justify-content-center rowinrightcol">

@@ -23,11 +23,11 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-public class UC_NewController {
+public class UC_NewControllerUnit {
     public static final String BUILDING_REQUIRES_CENTRALUNIT = "BuildingRequiresCentralUnit";
     private final DbProvider db;
 
-    public UC_NewController(@NotNull DbProvider dbProvider) {
+    public UC_NewControllerUnit(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
@@ -41,7 +41,7 @@ public class UC_NewController {
                 throw new CreationException("Some required fields are missing or incorrect.");
             }
 
-            if(checkIfAlreadyExists(controllerUnit.getUid(), controllerUnit.getDipAddress(), controllerUnit.getFlatId())){
+            if(checkIfAlreadyExists(controllerUnit)){
                 throw new AlreadyExistsException("Controller Unit already exists.");
             }
 
@@ -73,20 +73,21 @@ public class UC_NewController {
     }
 
 
-    private boolean isDataValid(@NotNull final ControllerUnit creation) throws NumberFormatException{
+    private boolean isDataValid(@NotNull final ControllerUnit controllerUnit) throws NumberFormatException{
         // dip address can only be between min 1 and max 255
-        int temp = Integer.parseInt(creation.getDipAddress());
+        int temp = Integer.parseInt(controllerUnit.getDipAddress());
         if (temp < 1 || temp > 255)
             return false;
 
         // just to see if its an integer it will throw an exception
-        temp = creation.getUid();
+        temp = controllerUnit.getUid();
         if (temp < 0)
             return false;
 
         // other fields cannot be empty
-        return creation != null && !StringUtils.isNullOrEmpty(creation.getZwave()) &&
-                !StringUtils.isNullOrEmpty(creation.getDipAddress()) && Assurance.isFkOk(creation.getFlatId()) != false;
+        return !StringUtils.isNullOrEmpty(controllerUnit.getDipAddress()) &&
+                !StringUtils.isNullOrEmpty(controllerUnit.getZwave()) &&
+                Assurance.isFkOk(controllerUnit.getFlatId()) != false;
     }
 
     private void insertIntoDatabase(@NotNull final ControllerUnit controllerUnit) throws SQLException{
@@ -108,11 +109,11 @@ public class UC_NewController {
         I_ControllerUnit.insert(db.getConn(), db.getPs(), T_ControllerUnit.CreateFromScratch(dict));
     }
 
-    private boolean checkIfAlreadyExists(final int uid, final String dip, final int flatId) {
+    private boolean checkIfAlreadyExists(@NotNull final ControllerUnit controllerUnit) {
         boolean exists;
 
         try {
-            exists = I_ControllerUnit.checkIfExists(db.getConn(), db.getPs(), db.getRs(), uid, dip, flatId);
+            exists = I_ControllerUnit.checkIfExists(db.getConn(), db.getPs(), db.getRs(), controllerUnit.getUid(), controllerUnit.getDipAddress(), controllerUnit.getFlatId());
             return exists;
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());

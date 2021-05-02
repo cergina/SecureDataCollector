@@ -2,9 +2,7 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
-import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_CentralUnit;
-import Model.Database.Tables.T_Flat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,7 +46,7 @@ public class I_CentralUnit extends InteractionWithDatabase {
                         tableNames +
                         ") " +
                         "VALUES (" +
-                        "?, ?, ?, ?, ?, ?, ?, ?" +
+                        "?, ?, ?, ?, ?, ?, ?" +
                         ") "
         );
 
@@ -147,5 +145,27 @@ public class I_CentralUnit extends InteractionWithDatabase {
         dict.put(T_CentralUnit.DBNAME_BUILDING_ID, rs.getInt(T_CentralUnit.DBNAME_BUILDING_ID));
 
         return T_CentralUnit.CreateFromRetrieved(rs.getInt(T_CentralUnit.DBNAME_ID), dict);
+    }
+
+    public static boolean checkIfExists(Connection conn, PreparedStatement ps, ResultSet rs, int uid, String dip, int buildingId) throws SQLException{
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE Uid=? OR (BuildingID=? AND DipAddress=?)"
+        );
+
+        int col = 0;
+        ps.setInt(++col, uid);
+        ps.setInt(++col, buildingId);
+        ps.setString(++col, dip);
+
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        return rs.isBeforeFirst();
     }
 }

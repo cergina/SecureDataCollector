@@ -61,6 +61,13 @@ function buildAddress() {
     };
 }
 
+function buildCentralUnitFromList() {
+    return {
+        id: $("#central").val(),
+        buildingId: $("#building-id").val()
+    }
+}
+
 function buildBuilding() {
     return {
         addressId: $("#address").val(),
@@ -94,41 +101,24 @@ function buildControllerUnit() {
     };
 }
 
-// build JSON object by Api spec: Flat, FlatOwners and First Controller Unit for FlatFirstTimeCreation
-function buildFlat() {
+// build JSON object by Api spec: CentralUnit
+function buildCentralUnit() {
     return {
-        apartmentNo: $("#apartment-No").val(),
-        owner1: {
-            title: $("#owner1-title").val(),
-            firstName: $("#owner1-name").val(),
-            middleName: $("#owner1-middlename").val(),
-            lastName: $("#owner1-lastname").val(),
-            phone: $("#owner1-phone").val(),
-            email: $("#owner1-email").val(),
-            address: $("#owner1-address").val()
-        },
-        owner2: {
-            title: $("#owner2-title").val(),
-            firstName: $("#owner2-name").val(),
-            middleName: $("#owner2-middlename").val(),
-            lastName: $("#owner2-lastname").val(),
-            phone: $("#owner2-phone").val(),
-            email: $("#owner2-email").val(),
-            address: $("#owner2-address").val()
-        },
-        uid: $("#controller-uid").val(),
-        dip: $("#controller-dip_address").val(),
-        zwave: $("#controller-zwave").val(),
-
-        centralUnitId: $("#controller-central-id").val()
+        uid: $("#central-uid").val(),
+        dipAddress: $("#central-dip_address").val(),
+        friendlyName: $("#central-friendly_name").val(),
+        simNo: $("#central-sim_no").val(),
+        imei: $("#central-imei").val(),
+        zwave: $("#central-zwave").val(),
+        buildingId: getUrlParameter('id')
     };
 }
 
-function buildFlatForBuilding() {
+function buildFlatForBuilding() { // TODO nazvoslovie u vsetkych znamena build + meno .java modelovej triedy ktoru stavas, v tomto pripade Flat_FlatOwners_Creation
     return {
         flat: {
             apartmentNO: $("#apartment-No").val(),
-            buildingId: $("#building-id").val()
+            buildingId: getUrlParameter('id')
         },
         owner1: {
             title: $("#owner1-title").val(),
@@ -187,39 +177,6 @@ function createNewFlat() {
     });
 }
 
-function createFlat() {
-    $.ajax({
-        method: "POST",
-        url: $SCRIPT_ROOT + "/admin/flats/create",
-        contentType: CONTENT_TYPE,
-        dataType: DATA_TYPE,
-        data: JSON.stringify(buildFlat()),
-        statusCode: {
-            201: function(response) {
-                $(':input').val('');
-                alert('Flat, owners and controller successfully created.');
-                window.location.reload();
-            },
-            400: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            }
-        },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
-        }
-    });
-}
-
 // Create new user
 function createUser() {
     $.ajax({
@@ -231,7 +188,7 @@ function createUser() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Verifikacny kod je: ' + response.data.verificationcode);
+                alert('Verification code is: ' + response.data.verificationcode);
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -357,23 +314,24 @@ function loginUser() {
 // CREATING STUFF
 // Create new controller unit
 function createControllerUnitForThisFlat() {
-    if ($("#controller-uid").val() == "" ||
-        $("#controller-dip_address").val() == "" ||
-        $("#controller-zwave").val() == "") {
+    var controllerUnit = buildControllerUnit();
+    if (controllerUnit.uid == "" ||
+        controllerUnit.dipAddress == "" ||
+        controllerUnit.zwave == "") {
         alert("All fields have to be filled.");
     } else {
         $.ajax({
             method: "POST",
-            url: $SCRIPT_ROOT + "/admin/controllers/create",
+            url: $SCRIPT_ROOT + "/admin/controllerUnits/create",
             contentType: CONTENT_TYPE,
             dataType: DATA_TYPE,
-            data: JSON.stringify(buildControllerUnit()),
+            data: JSON.stringify(controllerUnit),
             statusCode: {
                 201: function(response) {
                     $("#controller-uid").val('');
                     $("#controller-dip_address").val('');
                     $("#controller-zwave").val('');
-                    alert('Vytvorený nový controller unit.');
+                    alert('New controller unit succesfully created.');
                     window.location.reload();
                 },
                 409: function(jqXHR) {
@@ -393,6 +351,65 @@ function createControllerUnitForThisFlat() {
     }
 }
 
+// Create new central unit
+function createCentralUnit() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/centralUnits/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildCentralUnit()),
+        statusCode: {
+            201: function(response) {
+                alert('New central unit succesfully created..');
+                window.location.reload();
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
+// Create CentralUnit that already exists to building
+function assignCreatedCentralUnitToBuilding() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/centralUnits/assign",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildCentralUnitFromList()),
+        statusCode: {
+            201: function(response) {
+                alert('Central unit successfully assigned to this building.');
+                window.location.reload();
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
+}
+
+
 // Create new Building
 function createNewBuildingForProject() {
     $.ajax({
@@ -403,7 +420,7 @@ function createNewBuildingForProject() {
         data: JSON.stringify(buildBuilding()),
         statusCode: {
             201: function(response) {
-                alert('Vytvorená nová budova.');
+                alert('New building succesfully created.');
                 window.location.reload();
             },
             409: function(jqXHR) {
@@ -432,7 +449,7 @@ function createSensor() {
         data: JSON.stringify(buildSensor()),
         statusCode: {
             201: function(response) {
-                alert('Vytvorený nový sensor.');
+                alert('New sensor successfully created.');
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -462,7 +479,7 @@ function createProject() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Vytvorený nový projekt.');
+                alert('New project succesfully created.');
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -490,7 +507,7 @@ function createAddress() {
         data: JSON.stringify(buildAddress()),
         statusCode: {
             201: function(response) {
-                alert('Úspešne sa podarilo vytvoriť novú adresu.');
+                alert('New address succesfully created.');
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
@@ -519,7 +536,7 @@ function createCommType() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Vytvorený nový typ komunikácie: ' + response.data.name);
+                alert('New communication type succesfully created: ' + response.data.name);
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -549,7 +566,7 @@ function createSensorType() {
         statusCode: {
             201: function(response) {
                 $(':input').val('');
-                alert('Vytvorený nový typ sensora: ' + response.data.name);
+                alert('New sensor type succesfully created: ' + response.data.name);
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -694,6 +711,27 @@ function switchToggles() {
     } else {
         x.style.display = "none";
     }
+}
+
+function openBuildingTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
 }
 
 function getUrlParameter(sParam) { // https://stackoverflow.com/a/21903119/5148218
