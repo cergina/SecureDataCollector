@@ -1,11 +1,14 @@
 package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
+import Control.Scenario.UC_Graph;
 import Control.Scenario.UC_ListBuilding;
 import Control.Scenario.UC_ListCentralUnit;
 import Control.Scenario.UC_ListProject;
+import Model.Database.Support.CustomLogs;
 import Model.Web.Building;
 import Model.Web.CentralUnit;
+import Model.Web.JsonResponse;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -15,11 +18,13 @@ import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name = "BuildingsInformationServlet", urlPatterns = BuildingsInformationServlet.SERVLET_URL)
@@ -81,4 +86,32 @@ public class BuildingsInformationServlet extends SessionServlet {
 
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.doPost(request, response);
+        PrintWriter writer = response.getWriter();
+
+        // has to have some request for building id
+        Integer requestedId = ServletHelper.getRequestParamId(request);
+        try {
+            CustomLogs.Development("V requeste prisiel building id: " + requestedId);
+        } catch (NumberFormatException nfe) {
+            CustomLogs.Error("Bad request or nothing came into server as ?id=[number should be here]");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        GraphSingleBuilding graph = new GraphSingleBuilding(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getFlatsForBuilding(requestedId));
+
+        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraphBuilding(graph));
+
+        response.setStatus(jsonResponse.getStatus());
+
+        writer.println(jsonResponse.toString());
+        writer.close();
+
+    }
+
+
 }

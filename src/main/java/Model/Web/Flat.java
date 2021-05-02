@@ -18,6 +18,11 @@ public class Flat extends PrettyObject {
     @Expose
     public Integer buildingId;
 
+    @Expose
+    private List<Measurement> measurements;
+    @Expose
+    private List<Integer> dataArray;
+
     // empty constructor for Gson
     public Flat() {}
 
@@ -32,10 +37,17 @@ public class Flat extends PrettyObject {
         this.controllerUnits = controllerUnits;
     }
 
-    public Flat(Integer id, String apartmentNO, Integer buildingId) {
+    public Flat(Integer id, String apartmentNO, int buildingId) {
         this.id = id;
         this.apartmentNO = apartmentNO;
         this.buildingId = buildingId;
+    }
+
+    public Flat(Integer id, String apartmentNO, int buildingId, List<Integer> dataArray){
+        this.id = id;
+        this.apartmentNO = apartmentNO;
+        this.buildingId = buildingId;
+        this.dataArray = dataArray;
     }
 
     // required for new flat addition
