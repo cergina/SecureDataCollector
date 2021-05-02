@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xl-">
+            <div class="wrapper wrapper-content animated fadeInRight">
+
+                <!-- UPPER PANEL -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="p-xs">
+                        <div class="pull-left m-r-md">
+                            <i class="fa fa-globe text-navy mid-icon"></i>
+                        </div>
+                        <h2>Secure Data Collector - 2021</h2>
+                        <span>This is panel that provides list of controllers for central unit.<br></span>
+                    </div>
+                </div>
+
+                <!-- MAIN PANEL -->
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>CENTRAL UNIT</h4>
+                    </div>
+                    <div th:with="centralUnits = ${ {centralUnit} }">
+                        <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${centralUnits})"></div>
+                    </div>
+                </div>
+
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>FLATS</h4>
+                    </div>
+                    <div th:replace="fragments/flats_table.html :: flats_table(flats=${centralUnit.flats})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUTTONS FOR NAVIGATION -->
+    <div class="row justify-content-center rowinrightcol">
+        <div class="regpaddingbottom">
+            <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

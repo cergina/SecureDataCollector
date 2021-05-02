@@ -29,8 +29,7 @@
                     </div>
                 </div>
 
-
-                <!-- ADD NEW BUILDING -->
+                <!-- ADD NEW FLAT -->
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
                     <div class="forum-title">
@@ -38,6 +37,16 @@
                     </div>
 
                     <div th:replace="fragments/add-new_flat_with_owners_for_building.html"></div>
+                </div>
+
+                <!-- ADD NEW CENTRAL UNIT -->
+                <div class="ibox-content forum-container">
+                    <!-- GENERAL Panel  -->
+                    <div class="forum-title">
+                        <h4>NEW CENTRAL UNIT FOR THIS BUILDING</h4>
+                    </div>
+
+                    <div th:replace="fragments/add-new_centralUnit.html"></div>
                 </div>
 
                 <div class="ibox-content forum-container">
@@ -53,32 +62,7 @@
                     <div class="forum-title">
                         <h4>CENTRAL UNITS</h4>
                     </div>
-                    <div class="ibox-content forum-container">
-                        <div class="st_wrap_table">
-                            <header class="st_table_header">
-                                <div class="st_row">
-                                    <div class="st_column _index-short">UID</div>
-                                    <div class="st_column _index-short">DIP address</div>
-                                    <div class="st_column _index-general">Friendly name</div>
-                                    <div class="st_column _index-general">SIM NO</div>
-                                    <div class="st_column _index-general">IMEI</div>
-                                    <div class="st_column _index-short">ZWave</div>
-                                    <div class="st_column _link">Link</div>
-                                </div>
-                            </header>
-                            <div class="st_table">
-                                <div class="st_row" th:each="centralUnit: ${building.centralUnits}">
-                                    <div class="st_column _index-short" th:text="${centralUnit.uid}"></div>
-                                    <div class="st_column _index-short" th:text="${centralUnit.dip}"></div>
-                                    <div class="st_column _index-general" th:text="${centralUnit.friendlyName}"></div>
-                                    <div class="st_column _index-general" th:text="${centralUnit.simNo}"></div>
-                                    <div class="st_column _index-general" th:text="${centralUnit.imei}"></div>
-                                    <div class="st_column _index-short" th:text="${centralUnit.zwave}"></div>
-                                    <div class="st_column _link centralUnit_link" th:text="${centralUnit.id}"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${building.centralUnits})"></div>
                 </div>
             </div>
         </div>

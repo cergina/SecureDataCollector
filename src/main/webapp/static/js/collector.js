@@ -94,41 +94,24 @@ function buildControllerUnit() {
     };
 }
 
-// build JSON object by Api spec: Flat, FlatOwners and First Controller Unit for FlatFirstTimeCreation
-function buildFlat() {
+// build JSON object by Api spec: CentralUnit
+function buildCentralUnit() {
     return {
-        apartmentNo: $("#apartment-No").val(),
-        owner1: {
-            title: $("#owner1-title").val(),
-            firstName: $("#owner1-name").val(),
-            middleName: $("#owner1-middlename").val(),
-            lastName: $("#owner1-lastname").val(),
-            phone: $("#owner1-phone").val(),
-            email: $("#owner1-email").val(),
-            address: $("#owner1-address").val()
-        },
-        owner2: {
-            title: $("#owner2-title").val(),
-            firstName: $("#owner2-name").val(),
-            middleName: $("#owner2-middlename").val(),
-            lastName: $("#owner2-lastname").val(),
-            phone: $("#owner2-phone").val(),
-            email: $("#owner2-email").val(),
-            address: $("#owner2-address").val()
-        },
-        uid: $("#controller-uid").val(),
-        dip: $("#controller-dip_address").val(),
-        zwave: $("#controller-zwave").val(),
-
-        centralUnitId: $("#controller-central-id").val()
+        uid: $("#central-uid").val(),
+        dipAddress: $("#central-dip_address").val(),
+        friendlyName: $("#central-friendly_name").val(),
+        simNo: $("#central-sim_no").val(),
+        imei: $("#central-imei").val(),
+        zwave: $("#central-zwave").val(),
+        buildingId: getUrlParameter('id')
     };
 }
 
-function buildFlatForBuilding() {
+function buildFlatForBuilding() { // TODO nazvoslovie u vsetkych znamena build + meno .java modelovej triedy ktoru stavas, v tomto pripade Flat_FlatOwners_Creation
     return {
         flat: {
             apartmentNO: $("#apartment-No").val(),
-            buildingId: $("#building-id").val()
+            buildingId: getUrlParameter('id')
         },
         owner1: {
             title: $("#owner1-title").val(),
@@ -165,39 +148,6 @@ function createNewFlat() {
                 $(".rounded-input").val('');
                 $(":checkbox").prop("checked", false).removeAttr("checked");
                 alert('Flat and owners successfully created.');
-                window.location.reload();
-            },
-            400: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            401: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            },
-            500: function(jqXHR) {
-                var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
-            }
-        },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
-        }
-    });
-}
-
-function createFlat() {
-    $.ajax({
-        method: "POST",
-        url: $SCRIPT_ROOT + "/admin/flats/create",
-        contentType: CONTENT_TYPE,
-        dataType: DATA_TYPE,
-        data: JSON.stringify(buildFlat()),
-        statusCode: {
-            201: function(response) {
-                $(':input').val('');
-                alert('Flat, owners and controller successfully created.');
                 window.location.reload();
             },
             400: function(jqXHR) {
@@ -357,17 +307,18 @@ function loginUser() {
 // CREATING STUFF
 // Create new controller unit
 function createControllerUnitForThisFlat() {
-    if ($("#controller-uid").val() == "" ||
-        $("#controller-dip_address").val() == "" ||
-        $("#controller-zwave").val() == "") {
+    var controllerUnit = buildControllerUnit();
+    if (controllerUnit.uid == "" ||
+        controllerUnit.dipAddress == "" ||
+        controllerUnit.zwave == "") {
         alert("All fields have to be filled.");
     } else {
         $.ajax({
             method: "POST",
-            url: $SCRIPT_ROOT + "/admin/controllers/create",
+            url: $SCRIPT_ROOT + "/admin/controllerUnits/create",
             contentType: CONTENT_TYPE,
             dataType: DATA_TYPE,
-            data: JSON.stringify(buildControllerUnit()),
+            data: JSON.stringify(controllerUnit),
             statusCode: {
                 201: function(response) {
                     $("#controller-uid").val('');
@@ -391,6 +342,35 @@ function createControllerUnitForThisFlat() {
             }
         });
     }
+}
+
+// Create new central unit
+function createCentralUnit() {
+    $.ajax({
+        method: "POST",
+        url: $SCRIPT_ROOT + "/admin/centralUnits/create",
+        contentType: CONTENT_TYPE,
+        dataType: DATA_TYPE,
+        data: JSON.stringify(buildCentralUnit()),
+        statusCode: {
+            201: function(response) {
+                alert('Vytvorený nový central unit.');
+                window.location.reload();
+            },
+            409: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            400: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            },
+            500: function(jqXHR) {
+                var response = JSON.parse(jqXHR.responseText);
+                alert(response.message); // TODO impact layout
+            }
+        }
+    });
 }
 
 // Create new Building

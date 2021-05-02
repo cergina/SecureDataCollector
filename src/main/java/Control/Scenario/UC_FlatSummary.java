@@ -140,7 +140,7 @@ public class UC_FlatSummary {
 
         centralUnit.setId(t.getA_pk());
         centralUnit.setUid(t.getA_Uid());
-        centralUnit.setDip(t.getA_DipAddress());
+        centralUnit.setDipAddress(t.getA_DipAddress());
         centralUnit.setFriendlyName(t.getA_FriendlyName());
         centralUnit.setSimNo(t.getA_SimNO());
         centralUnit.setImei(t.getA_Imei());
@@ -164,7 +164,7 @@ public class UC_FlatSummary {
         CentralUnit centralUnit = new CentralUnit();
         centralUnit.setId(t_centralUnit.getA_pk());
         centralUnit.setUid(t_centralUnit.getA_Uid());
-        centralUnit.setDip(t_centralUnit.getA_DipAddress());
+        centralUnit.setDipAddress(t_centralUnit.getA_DipAddress());
         centralUnit.setFriendlyName(t_centralUnit.getA_FriendlyName());
         centralUnit.setSimNo(t_centralUnit.getA_SimNO());
         centralUnit.setImei(t_centralUnit.getA_Imei());

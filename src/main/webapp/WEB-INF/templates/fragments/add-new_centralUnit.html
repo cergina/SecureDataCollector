@@ -1,0 +1,50 @@
+<!-- tlacidlo prepinac -->
+<div class="regpaddingbottom padding-top-10">
+    <button style="display: none" id="toggle-button-addition-show" class="roundedbutton min-width-300" onclick="showVisibilityOfAdditionElement()">Show option of Central Unit Creation</button>
+</div>
+<div class="regpaddingbottom padding-top-10">
+    <button style="display: block" id="toggle-button-addition-hide" class="roundedbutton min-width-300" onclick="hideVisibilityOfAdditionElement()">Hide option of Central Unit Creation</button>
+</div>
+<!-- HIDEABLE -->
+<div id="addition-toggle">
+    <!-- INFO ABOUT ADDITION -->
+    <form>
+        <!-- MUST BE ONE OWNER -->
+        <div>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label for="central-uid">UID:</label>
+                    <input class="rounded-input" type="text" id="central-uid">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="central-dip_address">DIP address:</label>
+                    <input class="rounded-input" type="text" id="central-dip_address">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="central-friendly_name">Friendly name:</label>
+                    <input class="rounded-input" type="text" id="central-friendly_name">
+                </div>
+            </div>
+            <div class="st_row">
+                <div class="st_column _index-short">
+                    <label for="central-sim_no">SIM No:</label>
+                    <input class="rounded-input" type="text" id="central-sim_no">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="central-imei">IMEI:</label>
+                    <input class="rounded-input" type="text" id="central-imei">
+                </div>
+                <div class="st_column _index-short">
+                    <label for="central-zwave">ZWave:</label>
+                    <input class="rounded-input" type="text" id="central-zwave">
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- BUTTONS FOR ADDITION -->
+    <div class="row justify-content-center rowinrightcol">
+        <div class="regpaddingbottom padding-top-10">
+            <button type="submit" class="roundedbutton min-width-300" onclick="createCentralUnit()">Create</button>
+        </div>
+    </div>
+</div>
