@@ -9,6 +9,7 @@ import Model.Database.Support.CustomLogs;
 import Model.Web.Building;
 import Model.Web.CentralUnit;
 import Model.Web.JsonResponse;
+import Model.Web.Specific.GraphSingleBuilding;
 import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -108,7 +109,7 @@ public class BuildingsInformationServlet extends SessionServlet {
 
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
 
     }
