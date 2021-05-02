@@ -18,6 +18,14 @@
                     </div>
                 </div>
 
+                <div class="ibox-content forum-container">
+                    <script th:src="@{${base_url} + '/static/js/Chart.js'}" type="text/javascript"></script>
+                    <div style="width: 100%">
+                        <canvas id="graph-last30days" style="background-color: #ffffff"></canvas>
+                    </div>
+                    <script th:src="@{${base_url} + '/static/js/graph-building.js'}" type="text/javascript"></script>
+                </div>
+
                 <!-- MAIN PANEL -->
                 <div class="ibox-content forum-container">
                     <!-- GENERAL Panel  -->
