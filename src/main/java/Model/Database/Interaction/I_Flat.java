@@ -86,7 +86,7 @@ public class I_Flat extends InteractionWithDatabase {
     public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId, String apartmentNo) throws SQLException {
 
         // No Filter is being used
-        if (buildingId <= DB_DO_NOT_USE_THIS_FILTER || StringUtils.isNullOrEmpty(apartmentNo)) {
+        if (buildingId <= DB_DO_NOT_USE_THIS_FILTER && StringUtils.isNullOrEmpty(apartmentNo)) {
             return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_Flat.class));
         }
 
