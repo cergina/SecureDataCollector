@@ -1,6 +1,9 @@
-# SecureDataCollector
+# SecureDataCollector (v 1.0a)
+###### Released on 3.5.2021; Works with SQL version 19
+
 
 This is a repository of team-project 14 (SONET). It's aim is to preserve SW and HW related code.
+
 
 ##### Therefore I list my full HW relevant information, because it can be very important for you as well.
   - Glassfish 5.01
