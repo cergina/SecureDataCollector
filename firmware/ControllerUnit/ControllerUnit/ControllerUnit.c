@@ -1,7 +1,7 @@
 /*
  * ControllerUnit.c
  * Project: DCS
- * Version: 0.52
+ * Version: 0.53
  * Processor: ATmega328P
  * Author: Bc. Tomas Zatka, Bc. Vladimir Bachan
  */ 
@@ -21,6 +21,10 @@
 #include "lib/atmega-adc.h"
 //Source https://github.com/clnhlzmn/eeprom-circular-buffer
 #include "lib/eeprom_circular_buffer.h"
+
+// RTC libraries
+#include "lib/twi.h"
+#include "lib/rtc.h"
 
 #define F_CPU 16000000UL
 //define F_CPU 7372800UL

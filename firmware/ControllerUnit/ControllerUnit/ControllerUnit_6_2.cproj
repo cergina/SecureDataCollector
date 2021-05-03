@@ -147,6 +147,24 @@
     <Compile Include="lib\ring_buffer.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="lib\rtc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\rtc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\twi-lowlevel.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\twi-lowlevel.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\twi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\twi.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lib\uart.c">
       <SubType>compile</SubType>
     </Compile>
