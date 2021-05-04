@@ -70,6 +70,31 @@ uint8_t UART_Busy = 1;
 uint8_t qState = QS_UNKNOWN;
 uint8_t qOpPending = 0;
 
+// #region string tools
+void uart_putn(){
+	uart_putc('\n');
+}
+
+void uart_println(char *msg){
+	uart_puts(msg);
+	uart_putn();
+}
+
+void uart1_putn(){
+	uart1_putn();
+}
+
+void uart1_println(char *msg){
+	uart1_puts(msg);
+	uart1_putn();
+}
+
+void qSendForce(char *cmd){
+	uart1_puts(cmd);
+	uart1_putc('\n');
+}
+// #endregion
+
 uint8_t qSend(char *cmd){
 	if (qOpPending){
 		uart_puts("AT failed\n");
@@ -320,7 +345,7 @@ int main(void)
 					uint8_t ret = ProcessQMessage(message);
 					if (ret == 0){
 						uart_puts(message);
-						uart_putc('\n');
+						uart_putn();
 					}
 					
 					// clear buffer
