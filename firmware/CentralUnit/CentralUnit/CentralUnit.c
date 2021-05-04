@@ -268,8 +268,9 @@ int main(void)
 	free(message);
 	// #endregion
 	
-	uart_putc(current_proto);
-	uart_putc('\n');
+	uart_puts("Current proto: ");
+	uart_putc(current_proto + '0');
+	uart_putn();
 	
 	#ifdef DEBUG_TEST_TICK
 		unsigned int tick= 0;
