@@ -125,7 +125,7 @@ void qMeasurementSend(int cuAddress, int input, int measurement){
 
 uint8_t ProcessQMessage(char *msg)
 {
-	if (qState == QS_UNKNOWN && 0 == strcmp("RDY", msg))
+	if (0 == strcmp("RDY", msg))
 	{
 		qState = QS_READY;
 		uart_puts("Q -> RDY\n");
