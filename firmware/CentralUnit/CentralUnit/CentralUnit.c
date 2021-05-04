@@ -69,6 +69,7 @@ uint8_t UART_Busy = 1;
 #define QS_DEACTIVATING	12  // deactivating -> going to IDLE
 uint8_t qState = QS_UNKNOWN;
 uint8_t qOpPending = 0;
+char *measurementToSend = NULL;
 
 // #region string tools
 void uart_putn(){
@@ -102,8 +103,7 @@ uint8_t qSend(char *cmd){
 	}
 	
 	qOpPending = 1;
-	uart1_puts(cmd);
-	uart1_putc('\n');
+	qSendForce(cmd);
 	return 1;
 }
 
@@ -118,9 +118,15 @@ void qDisconnect(){
 	qSend("AT+QIDEACT");
 }
 
-void qMeasurementSend(int cuAddress, int input, int measurement){
-	char *uri = "https://team14-20.studenti.fiit.stuba.sk/dcs/api/measurements-add";
-	char *json = "{\"messageType\": \"measurements\", \"centralUnit\": 1, \"requestNumber\": 3, \"controllers\": [{\"controllerUnit\": 1, \"measurements\": [{\"sensorIO\": \"1\", \"count\": 20}, {\"sensorIO\": \"2\",\"count\": 10} ]}]}";
+}
+
+void qMeasurementCompose(int ceAddress, unsigned int reqNo, int cuAddress, int input, int measurement){
+	measurementToSend = (char*) malloc(255 * sizeof(char));
+	sprintf(measurementToSend, "{\"messageType\":\"measurements\",\"centralUnit\":\"%d\",\"requestNumber\":%d,\"controllers\":[{\"controllerUnit\":\"%d\",\"measurements\":[{\"sensorIO\":\"%d\",\"count\":%d}]}]}", ceAddress, reqNo, cuAddress, input, measurement);
+	
+	uart_puts("Measurement preparation: ");
+	uart_puts(measurementToSend);
+	uart_putn();
 }
 
 uint8_t ProcessQMessage(char *msg)
