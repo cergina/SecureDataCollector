@@ -118,6 +118,37 @@ void qDisconnect(){
 	qSend("AT+QIDEACT");
 }
 
+void qMeasurementSend(char *m){
+	uart_puts("Q :: Preparation\n");
+	
+	uint8_t _len = strlen(m);
+	char *_cmd = (char*)malloc(255*sizeof(char));
+	sprintf(_cmd,"AT+QHTTPPOST=%d,60,60", _len);
+	
+	// Testy
+	uart_println(m);
+	uart_println(_cmd);
+	
+	_delay_ms(2000);
+	qState = QS_URLSET;
+	qSendForce("AT+QHTTPURL=64,30");
+	_delay_ms(1000);
+	
+	qSendForce("http://team14-20.studenti.fiit.stuba.sk/dcs/api/measurements-add");
+	_delay_ms(5000);
+	
+	uart_puts("Q :: Posting\n");
+	qState = QS_POSTED;
+	qSendForce(_cmd);
+	_delay_ms(2000);
+	
+	qSendForce(m);
+	_delay_ms(3000);
+	
+	qSendForce("AT+QHTTPREAD=30");
+	free(_cmd);
+	free(measurementToSend);
+	measurementToSend = NULL;
 }
 
 void qMeasurementCompose(int ceAddress, unsigned int reqNo, int cuAddress, int input, int measurement){
@@ -257,6 +288,7 @@ int main(void)
 	uint8_t current_proto = PROTO_CCE;
 	unsigned int index = 0;
 	unsigned char UID = readDipAddress(); // only at startup!
+	unsigned int reqNo = 0;
 
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	uart1_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
@@ -380,12 +412,17 @@ int main(void)
 		
 		
 		
-		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_IDLE){
+		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_IDLE && measurementToSend != NULL){
 			qConnect();
 			continue;
 		}
 		
-		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_ACTIVATED){
+		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_ACTIVATED && measurementToSend != NULL){
+			qMeasurementSend(measurementToSend);
+			continue;
+		}
+		
+		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_ACTIVATED && measurementToSend == NULL){
 			qDisconnect();
 			continue;
 		}
