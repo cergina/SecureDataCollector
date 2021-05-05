@@ -4,7 +4,7 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-xl-">
+        <div class="col-xl-12">
             <div class="wrapper wrapper-content animated fadeInRight">
 
                 <!-- UPPER PANEL -->
@@ -19,7 +19,7 @@
                 </div>
 
                 <!-- GRAPH -->
-                <div class="ibox-content forum-container">
+                <div class="ibox-content form-container">
                     <div class="forum-title">
                         <h4>LAST 30 DAYS</h4>
                     </div>
@@ -31,7 +31,7 @@
                 </div>
 
                 <!-- MAIN PANEL -->
-                <div class="ibox-content forum-container">
+                <div class="ibox-content form-container">
                     <div class="forum-title">
                         <h4>FLAT ADDRESS</h4>
                     </div>
@@ -40,14 +40,14 @@
                     </div>
                 </div>
 
-                <div class="ibox-content forum-container">
+                <div class="ibox-content form-container">
                     <div class="forum-title">
                         <h4>FLAT</h4>
                     </div>
                     <div th:replace="fragments/flats_table.html :: flats_table(flats=${building.flats})"></div>
                 </div>
 
-                <div class="ibox-content forum-container">
+                <div class="ibox-content form-container">
                     <div class="forum-title">
                         <h4>FLAT OWNERS</h4>
                     </div>
