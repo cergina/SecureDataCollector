@@ -96,6 +96,65 @@ void qSendForce(char *cmd){
 }
 // #endregion
 
+void qStateSet(uint8_t state){
+	switch(state){
+		case QS_UNKNOWN:{
+			uart_println("Q => QS_UNKNOWN");
+			break;
+		}
+		case QS_READY:{
+			uart_println("Q => QS_READY");
+			break;
+		}
+		case QS_CFUN:{
+			uart_println("Q => QS_CFUN");
+			break;
+		}
+		case QS_CPIN:{
+			uart_println("Q => QS_CPIN");
+			break;
+		}
+		case QS_IDLE:{
+			uart_println("Q => QS_IDLE");
+			break;
+		}
+		case QS_APSET:{
+			uart_println("Q => QS_APSET");
+			break;
+		}
+		case QS_REGISTERED:{
+			uart_println("Q => QS_REGISTERED");
+			break;
+		}
+		case QS_ACTIVATED:{
+			uart_println("Q => QS_ACTIVATED");
+			break;
+		}
+		case QS_CTXSET:{
+			uart_println("Q => QS_CTXSET");
+			break;
+		}
+		case QS_URLSET:{
+			uart_println("Q => QS_URLSET");
+			break;
+		}
+		case QS_POSTED:{
+			uart_println("Q => QS_POSTED");
+			break;
+		}
+		case QS_READING:{
+			uart_println("Q => QS_READING");
+			break;
+		}
+		case QS_DEACTIVATING:{
+			uart_println("Q => QS_DEACTIVATING");
+			break;
+		}
+	}
+	qState = state;
+}
+
+
 uint8_t qSend(char *cmd){
 	if (qOpPending){
 		uart_puts("AT failed\n");
@@ -114,8 +173,8 @@ void qConnect(){
 
 void qDisconnect(){
 	uart_puts("Q :: Disconnecting\n");
-	qState = QS_DEACTIVATING;
-	qSend("AT+QIDEACT");
+	qStateSet(QS_DEACTIVATING);
+	qSendForce("AT+QIDEACT");
 }
 
 void qMeasurementSend(char *m){
@@ -126,11 +185,11 @@ void qMeasurementSend(char *m){
 	sprintf(_cmd,"AT+QHTTPPOST=%d,60,60", _len);
 	
 	// Testy
-	uart_println(m);
-	uart_println(_cmd);
+	//uart_println(m);
+	//uart_println(_cmd);
 	
 	_delay_ms(2000);
-	qState = QS_URLSET;
+	qStateSet(QS_URLSET);
 	qSendForce("AT+QHTTPURL=64,30");
 	_delay_ms(1000);
 	
@@ -138,7 +197,7 @@ void qMeasurementSend(char *m){
 	_delay_ms(5000);
 	
 	uart_puts("Q :: Posting\n");
-	qState = QS_POSTED;
+	qStateSet(QS_POSTED);
 	qSendForce(_cmd);
 	_delay_ms(2000);
 	
@@ -147,80 +206,79 @@ void qMeasurementSend(char *m){
 	
 	qSendForce("AT+QHTTPREAD=30");
 	free(_cmd);
-	free(measurementToSend);
+	free(m);
 	measurementToSend = NULL;
+	qStateSet(QS_ACTIVATED);
 }
 
 void qMeasurementCompose(int ceAddress, unsigned int reqNo, int cuAddress, int input, int measurement){
 	measurementToSend = (char*) malloc(255 * sizeof(char));
 	sprintf(measurementToSend, "{\"messageType\":\"measurements\",\"centralUnit\":\"%d\",\"requestNumber\":%d,\"controllers\":[{\"controllerUnit\":\"%d\",\"measurements\":[{\"sensorIO\":\"%d\",\"count\":%d}]}]}", ceAddress, reqNo, cuAddress, input, measurement);
 	
-	uart_puts("Measurement preparation: ");
-	uart_puts(measurementToSend);
-	uart_putn();
+	uart_println("Measurement preparation:");
+	uart_println(measurementToSend);
 }
 
 uint8_t ProcessQMessage(char *msg)
 {
 	if (0 == strcmp("RDY", msg))
 	{
-		qState = QS_READY;
-		uart_puts("Q -> RDY\n");
+		qStateSet(QS_READY);
 		return 1;
 	}
 
 	if (qState == QS_READY && 0 == strcmp("+CFUN: 1", msg))
 	{
-		qState = QS_CPIN;
-		uart_puts("Q -> FULL FUNC\n");
+		qStateSet(QS_CPIN);
 		return 1;
 	}
 	
 	if (qState == QS_CPIN && 0 == strcmp("+CPIN: READY", msg))
 	{
-		qState = QS_CFUN;
-		uart_puts("Q -> PIN OK\n");
+		qStateSet(QS_CFUN);
 		return 1;
 	}
 	
 	if (qState == QS_CFUN && 0 == strcmp("Call Ready", msg))
 	{
-		qState = QS_IDLE;
-		uart_puts("Q -> IDLE\n");
+		qStateSet(QS_IDLE);
 		return 1;
 	}
 	
 	if (qState == QS_CFUN && 0 == strcmp("Call Ready", msg))
 	{
-		qState = QS_IDLE;
-		uart_puts("Q -> IDLE\n");
+		qStateSet(QS_IDLE);
 		return 1;
+	}
+	
+	if (qOpPending && 0 == strcmp("CONNECT", msg)){
+		uart_puts("Q :: GENERIC CONNECT\n");
 	}
 	
 	// react to response
 	if (qOpPending && 0 == strcmp("OK", msg)){
-		
+		uart_puts("Q::OK\n");
 		qOpPending = 0; // disable pending Q state
 		
 		switch (qState) {
 			case QS_IDLE: {
-				qState = QS_APSET;	
-				uart_puts("Q -> QS_APSET\n");
+				qStateSet(QS_APSET);	
 				qSend("AT+QIREGAPP");
 				break;
 			}
 			case QS_APSET: {
-				qState = QS_REGISTERED;	
-				uart_puts("Q -> QS_REGISTERED\n");
+				qStateSet(QS_REGISTERED);
 				_delay_ms(2000); // QUECTEL important
 				qSend("AT+QIACT");
 				break;
 			}
 			case QS_REGISTERED: {
-				qState = QS_ACTIVATED;				
-				uart_puts("Q -> QS_ACTIVATED\n");
+				qStateSet(QS_ACTIVATED);	
 				qSend("AT+QIFGCNT=1");
 				break;
+			}
+			default: {
+				uart_puts("Q :: GENERIC OK\n");
 			}
 			
 			// post reakcia
@@ -230,8 +288,7 @@ uint8_t ProcessQMessage(char *msg)
 	
 	if (qState == QS_DEACTIVATING && 0 == strcmp("DEACT OK", msg))
 	{
-		qState = QS_IDLE;
-		uart_puts("Q -> IDLE\n");
+		qStateSet(QS_IDLE);
 		return 1;
 	}
 }
@@ -282,10 +339,10 @@ void ParsePacket(char *message)
 
 int main(void)
 {
-	unsigned int c;
+	unsigned int c, c0;
 	char *message = NULL;
 	unsigned short current_flag = NULL;
-	uint8_t current_proto = PROTO_CCE;
+	uint8_t current_proto = PROTO_CEQ;
 	unsigned int index = 0;
 	unsigned char UID = readDipAddress(); // only at startup!
 	unsigned int reqNo = 0;
@@ -317,9 +374,23 @@ int main(void)
 	uint8_t checksum;
 	while (1)
 	{
+		c0 = uart_getc();
 		c = uart1_getc();
 		
+		if (!(c0 & UART_NO_DATA)){
+			
+			// generate test measurement
+			if (c0 == '@'){
+				if (measurementToSend == NULL){
+					qMeasurementCompose(UID, ++reqNo, 1, 2, 1);
+					//uart_putc(qOpPending);
+					continue;
+				}
+			}
+		}
+		
 		if (!(c & UART_NO_DATA)){
+			uart_putc(c);
 			
 			//#region STXETX 
 			if (c == STX){
@@ -408,9 +479,8 @@ int main(void)
 			
 			// remove flags
 			c = c & 0xFF;
+			c0 = c0 & 0xFF;
 		}	
-		
-		
 		
 		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_IDLE && measurementToSend != NULL){
 			qConnect();
@@ -422,6 +492,7 @@ int main(void)
 			continue;
 		}
 		
+		continue; // bez deaktivácie
 		if (current_proto == PROTO_CEQ && qOpPending == 0 && qState == QS_ACTIVATED && measurementToSend == NULL){
 			qDisconnect();
 			continue;
