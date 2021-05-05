@@ -35,7 +35,7 @@
 
 #include "util/delay.h"
 
-#define DEBUG_TEST
+//#define DEBUG_TEST
 //#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
 //#define DEBUG_TEST_BLINK_L
 
