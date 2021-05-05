@@ -13,7 +13,7 @@ public class ConfigClass {
     // whether to send emails via gmail api - disabled by default
     public final static boolean PRODUCTION_EMAIL_SENDING = false;
     // in TimakCommonFiles there is a setup File for creation database, the number should match
-    public final static int CODE_SUPPOSED_TO_WORK_WITH_SQL_VERSION = 20;
+    public final static int CODE_SUPPOSED_TO_WORK_WITH_SQL_VERSION = 21;
 
     // HTML variable name that tells if we are running remotely
     public final static String HTML_VARIABLENAME_RUNNINGREMOTELY = "trueIfRunningRemotely";

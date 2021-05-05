@@ -262,10 +262,7 @@ input[type=button] {
     color: rgb(27,30,36);
     margin: 20px 0;
 }
-/* ###  Table wrap */
-.st_wrap_table{
 
-}
 /* ##   header */
 .st_table_header{
     position: -webkit-sticky;
@@ -289,9 +286,7 @@ h4 {
 .st_table_header .st_row{
     color: rgba(220,220,220, .7);
 }
-.st_table_header .st_column{
 
-}
 /* ##  table */
 .st_table{
     display: -webkit-box;

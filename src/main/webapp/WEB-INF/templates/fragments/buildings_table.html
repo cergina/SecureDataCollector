@@ -2,28 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <div th:fragment="buildings_table(buildings)" class="ibox-content forum-container">
-    <div class="st_wrap_table">
-        <header class="st_table_header">
-            <div class="st_row">
-                <div class="st_column _index-general">Country</div>
-                <div class="st_column _index-short">City</div>
-                <div class="st_column _index-short">Street</div>
-                <div class="st_column _index-short">House No</div>
-                <div class="st_column _index-short">ZIP</div>
-                <div class="st_column _link">Link</div>
-            </div>
-        </header>
-        <div class="st_table">
-            <div class="st_row" th:each="building: ${buildings}">
-                <div class="st_column _index-general" id="building-country" th:text="${building.address.country}"></div>
-                <div class="st_column _index-short" id="building-city" th:text="${building.address.city}"></div>
-                <div class="st_column _index-short" id="building-street" th:text="${building.address.street}"></div>
-                <div class="st_column _index-short" id="building-houseno" th:text="${building.address.houseno}"></div>
-                <div class="st_column _index-short" id="building-zip" th:text="${building.address.zip}"></div>
-                <div class="st_column _link building_link" th:text="${building.id}"></div>
-            </div>
-        </div>
-    </div>
+    <table>
+        <thead class="st_table_header">
+            <tr class="st_row">
+                <th class="st_column _index-general">Country</th>
+                <th class="st_column _index-short">City</th>
+                <th class="st_column _index-short">Street</th>
+                <th class="st_column _index-short">House No</th>
+                <th class="st_column _index-short">ZIP</th>
+                <th class="st_column _link">Link</th>
+            </tr>
+        </thead>
+        <tbody class="st_table">
+            <tr class="st_row" th:each="building: ${buildings}">
+                <td class="st_column _index-general" id="building-country" th:text="${building.address.country}"></td>
+                <td class="st_column _index-short" id="building-city" th:text="${building.address.city}"></td>
+                <td class="st_column _index-short" id="building-street" th:text="${building.address.street}"></td>
+                <td class="st_column _index-short" id="building-houseno" th:text="${building.address.houseno}"></td>
+                <td class="st_column _index-short" id="building-zip" th:text="${building.address.zip}"></td>
+                <td class="st_column _link building_link" th:text="${building.id}"></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <body>
