@@ -310,32 +310,104 @@ uint8_t readDipAddress()
 	return address;
 }
 
+typedef struct {
+	char Address[3];
+	char Input[2];
+	char Time[13];
+	char measurement[50];
+} Measurement;
+
+void AddDataToStruct(Measurement *data, char type, char *value){
+	switch((char)type){
+		case 'T':
+		strcpy(data->Time, value);
+		break;
+		case 'I':
+		strcpy(data->Input, value);
+		break;
+		case 'M':
+		strcpy(data->measurement, value);
+		break;
+	}
+}
+
 //Parse Datova cast paketu a vytiahne z nej data pre spracovanie
-void ParsePacket(char *message)
+Measurement *ParsePacket(char *message)
 {	
 	int len = message[1] << 8 | message[0];
 	unsigned char parsedMessage[len];
+	Measurement *data;
+	data = (Measurement *)malloc(sizeof(Measurement));
 	
-	for (int i = 2; i < len + 2; i++)
-	{	
-		//#ifdef DEBUG_TEST
-		//	uart_putc(message[i]);
-		//#endif
+	#ifdef DEBUG_TEST
+		uart_puts("Arrived String:\r\n");
+		for (int j = 0; j < len+2; j++)
+			uart_putc(message[j]);
+		uart_puts("\r\n");
+	#endif
 		
-		// parsedMessage je string d�t ktor� pri�li, prv� 2 znaky s� UID CE a dalej nasleduj� spr�vy rozdelen� FS
-		// kde v�dy prv� znak spr�vy je typ spr�vy
-		parsedMessage[i-2] = message[i];
-	
-		//QUEC Send functions goes ->
-		//here
+	for (int i = 0; i < len; i++)
+	{	
+		parsedMessage[i] = message[2+i];
 	}
 	
 	#ifdef DEBUG_TEST
 		uart_puts("Parsed String:\r\n");
 		for (int j = 0; j < len; j++)
 			uart_putc(parsedMessage[j]);
+		uart_puts("\r\n");
 	#endif
+	
+	memcpy(data->Address, parsedMessage, 2);
+	
+	char type = parsedMessage[2];
+	int j = 0;
+	char *value;
+	value = (char *)calloc(CHUNK_LEN, sizeof(char));
+	
+	for (int i = 3; i < len; i++)
+	{	
+		if(parsedMessage[i] == FS){
+			j=0;
+			AddDataToStruct(data,type,value);
+			free(value);
+			value = (char *)calloc(CHUNK_LEN, sizeof(char));
+			type= parsedMessage[i+1];
+			i++;
+			continue;
+		}
+		//if(j % CHUNK_LEN){
+		//	int len = sizeof message / sizeof *message;
+		//	message = realloc(message, len+CHUNK_LEN * sizeof(message));
+		//}
+		value[j] = parsedMessage[i];
+		j++;
+	}
+	AddDataToStruct(data,type,value);
+	free(value);
+		
+	//#ifdef DEBUG_TEST
+	//	uart_puts("\r\n");
+	//	uart_puts("Address:\r\n");
+	//	uart_puts(data->Address);
+	//	uart_puts("\r\n");
+	//	uart_puts("Input:\r\n");
+	//	uart_puts(data->Input);
+	//	uart_puts("\r\n");
+	//	uart_puts("measurement:\r\n");
+	//	uart_puts(data->measurement);
+	//	uart_puts("\r\n");
+	//	uart_puts("Time:\r\n");
+	//	uart_puts(data->Time);
+	//	uart_puts("\r\n");
+	//#endif
+	
+	//free(parsedMessage);
+	return data;
 }
+
+
+
 
 int main(void)
 {
@@ -409,10 +481,15 @@ int main(void)
 			{
 				message[index] = (char)c;
 				index++;
-				if(index == CHUNK_LEN){
-					int len = sizeof message / sizeof *message;
-					message = realloc(message, len+CHUNK_LEN * sizeof(message));
+				// extend message buffer if needed
+				if (index % CHUNK_LEN == 0)
+				{
+					message = realloc(message, index + CHUNK_LEN * sizeof(message));
 				}
+				//if(index == CHUNK_LEN){
+				//	int len = sizeof message / sizeof *message;
+				//	message = realloc(message, len+CHUNK_LEN * sizeof(message));
+				//}
 			}
 			
 			if (current_flag == F_CRC) {
@@ -430,7 +507,23 @@ int main(void)
 				else{
 					uart_puts("ACK\r\n");
 					//do stuff
-					ParsePacket(message);
+					Measurement *data = ParsePacket(message);
+					#ifdef DEBUG_TEST
+						uart_puts("\r\n");
+						uart_puts("Address:\r\n");
+						uart_puts(data->Address);
+						uart_puts("\r\n");
+						uart_puts("Input:\r\n");
+						uart_puts(data->Input);
+						uart_puts("\r\n");
+						uart_puts("measurement:\r\n");
+						uart_puts(data->measurement);
+						uart_puts("\r\n");
+						uart_puts("Time:\r\n");
+						uart_puts(data->Time);
+						uart_puts("\r\n");
+					#endif
+					free(data);
 				}
 				current_flag = NULL;
 				free(message);
@@ -507,26 +600,3 @@ int main(void)
 		#endif
 	}
 }
-
-
-/** EXPERIMENTAL
-int uart_TX_busy(){
-	int check = strlen(UART_TxBuf);
-	if(check == 1){
-		return 1;
-	}
-	else{
-		return 0;
-	}
-}
-
-int uart_RX_busy(){
-	int check = strlen(UART_RxBuf);
-	if(check == 1){
-		return 1;
-	}
-	else{
-		return 0;
-	}
-}
-*/
