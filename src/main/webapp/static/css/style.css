@@ -182,11 +182,6 @@ input[type=button] {
     box-sizing: border-box;
 }
 
-.st_viewport{
-    max-height: 700px;
-    overflow: auto;
-}
-
 /* */
 [data-table_id="controller"]{
     background-color: rgb(255,115,0);
@@ -204,29 +199,70 @@ input[type=button] {
     min-width: 105px;
 }
 
-._index-general {
-    min-width: 250px;
+/** Sticky table styles **/
+.st_viewport{
+    background-color: black;
+    color: white;
+    margin: 20px 0;
+    max-height: 700px;
+    overflow: auto;
 }
 
-._index-general-shorter {
-    min-width: 220px;
+h4 {
+    font-weight: 200;
+    margin: 0 20px;
+    padding: 20px 0 0;
 }
 
-._index-general-longer {
-    min-width: 340px;
+/* TABLE */
+thead th {
+    white-space: nowrap;
+}
+tbody td {
+    vertical-align: middle;
+}
+/* TODO improve this START */
+.st_table_header{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    background-color: rgb(27,30,36);
+    color: rgb(220,220,220);
+}
+.st_table_header h2{
+    font-weight: 400;
+    margin: 0 20px;
+    padding: 20px 0 0;
+}
+.st_table_header .st_row{
+    color: rgba(220,220,220, .7);
+}
+.st_table{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+.st_row{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0;
+}
+.st_table .st_row:nth-child(even){
+    background-color: rgba(0,0,0, .1)
+}
+.st_column{
+    padding: 10px 20px;
 }
 
-._index-general-longest {
-    min-width: 410px;
-}
-
-._index-short {
-    min-width: 190px;
-}
-
-._index-long {
-    min-width: 500px;
-}
 
 ._uid {
     min-width: 175px;
@@ -255,72 +291,9 @@ input[type=button] {
 ._MeasuredAll {
     min-width: 255px;
 }
-
-/** Sticky table styles **/
-.st_viewport{
-    background-color: rgb(62,148,236);
-    color: rgb(27,30,36);
-    margin: 20px 0;
-}
-
-/* ##   header */
-.st_table_header{
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0px;
-    z-index: 1;
-    background-color: rgb(27,30,36);
-    color: rgb(220,220,220);
-}
-.st_table_header h2{
-    font-weight: 400;
-    margin: 0 20px;
-    padding: 20px 0 0;
-}
-
-h4 {
-    font-weight: 200;
-    margin: 0 20px;
-    padding: 20px 0 0;
-}
-.st_table_header .st_row{
-    color: rgba(220,220,220, .7);
-}
-
-/* ##  table */
-.st_table{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-}
-/* #   row */
-.st_row{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    margin: 0;
-}
-.st_table .st_row:nth-child(even){
-    background-color: rgba(0,0,0, .1)
-}
-/* #   column */
-.st_column{
-    padding: 10px 20px;
-}
-
-
-
-
+/* TODO improve this END */
 
 /* INDEX */
-
 .mid-icon {
     font-size: 66px;
 }
@@ -330,11 +303,6 @@ h4 {
     border-bottom: 1px solid #f1f1f1;
 }
 
-.forum-container,
-.forum-post-container {
-    padding: 30px !important;
-    min-width: 1350px;
-}
 .forum-item small {
     color: #999;
 }

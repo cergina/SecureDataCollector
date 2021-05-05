@@ -1,27 +1,27 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="users_table(users)" class="ibox-content forum-container">
-    <div class="st_wrap_table">
-        <header class="st_table_header">
-            <div class="st_row">
-                <div class="st_column _index-general-longer">E-mail</div>
-                <div class="st_column _index-general-longest">Name</div>
-                <div class="st_column _index-short">Phone</div>
-                <div class="st_column _index-general">Permanent residence</div>
-                <div class="st_column _link" th:if="${isAdmin}">Link</div>
-            </div>
-        </header>
-        <div class="st_table">
-            <div class="st_row" th:each="user: ${users}">
-                <div class="st_column _index-general-longer" th:text="${user.email}"></div>
-                <div class="st_column _index-general-longest" th:text="${user.beforetitle + ' ' + user.firstname + ' ' + user.middlename + ' ' + user.lastname}"></div>
-                <div class="st_column _index-short" th:text="${user.phone}"></div>
-                <div class="st_column _index-general" th:text="${user.residence}"></div>
-                <div class="st_column _link user_link" th:text="${user.userID}" th:if="${isAdmin}"></div>
-            </div>
-        </div>
-    </div>
+<div th:fragment="users_table(users)" class="ibox-content form-container">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">E-mail</th>
+                <th scope="col">Name</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Permanent residence</th>
+                <th scope="col" class="_link" th:if="${isAdmin}">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user: ${users}">
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.beforetitle + ' ' + user.firstname + ' ' + user.middlename + ' ' + user.lastname}"></td>
+                <td th:text="${user.phone}"></td>
+                <td th:text="${user.residence}"></td>
+                <td class="_link user_link" th:text="${user.userID}" th:if="${isAdmin}"></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <body>

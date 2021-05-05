@@ -1,26 +1,26 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<div th:fragment="buildings_table(buildings)" class="ibox-content forum-container">
-    <table>
-        <thead class="st_table_header">
-            <tr class="st_row">
-                <th class="st_column _index-general">Country</th>
-                <th class="st_column _index-short">City</th>
-                <th class="st_column _index-short">Street</th>
-                <th class="st_column _index-short">House No</th>
-                <th class="st_column _index-short">ZIP</th>
-                <th class="st_column _link">Link</th>
+<div th:fragment="buildings_table(buildings)" class="ibox-content form-container">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Country</th>
+                <th scope="col">City</th>
+                <th scope="col">Street</th>
+                <th scope="col">House No</th>
+                <th scope="col">ZIP</th>
+                <th scope="col" class="_link">Link</th>
             </tr>
         </thead>
-        <tbody class="st_table">
-            <tr class="st_row" th:each="building: ${buildings}">
-                <td class="st_column _index-general" id="building-country" th:text="${building.address.country}"></td>
-                <td class="st_column _index-short" id="building-city" th:text="${building.address.city}"></td>
-                <td class="st_column _index-short" id="building-street" th:text="${building.address.street}"></td>
-                <td class="st_column _index-short" id="building-houseno" th:text="${building.address.houseno}"></td>
-                <td class="st_column _index-short" id="building-zip" th:text="${building.address.zip}"></td>
-                <td class="st_column _link building_link" th:text="${building.id}"></td>
+        <tbody>
+            <tr th:each="building: ${buildings}">
+                <td id="building-country" th:text="${building.address.country}"></td>
+                <td id="building-city" th:text="${building.address.city}"></td>
+                <td id="building-street" th:text="${building.address.street}"></td>
+                <td id="building-houseno" th:text="${building.address.houseno}"></td>
+                <td id="building-zip" th:text="${building.address.zip}"></td>
+                <td class="_link building_link" th:text="${building.id}"></td>
             </tr>
         </tbody>
     </table>
