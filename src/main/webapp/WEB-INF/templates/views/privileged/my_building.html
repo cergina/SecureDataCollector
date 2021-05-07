@@ -43,7 +43,6 @@
 
                 <!-- building options-->
                 <div  id="Physical" class="ibox-content form-container tabcontent">
-                    <h3>Building</h3>
 
                     <div class="ibox-content form-container">
                         <!-- GENERAL Panel  -->
@@ -76,15 +75,16 @@
 
                 <!-- central options-->
                 <div id="Logical" class="ibox-content form-container tabcontent">
-                    <h3>Central unit</h3>
 
                     <div class="ibox-content form-container">
                         <div th:if="${building.centralUnits.isEmpty()}">
                             <div  th:replace="fragments/add-new_centralUnit.html"></div>
                         </div>
 
-                        <h5>List</h5>
-                        <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${building.centralUnits})"></div>
+                        <div th:unless="${building.centralUnits.isEmpty()}">
+                            <h5>List</h5>
+                            <div th:replace="fragments/centralUnits_table.html :: centralUnits_table(centralUnits=${building.centralUnits})"></div>
+                        </div>
                     </div>
                 </div>
 
