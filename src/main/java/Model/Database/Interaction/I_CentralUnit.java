@@ -13,8 +13,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
-
 public class I_CentralUnit extends InteractionWithDatabase {
     /****
      * Attempt to insert the parsed argument T_CentralUnit into the real database
@@ -153,7 +151,7 @@ public class I_CentralUnit extends InteractionWithDatabase {
                 "SELECT " +
                         "* " +
                         "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
-                        "WHERE Uid=? OR (BuildingID=? AND DipAddress=?)"
+                        "WHERE Uid=? OR (BuildingID=? AND DipAddress=?) "
         );
 
         int col = 0;
@@ -161,6 +159,27 @@ public class I_CentralUnit extends InteractionWithDatabase {
         ps.setInt(++col, buildingId);
         ps.setString(++col, dip);
 
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        return rs.isBeforeFirst();
+    }
+
+    public static boolean checkIfDipOccupiedAlready(Connection conn, PreparedStatement ps, ResultSet rs, String dip) throws SQLException{
+        Assurance.varcharCheck(dip);
+
+        // SQL Definition
+        ps = conn.prepareStatement(
+                "SELECT " +
+                        "* " +
+                        "FROM " + T_CentralUnit.DBTABLE_NAME + " " +
+                        "WHERE DipAddress=?"
+        );
+
+        int col = 0;
+        ps.setString(++col, dip);
 
         // SQL Execution
         SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();

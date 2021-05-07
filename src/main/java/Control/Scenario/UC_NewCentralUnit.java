@@ -38,6 +38,10 @@ public class UC_NewCentralUnit {
                 throw new AlreadyExistsException("Central Unit already exists.");
             }
 
+            if(checkIfDipNotFree(centralUnit.getDipAddress())){
+                throw new AlreadyExistsException("Dip address of central unit already occupied. Use different");
+            }
+
             db.beforeSqlExecution(true);
             insertIntoDatabase(centralUnit);
 
@@ -59,7 +63,7 @@ public class UC_NewCentralUnit {
         } catch (AlreadyExistsException e) {
             db.afterExceptionInSqlExecution(e);
             jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonResponse.setMessage("Central Unit already exists.");
+            jsonResponse.setMessage(e.getMessage());
         }
 
         return jsonResponse;
@@ -120,11 +124,18 @@ public class UC_NewCentralUnit {
     }
 
     private boolean checkIfAlreadyExists(@NotNull final CentralUnit centralUnit) {
-        boolean exists;
-
         try {
-            exists = I_CentralUnit.checkIfExists(db.getConn(), db.getPs(), db.getRs(), centralUnit.getUid(), centralUnit.getDipAddress(), centralUnit.getBuildingId());
-            return exists;
+            return I_CentralUnit.checkIfExists(db.getConn(), db.getPs(), db.getRs(), centralUnit.getUid(), centralUnit.getDipAddress(), centralUnit.getBuildingId());
+        } catch (SQLException sqle) {
+            CustomLogs.Error(sqle.getMessage());
+        }
+
+        return true;
+    }
+
+    private boolean checkIfDipNotFree(@NotNull final String dip) {
+        try {
+            return I_CentralUnit.checkIfDipOccupiedAlready(db.getConn(), db.getPs(), db.getRs(), dip);
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
         }

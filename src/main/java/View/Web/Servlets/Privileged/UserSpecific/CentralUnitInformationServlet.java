@@ -2,7 +2,6 @@ package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
-import Model.Database.Support.CustomLogs;
 import Model.Web.CentralUnit;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -54,13 +53,7 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         // if no controllers do one time view insert of
         int count = (new UC_FlatSummary(getDb())).countNumberOfControllersForCentralUnit(requestedId);
 
-        if (count == 0) {
-            processYetSingleEmptyCentralUnit(request, response, requestedId);
-            return;
-        } else {
-            processSingleCentralUnit(request, response, requestedId);
-            return;
-        }
+        processSingleCentralUnit(request, response, requestedId);
     }
 
     /**
@@ -85,28 +78,5 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
 
         // Generate html and return it
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
-    }
-
-    /**
-     * specific but empty central unit
-     */
-    private void processYetSingleEmptyCentralUnit(HttpServletRequest request, HttpServletResponse response, int requestedCentralUnitId) throws IOException {
-        // TEMPLATE PREPARATION
-        TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
-        WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
-                ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
-
-        CentralUnit centralUnit = (new UC_FlatSummary(getDb())).get_CentralUnit(requestedCentralUnitId);
-        if (centralUnit == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        // Variables settings
-        context.setVariable(VARIABLE_CENTRALUNIT, centralUnit);
-        context.setVariable(VARIABLE_ISADMIN, super.checkIfPrivilegeIsAdmin(request));
-
-        // Generate html and return it
-        engine.process(ONETIME_TEMPLATE_NAME, context, response.getWriter());
     }
 }
