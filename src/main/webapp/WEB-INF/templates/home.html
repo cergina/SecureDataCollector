@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -31,6 +32,9 @@
     <!-- Navbar -->
     <div class="w3-top">
         <div class="w3-bar w3-black w3-card">
+            <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+
+
             <a href="#" class="w3-bar-item w3-button w3-padding-large">DCS</a>
 
             <div class="w3-right">
@@ -50,6 +54,17 @@
         </div>
     </div>
 
+    <!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+        <a href="https://team14-20.studenti.fiit.stuba.sk/" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">Team website</a>
+        <a href="/dcs/index" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">Login</a>
+        <a href="/dcs/register" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">Registration</a>
+        <a href="/dcs/req-view-consumption" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">Your consumption</a>
+        <a onclick="alert('Feel free to contact us at dcs.sonet.slovakia@gmail.com')" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">GET INVOLVED</a>
+    </div>
+
+
+
     <!-- STRED -->
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top">Data Collection System</h1>
@@ -63,6 +78,30 @@
     </div>
 
 </div>
+
+
+
+
+<script>
+
+    // Used to toggle the menu on small screens when clicking on the menu button
+    function myFunction() {
+        var x = document.getElementById("navDemo");
+        if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
+        }
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    var modal = document.getElementById('ticketModal');
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>
