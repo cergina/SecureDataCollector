@@ -2,14 +2,18 @@ package Model.Database.Interaction;
 
 import Model.Database.Support.Assurance;
 import Model.Database.Support.SqlConnectionOneTimeReestablisher;
+import Model.Database.Tables.DbEntity;
 import Model.Database.Tables.T_FlatOwner;
+import com.mysql.cj.util.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 public class I_FlatOwner extends InteractionWithDatabase {
 
@@ -83,6 +87,52 @@ public class I_FlatOwner extends InteractionWithDatabase {
         return t;
     }
 
+    public static List<T_FlatOwner> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, String mail) throws SQLException {
+
+        // No Filter is being used
+        if (StringUtils.isNullOrEmpty(mail)) {
+            return InteractionWithDatabase.retrieveAll(conn, ps, rs, DbEntity.ReturnUnusable(T_FlatOwner.class));
+        }
+
+        // SQL Definition
+        String usedSql = "SELECT " +
+                "* " +
+                "FROM " + T_FlatOwner.DBTABLE_NAME + " " +
+                "WHERE ";
+
+
+        // add filter rules
+        boolean mailRule = StringUtils.isNullOrEmpty(mail) == false;
+
+        usedSql = (mailRule ? usedSql + T_FlatOwner.DBTABLE_NAME + ".Email=? " : usedSql);
+
+        usedSql += "ORDER BY ID asc";
+
+        // prepare SQL
+        ps = conn.prepareStatement(
+                usedSql
+        );
+
+        int col = 0;
+        if (mailRule)
+            ps.setString(++col, mail);
+
+        // SQL Execution
+        SqlConnectionOneTimeReestablisher scotr = new SqlConnectionOneTimeReestablisher();
+        rs = scotr.TryQueryFirstTime(conn, ps, rs);
+
+        List<T_FlatOwner> arr = new ArrayList<>();
+
+        if (!rs.isBeforeFirst()) {
+            /* nothing was returned */
+        } else {
+            while (rs.next()) {
+                arr.add(I_FlatOwner.FillEntity(rs));
+            }
+        }
+
+        return arr;
+    }
 
     // Privates
     public static T_FlatOwner FillEntity(ResultSet rs) throws SQLException {
