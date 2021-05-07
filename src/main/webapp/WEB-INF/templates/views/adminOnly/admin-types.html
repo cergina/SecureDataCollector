@@ -17,8 +17,8 @@
         </div>
     </div>
 
-    <div class="container-fluid">
-        <div class="container">
+    <div >
+        <div >
 
             <main class="st_viewport">
                 <!-- LIST -->
@@ -36,7 +36,7 @@
                         <div class="st_table">
                             <div class="st_row">
                                 <div class="st_column col-sm-4 _sensortype_name" th:text="${sensorType.name}"></div>
-                                <div class="st_column col-sm-4 _sensortype_measuredin" th:text="${sensorType.measuredin}"></div>
+                                <div class="st_column col-sm-4 _sensortype_measuredin" th:text="${sensorType.measuredin.split('_')[0] + ' ' + sensorType.measuredin.split('_')[1] + ' per 1 tick'}"></div>
                             </div>
                         </div>
                         <div class="st_wrap_table" data-table_id="sensor">

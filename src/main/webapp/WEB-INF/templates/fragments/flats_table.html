@@ -2,20 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <div th:fragment="flats_table(flats)" class="ibox-content form-container">
-    <div class="st_wrap_table">
-        <header class="st_table_header">
-            <div class="st_row">
-                <div class="st_column _index-long">Apartment No</div>
-                <div class="st_column _link">Link</div>
-            </div>
-        </header>
-        <div class="st_table">
-            <div class="st_row" th:each="flat: ${flats}">
-                <div class="st_column _index-long" th:text="${flat.apartmentNO}"></div>
-                <div class="st_column _link flat_link" th:text="${flat.id}"></div>
-            </div>
-        </div>
-    </div>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Apartment No</th>
+                <th scope="col" class="_link">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="flat: ${flats}">
+                <td th:text="${flat.apartmentNO}"></td>
+                <td class="_link flat_link" th:text="${flat.id}"></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <body>

@@ -2,22 +2,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <div th:fragment="flatOwners_table(flatOwners)" class="ibox-content form-container">
-    <div class="st_wrap_table">
-        <header class="st_table_header">
-            <div class="st_row">
-                <div class="st_column _index-general-longer">E-mail</div>
-                <div class="st_column _index-general-longer">Name</div>
-                <div class="st_column _index-short">Phone</div>
-            </div>
-        </header>
-        <div class="st_table">
-            <div class="st_row" th:each="flatOwner: ${flatOwners}">
-                <div class="st_column _index-general-longer" th:text="${flatOwner.email}"></div>
-                <div class="st_column _index-general-longer" th:text="${flatOwner.title + ' ' + flatOwner.firstName + ' ' + flatOwner.middleName + ' ' + flatOwner.lastName}"></div>
-                <div class="st_column _index-short" th:text="${flatOwner.phone}"></div>
-            </div>
-        </div>
-    </div>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">E-mail</th>
+                <th scope="col">Name</th>
+                <th scope="col">Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="flatOwner: ${flatOwners}">
+                <td th:text="${flatOwner.email}"></td>
+                <td th:text="${flatOwner.title + ' ' + flatOwner.firstName + ' ' + flatOwner.middleName + ' ' + flatOwner.lastName}"></td>
+                <td th:text="${flatOwner.phone}"></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <body>
