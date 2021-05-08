@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <div class="container-fluid col-xl-12">
+
+    <!-- UPPER PANEL -->
+    <div class="ibox-content m-b-sm border-bottom">
+      <div class="p-xs">
+        <div class="pull-left m-r-md">
+          <i class="fa fa-globe text-navy mid-icon"></i>
+        </div>
+        <h2>Secure Data Collector - 2021</h2>
+        <span>This is a place where you can see all the problems taking place in the system and contact information that you will need to resolve them.</span>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <table class="table table-striped">
+      <thead class="thead-dark">
+      <tr>
+        <th scope="col">REASON</th>
+        <th scope="col">Input</th>
+        <th scope="col">Sensor</th>
+        <th scope="col">Flat-Owner contact</th>
+        <th scope="col">Flat-Owner Name</th>
+        <th scope="col">Country</th>
+        <th scope="col">City</th>
+        <th scope="col">Address</th>
+        <th scope="col">Flat</th>
+        <th scope="col">Project</th>
+        <th scope="col">Project-Contact</th>
+        <th scope="col">Project-Owner</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="problem: ${problems}">
+        <td th:text="${problem.reason}"></td>
+        <td th:text="${problem.sensor.input}"></td>
+        <td th:text="${problem.sensor.name}"></td>
+        <td th:text="${problem.owner.phone}"></td>
+        <td th:text="${problem.owner.firstName + ' ' + problem.owner.lastName}"></td>
+        <td th:text="${problem.address.country}"></td>
+        <td th:text="${problem.address.city}"></td>
+        <td th:text="${problem.address.street + ' ' + problem.address.houseno}"></td>
+        <td th:text="${problem.flat.apartmentNO}"></td>
+        <td th:text="${problem.project.name}"></td>
+        <td th:text="${problem.developerMail}"></td>
+        <td th:text="${problem.developerName}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</body>
+</html>

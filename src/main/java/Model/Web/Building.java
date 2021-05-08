@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Api model - building
  */
-public class Building extends PrettyObject { // TODO tento model Expose pre pridavanie budov, nevytvarat novy
+public class Building extends PrettyObject {
 
     @Expose
     public Integer id;

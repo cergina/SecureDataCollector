@@ -223,7 +223,7 @@ tbody td {
     vertical-align: middle;
 }
 
-/* TODO improve this START */
+/* improve this START */
 .st_table_header{
     position: -webkit-sticky;
     position: sticky;
@@ -293,7 +293,7 @@ tbody td {
 ._MeasuredAll {
     min-width: 255px;
 }
-/* TODO improve this END */
+/* improve this END */
 
 /* INDEX */
 .mid-icon {

@@ -93,7 +93,7 @@ public class UC_FlatSummary {
             for (T_FlatOwner_flat tfof : I_FlatOwner_flat.retrieveByFlatId(db.getConn(), db.getPs(), db.getRs(), flatId)) {
                 T_FlatOwner tfo = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_FlatOwner.class), tfof.getA_FlatOwnerID());
                 FlatOwner flatOwner = new FlatOwner(
-                        tfo.getA_BeforeTitle(), // TODO intelij varuje ze moze nullpointer
+                        tfo.getA_BeforeTitle(),
                         tfo.getA_FirstName(),
                         tfo.getA_MiddleName(),
                         tfo.getA_LastName(),
