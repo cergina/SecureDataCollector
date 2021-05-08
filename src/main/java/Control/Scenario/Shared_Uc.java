@@ -30,13 +30,7 @@ class Shared_Uc {
         List<Sensor> sensors = new ArrayList<>();
         for (T_Sensor t_sensor : t_sensors) {
             int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk(), db);
-            E_SensorType sensorType = null;
-            try {
-                sensorType = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), t_sensor.getA_SensorTypeID());
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            Integer unitAmount = getUnitAmountOfSensor(sensorType);
+            Integer unitAmount = getUnitAmountOfSensor(db, t_sensor);
             int realMeasuredLast30Days = getRealValueFromTicks(measuredLast30Days, unitAmount);
             int measuredTotal = getMeasuredTotal(t_sensor.getA_pk(), db);
             int realMeasuredTotal = getRealValueFromTicks(measuredTotal, unitAmount);
@@ -59,8 +53,14 @@ class Shared_Uc {
         );
     }
 
-    //TODO duplikatny kod z UC_Graph, treba prerobit tak ze sa odstrani metoda z UC_Graph, az na to ze tu treba static metodu kvoli metode buildControllerUnit
-    public static Integer getUnitAmountOfSensor(E_SensorType sensorType) {
+    public static Integer getUnitAmountOfSensor(DbProvider db, T_Sensor sensor) {
+        E_SensorType sensorType = null;
+        try {
+            sensorType = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), sensor.getA_SensorTypeID());
+        } catch (SQLException sqle) {
+            //sqle.printStackTrace();
+            db.afterExceptionInSqlExecution(sqle);
+        }
         String measuredIn = sensorType.getA_MeasuredIn();
         String[] splitMeasuredIn = measuredIn.split("_");
         return Integer.parseInt(splitMeasuredIn[0]);
