@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class I_AccessPrivilegeJournal {
+public class I_AccessPrivilegeJournal extends InteractionWithDatabase{
     public static int insert(Connection conn, PreparedStatement ps, T_AccessPrivilegeJournal tapj) throws SQLException {
         if (tapj.IsTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute T_AccessPrivilegeJournal is not ok for database enter");
