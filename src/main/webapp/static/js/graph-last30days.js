@@ -83,7 +83,7 @@ for (i=0; i < GraphTotalDatasets; i++)
 }
 
 
-//TODO Vybrat farby pre oznacenie senzorov na grafe, zatial 15 hodnot - cize podpora pre 15 senzorov
+// Vybrat farby pre oznacenie senzorov na grafe, zatial 15 hodnot - cize podpora pre 15 senzorov
 var GraphColourArray = ['#ff0000', '#00ff00', '#0000ff', '#ffd400', '#ff00ff', '#00ffff', '#000000', '#008620', '#001a9f', '#0096ff', '#dccf00', '#8d0088', '#890101', '#beb4b4', '#686868'];
 
 var GraphDatasetsArray = [];

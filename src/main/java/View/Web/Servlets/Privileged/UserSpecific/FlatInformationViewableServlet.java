@@ -3,8 +3,11 @@ package View.Web.Servlets.Privileged.UserSpecific;
 import Control.ConfigClass;
 import Control.Scenario.UC_FlatSummary;
 import Control.Scenario.UC_Graph;
-import Model.Web.*;
+import Model.Web.Building;
+import Model.Web.FlatOwner;
+import Model.Web.JsonResponse;
 import Model.Web.Specific.GraphSingleFlat;
+import Model.Web.User;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
@@ -49,13 +52,13 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { // TODO akoze toto mi logicky nesedi, tu by malo byt vytvaranie bytu, a na graf samostatny servlet
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.doPost(request, response);
         PrintWriter writer = response.getWriter();
 
         Integer requestedId = ServletHelper.getRequestParamId(request);
         if (requestedId == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST); // TODO tu ma byt odoslana JsonResponse so status kodom 400, nie takto, toto nie je GET
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST); // tu ma byt odoslana JsonResponse so status kodom 400, nie takto, toto nie je GET
             return;
         }
 
@@ -65,7 +68,7 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
 
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
     }
 

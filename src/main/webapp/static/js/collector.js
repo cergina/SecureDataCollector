@@ -114,7 +114,7 @@ function buildCentralUnit() {
     };
 }
 
-function buildFlatForBuilding() { // TODO nazvoslovie u vsetkych znamena build + meno .java modelovej triedy ktoru stavas, v tomto pripade Flat_FlatOwners_Creation
+function buildFlatForBuilding() {
     return {
         flat: {
             apartmentNO: $("#apartment-No").val(),
@@ -159,15 +159,15 @@ function createNewFlat() {
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         },
         complete: function(jqXHR) { // keep for DEBUG only
@@ -192,15 +192,15 @@ function createUser() {
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         },
         complete: function(jqXHR) { // keep for DEBUG only
@@ -229,15 +229,15 @@ function registerUser() {
                 },
                 400: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 },
                 401: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 },
                 500: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 }
             },
             complete: function(jqXHR) { // keep for DEBUG only
@@ -267,15 +267,15 @@ function changePassword() {
                 },
                 400: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 },
                 401: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 },
                 500: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 }
             },
             complete: function(jqXHR) { // keep for DEBUG only
@@ -301,7 +301,7 @@ function loginUser() {
             },
             401: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         },
         complete: function(jqXHR) { // keep for DEBUG only
@@ -336,15 +336,15 @@ function createControllerUnitForThisFlat() {
                 },
                 409: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 },
                 400: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 },
                 500: function(jqXHR) {
                     var response = JSON.parse(jqXHR.responseText);
-                    alert(response.message); // TODO impact layout
+                    alert(response.message); 
                 }
             }
         });
@@ -366,15 +366,15 @@ function createCentralUnit() {
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -395,15 +395,15 @@ function assignCreatedCentralUnitToBuilding() {
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -425,15 +425,15 @@ function createNewBuildingForProject() {
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -454,15 +454,15 @@ function createSensor() {
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -483,15 +483,15 @@ function createProject() {
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -511,15 +511,15 @@ function createAddress() {
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -541,15 +541,15 @@ function createCommType() {
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });
@@ -571,15 +571,15 @@ function createSensorType() {
             },
             400: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             409: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             },
             500: function(jqXHR) {
                 var response = JSON.parse(jqXHR.responseText);
-                alert(response.message); // TODO impact layout
+                alert(response.message); 
             }
         }
     });

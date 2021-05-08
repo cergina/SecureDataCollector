@@ -13,11 +13,12 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Others {
+    // just for SQL table naming for problem section
     public static final String OTHER_SELF_ADDRESS_ID = "self_address_ID";
 
 
 
-    // FOR PROBLEMS
+    // FOR PROBLEMS - its a complex view BASE NAME COMPLEX_PROBLEM relevant is the part after
     public static String COMPLEX_PROBLEM_REASON = "Problem";
     public static String COMPLEX_PROBLEM_INPUT = T_Sensor.DBNAME_INPUT;
     public static String COMPLEX_PROBLEM_SENSORNAME = "SensorName";
@@ -197,6 +198,7 @@ public class Others {
 
         Dictionary dict = new Hashtable();
 
+        // just addition by key value pair for problem view
         dict.put(COMPLEX_PROBLEM_INPUT, rs.getString(COMPLEX_PROBLEM_INPUT));
         dict.put(COMPLEX_PROBLEM_SENSORNAME, rs.getString(COMPLEX_PROBLEM_SENSORNAME));
         dict.put(COMPLEX_PROBLEM_FO_PHONE, rs.getString(COMPLEX_PROBLEM_FO_PHONE));
