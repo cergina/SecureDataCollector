@@ -167,16 +167,16 @@ public class Others {
                         "tf.ApartmentNO, " +
                         "tp.Name AS ProjectName, " +
                         "tu.Email AS ProjectMail, tu.LastName AS ProjectOwnerLastName " +
-                        "FROM dcs.controllerunit tctrl  " +
-                            "JOIN dcs.flat tf ON tf.ID=FlatID " +
-                            "JOIN dcs.building tb ON tb.ID=tf.BuildingID " +
-                            "JOIN dcs.project tp ON tp.ID=tb.ProjectID " +
-                            "JOIN dcs.project_user tpu ON tpu.ProjectID=tb.ProjectID " +
-                            "JOIN dcs.user tu ON tu.ID=tpu.UserID " +
-                            "JOIN dcs.flatowner_flat tfof ON tfof.FlatID=tctrl.FlatID " +
-                            "JOIN dcs.flatowner tfo ON tfo.ID=tfof.FlatOwnerID " +
-                            "JOIN dcs.address ta ON ta.ID=tb.AddressID " +
-                            "JOIN dcs.sensor ts ON ts.ControllerUnitID=tctrl.ID " +
+                        "FROM " + T_ControllerUnit.DBTABLE_NAME +" tctrl  " +
+                            "JOIN " + T_Flat.DBTABLE_NAME + " tf ON tf.ID=FlatID " +
+                            "JOIN " + T_Building.DBTABLE_NAME + " tb ON tb.ID=tf.BuildingID " +
+                            "JOIN " + T_Project.DBTABLE_NAME + " tp ON tp.ID=tb.ProjectID " +
+                            "JOIN " + T_Project_user.DBTABLE_NAME + " tpu ON tpu.ProjectID=tb.ProjectID " +
+                            "JOIN " + T_User.DBTABLE_NAME + " tu ON tu.ID=tpu.UserID " +
+                            "JOIN " + T_FlatOwner_flat.DBTABLE_NAME + " tfof ON tfof.FlatID=tctrl.FlatID " +
+                            "JOIN " + T_FlatOwner.DBTABLE_NAME + " tfo ON tfo.ID=tfof.FlatOwnerID " +
+                            "JOIN " + T_Address.DBTABLE_NAME + " ta ON ta.ID=tb.AddressID " +
+                            "JOIN " + T_Sensor.DBTABLE_NAME + " ts ON ts.ControllerUnitID=tctrl.ID " +
                         "WHERE tctrl.ID=? AND ts.ID=? LIMIT 1;"
         );
 
