@@ -83,6 +83,16 @@ public class I_Flat extends InteractionWithDatabase {
         return arr;
     }
 
+    /***
+     *
+     * @param conn
+     * @param ps
+     * @param rs
+     * @param buildingId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @param apartmentNo if null is passed, it will not be used, otherwise valid string has to be entered
+     * @return
+     * @throws SQLException
+     */
     public static List<T_Flat> retrieveFilteredAll(Connection conn, PreparedStatement ps, ResultSet rs, int buildingId, String apartmentNo) throws SQLException {
 
         // No Filter is being used

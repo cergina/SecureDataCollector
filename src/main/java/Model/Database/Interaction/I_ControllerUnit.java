@@ -161,6 +161,9 @@ public class I_ControllerUnit extends InteractionWithDatabase {
      * @param conn
      * @param ps
      * @param rs
+     * @param centralUnitId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @param flatId if DB_DO_NOT_USE_THIS_FILTER is passed, it will not be used, otherwise > 0 id has to be entered
+     * @param dip if null is passed, it will not be used, otherwise valid id has to be entered
      * @return
      * @throws SQLException
      */
