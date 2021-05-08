@@ -42,16 +42,7 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
         // example accessing session attributes
         User user = SessionUtil.getUser(request.getSession(false));
 
-//        context.setVariable(VARIABLE_USER, user);
-        context.setVariable("Email", user.getEmail()); // TODO tu normalne setVariable user, a potom v template user.phone a pod.
-
-        context.setVariable("BeforeTitle", user.getBeforetitle());
-        context.setVariable("Phone", user.getPhone());
-        context.setVariable("LoggedAddress", user.getResidence());
-        context.setVariable("FirstName", user.getFirstname());
-        context.setVariable("MiddleName", user.getMiddlename());
-        context.setVariable("LastName", user.getLastname());
-
+        context.setVariable(VARIABLE_USER, user);
         context.setVariable(VARIABLE_ISADMIN, isAdmin);
 
         // part 4

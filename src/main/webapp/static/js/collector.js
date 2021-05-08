@@ -591,11 +591,6 @@ function goHome() {
     $(location).prop('href', $SCRIPT_ROOT);
 }
 
-// TEST ONLY
-function goToFlatId1() {
-    $(location).attr('href', $SCRIPT_ROOT + '/action/projects/flats?id=1');
-}
-
 // Login user
 function goToSeeYourProjects() {
     $(location).attr('href', $SCRIPT_ROOT + '/action/projects');

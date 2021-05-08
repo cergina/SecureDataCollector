@@ -109,13 +109,11 @@
         </div>
 
         <div th:unless="${flat.controllerUnits.isEmpty()}">
-            <!-- test only -->
             <main class="st_viewport">
                 <div th:each="controllerUnit: ${flat.controllerUnits}">
                     <div th:replace="fragments/controllerUnit_table.html :: controllerUnit_table(controllerUnit=${controllerUnit})"></div>
                 </div>
             </main>
-            <!-- test only -->
         </div>
     </div>
 </div>

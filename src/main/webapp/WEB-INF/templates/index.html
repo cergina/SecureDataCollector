@@ -38,8 +38,8 @@
                         </thead>
                         <tbody data-table_id="controller">
                             <tr>
-                                <td th:text="${BeforeTitle + ' ' + FirstName + ' ' + MiddleName + ' ' + LastName}"></td>
-                                <td th:text="${Email}"></td>
+                                <td th:text="${user.getBeforetitle() + ' ' + user.getFirstname() + ' ' + user.getMiddlename() + ' ' + user.getLastname()}"></td>
+                                <td th:text="${user.getEmail()}"></td>
                             </tr>
                         </tbody>
                         <thead class="thead-dark">
@@ -54,8 +54,8 @@
                         </thead>
                         <tbody data-table_id="controller">
                             <tr class="tr-big">
-                                <td th:text="${Phone}"></td>
-                                <td th:text="${LoggedAddress}"></td>
+                                <td th:text="${user.getPhone()}"></td>
+                                <td th:text="${user.getResidence()}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -168,6 +168,16 @@
                                 </div>
                                 <a href="/dcs/admin/users" class="forum-item-title">All users</a>
                                 <div class="forum-sub-title">To see all users in system.</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Row name -->
+                            <div class="col-md-9">
+                                <div class="forum-icon">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <a href="/dcs/admin/problems" class="forum-item-title">View problems</a>
+                                <div class="forum-sub-title">To see all problems from sensors, flats, ...</div>
                             </div>
                         </div>
                         <div class="row">

@@ -91,7 +91,7 @@ public class I_Measurements extends InteractionWithDatabase {
 
         usedSql = (sensorRule ? usedSql + T_Measurement.DBTABLE_NAME + ".SensorID=? " : usedSql);
 
-        usedSql += "ORDER BY ID asc";
+        usedSql += " GROUP BY RequestNo ORDER BY RequestNo asc";
 
         // prepare SQL
         ps = conn.prepareStatement(
@@ -118,7 +118,6 @@ public class I_Measurements extends InteractionWithDatabase {
 
         return arr;
     }
-
 
     public static T_Measurement retrieveNewest(Connection conn, PreparedStatement ps, ResultSet rs, int sensorId) throws SQLException {
         Assurance.idCheck(sensorId);
