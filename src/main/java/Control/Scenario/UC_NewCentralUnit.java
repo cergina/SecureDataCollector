@@ -39,7 +39,7 @@ public class UC_NewCentralUnit {
             }
 
             if(checkIfDipNotFree(centralUnit.getDipAddress())){
-                throw new AlreadyExistsException("Dip address of central unit already occupied. Use different");
+                throw new AlreadyExistsException("Dip address of central unit already occupied. Use different DIP address.");
             }
 
             db.beforeSqlExecution(true);
