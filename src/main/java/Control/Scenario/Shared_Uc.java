@@ -3,10 +3,9 @@ package Control.Scenario;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Measurements;
 import Model.Database.Interaction.I_Sensor;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
-import Model.Database.Tables.T_ControllerUnit;
-import Model.Database.Tables.T_Measurement;
-import Model.Database.Tables.T_Sensor;
+import Model.Database.Tables.*;
 import Model.Web.Sensor;
 import Model.Web.ControllerUnit;
 
@@ -31,13 +30,15 @@ class Shared_Uc {
         List<Sensor> sensors = new ArrayList<>();
         for (T_Sensor t_sensor : t_sensors) {
             int measuredLast30Days = getMeasuredLast30Days(t_sensor.getA_pk(), db);
-            int mesuredTotal = getMeasuredTotal(t_sensor.getA_pk(), db);
-
+            Integer unitAmount = getUnitAmountOfSensor(db, t_sensor);
+            int realMeasuredLast30Days = getRealValueFromTicks(measuredLast30Days, unitAmount);
+            int measuredTotal = getMeasuredTotal(t_sensor.getA_pk(), db);
+            int realMeasuredTotal = getRealValueFromTicks(measuredTotal, unitAmount);
             Sensor sensor = new Sensor(
                     t_sensor.getA_Input(),
                     t_sensor.getA_Name(),
-                    measuredLast30Days,
-                    mesuredTotal
+                    realMeasuredLast30Days,
+                    realMeasuredTotal
             );
             sensors.add(sensor);
         }
@@ -50,6 +51,19 @@ class Shared_Uc {
                 t_controllerUnit.getA_FlatID(),
                 t_controllerUnit.getA_CentralUnitID()
         );
+    }
+
+    public static Integer getUnitAmountOfSensor(DbProvider db, T_Sensor sensor) {
+        E_SensorType sensorType = null;
+        try {
+            sensorType = InteractionWithDatabase.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), sensor.getA_SensorTypeID());
+        } catch (SQLException sqle) {
+            //sqle.printStackTrace();
+            db.afterExceptionInSqlExecution(sqle);
+        }
+        String measuredIn = sensorType.getA_MeasuredIn();
+        String[] splitMeasuredIn = measuredIn.split("_");
+        return Integer.parseInt(splitMeasuredIn[0]);
     }
 
     protected static @NotNull List<T_Sensor> getAll_TSensors_ForController(@NotNull final Integer controllerId, DbProvider db) {
@@ -74,6 +88,11 @@ class Shared_Uc {
         }
 
         return value;
+    }
+
+    //this method calculates the real measured amount of the utility from the amount that one tick represents and amount of ticks
+    protected static int getRealValueFromTicks(@NotNull final Integer value, @NotNull final Integer tickMultiplier){
+        return value*tickMultiplier;
     }
 
     protected static int getMeasuredTotal(@NotNull final Integer sensorId, DbProvider db) {
