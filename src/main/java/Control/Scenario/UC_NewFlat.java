@@ -1,9 +1,14 @@
 package Control.Scenario;
 
 import Control.Connect.DbProvider;
-import Model.Database.Interaction.*;
+import Model.Database.Interaction.I_Flat;
+import Model.Database.Interaction.I_FlatOwner;
+import Model.Database.Interaction.I_FlatOwner_flat;
+import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.Assurance;
-import Model.Database.Tables.*;
+import Model.Database.Tables.T_Flat;
+import Model.Database.Tables.T_FlatOwner;
+import Model.Database.Tables.T_FlatOwner_flat;
 import Model.Web.FlatOwner;
 import Model.Web.JsonResponse;
 import Model.Web.Specific.Flat_FlatOwners_Creation;
@@ -16,9 +21,6 @@ import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
-
-import static Model.Database.Support.DbConfig.DB_DO_NOT_USE_THIS_FILTER;
 
 public class UC_NewFlat {
     private final DbProvider db;
@@ -116,14 +118,14 @@ public class UC_NewFlat {
             jsonResponse.setStatus(HttpServletResponse.SC_CREATED);
             jsonResponse.setMessage("Flat + FlatOwner(s) created.");
         } catch (SQLException e) {
-        db.afterExceptionInSqlExecution(e);
-        jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        jsonResponse.setMessage("Internal server error.");
-
-    } catch (CreationException e) {
-        db.afterExceptionInSqlExecution(e);
-        jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    }
+            db.afterExceptionInSqlExecution(e);
+            jsonResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            jsonResponse.setMessage("Internal server error.");
+        } catch (CreationException e) {
+            db.afterExceptionInSqlExecution(e);
+            jsonResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            jsonResponse.setMessage(e.getMessage());
+        }
 
         return jsonResponse;
     }
@@ -136,7 +138,7 @@ public class UC_NewFlat {
      * @return
      * @throws NumberFormatException
      */
-    private boolean everythingOkForCreation(@NotNull final Flat_FlatOwners_Creation creation) throws NumberFormatException, SQLException {
+    private boolean everythingOkForCreation(@NotNull final Flat_FlatOwners_Creation creation) throws NumberFormatException, SQLException, CreationException {
         // data of flatowners are ok
 
         if (isFlatOwnerOk(creation.getOwner1()) == false) {
@@ -157,16 +159,20 @@ public class UC_NewFlat {
 
         // is building id and appartmentNo unique?
         if (doesBuildingAlreadyContainSuchApartmentNo(creation.getFlat().getBuildingId(), creation.getFlat().getApartmentNO())) {
-            return false;
+            throw new CreationException("Building already contains an apartment with such Apartment NO");
         }
 
         return Assurance.isFkOk(creation.getFlat().getBuildingId()) != false;
     }
 
-    private boolean isFlatOwnerOk(FlatOwner fo) {
+    private boolean isFlatOwnerOk(FlatOwner fo) throws CreationException, SQLException{
         // emails are valid
         if (EmailValidator.getInstance().isValid(fo.getEmail()) == false) {
             return false;
+        }
+
+        if (doesFlatOwnerWithSuchEmailAlreadyExist(fo.getEmail())) {
+            throw new CreationException("Database already contains flat owner with such email.");
         }
 
         return !StringUtils.isNullOrEmpty(fo.getFirstName()) && !StringUtils.isNullOrEmpty(fo.getLastName()) &&
@@ -175,5 +181,9 @@ public class UC_NewFlat {
 
     private boolean doesBuildingAlreadyContainSuchApartmentNo(Integer buildingId, String apartmentNo) throws SQLException {
         return I_Flat.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), buildingId, apartmentNo).size() > 0;
+    }
+
+    private boolean doesFlatOwnerWithSuchEmailAlreadyExist(String mail) throws SQLException {
+        return I_FlatOwner.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), mail).size() > 0;
     }
 }
