@@ -1,5 +1,5 @@
-# SecureDataCollector (v 1.0a)
-###### Released on 3.5.2021; Works with SQL version 19
+# SecureDataCollector (v 1.0b)
+###### Released on 09.05.2021; Works with SQL version 21
 
 
 This is a repository of team-project 14 (SONET). It's aim is to preserve SW and HW related code.
