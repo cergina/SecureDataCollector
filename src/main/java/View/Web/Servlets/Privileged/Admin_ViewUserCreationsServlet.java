@@ -1,7 +1,7 @@
 package View.Web.Servlets.Privileged;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_UserCreations;
+import Control.Scenario.UC_ListUserCreations;
 import Model.Web.Specific.UserCreation;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -29,13 +29,11 @@ public class Admin_ViewUserCreationsServlet extends AdminServlet {
             return;
         }
 
-        //
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
-        final List<UserCreation> creations = (new UC_UserCreations(getDb()).getUserCreations());
-        //List<UserCreation> creations = null;
+        final List<UserCreation> creations = (new UC_ListUserCreations(getDb()).getUserCreations());
         context.setVariable(VARIABLE_CREATIONS, creations);
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());

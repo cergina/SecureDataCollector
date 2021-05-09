@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UC_UserCreations {
+public class UC_ListUserCreations {
     private final DbProvider db;
 
-    public UC_UserCreations(@NotNull DbProvider dbProvider) {
+    public UC_ListUserCreations(@NotNull DbProvider dbProvider) {
         this.db = dbProvider;
     }
 
