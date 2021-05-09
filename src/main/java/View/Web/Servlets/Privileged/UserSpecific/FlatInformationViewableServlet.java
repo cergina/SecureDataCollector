@@ -62,9 +62,10 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
             return;
         }
 
-        GraphSingleFlat graph = new GraphSingleFlat(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getSensorsForFlat(requestedId));
+        UC_Graph graphScenario = new UC_Graph(getDb());
+        GraphSingleFlat graph = new GraphSingleFlat(graphScenario.getDatesAsLabelsOfLast30Days(), graphScenario.getSensorsForFlat(requestedId));
 
-        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraph(graph));
+        final JsonResponse jsonResponse = (graphScenario.dataForGraph(graph));
 
         response.setStatus(jsonResponse.getStatus());
 

@@ -42,8 +42,6 @@ public class UC_Graph {
         return jsonResponse;
     }
 
-
-
     public List<String> getDatesAsLabelsOfLast30Days() {
         List<String> dates = new ArrayList<>();
         LocalDate today = LocalDate.now();
@@ -75,40 +73,27 @@ public class UC_Graph {
         return dates;
     }
 
-
-    private @NotNull List<T_ControllerUnit> getAllControllersForFlat(@NotNull Integer flatId) {
+    private @NotNull List<T_ControllerUnit> getAllControllersForFlat(@NotNull Integer flatId) throws SQLException {
         List<T_ControllerUnit> arr = new ArrayList<>();
-
-        try {
-            arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, flatId, null);
-        } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
-        }
-
+        arr = I_ControllerUnit.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, flatId, null);
         return arr;
     }
 
-    private @NotNull List<T_Sensor> getAllSensorsForController(@NotNull Integer controllerId) {
+    private @NotNull List<T_Sensor> getAllSensorsForController(@NotNull Integer controllerId) throws SQLException {
         List<T_Sensor> arr = new ArrayList<>();
-
-        try {
-            arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, controllerId);
-        } catch (SQLException sqle) {
-            CustomLogs.Error(sqle.getMessage());
-        }
-
+        arr = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), DB_DO_NOT_USE_THIS_FILTER, controllerId);
         return arr;
     }
 
     public List<Sensor> getSensorsForFlat(Integer flatID) {
         List<Sensor> sensors = new ArrayList<>();
 
-        List<T_ControllerUnit> t_controllerUnits = getAllControllersForFlat(flatID);
-
-        for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
-            List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
-            for (T_Sensor t_sensor : t_sensors) {
-                try {
+        try {
+            db.beforeSqlExecution(false);
+            List<T_ControllerUnit> t_controllerUnits = getAllControllersForFlat(flatID);
+            for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
+                List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
+                for (T_Sensor t_sensor : t_sensors) {
                     List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
                     List<Measurement> measurements = new ArrayList<>();
                     for (T_Measurement t_measurement : t_measurements) {
@@ -124,10 +109,12 @@ public class UC_Graph {
                     Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray, unitType, unitAmount);
 
                     sensors.add(sensor);
-                } catch (SQLException sqle) {
-                    CustomLogs.Error(sqle.getMessage());
                 }
             }
+            db.afterOkSqlExecution();
+        } catch (SQLException sqle) {
+                    CustomLogs.Error(sqle.getMessage());
+                    db.afterExceptionInSqlExecution(sqle);
         }
         return sensors;
     }
@@ -136,32 +123,31 @@ public class UC_Graph {
         List<Sensor> sensors = new ArrayList<>();
 
         try {
+            db.beforeSqlExecution(false);
             T_ControllerUnit t_controllerUnit = I_ControllerUnit.retrieveByUid(db.getConn(), db.getPs(), db.getRs(), controllerUID);
 
             List<T_Sensor> t_sensors = getAllSensorsForController(t_controllerUnit.getA_pk());
             for (T_Sensor t_sensor : t_sensors) {
-                try {
-                    List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
-                    List<Measurement> measurements = new ArrayList<>();
-                    for (T_Measurement t_measurement : t_measurements) {
-                        Measurement measurement = new Measurement(t_measurement.getA_AccumulatedValue(), t_measurement.getA_SensorID(), t_measurement.getA_MeasuredAt());
-                        measurements.add(measurement);
-                    }
-
-                    List<Integer> dataArray = getMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
-                    E_SensorType sensorType = I_SensorType.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), t_sensor.getA_SensorTypeID());
-                    String unitType = getUnitTypeOfSensor(sensorType);
-                    Integer unitAmount = getUnitAmountOfSensor(sensorType);
-                    getRealMeasurementValues(dataArray, unitAmount);
-                    Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray, unitType, unitAmount);
-
-                    sensors.add(sensor);
-                } catch (SQLException sqle) {
-                    CustomLogs.Error(sqle.getMessage());
+                List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
+                List<Measurement> measurements = new ArrayList<>();
+                for (T_Measurement t_measurement : t_measurements) {
+                    Measurement measurement = new Measurement(t_measurement.getA_AccumulatedValue(), t_measurement.getA_SensorID(), t_measurement.getA_MeasuredAt());
+                    measurements.add(measurement);
                 }
+
+                List<Integer> dataArray = getMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
+                E_SensorType sensorType = I_SensorType.retrieve(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(E_SensorType.class), t_sensor.getA_SensorTypeID());
+                String unitType = getUnitTypeOfSensor(sensorType);
+                Integer unitAmount = getUnitAmountOfSensor(sensorType);
+                getRealMeasurementValues(dataArray, unitAmount);
+                Sensor sensor = new Sensor(t_sensor.getA_Input(), t_sensor.getA_Name(), t_sensor.getA_ControllerUnitID(), measurements, dataArray, unitType, unitAmount);
+
+                sensors.add(sensor);
             }
+            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
+            db.afterExceptionInSqlExecution(sqle);
         }
         return sensors;
     }
@@ -170,44 +156,41 @@ public class UC_Graph {
         List<Flat> flats = new ArrayList<>();
 
         try {
+            db.beforeSqlExecution(false);
             List<T_Flat> t_flats = I_Flat.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), buildingId, null);
             for (T_Flat t_flat : t_flats) {
-                try {
-                    List<Integer> amounts = new ArrayList<>();
-                    for (int i = 0; i < 30; i++) {
-                        amounts.add(0);
-                    }
+                List<Integer> amounts = new ArrayList<>();
+                for (int i = 0; i < 30; i++) {
+                    amounts.add(0);
+                }
 
-                    List<T_ControllerUnit> t_controllerUnits = I_ControllerUnit.retrieveByFlatId(db.getConn(), db.getPs(), db.getRs(), t_flat.getA_pk());
-                    for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
-                        List<T_Sensor> t_sensors = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), 0, t_controllerUnit.getA_pk());
-                        for (T_Sensor t_sensor : t_sensors) {
-                            List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
+                List<T_ControllerUnit> t_controllerUnits = I_ControllerUnit.retrieveByFlatId(db.getConn(), db.getPs(), db.getRs(), t_flat.getA_pk());
+                for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
+                    List<T_Sensor> t_sensors = I_Sensor.retrieveFilteredAll(db.getConn(), db.getPs(), db.getRs(), 0, t_controllerUnit.getA_pk());
+                    for (T_Sensor t_sensor : t_sensors) {
+                        List<T_Measurement> t_measurements = I_Measurements.getLast30DaysMeasurements(db.getConn(), db.getPs(), db.getRs(), t_sensor.getA_pk());
 
-                            List<Measurement> measurements = new ArrayList<>();
-                            for (T_Measurement t_measurement : t_measurements) {
-                                Measurement measurement = new Measurement(t_measurement.getA_AccumulatedValue(), t_measurement.getA_SensorID(), t_measurement.getA_MeasuredAt());
-                                measurements.add(measurement);
-                            }
+                        List<Measurement> measurements = new ArrayList<>();
+                        for (T_Measurement t_measurement : t_measurements) {
+                            Measurement measurement = new Measurement(t_measurement.getA_AccumulatedValue(), t_measurement.getA_SensorID(), t_measurement.getA_MeasuredAt());
+                            measurements.add(measurement);
+                        }
 
-                            List<Integer> toAdd = getAmountMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
-                            for(int i=0; i < 30; i++){
-                                Integer value = amounts.get(i);
-                                value = value + toAdd.get(i);
-                                amounts.set(i, value);
-                            }
+                        List<Integer> toAdd = getAmountMeasurementArrayForSensor(t_sensor.getA_pk(), measurements);
+                        for(int i=0; i < 30; i++){
+                            Integer value = amounts.get(i);
+                            value = value + toAdd.get(i);
+                            amounts.set(i, value);
                         }
                     }
-
-                    Flat flat = new Flat(t_flat.getA_pk(), t_flat.getA_ApartmentNO(), buildingId, amounts);
-
-                    flats.add(flat);
-                } catch (SQLException sqle) {
-                    CustomLogs.Error(sqle.getMessage());
                 }
+                Flat flat = new Flat(t_flat.getA_pk(), t_flat.getA_ApartmentNO(), buildingId, amounts);
+                flats.add(flat);
             }
+            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
             CustomLogs.Error(sqle.getMessage());
+            db.afterExceptionInSqlExecution(sqle);
         }
         return flats;
     }
@@ -243,41 +226,36 @@ public class UC_Graph {
         return dataArray;
     }
 
-    public List<Integer> getMeasurementArrayForSensor(int sensorID, List<Measurement> measurements) {
-        try {
-            List<Integer> dataArray = new ArrayList<>();
-            Integer accumulatedValue30DaysAgo = I_Measurements.getAccumulatedValueOf30DaysAgo(db.getConn(), db.getPs(), db.getRs(), sensorID);
+    private List<Integer> getMeasurementArrayForSensor(int sensorID, List<Measurement> measurements) throws SQLException {
+        List<Integer> dataArray = new ArrayList<>();
+        Integer accumulatedValue30DaysAgo = I_Measurements.getAccumulatedValueOf30DaysAgo(db.getConn(), db.getPs(), db.getRs(), sensorID);
 
-            Map<Date, Integer> hashMap = new HashMap<>();
-            for (Measurement measurement : measurements) {
-                if(hashMap.containsKey(measurement.getMeasuredAt())){
-                    if(hashMap.get(measurement.getMeasuredAt()) < measurement.getValue()-accumulatedValue30DaysAgo){
-                        hashMap.put(measurement.getMeasuredAt(), measurement.getValue()-accumulatedValue30DaysAgo);
-                    } //efektivnejsie by bolo odpocitavat akumulovanu hodnotu az pri datumoch
-                }
-                else {
+        Map<Date, Integer> hashMap = new HashMap<>();
+        for (Measurement measurement : measurements) {
+            if(hashMap.containsKey(measurement.getMeasuredAt())){
+                if(hashMap.get(measurement.getMeasuredAt()) < measurement.getValue()-accumulatedValue30DaysAgo){
                     hashMap.put(measurement.getMeasuredAt(), measurement.getValue()-accumulatedValue30DaysAgo);
-                }
+                } //efektivnejsie by bolo odpocitavat akumulovanu hodnotu az pri datumoch
             }
-
-            int fillerValue = 0;
-
-            List<Date> dates = getDatesOfLast30Days();
-            for(Date date : dates){
-                if(hashMap.containsKey(date)){
-                    fillerValue = hashMap.get(date);
-                }
-                else{
-                    hashMap.put(date, fillerValue);
-                }
-                dataArray.add(fillerValue);
+            else {
+                hashMap.put(measurement.getMeasuredAt(), measurement.getValue()-accumulatedValue30DaysAgo);
             }
-
-            return dataArray;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
-        return null;
+
+        int fillerValue = 0;
+
+        List<Date> dates = getDatesOfLast30Days();
+        for(Date date : dates){
+            if(hashMap.containsKey(date)){
+                fillerValue = hashMap.get(date);
+            }
+            else{
+                hashMap.put(date, fillerValue);
+            }
+            dataArray.add(fillerValue);
+        }
+
+        return dataArray;
     }
 
     public Integer getUnitAmountOfSensor(E_SensorType sensorType) {

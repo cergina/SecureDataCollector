@@ -103,9 +103,10 @@ public class BuildingsInformationServlet extends SessionServlet {
             return;
         }
 
-        GraphSingleBuilding graph = new GraphSingleBuilding(new UC_Graph(getDb()).getDatesAsLabelsOfLast30Days(), new UC_Graph(getDb()).getFlatsForBuilding(requestedId));
+        UC_Graph graphScenario = new UC_Graph(getDb());
+        GraphSingleBuilding graph = new GraphSingleBuilding(graphScenario.getDatesAsLabelsOfLast30Days(), graphScenario.getFlatsForBuilding(requestedId));
 
-        final JsonResponse jsonResponse = (new UC_Graph(getDb()).dataForGraphBuilding(graph));
+        final JsonResponse jsonResponse = (graphScenario.dataForGraphBuilding(graph));
 
         response.setStatus(jsonResponse.getStatus());
 
