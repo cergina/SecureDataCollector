@@ -336,10 +336,10 @@ uint8_t readDipAddress()
 }
 
 typedef struct {
-	char Address[3];
-	char Input[2];
+	int Address;
+	int Input;
 	char Time[13];
-	char measurement[50];
+	int measurement;
 } Measurement;
 
 void AddDataToStruct(Measurement *data, char type, char *value){
@@ -348,10 +348,16 @@ void AddDataToStruct(Measurement *data, char type, char *value){
 		strcpy(data->Time, value);
 		break;
 		case 'I':
-		strcpy(data->Input, value);
+		//uart_puts(value);
+		//uart_puts((atoi(value) + '0'));
+		//data->Input = (int)atoi(value);
+		data->Input = 1;
+		//strcpy(data->Input, value);
 		break;
 		case 'M':
-		strcpy(data->measurement, value);
+		//data->measurement = atoi(value);
+		data->measurement = 1;
+		//strcpy(data->measurement, value);
 		break;
 	}
 }
@@ -383,7 +389,12 @@ Measurement *ParsePacket(char *message)
 		uart_puts("\r\n");
 	#endif
 	
-	memcpy(data->Address, parsedMessage, 2);
+	char* addr = (char *)calloc(3, sizeof(char));
+	memcpy(addr, parsedMessage, 2);
+	//uart_puts(addr);
+	data->Address = (int)strtol(addr,"\0",16);
+	uart_putc(data->Address);
+
 	
 	char type = parsedMessage[2];
 	int j = 0;
@@ -401,10 +412,10 @@ Measurement *ParsePacket(char *message)
 			i++;
 			continue;
 		}
-		//if(j % CHUNK_LEN){
-		//	int len = sizeof message / sizeof *message;
-		//	message = realloc(message, len+CHUNK_LEN * sizeof(message));
-		//}
+		if(j % CHUNK_LEN){
+			int len = sizeof message / sizeof *message;
+			message = realloc(message, len+CHUNK_LEN * sizeof(message));
+		}
 		value[j] = parsedMessage[i];
 		j++;
 	}
@@ -451,7 +462,7 @@ int main(void)
 	sei();
 
 	#ifdef DEBUG_TEST
-	uart_puts("CentralUnit  Build v0.8 \r\n");
+	uart_puts("CentralUnit  Build v0.9 \r\n");
 	
 	// #region DIP address print
 	uart_puts("DIP address is: ");
@@ -543,16 +554,16 @@ int main(void)
 					#ifdef DEBUG_TEST
 						uart_puts("\r\n");
 						uart_puts("Address:\r\n");
-						uart_puts(data->Address);
+						uart_putc(data->Address);
 						uart_puts("\r\n");
 						uart_puts("Input:\r\n");
-						uart_puts(data->Input);
-						uart_puts("\r\n");
-						uart_puts("measurement:\r\n");
-						uart_puts(data->measurement);
+						uart_puts((data->Input) + '0');
 						uart_puts("\r\n");
 						uart_puts("Time:\r\n");
 						uart_puts(data->Time);
+						uart_puts("\r\n");
+						uart_puts("measurement:\r\n");
+						uart_puts(data->measurement);
 						uart_puts("\r\n");
 					#endif
 					free(data);

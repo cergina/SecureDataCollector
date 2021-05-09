@@ -225,7 +225,7 @@ int main(void)
 
 	uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
 	sei();
-	uart_puts("ControllerUnit  Build v0.53 \r\n");
+	uart_puts("ControllerUnit  Build v0.54 \r\n");
 	
 	int cb1_int = ee_cb_init(&cb1, cb1_mem, CB_DATA_SIZE, CB_BUFFER_SIZE, cb1_write, &cb1_read);
 	uart_puts("EECB1 init: ");
@@ -263,9 +263,8 @@ int main(void)
 		//Process code for ADC5 (PCINT13)
 		if(ADC5_readFlag == 1){
 			uint16_t adc_value = adc_read(ADC_PRESCALER_128, ADC_VREF_AVCC, 5);
-			uart_puts("Measure\r\n");
+			uart_puts("Change\r\n");
 			uint8_t bValue = adc_value >= HIGH_DOWN ? 1 : (adc_value <= LOW_UP ? 0 : -1);
-			
 			// RISE UP
 			if (bValue != ADC5_lastValue && bValue == 1 ){
 				#ifdef DEBUG_TEST
@@ -278,6 +277,17 @@ int main(void)
 				#ifdef DEBUG_TEST
 					uart_puts("Falling edge\r\n");
 				#endif
+				
+				//Zwave signal
+				DDRC |= (1 << DDC4);
+				PORTC &= ~(1 << PINC4);
+				_delay_ms(100);
+				PORTC |= (1 << PINC4);
+				_delay_ms(500);
+				PORTC &= ~(1 << PINC4);
+				_delay_ms(100);
+				PORTC |= (1 << PINC4);
+				
 				//We send 1 as measured value because for now its trigger every time, also we consider PIN ADC5 as input 1
 				SendMessageToCEU_uart(UID,1,1); // for test purpose
 			}
