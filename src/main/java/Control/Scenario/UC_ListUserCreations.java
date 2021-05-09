@@ -24,7 +24,7 @@ public class UC_ListUserCreations {
             db.beforeSqlExecution(false);
 
             // get all user access privilege journal entries
-            List<T_AccessPrivilegeJournal> list = I_AccessPrivilegeJournal.retrieveAll(db.getConn(), db.getPs(), db.getRs(), DbEntity.ReturnUnusable(T_AccessPrivilegeJournal.class));
+            List<T_AccessPrivilegeJournal> list = I_AccessPrivilegeJournal.retrieveAllSortedByNewest(db.getConn(), db.getPs(), db.getRs());
 
             //get user's name, user's privileges, admin's name and creation date for each
             for (T_AccessPrivilegeJournal accessPrivilegeJournalEntry: list) {
