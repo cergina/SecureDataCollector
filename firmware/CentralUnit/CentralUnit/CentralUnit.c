@@ -27,7 +27,7 @@
 
 #include "util/delay.h"
 
-#define DEBUG_TEST
+//#define DEBUG_TEST
 //#define DEBUG_TEST_TICK // careful with this debug mode, dont send messages on uart during this debug ticking, device dont work properly
 
 
@@ -97,6 +97,8 @@ void qSendForce(char *cmd){
 // #endregion
 
 void qStateSet(uint8_t state){
+	
+	#ifdef DEBUG_TEST
 	switch(state){
 		case QS_UNKNOWN:{
 			uart_println("Q => QS_UNKNOWN");
@@ -151,6 +153,7 @@ void qStateSet(uint8_t state){
 			break;
 		}
 	}
+	#endif
 	qState = state;
 }
 
@@ -167,18 +170,27 @@ uint8_t qSend(char *cmd){
 }
 
 void qConnect(){
+	
+	#ifdef DEBUG_TEST
 	uart_puts("Q :: Connecting\n");
+	#endif
 	qSend("AT+QICSGP=1,\"internet\"");
 }
 
 void qDisconnect(){
+	
+	#ifdef DEBUG_TEST
 	uart_puts("Q :: Disconnecting\n");
+	#endif
 	qStateSet(QS_DEACTIVATING);
 	qSendForce("AT+QIDEACT");
 }
 
 void qMeasurementSend(char *m){
+	
+	#ifdef DEBUG_TEST
 	uart_puts("Q :: Preparation\n");
+	#endif
 	
 	uint8_t _len = strlen(m);
 	char *_cmd = (char*)malloc(255*sizeof(char));
@@ -196,7 +208,10 @@ void qMeasurementSend(char *m){
 	qSendForce("http://team14-20.studenti.fiit.stuba.sk/dcs/api/measurements-add");
 	_delay_ms(5000);
 	
+	
+	#ifdef DEBUG_TEST
 	uart_puts("Q :: Posting\n");
+	#endif
 	qStateSet(QS_POSTED);
 	qSendForce(_cmd);
 	_delay_ms(2000);
@@ -215,8 +230,10 @@ void qMeasurementCompose(int ceAddress, unsigned int reqNo, int cuAddress, int i
 	measurementToSend = (char*) malloc(255 * sizeof(char));
 	sprintf(measurementToSend, "{\"messageType\":\"measurements\",\"centralUnit\":\"%d\",\"requestNumber\":%d,\"controllers\":[{\"controllerUnit\":\"%d\",\"measurements\":[{\"sensorIO\":\"%d\",\"count\":%d}]}]}", ceAddress, reqNo, cuAddress, input, measurement);
 	
+	#ifdef DEBUG_TEST
 	uart_println("Measurement preparation:");
 	uart_println(measurementToSend);
+	#endif
 }
 
 uint8_t ProcessQMessage(char *msg)
@@ -252,12 +269,18 @@ uint8_t ProcessQMessage(char *msg)
 	}
 	
 	if (qOpPending && 0 == strcmp("CONNECT", msg)){
+		
+		#ifdef DEBUG_TEST
 		uart_puts("Q :: GENERIC CONNECT\n");
+		#endif
 	}
 	
 	// react to response
 	if (qOpPending && 0 == strcmp("OK", msg)){
+		
+		#ifdef DEBUG_TEST
 		uart_puts("Q::OK\n");
+		#endif
 		qOpPending = 0; // disable pending Q state
 		
 		switch (qState) {
@@ -277,8 +300,10 @@ uint8_t ProcessQMessage(char *msg)
 				qSend("AT+QIFGCNT=1");
 				break;
 			}
-			default: {
+			default: {				
+				#ifdef DEBUG_TEST
 				uart_puts("Q :: GENERIC OK\n");
+				#endif
 			}
 			
 			// post reakcia
@@ -425,6 +450,7 @@ int main(void)
 	//now enable interrupt, since UART library is interrupt controlled
 	sei();
 
+	#ifdef DEBUG_TEST
 	uart_puts("CentralUnit  Build v0.8 \r\n");
 	
 	// #region DIP address print
@@ -438,6 +464,7 @@ int main(void)
 	uart_puts("Current proto: ");
 	uart_putc(current_proto + '0');
 	uart_putn();
+	#endif
 	
 	#ifdef DEBUG_TEST_TICK
 		unsigned int tick= 0;
@@ -462,7 +489,7 @@ int main(void)
 		}
 		
 		if (!(c & UART_NO_DATA)){
-			uart_putc(c);
+			//uart_putc(c);
 			
 			//#region STXETX 
 			if (c == STX){
@@ -502,10 +529,15 @@ int main(void)
 				
 				checksum = crc8((uint8_t*)message, len+2); // Need to add 2 what is count bytes of length.
 				if((uint8_t)c != checksum){
+					#ifdef DEBUG_TEST
 					uart_puts("NAK\r\n");
+					#endif
 				}
 				else{
+					
+					#ifdef DEBUG_TEST
 					uart_puts("ACK\r\n");
+					#endif
 					//do stuff
 					Measurement *data = ParsePacket(message);
 					#ifdef DEBUG_TEST
@@ -546,10 +578,12 @@ int main(void)
 				if (c == 0x0A)
 				{
 					uint8_t ret = ProcessQMessage(message);
-					if (ret == 0){
-						uart_puts(message);
-						uart_putn();
+					
+					#ifdef DEBUG_TEST
+					if (ret == 0){		
+						uart_println(message);
 					}
+					#endif
 					
 					// clear buffer
 					free(message);
@@ -594,9 +628,7 @@ int main(void)
 		#ifdef DEBUG_TEST_TICK
 			char result1[50];
 			sprintf(result1, "%d", ++tick);
-			uart_puts(result1);
-			uart_puts("\r\n");
-			_delay_ms(1000);
+			uart_println(result1);
 		#endif
 	}
 }
