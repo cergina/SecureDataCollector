@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class I_AccessPrivillege {
+public class I_AccessPrivillege extends InteractionWithDatabase{
     public static int insert(Connection conn, PreparedStatement ps, E_AccessPrivilege ec) throws SQLException {
         if (ec.IsEnumTableOkForDatabaseEnter() == false)
             throw new SQLException("Given attribute E_AccessPrivilege is not ok for database enter");

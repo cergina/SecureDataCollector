@@ -1,0 +1,44 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head"></head>
+<body>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+<div class="container-fluid col-xl-12">
+
+    <!-- UPPER PANEL -->
+    <div class="ibox-content m-b-sm border-bottom">
+        <div class="p-xs">
+            <div class="pull-left m-r-md">
+                <i class="fa fa-globe text-navy mid-icon"></i>
+            </div>
+            <h2>Secure Data Collector - 2021</h2>
+            <span>This is a place where you can view a list of user creations.</span>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">User's full name</th>
+            <th scope="col">User's privileges</th>
+            <th scope="col">Created by</th>
+            <th scope="col">Created at</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="creation: ${creations}">
+            <td th:text="${creation.userName}"></td>
+            <td th:text="${creation.privilege}"></td>
+            <td th:text="${creation.adminName}"></td>
+            <td th:text="${creation.createdAt}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
