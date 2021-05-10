@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class AdminEditableUserViewableServlet extends SessionServlet {
 
+
     @Override
     public boolean checkPrivilege(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Request has no session

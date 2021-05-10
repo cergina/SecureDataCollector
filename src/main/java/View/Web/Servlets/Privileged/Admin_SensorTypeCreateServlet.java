@@ -44,6 +44,7 @@ public class Admin_SensorTypeCreateServlet extends AdminServlet {
         final List<CommType> commTypeList = (new UC_Types(getDb()).getAll_CommType());
         context.setVariable(VARIABLE_COMM_TYPES, commTypeList);
         context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }

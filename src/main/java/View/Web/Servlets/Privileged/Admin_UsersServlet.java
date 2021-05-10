@@ -25,7 +25,6 @@ public class Admin_UsersServlet extends AdminServlet {
     public static final String TEMPLATE_NAME = "views/adminOnly/admin-users.html";
     public static final String TEMPLATE_NAME_SINGLE = "views/adminOnly/admin-user.html";
 
-    private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_USERS = "users";
     private static final String VARIABLE_USER = "user";
     private static final String VARIABLE_PROJECTS = "projects";

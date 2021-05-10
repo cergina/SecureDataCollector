@@ -85,6 +85,7 @@ public class BuildingsInformationServlet extends SessionServlet {
         context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_BUILDING, building);
         context.setVariable(VARIABLE_CENTRAL_AT_SAME_ADDRESS, centralsAtSameAddress);
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }

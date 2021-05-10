@@ -23,7 +23,6 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
     public static final String ONETIME_TEMPLATE_NAME = "views/adminOnly/admin-centralunit-when_no_controllers.html";
 
     private static final String VARIABLE_CENTRALUNIT = "centralUnit";
-    private static final String VARIABLE_ISADMIN = "isAdmin";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

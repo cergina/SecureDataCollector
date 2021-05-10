@@ -25,7 +25,6 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
     public static final String TEMPLATE_NAME = "views/privileged/my_controllerUnit.html";
 
     private static final String VARIABLE_CONTROLLER_UNIT = "controllerUnit";
-    private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_SENSOR_TYPES = "sensorTypes";
 
     @Override

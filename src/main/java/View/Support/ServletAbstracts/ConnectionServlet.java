@@ -14,6 +14,7 @@ public abstract class ConnectionServlet extends HttpServlet implements Privilege
 
     protected static final boolean trueIfRunningRemotely = ConfigClass.RUNNING_ON_SERVER;
     protected static final String VARIABLE_LOGGED_USER = "logged_user";
+    protected static final String VARIABLE_ISADMIN = "isAdmin";
 
     private DbProvider dbProvider;
 

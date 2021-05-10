@@ -79,7 +79,7 @@
                 <div id="Logical" class="ibox-content form-container tabcontent">
 
                     <div class="ibox-content form-container">
-                        <div th:if="${building.centralUnits.isEmpty()}">
+                        <div th:if="${isAdmin && building.centralUnits.isEmpty()}">
                             <div  th:replace="fragments/add-new_centralUnit.html"></div>
                         </div>
 

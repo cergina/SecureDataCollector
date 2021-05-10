@@ -35,6 +35,8 @@ public class Admin_ViewUserCreationsServlet extends AdminServlet {
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
         final List<UserCreation> creations = (new UC_ListUserCreations(getDb()).getUserCreations());
+
+        context.setVariable(VARIABLE_ISADMIN, true);
         context.setVariable(VARIABLE_CREATIONS, creations);
         context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
 

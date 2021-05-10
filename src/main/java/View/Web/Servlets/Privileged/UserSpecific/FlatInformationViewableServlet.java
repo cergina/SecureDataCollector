@@ -32,7 +32,6 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
 
     private static final String VARIABLE_BUILDING = "building";
     private static final String VARIABLE_FLAT_OWNERS = "flatOwners";
-    private static final String VARIABLE_ISADMIN = "isAdmin";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -109,6 +108,7 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
         context.setVariable(VARIABLE_BUILDING, building);
         context.setVariable(VARIABLE_FLAT_OWNERS, flatOwners);
         context.setVariable(VARIABLE_ISADMIN, isAdmin);
+
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }
 }

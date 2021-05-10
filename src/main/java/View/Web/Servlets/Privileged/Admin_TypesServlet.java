@@ -38,6 +38,7 @@ public class Admin_TypesServlet extends AdminServlet {
         final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType(true));
         context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
         context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }

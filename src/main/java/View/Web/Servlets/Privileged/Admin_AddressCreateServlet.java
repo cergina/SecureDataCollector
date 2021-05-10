@@ -40,6 +40,7 @@ public class Admin_AddressCreateServlet extends AdminServlet {
 
         context.setVariable(VARIABLE_COUNTRIES_LIST, Countries.GetAll_CountriesAsStringList());
         context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
