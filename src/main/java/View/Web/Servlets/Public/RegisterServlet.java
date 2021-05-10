@@ -2,7 +2,6 @@ package View.Web.Servlets.Public;
 
 import Control.ConfigClass;
 import Control.Scenario.UC_Auth;
-import Model.Database.Support.CustomLogs;
 import Model.Web.Auth;
 import Model.Web.JsonResponse;
 import Model.Web.PrettyObject;
@@ -49,13 +48,12 @@ public class RegisterServlet extends PublicServlet {
 
         // Check validity of user requested password to be used
         if (auth.isSuchPasswordOkay() == false) {
-            CustomLogs.Debug("Attempted password does not match one of our conditions");
 
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setMessage("Attempted password does not match one of our conditions");
             response.setStatus(400);
 
-            writer.println(jsonResponse.toString());
+            writer.println(jsonResponse);
             writer.close();
 
             return;
@@ -64,7 +62,7 @@ public class RegisterServlet extends PublicServlet {
         final JsonResponse jsonResponse = (new UC_Auth(getDb())).finishRegistration(auth); // finish registration
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
     }
 }

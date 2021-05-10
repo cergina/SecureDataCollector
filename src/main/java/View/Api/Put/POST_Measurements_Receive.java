@@ -39,9 +39,11 @@ public class POST_Measurements_Receive extends POST_Database_Interaction {
 
         // Get body, prepare to log it and parse body into json
         try {
-            jsonMain = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
+            jsonMain = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL, true);
 
             Dictionary tmpDict = new Hashtable();
+
+
 
             tmpDict.put(T_TestLog.DBNAME_EVENT, "REQUEST at /api/measurements-add");
             tmpDict.put(T_TestLog.DBNAME_BODY, jsonMain.toString());
@@ -56,7 +58,7 @@ public class POST_Measurements_Receive extends POST_Database_Interaction {
 
         DbProvider dbProvider = getDb();
 
-        // Attempt measreuemnt processing and insert
+        // Attempt measurement processing and insert
         try {
             // Log what came to server
             I_TestLogs.insert(dbProvider.getConn(), dbProvider.getPs(), tt);

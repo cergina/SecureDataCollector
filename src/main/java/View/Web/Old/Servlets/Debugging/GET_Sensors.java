@@ -1,5 +1,6 @@
 package View.Web.Old.Servlets.Debugging;
 
+import Control.ConfigClass;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
@@ -23,6 +24,9 @@ public class GET_Sensors extends GET_Database_Interaction {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (ConfigClass.PRODUCTION)
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+
         try {
             CustomLogs.InfoLog("Entered " + SERVLET_URL + ".", true);
 

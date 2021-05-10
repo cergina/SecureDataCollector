@@ -45,44 +45,48 @@ public class UC_FlatSummary {
         db.beforeSqlExecution(false);
 
         T_Flat t_flat = get_TFlat_ById(flatId);
-        if (t_flat == null) {
-            db.afterOkSqlExecution();
-            return null;
-        }
+        try {
+            if (t_flat == null)
+                throw new Exception("No flat with that id");
 
-        // get controllers from database, but allow returning of flat with no controllers
-        List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForFlat(flatId);
-        List<ControllerUnit> controllerUnits = new ArrayList<>();
+            // get controllers from database, but allow returning of flat with no controllers
+            List<T_ControllerUnit> t_controllerUnits = getAll_TControllers_ForFlat(flatId);
+            List<ControllerUnit> controllerUnits = new ArrayList<>();
 
-        if (t_controllerUnits.isEmpty() == false) {
-            for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
-                controllerUnits.add(Shared_Uc.buildControllerUnit(t_controllerUnit, db));
+            if (t_controllerUnits.isEmpty() == false) {
+                for (T_ControllerUnit t_controllerUnit : t_controllerUnits) {
+                    controllerUnits.add(Shared_Uc.buildControllerUnit(t_controllerUnit, db));
+                }
             }
+
+            List<Flat> flats = new ArrayList<>();
+            flats.add(new Flat(
+                    t_flat.getA_pk(),
+                    t_flat.getA_ApartmentNO(),
+                    controllerUnits
+            ));
+
+            // prepare info about address
+            T_Address t_address = get_TAddress_ByBuildingId(t_flat.getA_BuildingID());
+            Address address = new Address(
+                    t_address.getA_pk(),
+                    t_address.getA_Country(),
+                    t_address.getA_City(),
+                    t_address.getA_Street(),
+                    t_address.getA_HouseNO(),
+                    t_address.getA_ZIP()
+            );
+
+            Building building = new Building(t_flat.getA_BuildingID(), address, flats);
+
+            db.afterOkSqlExecution();
+
+            return building;
+        } catch (Exception e) {
+            db.afterExceptionInSqlExecution(e);
         }
 
-        List<Flat> flats = new ArrayList<>();
-        flats.add(new Flat(
-                t_flat.getA_pk(),
-                t_flat.getA_ApartmentNO(),
-                controllerUnits
-        ));
-
-        // prepare info about address
-        T_Address t_address = get_TAddress_ByBuildingId(t_flat.getA_BuildingID());
-        Address address = new Address(
-                t_address.getA_pk(),
-                t_address.getA_Country(),
-                t_address.getA_City(),
-                t_address.getA_Street(),
-                t_address.getA_HouseNO(),
-                t_address.getA_ZIP()
-        );
-
-        Building building = new Building(t_flat.getA_BuildingID(), address, flats);
-
-        db.afterOkSqlExecution();
-
-        return building;
+        return null;
     }
 
     public List<FlatOwner> getFlatOwnersForFlat(@NotNull final Integer flatId) {
@@ -102,11 +106,12 @@ public class UC_FlatSummary {
                         tfo.getA_Address());
                 flatOwners.add(flatOwner);
             }
+
+            db.afterOkSqlExecution();
         } catch (SQLException sqle) {
+            db.afterExceptionInSqlExecution(sqle);
             CustomLogs.Error(sqle.getMessage());
         }
-
-        db.afterOkSqlExecution();
 
         return flatOwners;
     }

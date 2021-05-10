@@ -21,7 +21,25 @@ public class ServletHelper {
             throw new ServletException("Exception while processing " + typeOfRequest + " from " + url + " | Cause: Empty body");
         }
 
+        // check for XSS
+        if (DoesBodyContainXSS(body))
+            throw new ServletException("XSS attempt detected");
+
         return body;
+    }
+
+
+    /***
+     * SECURITY UPDATE to prevent XSS
+     * @param body
+     * @return
+     */
+    public static boolean DoesBodyContainXSS(String body) {
+        String testString = body;
+        String test1 = testString.replaceAll("[\\s|\\u00A0]", "");
+        return test1.contains("script") ||
+                test1.contains("http") ||
+                test1.contains("cookie");
     }
 
     public static HttpServletRequest ProcessRequest_forDoGet_First(HttpServletRequest req) throws IOException{

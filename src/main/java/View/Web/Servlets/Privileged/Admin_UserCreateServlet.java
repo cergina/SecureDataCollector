@@ -76,7 +76,7 @@ public class Admin_UserCreateServlet extends AdminServlet {
         writer.close();
 
         // send confirmation mail
-        if (jsonResponse.getStatus() == HttpServletResponse.SC_CREATED && ConfigClass.PRODUCTION_EMAIL_SENDING) {
+        if (jsonResponse.getStatus() == HttpServletResponse.SC_CREATED && ConfigClass.PRODUCTION) {
 
             try {
                 MailUtil.sendRegistrationMail(auth.getUser().getEmail(),auth.getUser().getFirstname(), auth.getVerificationcode());
