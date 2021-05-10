@@ -43,7 +43,7 @@ public class GENERIC_INFO extends GET_Database_Interaction {
             document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Projects.SERVLET_URL, GET_Projects.SITE_NAME);
             document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Sensors.SERVLET_URL, GET_Sensors.SITE_NAME);
             document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_SensorTypes.SERVLET_URL, GET_SensorTypes.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_TestLogs.SERVLET_URL, GET_TestLogs.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_TestLogs.SERVLET_URL, GET_TestLogs.SITE_NAME);
             document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Users.SERVLET_URL, GET_Users.SITE_NAME);
 
             // Finalize

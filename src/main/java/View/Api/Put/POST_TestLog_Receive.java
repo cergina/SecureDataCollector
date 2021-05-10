@@ -1,5 +1,6 @@
 package View.Api.Put;
 
+import Control.ConfigClass;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_TestLogs;
 import Model.Database.Support.CustomLogs;
@@ -21,6 +22,8 @@ public class POST_TestLog_Receive extends POST_Database_Interaction {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (ConfigClass.PRODUCTION)
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
         try {
             String pureBody = ServletHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
