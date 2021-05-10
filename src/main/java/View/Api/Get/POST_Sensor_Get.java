@@ -1,5 +1,6 @@
 package View.Api.Get;
 
+import Control.ConfigClass;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.InteractionWithDatabase;
 import Model.Database.Support.CustomLogs;
@@ -22,9 +23,12 @@ public class POST_Sensor_Get extends POST_Database_Interaction {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (ConfigClass.PRODUCTION)
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+
         try {
             // parse
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL, false);
 
             DbProvider dbProvider = getDb();
             T_Sensor ret_ect = InteractionWithDatabase.retrieve(dbProvider.getConn(), dbProvider.getPs(), dbProvider.getRs(), DbEntity.ReturnUnusable(T_Sensor.class), json.getInt(T_Sensor.DBNAME_ID));

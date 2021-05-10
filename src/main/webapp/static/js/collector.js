@@ -170,9 +170,7 @@ function createNewFlat() {
                 alert(response.message); 
             }
         },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
+        complete: function(jqXHR) {
         }
     });
 }
@@ -203,9 +201,7 @@ function createUser() {
                 alert(response.message); 
             }
         },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
+        complete: function(jqXHR) {
         }
     });
 }
@@ -240,9 +236,7 @@ function registerUser() {
                     alert(response.message); 
                 }
             },
-            complete: function(jqXHR) { // keep for DEBUG only
-                console.log("---DEBUG---");
-                console.log(jqXHR);
+            complete: function(jqXHR) {
             }
         });
     }
@@ -278,9 +272,7 @@ function changePassword() {
                     alert(response.message); 
                 }
             },
-            complete: function(jqXHR) { // keep for DEBUG only
-                console.log("---DEBUG---");
-                console.log(jqXHR);
+            complete: function(jqXHR) {
             }
         });
     }
@@ -304,9 +296,7 @@ function loginUser() {
                 alert(response.message); 
             }
         },
-        complete: function(jqXHR) { // keep for DEBUG only
-            console.log("---DEBUG---");
-            console.log(jqXHR);
+        complete: function(jqXHR) {
         }
     });
 }

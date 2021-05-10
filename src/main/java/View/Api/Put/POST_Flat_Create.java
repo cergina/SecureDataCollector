@@ -1,5 +1,6 @@
 package View.Api.Put;
 
+import Control.ConfigClass;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Flat;
 import Model.Database.Support.CustomLogs;
@@ -21,8 +22,12 @@ public class POST_Flat_Create extends POST_Database_Interaction {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (ConfigClass.PRODUCTION) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+        
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL, false);
 
             // table
             Dictionary tmpDict = new Hashtable();

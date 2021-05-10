@@ -21,6 +21,7 @@ public class POST_TestLog_Receive extends POST_Database_Interaction {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
         try {
             String pureBody = ServletHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
 

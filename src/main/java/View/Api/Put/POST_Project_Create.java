@@ -1,5 +1,6 @@
 package View.Api.Put;
 
+import Control.ConfigClass;
 import Control.Connect.DbProvider;
 import Model.Database.Interaction.I_Project;
 import Model.Database.Support.CustomLogs;
@@ -22,16 +23,20 @@ import java.sql.ResultSet;
 public class POST_Project_Create extends POST_Database_Interaction {
     public static final String SERVLET_URL = "/api/project-add";
 
-    private InitialContext ctx = null;
-    private DataSource ds = null;
-    private Connection conn = null;
-    private PreparedStatement ps = null;
-    private ResultSet rs = null;
+    private final InitialContext ctx = null;
+    private final DataSource ds = null;
+    private final Connection conn = null;
+    private final PreparedStatement ps = null;
+    private final ResultSet rs = null;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (ConfigClass.PRODUCTION) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
         try {
-            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL);
+            JSONObject json = JSONHelper.ReturnBodyIfValid(req, "POST", SERVLET_URL, false);
 
             T_Project t = T_Project.CreateFromScratch(json.getString(T_Project.DBNAME_NAME));
 

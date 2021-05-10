@@ -34,17 +34,17 @@ public class GENERIC_INFO extends GET_Database_Interaction {
 
             StringBuilder document = CoreBuilder.GenerateBaseOfSite(SITE_NAME);
 
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Addresses.SERVLET_URL, GET_Addresses.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_CentralUnits.SERVLET_URL,GET_CentralUnits.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_CommTypes.SERVLET_URL, GET_CommTypes.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_ControllerUnits.SERVLET_URL, GET_ControllerUnits.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Flats.SERVLET_URL, GET_Flats.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Measurements.SERVLET_URL, GET_Measurements.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Projects.SERVLET_URL, GET_Projects.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Sensors.SERVLET_URL, GET_Sensors.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_SensorTypes.SERVLET_URL, GET_SensorTypes.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Addresses.SERVLET_URL, GET_Addresses.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_CentralUnits.SERVLET_URL,GET_CentralUnits.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_CommTypes.SERVLET_URL, GET_CommTypes.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_ControllerUnits.SERVLET_URL, GET_ControllerUnits.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Flats.SERVLET_URL, GET_Flats.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Measurements.SERVLET_URL, GET_Measurements.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Projects.SERVLET_URL, GET_Projects.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Sensors.SERVLET_URL, GET_Sensors.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_SensorTypes.SERVLET_URL, GET_SensorTypes.SITE_NAME);
             document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_TestLogs.SERVLET_URL, GET_TestLogs.SITE_NAME);
-            document = CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Users.SERVLET_URL, GET_Users.SITE_NAME);
+            document = ConfigClass.PRODUCTION ? document : CoreBuilder.AddLinkWithName(document,SITE_URL + GET_Users.SERVLET_URL, GET_Users.SITE_NAME);
 
             // Finalize
             document = CoreBuilder.FinalizeSite(document);

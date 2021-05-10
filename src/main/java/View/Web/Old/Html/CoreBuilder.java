@@ -1,5 +1,6 @@
 package View.Web.Old.Html;
 
+import Control.ConfigClass;
 import Model.Database.Support.CustomLogs;
 import Model.Database.Tables.DbEntity;
 import View.Web.Old.Servlets.Debugging.GENERIC_INFO;
@@ -17,7 +18,15 @@ public class CoreBuilder{
 
         document.append("<head>");
         document.append("<meta charset=\"utf-8\">");
-        document.append(title);
+        document.append("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self'>");
+        document.append(title  + "<br>");
+
+        if (ConfigClass.PRODUCTION) {
+            document.append("This site is in production state and only test log is viewable // for penetration tester");
+        } else {
+            document.append("This site is NOT in production state. Enable it in config file and deploy again if it's not what you want.");
+        }
+
         document.append("</head>");
 
         document.append("<body>");

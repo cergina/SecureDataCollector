@@ -4,6 +4,7 @@ import Control.Communication.MailUtil;
 import Control.ConfigClass;
 import Model.Database.Support.CustomLogs;
 import View.Support.ServletAbstracts.PublicServlet;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,7 @@ public class SendTestMailServlet extends PublicServlet {
 
         PrintWriter writer = response.getWriter();
 
-        if (ConfigClass.PRODUCTION_EMAIL_SENDING) {
+        if (ConfigClass.PRODUCTION) {
             try {
                 MailUtil.sendDefaultMail("mcerget@gmail.com");
                 writer.println("Mail sent successfully.");
