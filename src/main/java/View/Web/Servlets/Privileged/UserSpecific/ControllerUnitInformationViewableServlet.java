@@ -1,15 +1,15 @@
 package View.Web.Servlets.Privileged.UserSpecific;
 
 import Control.ConfigClass;
-import Control.Scenario.UC_Types;
 import Control.Scenario.UC_FlatSummary;
-import Model.Database.Support.CustomLogs;
-import Model.Web.SensorType;
+import Control.Scenario.UC_Types;
 import Model.Web.ControllerUnit;
+import Model.Web.SensorType;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
 import View.Support.ServletHelper;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -57,6 +57,8 @@ public class ControllerUnitInformationViewableServlet extends AdminEditableUserV
 
         final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType(false));
         context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
+
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
 
         context.setVariable(VARIABLE_CONTROLLER_UNIT, controllerUnit);
         context.setVariable(VARIABLE_ISADMIN, isAdmin);

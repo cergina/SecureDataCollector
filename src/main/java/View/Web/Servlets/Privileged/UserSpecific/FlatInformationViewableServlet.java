@@ -104,6 +104,8 @@ public class FlatInformationViewableServlet extends AdminEditableUserViewableSer
 
         List<FlatOwner> flatOwners = uc.getFlatOwnersForFlat(requestedId);
 
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+
         context.setVariable(VARIABLE_BUILDING, building);
         context.setVariable(VARIABLE_FLAT_OWNERS, flatOwners);
         context.setVariable(VARIABLE_ISADMIN, isAdmin);

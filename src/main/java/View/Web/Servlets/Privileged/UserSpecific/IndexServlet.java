@@ -43,6 +43,7 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
         User user = SessionUtil.getUser(request.getSession(false));
 
         context.setVariable(VARIABLE_USER, user);
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_ISADMIN, isAdmin);
 
         // part 4

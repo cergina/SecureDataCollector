@@ -2,8 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head.html :: head"></head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid my-5 pt-5">
+
     <div class="container">
+        <div th:replace="fragments/logged_header.html"></div>
 
         <p th:text="${': ' + centralUnit.id}"></p>
         <p th:text="${': ' + centralUnit.uid}"></p>
@@ -151,12 +153,6 @@
             </div>
         </div>
 
-        <!-- BUTTONS FOR NAVIGATION -->
-        <div class="row justify-content-center rowinrightcol">
-            <div class="regpaddingbottom">
-                <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
-            </div>
-        </div>
 
     </div>
 </div>

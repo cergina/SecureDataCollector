@@ -82,6 +82,7 @@ public class BuildingsInformationServlet extends SessionServlet {
         // find all central units at the same address as is the building
         List<CentralUnit> centralsAtSameAddress = (new UC_ListCentralUnit(getDb())).centralUnitsOnTheSameAddressNameAsBuilding(building.getId());
 
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_BUILDING, building);
         context.setVariable(VARIABLE_CENTRAL_AT_SAME_ADDRESS, centralsAtSameAddress);
 

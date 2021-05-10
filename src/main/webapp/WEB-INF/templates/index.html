@@ -4,13 +4,15 @@
 <body>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container">
-    <div class="row">
-        <div class="col-xl-12">
+    <div class="row ">
+        <div class="col-xl-12 my-5 pt-5">
 
 
             <div class="wrapper wrapper-content animated fadeInRight">
 
                 <!-- UPPER PANEL -->
+                <div th:replace="fragments/logged_header.html"></div>
+
                 <div class="ibox-content m-b-sm border-bottom">
                     <div class="p-xs">
                         <div class="pull-left m-r-md">
@@ -147,7 +149,7 @@
                                     <i class="fa fa-bolt"></i>
                                 </div>
                                 <a href="/dcs/admin/sensor-type/create" class="forum-item-title">Create new sensor type</a>
-                                <div class="forum-sub-title">Has a company released a new senzor? Go on and add it here.</div>
+                                <div class="forum-sub-title">Has a company released a new sensor? Go on and add it here.</div>
                             </div>
                         </div>
                         <div class="row">
@@ -229,7 +231,7 @@
                                     <i class="fa fa-bolt"></i>
                                 </div>
                                 <a th:if="${isAdmin}" onclick="goToSeeYourProjects()" class="forum-item-title clickable-text">See all projects</a>
-                                <a th:if="${isAdmin==false}" onclick="goToSeeYourProjects()" class="forum-item-title">See your projects</a>
+                                <a th:if="${isAdmin==false}" onclick="goToSeeYourProjects()" class="forum-item-title clickable-text">See your projects</a>
                                 <div class="forum-sub-title">Look at all projects that you have priviliges to see.</div>
                             </div>
                         </div>

@@ -5,9 +5,9 @@ import Control.Scenario.UC_Graph;
 import Control.Scenario.UC_OutsiderConsumption;
 import Control.Scenario.UC_Types;
 import Model.Database.Support.CustomLogs;
+import Model.Web.ControllerUnit;
 import Model.Web.JsonResponse;
 import Model.Web.SensorType;
-import Model.Web.ControllerUnit;
 import Model.Web.Specific.GraphSingleFlat;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
@@ -65,8 +65,8 @@ public class ConsumptionViewServlet extends PublicServlet {
         }
 
         final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType(false)); // MAROS
-        context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
 
+        context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
         context.setVariable(VARIABLE_CONTROLLER_UNIT, controllerUnit);
 
         // Generate html and return it
@@ -96,7 +96,7 @@ public class ConsumptionViewServlet extends PublicServlet {
 
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
     }
 

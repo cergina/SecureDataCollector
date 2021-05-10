@@ -37,6 +37,8 @@ public class User_ChangePasswordServlet extends SessionServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
@@ -57,7 +59,7 @@ public class User_ChangePasswordServlet extends SessionServlet {
             jsonResponse.setMessage("Attempted password does not match one of our conditions");
             response.setStatus(400);
 
-            writer.println(jsonResponse.toString());
+            writer.println(jsonResponse);
             writer.close();
 
             return;
@@ -67,7 +69,7 @@ public class User_ChangePasswordServlet extends SessionServlet {
         final JsonResponse jsonResponse = (new UC_Auth(getDb())).changePassword(auth);
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
     }
 }

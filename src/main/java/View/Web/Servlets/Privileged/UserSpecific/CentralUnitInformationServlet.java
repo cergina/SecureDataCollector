@@ -7,6 +7,7 @@ import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminEditableUserViewableServlet;
 import View.Support.ServletHelper;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -73,6 +74,7 @@ public class CentralUnitInformationServlet extends AdminEditableUserViewableServ
         }
 
         // Variables settings
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_CENTRALUNIT, centralUnit);
         context.setVariable(VARIABLE_ISADMIN, super.checkIfPrivilegeIsAdmin(request));
 

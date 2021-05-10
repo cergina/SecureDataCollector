@@ -10,6 +10,7 @@ import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
 import View.Support.ServletHelper;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -38,6 +39,7 @@ public class Admin_AddressCreateServlet extends AdminServlet {
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
         context.setVariable(VARIABLE_COUNTRIES_LIST, Countries.GetAll_CountriesAsStringList());
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }

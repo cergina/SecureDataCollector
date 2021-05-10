@@ -13,29 +13,29 @@ public class MailUtil {
     private final static String PASS = "@'DT[3)g(a93sNTp";
 
     public static void sendRegistrationMail(String recepient, String username, String verCode) throws Exception {
-        Properties properties = new Properties();
+        Properties properties = System.getProperties();
 
         properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", 587);
+        properties.put("mail.smtp.port", 465);
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SYSTEM_MAIL, PASS);
-            }
-        });
+        // SSL Factory
+        properties.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
 
-        Message msg = prepareRegistrationMessage(session, SYSTEM_MAIL, recepient, username, verCode);
+        Session session = Session.getInstance(properties);
+
+        session.setDebug(true);
+
+        MimeMessage msg = prepareRegistrationMessage(session, SYSTEM_MAIL, recepient, username, verCode);
 
         try {
-            Transport.send(msg);
+            Transport.send(msg, SYSTEM_MAIL, PASS);
         } catch (Exception m) {
             CustomLogs.Error(m.getMessage());
         }
-
     }
 
     public static void sendDefaultMail(String recepient) throws Exception {
@@ -56,7 +56,7 @@ public class MailUtil {
         });
 
 
-        Message msg = prepareMessage(session, SYSTEM_MAIL, recepient);
+        MimeMessage msg = prepareMessage(session, SYSTEM_MAIL, recepient);
 
         try {
             Transport.send(msg);
@@ -66,9 +66,9 @@ public class MailUtil {
 
     }
 
-    private static Message prepareRegistrationMessage(Session session, String projectEmail, String targetEmail, String username, String verCode) {
+    private static MimeMessage prepareRegistrationMessage(Session session, String projectEmail, String targetEmail, String username, String verCode) {
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(projectEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(targetEmail));
             message.setSubject("Registration confirmation");
@@ -80,9 +80,9 @@ public class MailUtil {
         return null;
     }
 
-    private static Message  prepareMessage(Session session, String projectEmail, String targetEmail) {
+    private static MimeMessage  prepareMessage(Session session, String projectEmail, String targetEmail) {
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(projectEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(targetEmail));
             message.setSubject("Test message subject");
@@ -102,11 +102,11 @@ public class MailUtil {
                 "    <meta charset=\"utf-8\"></head><body><h3>Dear customer " + username;
         str += ", thank you!</h3><p>You've just received this email, because our administrators just registered you" +
                 " in our system<br>You can now proceed into registration where you will enter the email you provided us with" +
-                "<br>when first discussing our part in our project, create a password that contains at least one<br> uppercase letter, " +
+                "<br>when first discussing your part in our project, create a password that contains at least one<br> uppercase letter, " +
                 "one lowercase letter and at least one number and special character.</p><b>" + verCode + "</b>" +
-                "<br><a href=\"" + ConfigClass.DEPLOYED_ON_BASE_URL + "/register\">Odkaz na registraciu</a>" +
+                "<br><a href=\"" + ConfigClass.DEPLOYED_ON_BASE_URL + "/register\">Registration link</a>" +
                 "<br><br>If you have any further questions, feel free to contact us at the mail <i>dcs.sonet.slovakia@gmail.com</i><br>" +
-                "Remember, do not respond to any emails that would act in our name and ask your password(s) in any matter. " +
+                "Remember, do not respond to any emails that would act in our name and ask for your credentials in any case. " +
                 "We don't need them.<br>Have a nice day</body></html>";
 
         return str;
