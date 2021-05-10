@@ -24,7 +24,7 @@ public class CoreBuilder{
         if (ConfigClass.PRODUCTION) {
             document.append("This site is in production state and only test log is viewable // for penetration tester");
         } else {
-            document.append("This site is NOT in production state. Enable it in config file and deploy again if its not what you want.");
+            document.append("This site is NOT in production state. Enable it in config file and deploy again if it's not what you want.");
         }
 
         document.append("</head>");
