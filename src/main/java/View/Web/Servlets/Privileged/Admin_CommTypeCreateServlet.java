@@ -9,6 +9,7 @@ import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
 import View.Support.ServletHelper;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -36,6 +37,9 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
         WebContext context = DcsWebContext.WebContextInitForDCS(request, response,
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
+
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
@@ -49,7 +53,7 @@ public class Admin_CommTypeCreateServlet extends AdminServlet {
         final JsonResponse jsonResponse = (new UC_Types(getDb()).createCommType(commType));
         response.setStatus(jsonResponse.getStatus());
 
-        writer.println(jsonResponse.toString());
+        writer.println(jsonResponse);
         writer.close();
     }
 }

@@ -31,6 +31,7 @@ public class LoginServlet extends PublicServlet {
         super.doGet(request, response);
         if (checkPrivilege(request, response) == false) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         TemplateEngine engine = ContextUtil.getTemplateEngine(request.getServletContext());

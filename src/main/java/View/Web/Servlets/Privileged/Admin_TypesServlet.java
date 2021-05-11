@@ -6,6 +6,7 @@ import Model.Web.SensorType;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -36,6 +37,8 @@ public class Admin_TypesServlet extends AdminServlet {
 
         final List<SensorType> sensorTypeList = (new UC_Types(getDb()).getAll_SensorType(true));
         context.setVariable(VARIABLE_SENSOR_TYPES, sensorTypeList);
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }

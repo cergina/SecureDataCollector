@@ -4,10 +4,12 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-xl-12">
+        <div class="col-xl-12 my-5 pt-5">
             <div class="wrapper wrapper-content animated fadeInRight">
 
                 <!-- UPPER PANEL -->
+                <div th:replace="fragments/logged_header.html"></div>
+
                 <div class="ibox-content m-b-sm border-bottom">
                     <div class="p-xs">
                         <div class="pull-left m-r-md">
@@ -40,12 +42,6 @@
         </div>
     </div>
 
-    <!-- BUTTONS FOR NAVIGATION -->
-    <div class="row justify-content-center rowinrightcol">
-        <div class="regpaddingbottom">
-            <button class="roundedbutton min-width-300" onclick="goHome()">Go home</button>
-        </div>
-    </div>
 </div>
 </body>
 </html>

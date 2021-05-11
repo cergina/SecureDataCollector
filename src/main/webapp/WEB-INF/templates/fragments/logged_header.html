@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark p-1 px-3">
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/dcs/index">Your place</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://team14-20.studenti.fiit.stuba.sk/">Team web-site</a>
+      </li>
+    </ul>
+  </div>
+  <div class="mx-auto order-0">
+    <a class="navbar-brand mx-auto" href="/dcs/">SONET</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#" th:text="${'Logged in: ' + logged_user.getEmail()}"></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/dcs/logout"><button class="btn btn-danger">LOG OUT</button></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+

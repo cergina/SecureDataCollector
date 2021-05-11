@@ -28,7 +28,6 @@ public class ProjectsInformationServlet extends SessionServlet {
     public static final String TEMPLATE_NAME = "views/privileged/my_projects.html";
     public static final String TEMPLATE_NAME_SINGLE = "views/privileged/my_project.html";
 
-    private static final String VARIABLE_ISADMIN = "isAdmin";
     private static final String VARIABLE_PROJECTS = "projects";
     private static final String VARIABLE_PROJECT = "project";
     private static final String VARIABLE_USERS = "users";
@@ -66,8 +65,10 @@ public class ProjectsInformationServlet extends SessionServlet {
             projects = (new UC_ListProject(getDb())).allProjectsForUser(user.getUserID());
         }
 
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_PROJECTS, projects);
-        context.setVariable(VARIABLE_ISADMIN, false);
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
+
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
 
@@ -102,9 +103,11 @@ public class ProjectsInformationServlet extends SessionServlet {
         final List<Address> addressList = (new UC_Addresses(getDb()).getAll_UnusedAddress());
 
 
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_PROJECT, project);
         context.setVariable(VARIABLE_USERS, users);
         context.setVariable(VARIABLE_ADDRESS_TYPES, addressList);
+        context.setVariable(VARIABLE_ISADMIN, SessionUtil.getIsadmin(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME_SINGLE, context, response.getWriter());
     }

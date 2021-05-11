@@ -20,7 +20,7 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
     public static final String SERVLET_URL =  "/index";
     public static final String TEMPLATE_NAME = "index.html";
 
-    private static final String VARIABLE_ISADMIN = "isAdmin";
+
     private static final String VARIABLE_USER = "user";
 
     @Override
@@ -43,6 +43,7 @@ public class IndexServlet extends AdminEditableUserViewableServlet {
         User user = SessionUtil.getUser(request.getSession(false));
 
         context.setVariable(VARIABLE_USER, user);
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
         context.setVariable(VARIABLE_ISADMIN, isAdmin);
 
         // part 4

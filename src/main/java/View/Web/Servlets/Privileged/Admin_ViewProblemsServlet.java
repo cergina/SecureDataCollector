@@ -6,6 +6,7 @@ import Model.Web.Specific.Problem;
 import View.Configuration.ContextUtil;
 import View.Support.DcsWebContext;
 import View.Support.ServletAbstracts.AdminServlet;
+import View.Support.SessionUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -35,7 +36,10 @@ public class Admin_ViewProblemsServlet extends AdminServlet {
                 ConfigClass.HTML_VARIABLENAME_RUNNINGREMOTELY, trueIfRunningRemotely);
 
         final List<Problem> problems = (new UC_Problems(getDb()).getProblems());
+
+        context.setVariable(VARIABLE_ISADMIN, true);
         context.setVariable(VARIABLE_PROBLEMS, problems);
+        context.setVariable(VARIABLE_LOGGED_USER, SessionUtil.getUser(request.getSession(false)));
 
         engine.process(TEMPLATE_NAME, context, response.getWriter());
     }
