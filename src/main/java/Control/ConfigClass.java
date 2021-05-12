@@ -8,7 +8,7 @@ public class ConfigClass {
     //////////////////////
 
     // changes db table names from lowercase to camelcase if true and some other things
-    public final static boolean RUNNING_ON_SERVER = false;
+    public final static boolean RUNNING_ON_SERVER = true;
 
     // whether debug output is turned on
     public final static boolean DEBUG = false;
